@@ -1,0 +1,8 @@
+ALTER TABLE sch_proteus.vacaciones_solicitud_liquidacion ADD autoridad_nominadora VARCHAR(100)
+GO
+ALTER TABLE sch_proteus.vacaciones_solicitud_liquidacion ADD nombre_autoridad_nominadora VARCHAR(100)
+GO
+ALTER TABLE sch_proteus.vacaciones_solicitud_liquidacion ADD representante_rrhh VARCHAR(100)
+GO
+ALTER TABLE sch_proteus.vacaciones_solicitud_liquidacion ADD nombre_representante_rrh VARCHAR(100)
+GO

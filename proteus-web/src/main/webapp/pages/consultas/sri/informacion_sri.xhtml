@@ -1,0 +1,85 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmprincipal">
+                <p:panel header="Información Impuesto Renta" >
+
+                    <p:separator/>
+                    <p:panel header="Bases Imponibles" id="pnlBaseImponible">
+                        <h:panelGrid columns="6">
+                            <p:outputLabel for="periodoFiscalBases" value="Ejercicio Fiscal:"/>
+                            <p:selectOneMenu id="periodoFiscalBases"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{informacionSRIBean.sriHelper.periodoFiscalBaseId}">
+                                <f:selectItems value="#{informacionSRIBean.sriHelper.listaPeriodoFiscal}"/>
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel for="mesBases" value="Mes:"/>
+                            <p:selectOneMenu id="mesBases" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{informacionSRIBean.sriHelper.mesBaseSeleccionado}">
+                                <f:selectItems value="#{informacionSRIBean.sriHelper.opcionesMeses}"/>
+                            </p:selectOneMenu>
+
+                            <p:commandButton value="GENERAR EXCEL" 
+                                             title="GENERAR ARCHIVO BASES IMPONIBLES"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             ajax="false">
+                                <p:fileDownload value="#{informacionSRIBean.generarExcelBasesImponibles()}" />    
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:separator/>
+
+                    <p:panel header="RDEP SRI" >
+                        <h:panelGrid columns="6">
+                            <p:outputLabel for="periodoFiscalRDEP" value="Ejercicio Fiscal:"/>
+                            <p:selectOneMenu id="periodoFiscalRDEP"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{informacionSRIBean.sriHelper.periodoFiscalRDEPId}">
+                                <f:selectItems value="#{informacionSRIBean.sriHelper.listaPeriodoFiscal}"/>
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel for="mesRDEP" value="Mes:"/>
+                            <p:selectOneMenu id="mesRDEP" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{informacionSRIBean.sriHelper.mesRDEPSeleccionado}">
+                                <f:selectItems value="#{informacionSRIBean.sriHelper.opcionesMeses}"/>
+                            </p:selectOneMenu>
+
+                            <p:commandButton value="GENERAR XML"
+                                             ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)">
+                                <p:fileDownload value="#{informacionSRIBean.generarXMLRDEP()}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Formulario 104 SRI" 
+                             rendered="false">
+                        <h:panelGrid columns="6">
+                            <p:commandButton value="GENERAR EXCEL"
+                                             action="#{informacionSRIBean.generarExcelFormulario104()}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:separator/>
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

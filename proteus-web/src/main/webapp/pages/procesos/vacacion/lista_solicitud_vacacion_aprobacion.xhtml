@@ -1,0 +1,169 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">  
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" header="#{msg['ec.gob.mrl.smp.administracion.vacacion.aprobacion.titulo']}">
+                    <p:separator  rendered="true"/>
+                    <h:panelGrid columns="2" rendered="false">
+                        <h:outputLabel value="Unidad Organizacional: "
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                            <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                             style="font-size: 10px;width: 500px"
+                                             rows="3"
+                                             cols="41"
+                                             disabled="#{true}"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.unidadOrganizacional.nombre}"/>
+                            <p:commandButton icon="ui-icon-search" 
+                                             rendered="true"                                          
+                                             oncomplete="unidadAdministrativa.show()"/>
+                            <p:commandButton icon="ui-icon-trash"
+                                             rendered="true"
+                                             update="parametrosBusqueda_unidadAdministrativa">
+                                <f:setPropertyActionListener target="#{vacacionAprobacionBean.vacacionAprobacionHelper.unidadOrganizacional.nombre}"                                                             
+                                                             value="#{null}" />
+                                <f:setPropertyActionListener target="#{vacacionAprobacionBean.vacacionAprobacionHelper.unidadOrganizacional.id}"                                                             
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </h:panelGrid>     
+                    </h:panelGrid>
+
+                    <p:dataTable id="tablavacacionSolicitud"
+                                 value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaVacacionSolicitudes}"
+                                 var="vacacionSolicitud"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 filterEvent="enter"
+                                 scrollable="true"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 sortBy="#{vacacionSolicitud.fecha}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 40px">
+                            <p:commandButton id="botonEdicio" 
+                                             title="#{msg['ec.gob.mrl.smp.tramiteBorrador.atender']}"
+                                             icon="ui-icon-extlink"
+                                             ajax="#{false}"
+                                             rendered="#{vacacionSolicitud.estado=='R' or vacacionSolicitud.estado=='V'}"
+                                             action="#{vacacionAprobacionBean.iniciarEdicion}">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitudEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 30px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" 
+                                  filterBy="#{vacacionSolicitud.distributivoDetalle.distributivo.unidadOrganizacional.ruta}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%"
+                                  style="width: 300px">                               
+                            <h:outputText value="#{vacacionSolicitud.distributivoDetalle.distributivo.unidadOrganizacional.ruta}" 
+                                          style="font-size: smaller"/>
+                        </p:column> 
+                        <p:column headerText="Número Solicitud" 
+                                  sortBy="#{vacacionSolicitud.id}" 
+                                  filterBy="#{vacacionSolicitud.id}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%"
+                                  style="width: 60px;;text-align: center" >                               
+                            <h:outputText value="#{vacacionSolicitud.id}"
+                                          style="font-size: smaller"/>                                
+                        </p:column>    
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}" 
+                                  sortBy="#{vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}" 
+                                  style="width: 80px;"
+                                  filterStyle="width: 90%"
+                                  filterBy="#{vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}" 
+                                  filterMatchMode="contains">                               
+                            <h:outputText value="#{vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}"
+                                          style="font-size: smaller"/>                                
+                        </p:column>   
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}" 
+                                  sortBy="#{vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}" 
+                                  style="width: 300px;" 
+                                  filterStyle="width: 90%"
+                                  filterBy="#{vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}" 
+                                  filterMatchMode="contains">                               
+                            <h:outputText value="#{vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}"
+                                          style="font-size: smaller" />                                
+                        </p:column>     
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}" 
+                                  sortBy="#{vacacionSolicitud.tipo}" 
+                                  filterStyle="width: 90%"
+                                  filterBy="#{vacacionAprobacionBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}" 
+                                  filterMatchMode="contains"
+                                  style="width: 160px" >                               
+                            <h:outputText value="#{vacacionAprobacionBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"
+                                          style="font-size: smaller"/>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaCrea']}" 
+                                  sortBy="#{vacacionSolicitud.fechaCreacion}" 
+                                  style="width: 80px" >                               
+                            <h:outputText value="#{vacacionSolicitud.fechaCreacion}">                                
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>      
+                        </p:column>                         
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}" 
+                                  sortBy="#{vacacionSolicitud.estado}" 
+                                  style="width: 80px" rendered="#{false}">                               
+                            <h:outputText value="#{vacacionAprobacionBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"/>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tiempoSolicitado']}" 
+                                  style="width: 100px" >                               
+                            <h:outputText value="#{vacacionSolicitud.cantidadSolicitadaTexto}"/>     
+                        </p:column> 
+
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmPrincipal:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{vacacionAprobacionBean.vacacionAprobacionHelper.unidadOrganizacional.nombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{vacacionAprobacionBean.vacacionAprobacionHelper.unidadOrganizacional.id}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

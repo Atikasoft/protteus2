@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:busqueda="http://java.sun.com/jsf/composite/busqueda">
+    
+    <composite:interface>
+        <composite:attribute name="controlador"
+                             required="true"                             
+                             type="ec.com.atikasoft.proteus.controlador.base.CatalogoControlador"/>
+        <composite:attribute name="titulo"
+                             required="true"/>
+        <composite:attribute name="verImprimir"
+                             required="false"
+                             type="java.lang.Boolean"
+                             default="#{true}"/>
+        <composite:attribute name="verSalir"
+                             required="false"
+                             type="java.lang.Boolean"
+                             default="#{true}"/>
+    </composite:interface>
+    
+    <composite:implementation>
+        <p:panel header="#{cc.attrs.titulo}" 
+                 id="panelOpcionesLista">
+            <h:panelGrid columns="2" 
+                         id="panelOptDesig" 
+                         rendered="false">
+                <p:inputText id="panelOptCampos" 
+                             autocomplete="off"
+                             value="#{cc.attrs.controlador.catalogoHelper.campoBusqueda}"
+                             style="background: none;border: none;width: 150px;"/>
+                <p:commandButton id="panelOptBtnBusquedas" 
+                                 icon="ui-icon-search"                                 
+                                 update="@form"
+                                 style="background: none;border: none;"
+                                 action="#{cc.attrs.controlador.buscar}"/>    
+            </h:panelGrid>
+            <p:separator />
+            <h:panelGrid columns="3" 
+                         id="panelOptDesigPie">
+                <p:commandButton id="panelOptBtnNuevo" 
+                                 ajax="#{false}"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                 action="#{cc.attrs.controlador.iniciarNuevo}"/>
+                <p:commandButton id="panelOptBtnImprimir" 
+                                 ajax="#{false}"
+                                 disabled="true"
+                                 rendered="false"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                 action="#{cc.attrs.controlador.generarReporte}"/>
+                <p:commandButton id="panelOptBtnSalir" 
+                                 ajax="#{false}"
+                                 rendered="#{cc.attrs.verSalir}"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                 action="#{cc.attrs.controlador.salirPantallaPrincipal()}"/>
+            </h:panelGrid>
+        </p:panel>
+    </composite:implementation>
+`</html>

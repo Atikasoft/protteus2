@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:view contentType="text/html" locale="es">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+            <META NAME="AUTHOR" CONTENT="Atikasoft" />
+            <META NAME="REPLY-TO" CONTENT="info@markasoft.ec" />
+            <LINK REV="made" href="mailto:info@markasoft.ec" />
+            <META NAME="Resource-type" CONTENT="Document"/>
+            <META NAME="Revisit-after" CONTENT="7 days"/>
+            <META NAME="robots" content="ALL"/>
+            <META NAME="DESCRIPTION" CONTENT="Municipio de Quito" />
+            <META NAME="KEYWORDS" CONTENT="Municipio Quito Nomina " />
+            <link REL="shortcut icon" href="#{request.contextPath}/images/favicon.ico" />
+            <link href="#{request.contextPath}/css/cssLayout.css" rel="stylesheet" type="text/css"/>
+            <link href="#{request.contextPath}/css/primeFaces.css" rel="stylesheet" type="text/css"/>
+            <link href="#{request.contextPath}/css/smp.css" rel="stylesheet" type="text/css"/>
+
+            <link href="#{request.contextPath}/css/jquery-ui.multidatespicker.css" rel="stylesheet" type="text/css"/>
+
+            <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/educa.js"></script>
+            <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/js/validador.js"></script>
+            <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/js/CalendarEs.js"></script>
+
+            <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/js/jquery-ui.multidatespicker.js"></script>
+
+            <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/smp.js"></script>
+            <script>
+                jQuery('.textoNemonico').live("keypress", function (e) {
+                    return validarCodigo(e);
+                });
+                jQuery('.letrasEspacio').live("keypress", function (e) {
+                    return validarLetras(e);
+                });
+                jQuery('.campoNumerico').live("keypress", function (e) {
+                    return validarNumero(e);
+                });
+                jQuery('.campoDecimal').live("keypress", function (e) {
+                    return validarNumeroDecimal(e);
+                });
+                jQuery('.campoFloat').live("keypress", function (event) {
+                    return blockNonNumbers(this, event, true, true, 1000000);
+                });
+                jQuery('.campoFloat').live("keyup", function () {
+                    extractNumber(this, 2, true);
+                });
+                jQuery('.campoFloat').live("blur", function () {
+                    extractNumber(this, 2, true);
+                });
+            </script>
+
+
+
+            <title>Municipio del Distrito Metropolitano de Quito:: Sistema de Movimiento de Personal y Nómina</title>
+
+        </h:head>
+        <h:body styleClass="ice-skin-rime" >
+            <div id="main">
+                <h:form id="exitForm">
+                    <p:remoteCommand name="exitFunc" action="#{inicioControlador.cerrarSesion}" />
+                </h:form>                
+
+                <ui:insert name="header">
+                    <ui:include src="/templates/header.xhtml" id=""/>
+                </ui:insert>
+
+                <ui:insert name="top" >                    
+                    <ui:include src="/templates/menu.xhtml"/>
+                </ui:insert>
+
+                <div id="contenido">
+
+                    <div id="contenidoDer" style="margin: auto auto auto 0px;    padding-top: 0px;    ">
+                        <p:commandButton icon="ui-icon-key"
+                                         onclick="dlgUsuarioInfo.show()"
+                                         id="usuarioInfo" 
+                                         style="width:25px; height:25px;"/>                                  
+
+                        <h:outputLabel value="USUARIO CONECTADO :  "  
+                                       style=" font-size: 12px; font-weight: bold; color: #528BB7"/> 
+                        <h:outputLabel value="#{inicioControlador.usuario}"  
+                                       style="font-size: 12px;  color: #003399"/>  
+                        <h:outputLabel value="  -  "  
+                                       style=" font-size: 12px; font-weight: bold; color: #528BB7"/> 
+                        <h:outputLabel value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.distributivo.unidadOrganizacional.nombre}"  
+                                       style="font-size: 12px;  color: #003399"/> 
+                        <h:outputLabel value="  -  "  
+                                       style=" font-size: 12px; font-weight: bold; color: #528BB7"/> 
+                        <h:outputLabel value="#{inicioControlador.obtenerUsuarioConectado().institucionEjercicioFiscal.ejercicioFiscal.nombre}"  
+                                       style="font-size: 12px;  color: #003399"/> 
+                        <center>
+                            <p:growl autoUpdate="true"/>
+                            <ui:insert name="popUp"></ui:insert>
+                            <ui:include src="/templates/status.xhtml"/>
+                            <div id="panelBase">
+                                <ui:insert name="page-content" id="contenido"/>                                
+                            </div>
+
+                        </center>
+                    </div>
+                </div>
+
+                <ui:insert name="bottom">                    
+                    <ui:include src="/templates/bottom.xhtml"/>
+                    <ui:include src="/templates/timeOut.xhtml"/>
+                    <ui:include src="/templates/navegacion.xhtml"/>
+                </ui:insert>
+                <div id="camposDsc"/>
+            </div>
+            <script type="text/javascript">
+                $("form").submit(function () {
+//                    statusDialog.show();
+                    start();
+                });
+                $('form').bind("keypress", function (e) {
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script> 
+        </h:body>
+    </f:view>
+    <p:dialog modal="true"    
+              resizable="false"  
+              width="40%"   
+              height="30%" 
+              draggable="true" header="InformaciÃ³n del Usuario Conectado"
+              widgetVar="dlgUsuarioInfo" closable="true">
+        <h:form id="frmUsuarioInfo">
+            <center>
+                <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                 onclick="dlgUsuarioInfo.hide()"
+                                 type="button"
+                                 immediate="true"
+                                 style="margin: auto"/>
+                <br/><br/>            
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <h:panelGrid  columns="2" id="tablaformularios">  
+                        <h:outputLabel value="Usuario:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel    style="width: 200px; font-weight: bold;"
+                                          value="#{inicioControlador.obtenerUsuarioConectado().usuario}"/>  
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerDescripcionTipoDocumento(
+                                                 inicioControlador.obtenerUsuarioConectado().distributivoDetalle.servidor.tipoIdentificacion)}"/>   
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.servidor.numeroIdentificacion}"/>  
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.nombres']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.servidor.apellidosNombres}"/>  
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().servidor.fechaIngresoInstitucion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputLabel>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.unidadAdministrativa']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>                         
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.distributivo.unidadOrganizacional.codigo} - #{inicioControlador.distributivoDetalle.distributivo.unidadOrganizacional.nombre}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.modalidadLaboral.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>                         
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.distributivo.modalidadLaboral.nombre}"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.nivelOcupacional.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>                         
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre}"/> 
+                        <h:outputLabel value="Denominación Puesto:"
+                                       styleClass="labelFormulario" style="text-align: right"/>                         
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.escalaOcupacional.nombre}"/> 
+
+                        <h:outputLabel value="Grupo Ocupacional:"
+                                       styleClass="labelFormulario" style="text-align: right"/>                         
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().distributivoDetalle.denominacionPuesto.nombre}"/>                                
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.institucion']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().institucion.nombre}"/>           
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaConexion']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:outputLabel  styleClass="textoNombre"
+                                        style="width: 200px; font-weight: bold;" 
+                                        value="#{inicioControlador.obtenerUsuarioConectado().fechaIngreso}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputLabel>
+
+                    </h:panelGrid>
+                </p:panel>              
+            </center>
+        </h:form>
+    </p:dialog>
+
+</html>

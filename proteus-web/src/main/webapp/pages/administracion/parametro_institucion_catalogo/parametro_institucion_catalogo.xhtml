@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucionCatalogo.titulo']}"
+                                     controlador="#{parametroInstitucionCatalogoBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+
+                    <h:panelGrid columns="2"  style="text-align:left" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.parametroInstitucionCatalogo.nemonico']}:"
+                                       styleClass="labelFormulario"/>
+
+                        <p:inputText id="parametro_institucion_catalogo_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}" 
+                                     required="true"
+                                     requiredMessage="El código es un campo requerido."
+                                     style="width: 200px"
+                                     value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.nemonico}"
+                                     disabled="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.parametroInstitucionCatalogo.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="parametro_institucion_catalogo_nombre"
+                                         styleClass="textoNombre" 
+                                         style="width: 200px"
+                                         required="true"
+                                         requiredMessage="El nombre es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.nombre}" />                      
+                        <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.parametroInstitucionCatalogo.tipo']}:"
+                                        styleClass="labelFormulario"/>
+                        <p:selectOneRadio  id="parametro_institucion_catalogo_radio" 
+                                           value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.tipo}"
+                                           required="#{true}"
+                                           requiredMessage="Tipo es un campo requerido.">
+                            <f:selectItems value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.tipoParametro}"/>
+                            <p:ajax process="@all"/>
+                        </p:selectOneRadio>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.vigente}" 
+                                                 rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                    
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                        <p:inputText id="parametro_institucion_catalogo_usuario_creo"
+                                     value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}" style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                        <p:inputText id="parametro_institucion_catalogo_fecha_creo"
+                                     value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.fechaCreacion}"
+                                     rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                        <p:inputText id="parametro_institucion_catalogo_usuario_actual"
+                                     value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.usuarioActualizacion}"
+                                     rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"/>
+                        <p:inputText id="clase_fecha_actual"
+                                     value="#{parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.parametroInstitucionalCatalogo.fechaActualizacion}"
+                                     rendered="#{!(parametroInstitucionCatalogoBean.parametroInstitucionCatalogoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

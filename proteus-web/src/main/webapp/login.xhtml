@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <META NAME="AUTHOR" CONTENT="sigen" />
+        <META NAME="REPLY-TO" CONTENT="info@markasoft.ec" />
+        <LINK REV="made" href="mailto:info@markasoft.ec" />
+        <META NAME="Resource-type" CONTENT="Document"/>
+        <META NAME="Revisit-after" CONTENT="7 days"/>
+        <META NAME="robots" content="ALL"/>
+        <META NAME="DESCRIPTION" CONTENT="SISTEMA DE MOVIMIENTO DE PERSONAL Y NOMINA" />
+        <META NAME="KEYWORDS" CONTENT="MOVIMIENTO DE PERSONAL,NOMINA,SIGEN,SERVIDOR,PORTAL RRHH" />
+        <link REL="shortcut icon" href="#{request.contextPath}/images/favicon.ico" />
+        <link href="#{request.contextPath}/css/disenio.css" rel="stylesheet" type="text/css"/>
+        <link href="#{request.contextPath}/css/educa.css" rel="stylesheet" type="text/css"/>
+        <link href="#{request.contextPath}/css/primefaces.css" rel="stylesheet" type="text/css"/>
+        <link href="#{request.contextPath}/css/style.css" rel="stylesheet" type="text/css"/>
+        <script src="#{request.contextPath}/js/educa.js"></script>
+        <script src="#{request.contextPath}/js/modernizr.custom.63321.js"></script>   
+        <title>Proteus :: Sistema de Movimiento de Personal y Nómina</title>
+        <style>
+            A:link {
+                COLOR: #E86646 /*The color of the link*/
+            }
+            A:visited {
+                COLOR: yellow /*The color of the visited link*/
+            }
+            A:hover {
+                COLOR: green /*The color of the mouseover or 'hover' link*/
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div id="main" class="background">
+
+            <div id="contenidologin" class="contenido_shadow">                
+                <div id="divMarco1" class="divMarco">
+                    <div id="divFecha">
+                        <h:panelGrid>
+                            <h:panelGrid columns="2" style="font-weight: bold;">
+                                <h:panelGrid>
+                                    <h:outputText value="Hoy,"></h:outputText>
+                                </h:panelGrid>
+                                <h:panelGrid>
+                                    <h:outputText value="#{inicioControlador.sessionIniciada.lastAccessedTime}">
+                                        <f:convertDateTime dateStyle="full" timeZone="EST" type="date" />
+                                    </h:outputText>
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                    </div>
+                    <div id="div_bienvenidos">
+                        <h:panelGrid columns="1">
+                            <p:graphicImage alt="logo_bienvenidos" value="/images/2.png"/>
+                            <h:outputText/>
+                            <h:outputText/>
+                            <h:outputText/>
+                            <p:graphicImage style="left:20px; position: relative" alt="mensaje_bienvenidos" value="/images/3.png"/>
+                        </h:panelGrid>
+                    </div>
+
+                    <div id="div_grafico_login" style="left: 510px; top: 230px">
+                        <img src="/proteus-web/images/logo_h1.png" border="0" height="115" width="300" alt="grafico"/>
+                    </div>
+                    <div class="main" id="formulario_login">                        
+
+                        <h:form id="loginForm" class="form-1">
+                            <p:growl id="growl_inicial" showDetail="false" sticky="false"  />
+                            <p class="field">
+                                <p:inputText id="login" value="#{inicioControlador.usuario}" required="true"
+                                             maxlength="20"
+                                             requiredMessage="El usuario es un campo requerido"
+                                             autocomplete="off"/>
+                                <p:watermark for="login" value="Usuario" />
+                                <i class="icon-user icon-large"></i>
+                            </p>
+                            <p class="field">
+                                <p:password id="clave" feedback="false" value="#{inicioControlador.clave}"
+                                            promptLabel="Ingrese su clave" required="true"
+                                            weakLabel="Seguridad baja" goodLabel="Seguridad buena" strongLabel="Seguridad fuerte"
+                                            inline="true"
+                                            requiredMessage="La clave es un campo requerido"/>
+                                <p:watermark for="clave" value="Clave" />
+
+                                <i class="icon-lock icon-large"></i>
+                            </p>
+                            <!-- <p class="field">
+                                <p:inputText id="oficina"  value="#{inicioControlador.oficina}"
+                                             required="true"                                    
+                                             requiredMessage="La oficina es un campo requerido"/>
+                                <p:watermark for="oficina" value="Oficina" />
+
+                                <i class="icon-home icon-large"></i>
+                            </p> -->
+                            <p class="submit">
+                                <p:commandButton value=" " id="submit" action="#{inicioControlador.autentificar()}" update="growl_inicial">
+                                    <i class="icon-arrow-right icon-large"></i> 
+                                </p:commandButton>
+                            </p>                                                                 
+                        </h:form>
+                    </div>
+                    <div id="div_seguridad">
+                        <h:panelGrid columns="2">
+                            <p:graphicImage alt="logo_mensaje_seguridad" value="/images/5.png"/>
+                            <p:graphicImage alt="mensaje_seguridad" value="/images/4.png"/>
+                        </h:panelGrid>
+                    </div>
+
+
+
+                    <p:dialog widgetVar="dlgOlvidoClave" id="dlgOlvidoClavedlg"
+                              header="CLAVE CADUCADA #{inicioControlador.usuario}"
+                              showEffect="clip" hideEffect="clip" resizable="false" draggable="false">
+                        <h:form id="form">
+                            <p:growl id="growl" showDetail="false" sticky="false"  />
+                            <br/>
+
+                            <p:panelGrid columns="2">
+                                <h:outputText value="* Clave anterior"/>
+                                <p:password id="claveActual" 
+                                             value="#{inicioControlador.clave}"
+                                             required="true"
+                                             autocomplete="off"
+                                             style="width: 150px"
+                                             requiredMessage="La clave anterior es un campo requerido"/>
+                                <h:outputText value="* Clave nueva"/>
+                                <p:password id="claveOlvido" value="#{inicioControlador.claveOlvido}"
+                                             required="true"
+                                             autocomplete="off"
+                                             match="claveOlvidoR"
+                                             style="width: 150px"
+                                             validatorMessage="La clave nueva no coincide con la confirmación"
+                                             requiredMessage="La clave nueva es un campo requerido"/>
+                                <h:outputText value="* Confirmar Clave nueva"/>
+                                <p:password id="claveOlvidoR" value="#{inicioControlador.claveOlvidoR}"
+                                             required="true"
+                                             autocomplete="off"
+                                             style="width: 150px"
+                                             requiredMessage="La confirmación de clave es un campo requerido"/>
+                            </p:panelGrid>
+                            <br/><br/>
+                            <div style="text-align: center">
+                                <p:commandButton id="acpe" value="Enviar" 
+                                                 style="margin: auto"                                                 
+                                                 process="@this,form,:loginForm:login, :loginForm:clave"                                                                                                      
+                                                 action="#{inicioControlador.cambioClave()}"
+                                                 update="form,growl,:loginForm:login,:loginForm:clave"/>
+                                <h:outputLabel/>  
+                                <p:commandButton id="elim" value="Cancelar"
+                                                 onclick="dlgOlvidoClave.hide();" 
+                                                 type="button" 
+                                                 style="margin: auto"/>   
+                            </div>
+                        </h:form>
+                    </p:dialog>
+                    <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/> 
+
+
+                    <p:dialog modal="true" widgetVar="statusDialog" header="Procesando..."   
+                              draggable="false" closable="false"
+                              styleClass="textoMayuscula">                
+                        <p:graphicImage value="/images/ajaxloadingbar_1.gif" />  
+
+                    </p:dialog>                     
+                </div>
+
+            </div>
+            <div id="navegadores">
+
+
+
+                <strong style="font-size: 10px; text-align: center;  ">
+                    Se certifica el correcto funcionamiento del sistema con los siguentes navegadores:
+                    <a style="text-decoration: none; color: black;" 
+                       >Google Chrome 20.0.1132.47, 
+                        Internet Explorer: 9.0.8112.16421, Mozilla Firefox: 16.0.2</a> 
+                </strong>         
+                <br/>
+                <center>
+                    <strong style="font-size: 10px; text-align: right; color: black;">
+                        <a style="text-decoration: none; color: black;" 
+                           href="http://www.markasoft.ec/">© Copyright 2013 - Municipio del Distrito Metropolitano de Quito</a> 
+                    </strong>
+                </center>                
+
+            </div>
+
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="Bienes Asignados">  
+                    <br/>
+                    <div>    <p:commandButton id="salirBtn" 
+                                              value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                              action="#{consultaBienesAsignadosBean.salir}"
+                                              ajax="#{false}"
+                                              immediate="#{true}"
+                                              title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"/>
+
+                    </div>
+                    <p:separator/>
+
+                    <!-- Informacion del usuario conectado-->
+                    <p:panel id="panelDatosServidor" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="6" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacion_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{consultaBienesAsignadosBean.obtenerDescripcionTipoDocumento(
+                                                  consultaBienesAsignadosBean.consultaBienesAsignadosHelper.usuario.servidor.tipoIdentificacion)}"
+                                         style="width: 100px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacion_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{consultaBienesAsignadosBean.consultaBienesAsignadosHelper.usuario.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" 
+                                         style="width: 100px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacion_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{consultaBienesAsignadosBean.consultaBienesAsignadosHelper.usuario.servidor.apellidosNombres}"
+                                         disabled="#{true}" style="width: 300px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacion_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{consultaBienesAsignadosBean.consultaBienesAsignadosHelper.usuario.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"
+                                         disabled="#{true}" 
+                                         style="width: 100px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacion_servidorFechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{consultaBienesAsignadosBean.consultaBienesAsignadosHelper.usuario.servidor.fechaIngresoInstitucion}"
+                                         disabled="#{true}" 
+                                         style="width: 100px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:separator/>
+                    <br/>
+
+                    <h:outputLabel value="Detalle de Bienes Asignados"
+                                   styleClass="labelFormulario" style="text-align: right"/>
+                    <p:panel>
+                        <p:dataTable id="tablaBienes" 
+                                     value="#{consultaBienesAsignadosBean.consultaBienesAsignadosHelper.listaBienes}"
+                                     var="bien"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex"> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                      style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.servidor.bien.item']}" 
+                                      sortBy="#{bien.item}"
+                                      filterBy="#{bien.item}"
+                                      filterMatchMode="contains"
+                                      filterStyle="width: 90%">
+                                <h:outputText value="#{bien.item}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.servidor.bien.descripcion']}"
+                                      sortBy="#{bien.descripcion}"
+                                      filterBy="#{bien.descripcion}"
+                                      filterMatchMode="contains"
+                                      filterStyle="width: 90%">
+                                <h:outputText value="#{bien.descripcion}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.servidor.bien.caracteristicas']}"
+                                      sortBy="#{bien.caracteristicas}"
+                                      filterBy="#{bien.caracteristicas}"
+                                      filterMatchMode="contains"
+                                      filterStyle="width: 90%">
+                                <h:outputText value="#{bien.caracteristicas}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.servidor.bien.serie']}"
+                                      sortBy="#{bien.serie}"
+                                      filterBy="#{bien.serie}"
+                                      filterMatchMode="contains"
+                                      filterStyle="width: 90%">
+                                <h:outputText value="#{bien.serie}"/>
+                            </p:column>                           
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.servidor.bien.valor']}"
+                                      sortBy="#{bien.valor}"
+                                      filterBy="#{bien.valor}"
+                                      filterMatchMode="contains"
+                                      filterStyle="width: 90%">
+                                <h:outputText value="#{bien.valor}"/>
+                            </p:column>                           
+
+                        </p:dataTable>
+                        <br/>
+
+                        <p:separator/>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

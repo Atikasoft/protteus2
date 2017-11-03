@@ -1,0 +1,251 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form id="frmPrincipal" enctype="multipart/form-data">
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <f:facet name="header">
+                        Carga Masiva Atributos del Servidor
+                    </f:facet>
+                    <style>
+                        .bad{
+                            background-color: red;
+                        }
+                        .importante, .importante td{
+                            font-weight: bold;
+                        }
+                        .total{
+                            color: blue;
+                        }
+                        .errores{
+                            color: red;
+                        }
+                        .ejecutados{
+                            color: green;
+                        }
+                        div[id$=resumen_header]{
+                            text-align: center;
+                        }
+                    </style>
+                    <p:panel>
+                        <h:panelGrid columns="3" 
+                                     style="margin: auto" 
+                                     columnClasses="alineacionDerecha,alineacionIzq,alineacionIzq,alineacionDerecha,alineacionIzq,alineacionIzq">
+                            <p:outputLabel value="Tipo" for="tipo"/>
+                            <p:selectOneMenu id="tipo" required="true" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             requiredMessage="Debe seleccionar un tipo de carga"
+                                             value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.tipoCarga}">
+                                <f:selectItems value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.tiposCarga}"/>
+                                <p:ajax event="change" listener="#{cargaMasivaAtributoServidorBean.seleccionarTipoCarga()}"
+                                        update=":frmPrincipal:popUpVistaPrevia"
+                                        />
+                            </p:selectOneMenu>
+                            <p:message for="tipo" showDetail="false" display="icon"/>
+
+                            <p:outputLabel value="Archivo" for="archivo"/>
+                            <h:panelGrid columns="2" id="panelCargaArchivo">                                
+                                <p:fileUpload
+                                    id="archivo"
+                                    mode="advanced"
+                                    showButtons="false"                       
+                                    process="@this"   
+                                    update=":frmPrincipal:nombreArchivo :frmPrincipal:panel_detalles :frmPrincipal:panelBotones"
+                                    widgetVar="fileuplaod_wgts"
+                                    allowTypes="/(\.|\/)(csv)$/"
+                                    label="Seleccione...."
+                                    sizeLimit="2097152"
+                                    style="width: 300px;"
+                                    oncomplete="clearInvalidFileMsg(fileuplaod_wgts);"                                
+                                    fileUploadListener="#{cargaMasivaAtributoServidorBean.cargarArchivo}"
+                                    invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                    invalidFileMessage="El archivo debe ser csv "
+                                    required="true"
+                                    requiredMessage="Debes cargar un archivo"
+                                    auto="true">
+                                </p:fileUpload>                            
+                            </h:panelGrid>
+                            <p:message for="tipo" showDetail="false" display="icon"/>
+
+                            <h:outputText value=""/>
+                            <h:outputText value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.nombreArchivo}" id="nombreArchivo" styleClass="importante"/>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <p:panel id="panelBotones">
+                            <div style="text-align: center">
+                                <p:commandButton value="Cargar" icon="ui-icon-arrowthickstop-1-n"
+                                                 rendered="#{!cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados}"
+                                                 onclick="dlg_confirm_cambios.show();">
+                                </p:commandButton>
+                                <p:commandButton value="Aplicar" icon="ui-icon-arrowthickstop-1-n"
+                                                 rendered="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados}"
+                                                 onclick="dlg_confirm_cambios.show();">
+                                </p:commandButton>
+                                <p:commandButton value="Ver Registros" update="@form" icon="ui-icon-search"
+                                                 rendered="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados}"
+                                                 oncomplete="popUpVistaPrevia.show();"/>
+                                <p:commandButton value="Analizar Registros" update="@form :frmPrincipal:panel_detalles" icon="ui-icon-search"
+                                                 rendered="#{!cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados}"
+                                                 action="#{cargaMasivaAtributoServidorBean.guardar()}"
+                                                 oncomplete="popUpVistaPrevia.show();">
+                                    <f:setPropertyActionListener target="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.soloLectura}" value="#{true}"/>
+                                </p:commandButton>
+                            </div>
+                        </p:panel>
+                    </p:panel>
+                    <br/>
+                    <p:panel id="panel_detalles">                        
+                        <h:panelGrid rendered="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.soloLectura}" style="width:100%">
+                            <div aria-live="polite" class="ui-messages ui-widget">
+                                <div class="ui-messages-info ui-corner-all">
+                                    <span class="ui-messages-info-icon"></span>
+                                    <ul>
+                                        <li>
+                                            <span class="ui-messages-info-detail">#{msg['ec.gob.mrl.smp.administracion.cargaMasivaServidor.info.soloLectura']}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>       </h:panelGrid>                          
+                        <p:panel id="resumen" rendered="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados}">
+                            <f:facet name="header">
+                                Resumen
+                            </f:facet>
+                            <h:panelGrid columns="3" style="width: 100%" columnClasses="alineacionCentro,alineacionCentro,alineacionCentro">
+                                <h:outputLabel value="REGISTROS ENCONTRADOS" />
+                                <h:outputLabel value="REGISTROS FALLIDOS" />
+                                <h:outputLabel value="SERVIDORES PROCESADOS" />
+                                <h:outputText value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.totalServidores}" styleClass="importante total"/>
+                                <h:outputText value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.fallos}" styleClass="importante errores"/>
+                                <h:outputText value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.realizados}" styleClass="importante ejecutados"/>
+                            </h:panelGrid>
+                        </p:panel>
+                        <br/>
+                        <p:dataTable value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.trazas}"
+                                     var="traza"
+                                     id="trazas"
+                                     style="width: 100%"
+                                     paginator="#{true}" 
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex" 
+                                     rendered="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.registrosCargados and not empty cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.trazas}">
+                            <f:facet name="header">
+                                Observaciones 
+                            </f:facet>
+                            <p:column headerText="Línea" 
+                                      style="width: 5%;text-align: center"
+                                      filterMatchMode="contains" 
+                                      sortBy="#{traza[1]}" 
+                                      filterStyle="width: 90%;"
+                                      filterBy="#{traza[1]}">
+                                <h:outputLabel value="#{traza[1]}"/>
+                            </p:column>
+                            <p:column headerText="Tipo" 
+                                      style="width: 10%;text-align: center"
+                                      filterMatchMode="exact" 
+                                      sortBy="#{traza[2]}" 
+                                      filterStyle="width: 90%;"
+                                      filterOptions="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.tiposError}"
+                                      filterBy="#{traza[2]}">
+                                <h:outputLabel value="#{traza[3]}"/>
+                            </p:column>
+                            <p:column headerText="Detalle" 
+                                      filterStyle="width: 90%;"
+                                      style="width: 85%"
+                                      filterMatchMode="contains" 
+                                      sortBy="#{traza[0]}"
+                                      filterBy="#{traza[0]}">
+                                <h:outputLabel value="#{traza[0]}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                </p:panel>
+                <p:confirmDialog header="Aplicar Cambios" 
+                                 message="Confirme que desea aplicar los cambios" 
+                                 closable="true"
+                                 widgetVar="dlg_confirm_cambios">
+                    <div style="text-align: center">
+                        <p:commandButton value="Aceptar" 
+                                         action="#{cargaMasivaAtributoServidorBean.guardar()}"
+                                         process="@this"
+                                         update="@form"
+                                         oncomplete="dlg_confirm_cambios.hide()" >
+                            <f:setPropertyActionListener target="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.soloLectura}" value="#{false}"/>
+                        </p:commandButton>
+                        <p:commandButton value="Cerrar" 
+                                         immediate="true"
+                                         process="@this"
+                                         onclick="dlg_confirm_cambios.hide()" >
+                        </p:commandButton>
+                    </div>
+                </p:confirmDialog>
+
+                <!-- Vista Previa -->
+                <p:dialog modal="true"
+                          draggable="true"
+                          header="Atributo: #{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.nombreTipoCarga}"
+                          width="60%"
+                          id="popUpVistaPrevia"
+                          widgetVar="popUpVistaPrevia">
+                    <h:form id="frmPopUpVistaPrevia">
+                        <p:panel id="panelPopUpVistaPrevia">
+                            <p:dataTable value="#{cargaMasivaAtributoServidorBean.cargaMasivaAtributoServidorHelper.datos}"
+                                         var="logs"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex" 
+                                         >
+                                <f:facet name="header">
+                                    Servidores Cargados
+                                </f:facet>
+                                <p:column headerText="Línea" 
+                                          style="width: 10%;text-align: center" 
+                                          filterMatchMode="contains" 
+                                          sortBy="#{logs.linea}"
+                                          filterBy="#{logs.linea}">
+                                    <h:outputLabel value="#{logs.linea}"/>
+                                </p:column>
+                                <p:column headerText="Tipo" 
+                                          filterBy="#{logs.tipoDocumento}"
+                                          style="width: 20%;text-align: center" 
+                                          filterMatchMode="contains" 
+                                          filterStyle="width: 90%;"
+                                          sortBy="#{logs.tipoDocumento}">
+                                    <h:outputLabel value="#{logs.tipoDocumento}"/>
+                                </p:column>
+                                <p:column headerText="Identificación" 
+                                          filterMatchMode="contains" 
+                                          sortBy="#{logs.documento}" 
+                                          style="width: 20%;text-align: center" 
+                                          filterStyle="width: 90%;"
+                                          filterBy="#{logs.documento}">
+                                    <h:outputLabel value="#{logs.documento}"/>
+                                </p:column>
+                                <p:column headerText="Valor" 
+                                          sortBy="#{logs.valor}"  
+                                          style="width: 20%;text-align: center" >
+                                    <p:selectBooleanCheckbox 
+                                        value="#{logs.valor}" 
+                                        disabled="true"/>
+                                </p:column>
+                            </p:dataTable>
+                            <h:panelGrid columns="2" style=" margin: auto;text-align: center;width: 50%;">
+                                <p:commandButton value="Cerrar" 
+                                                 immediate="true"
+                                                 oncomplete="popUpVistaPrevia.hide()" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+            </h:form>             
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog id="dlgLecturaHorarioDetalle" 
+              widgetVar="dlgLecturaHorarioDetalleWV"
+              closable="true"
+              header="Detalle de Horario">
+        <p:outputPanel>
+            <h:form id="frmLecturaHorarioDetalle">
+                <p:dataTable value="#{horarioBean.nombresDias}"
+                             var="dia" >
+                    <f:facet name="header">
+                        #{horarioDesconcentrado.horario.nombre}
+                    </f:facet>
+
+                    <p:columnGroup type="header">
+                        <p:row>
+                            <p:column rowspan="2" 
+                                      headerText="Días" />
+                            <p:column colspan="5" 
+                                      headerText="Eventos" />
+                        </p:row>
+                        <p:row>
+                            <p:column headerText="Entrada" />
+                            <p:column headerText="Inicio Almuerzo" />
+                            <p:column headerText="Fín Almuerzo" />
+                            <p:column headerText="Salida" />
+                            <p:column headerText="Total Horas" />
+                        </p:row>
+                    </p:columnGroup>
+
+                    <p:column>
+                        <h:outputText value="#{dia}" />
+                    </p:column>
+
+                    <p:column style="text-align: center">
+                        <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntrada}" >
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center">
+                        <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalidaAlmuerzo}" >
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center">
+                        <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntradaAlmuerzo}" >
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center">
+                        <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalida}" >
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center">
+                        <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).totalHorasDiaria}" >
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+</html>

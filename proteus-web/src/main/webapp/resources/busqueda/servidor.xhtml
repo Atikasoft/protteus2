@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <composite:interface>
+        <composite:attribute name="servidor"
+                             required="true"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Servidor">
+        </composite:attribute>
+
+        <composite:attribute name="idComponenteParaActualizar"
+                             required="true"
+                             type="java.lang.String">
+        </composite:attribute>
+
+        <composite:attribute name="agregarMetodoDespuesSet"
+                             required="false"
+                             default="false"
+                             type="boolean">
+        </composite:attribute>
+
+        <composite:attribute name="metodoDespuesSet"
+                             method-signature="void accion()" 
+                             shortDescription="Metodo que va ser llamado despues de seleccionar un servidor"
+                             required="false">
+        </composite:attribute>
+
+        <composite:attribute name="servidorCriterioInicial"
+                             required="false"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Servidor">
+        </composite:attribute>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <p:commandButton style="background: #528BB7;color: #FFFFFF;"  value="#{messages['mensaje.general.boton.buscar']}"
+                         action="#{busquedaServidorBean.inicializarServidorBusquedaGeneral}"
+                         update="outputPanelMensajesBusquedaServidor,outputPanelBuscadorServidor"
+                         oncomplete="widgetVarDialogBusquedaServidor.show()">
+            <f:setPropertyActionListener value="#{cc.attrs.servidorCriterioInicial}"
+                                         target="#{busquedaServidorBean.busquedaServidorBB.servidorCriterioInicial}">
+            </f:setPropertyActionListener>
+        </p:commandButton>
+
+        <p:outputPanel>
+            <p:dialog id="dialogBusquedaServidor"
+                      widgetVar="widgetVarDialogBusquedaServidor"
+                      modal="true" resizable="false" draggable="false"
+                      height="450" style="overflow: auto;" position="center"
+                      width="768" 
+                      header="#{messages['recursos.busqueda.servidor.titulo.popup']}">
+
+                <p:outputPanel id="outputPanelMensajesBusquedaServidor">
+                    <h:outputText rendered="#{busquedaServidorBean.busquedaServidorBB.dummyVar}">
+                    </h:outputText>
+                    <p:message for="dialogBusquedaServidor">
+                    </p:message>
+                </p:outputPanel>
+
+                <p:outputPanel id="outputPanelBuscadorServidor">
+                    <p:outputPanel rendered="#{busquedaServidorBean.busquedaServidorBB.mostrarPanelBusquedaServidores}">
+
+                        <left>
+                            <p:panel id="panelBuscadorServidorFiltros"
+                                     header="#{messages['recursos.busqueda.servidor.titulo.panel.filtros']}">
+                                <p:panelGrid columns="2" styleClass="panelgrid-sin-bordes">
+                                    <h:outputLabel for="busquedaServidor_numeroDocumento"
+                                                   value="#{messages['recursos.busqueda.servidor.etiqueta.numeroDocumento']}" >
+                                    </h:outputLabel>
+                                    <p:inputText id="busquedaServidor_numeroDocumento"
+                                                 value="#{busquedaServidorBean.busquedaServidorBB.servidorCriterioDeBusqueda.numeroDocumento}" >
+                                    </p:inputText>
+
+                                    <h:outputLabel for="busquedaServidor_nombre"
+                                                   value="#{messages['mensaje.general.etiqueta.nombre']}" >
+                                    </h:outputLabel>
+                                    <p:inputText id="busquedaServidor_nombre" style="text-transform: uppercase"
+                                                 value="#{busquedaServidorBean.busquedaServidorBB.servidorCriterioDeBusqueda.nombre}" >
+                                    </p:inputText>
+
+
+                                    <h:outputLabel for="busquedaServidor_apellido" 
+                                                   value="#{messages['mensaje.general.etiqueta.apellido']}" >
+                                    </h:outputLabel>
+                                    <p:inputText id="busquedaServidor_apellido" style="text-transform: uppercase"
+                                                 value="#{busquedaServidorBean.busquedaServidorBB.servidorCriterioDeBusqueda.apellido}" >
+                                    </p:inputText>
+
+
+                                    <h:outputLabel for="busquedaServidor_servidoresSinPuestoAsignado"
+                                                   value="#{messages['recursos.busqueda.servidor.etiqueta.servidoresSinPuestoAsignado']}" >
+                                    </h:outputLabel>
+
+                                    <p:selectBooleanCheckbox id="busquedaServidor_servidoresSinPuestoAsignado"
+                                                             value="#{busquedaServidorBean.busquedaServidorBB.servidorCriterioDeBusqueda.servidoresSinPuestoAsignado}" >
+                                    </p:selectBooleanCheckbox>
+
+
+                                </p:panelGrid>
+                                <p:outputPanel>
+                                    <p:commandButton style="background: #528BB7;color: #FFFFFF;"  actionListener="#{busquedaServidorBean.buscarServidoresPorcriterio}"
+                                                     value="#{messages['mensaje.general.boton.buscar']}"
+                                                     update="outputPanelMensajesBusquedaServidor,outputPanelBuscadorListaServidores">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </p:panel>
+                        </left>
+
+                        <p:outputPanel id="outputPanelBuscadorListaServidores">
+                            <p:panel header="#{messages['recursos.busqueda.servidores.titulo.panel.listaServidores']}"
+                                     rendered="#{busquedaServidorBean.busquedaServidorBB.mostrarPanelListaDeResultados}">
+                                <p:dataTable id="dataTableBusquedaServidores"
+                                             value="#{busquedaServidorBean.busquedaServidorBB.listaDeServidores}"
+                                             var="servidor"
+                                             emptyMessage=""
+                                             paginator="true"
+                                             rows="#{busquedaServidorBean.busquedaServidorBB.numeroDeFilas}"
+                                             paginatorPosition="bottom">
+                                    <p:column sortBy="#{servidor.numeroDocumento}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['recursos.busqueda.servidor.tabla.columna.numeroDocumento']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{servidor.numeroDocumento}" />
+                                    </p:column>
+                                    <p:column sortBy="#{servidor.apellido}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.apellido']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{servidor.apellido}" />
+                                    </p:column>                    
+                                    <p:column sortBy="#{servidor.nombre}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.nombre']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{servidor.nombre}" />
+                                    </p:column>                                                        
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.opciones']}" />
+                                        </f:facet>
+                                        <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                       action="#{cc.attrs.metodoDespuesSet}"
+                                                       rendered="#{cc.attrs.agregarMetodoDespuesSet}"
+                                                       oncomplete="widgetVarDialogBusquedaServidor.hide()"
+                                                       update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                            <f:setPropertyActionListener target="#{cc.attrs.servidor}"
+                                                                         value="#{servidor}">
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                       rendered="#{!cc.attrs.agregarMetodoDespuesSet}"
+                                                       oncomplete="widgetVarDialogBusquedaServidor.hide()"
+                                                       update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                            <f:setPropertyActionListener target="#{cc.attrs.servidor}"
+                                                                         value="#{servidor}">
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                    </p:column>                                        
+                                </p:dataTable>
+                            </p:panel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </p:dialog>
+        </p:outputPanel>
+    </composite:implementation>
+</html>

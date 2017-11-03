@@ -1,0 +1,161 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition>        
+        <!-- pop Up detalles -->
+        <p:dialog modal="true"  id="popDetalles"
+                  header="#{msg['ec.gob.mrl.smp.administracion.nomina.detalle.titulo']}: #{nominaBean.resultadoNominaHelper.resultadoNomina.nombreServidor}"
+                  resizable="false" 
+                  draggable="true"
+                  width="65%"
+                  height="550px"
+                  widgetVar="dlgDetalleNomina">
+            <h:form id="fmrdet">
+                <p:panelGrid columns="10">
+                    <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.ingresos']}" style="font-size: 10px;font-weight: bold;"/>
+                    <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalIngresosServidor}" style="text-align: right">
+                        <f:convertNumber pattern="###,##0.00" />
+                    </h:outputText>
+                    <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.descuentos']}" style="font-size: 10px;font-weight: bold;"/>
+                    <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalDescuentosServidor}" style="text-align: right">                                
+                        <f:convertNumber pattern="###,##0.00" />
+                    </h:outputText>
+                    <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.aportePatronal']}" style="font-size: 10px;font-weight: bold;"/>
+                    <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalAportePatronalServidor}" style="text-align: right">
+                        <f:convertNumber pattern="###,##0.00" />
+                    </h:outputText>
+                    <h:outputText 
+                        rendered="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalLiquidoPagarServidor != null}"
+                        value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.liquidoPagar']}" style="font-size: 10px;font-weight: bold;"/>
+                    <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalLiquidoPagarServidor}" 
+                                  rendered="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalLiquidoPagarServidor != null}"
+                                  style="text-align: right">
+                        <f:convertNumber pattern="###,##0.00" />
+                    </h:outputText>                     
+                    <p:commandButton id="cerrarResultadosBtn" 
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                     onclick="dlgDetalleNomina.hide()" 
+                                     type="button"
+                                     style="margin: auto"/> 
+                </p:panelGrid>
+                <p:separator/> 
+                <p:panel id="panelDetalles" style="overflow: auto">
+                    <p:dataTable value="#{nominaBean.resultadoNominaHelper.listaDetallesIngresos}"
+                                 var="det"
+                                 style="width:100%;overflow: auto"
+                                 id="tblIngresos"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex">
+                        <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.ingresos.titulo']}</f:facet>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 10%;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                  style="font-size: 10px;width: 60%">
+                            <h:outputText value="#{det.nombreRubroIngreso}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                  style="text-align: right;width: 20%">
+                            <h:outputText value="#{det.valorDescontadoRubroIngreso}" title="#{det.valores}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                          style="text-align:right"/>  
+                                <p:column style="text-align:right">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalIngresosServidor}">
+                                            <f:convertNumber pattern="###,###.00"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>  
+                            </p:row>  
+                        </p:columnGroup>  
+                    </p:dataTable>
+                    <p:separator/> 
+                    <p:dataTable value="#{nominaBean.resultadoNominaHelper.listaDetallesDescuentos}"
+                                 var="det" style="width:100%;overflow: auto"
+                                 id="tblDescuentoss"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex">
+                        <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.descuentos.titulo']}</f:facet>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 10%;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                  style="font-size: 10px;width: 60%">
+                            <h:outputText value="#{det.nombreRubroDescuentos}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                  style="text-align: right;font-size: 10px;width: 20%">
+                            <h:outputText value="#{det.valorDescontadoRubroDescuentos}" title="#{det.valores}">
+                                <f:convertNumber pattern="###,###.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" 
+                                          footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                          style="text-align:right"/>  
+                                <p:column style="text-align:right">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalDescuentosServidor}">
+                                            <f:convertNumber pattern="###,###.00"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>  
+                            </p:row>  
+                        </p:columnGroup>  
+                    </p:dataTable>
+                    <p:separator/> 
+                    <p:dataTable value="#{nominaBean.resultadoNominaHelper.listaDetallesAportes}"
+                                 var="det"
+                                 style="width:100%;overflow: auto;"
+                                 id="tblAportes"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex">
+                        <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.aportesPatronales.titulo']}</f:facet>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 10%;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                  style="font-size: 10px;width: 60%">
+                            <h:outputText value="#{det.nombreRubroAportes}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                  style="text-align: right;font-size: 10px;width: 20%">
+                            <h:outputText value="#{det.valorDescontadoRubroAportes}" title="#{det.valores}">
+                                <f:convertNumber pattern="###,###.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" 
+                                          footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                          style="text-align:right"/>  
+                                <p:column style="text-align:right">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalAportePatronalServidor}">
+                                            <f:convertNumber pattern="###,###.00"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>  
+                            </p:row>  
+                        </p:columnGroup>  
+                    </p:dataTable>
+                    <p:separator/> 
+
+
+                </p:panel>
+                <p:separator/>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

@@ -1,0 +1,277 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="formPrincipal">       
+                <p:panel id="panelBotonera" header="DISTRIBUTIVO DE PUESTOS Y ESPACIOS PRESUPUESTARIOS">
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="2">                     
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}" 
+                                             onclick="dlgConfirmarConObservacion.show();"
+                                             update=":frmConfirmarConObservacion"/>
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                             immediate="#{true}"
+                                             ajax="#{false}"
+                                             action="#{clasificacionValoracionPuestoBean.regresar()}"/>
+                        </h:panelGrid> 
+                        <h:panelGrid style="text-align: right;width: 100%;">
+                            
+                        </h:panelGrid>
+                    </h:panelGrid> 
+                </p:panel>
+
+                <p:panel id="datosPuesto" header="Datos del puesto">
+                    <p:outputPanel >
+                        <!-- *********************************************************-->
+                        <br />
+                        <h:panelGrid columns="4" style="width: 100%">
+                            <p:outputLabel value="Código Puesto: " />
+                            <p:inputText disabled="#{true}" style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.codigoPuesto}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.modalidadLaboral.nombre']}:" />
+                            <p:selectOneMenu style="width: 207px" filter="true" filterMatchMode="contains"
+                                             disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.idModalidadLaboralSeleccionada}">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaModalidadLaboral}"/>
+                                <p:ajax update="numeroCertificacion"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}:" />
+                            <p:selectOneMenu disabled="#{true}" style="width: 207px"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.id}">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaRegimenLaboral}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Nivel Ocupacional: " />
+                            <p:selectOneMenu disabled="#{true}" style="width: 207px"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.escalaOcupacional.nivelOcupacional.id}">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaNivelOcupacional}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="* Escala Ocupacional:" />
+                            <p:selectOneMenu style="width: 207px" required="#{true}"
+                                             requiredMessage="Campo Escala Ocupacional es obligatorio" 
+                                             filter="true" filterMatchMode="contains"
+                                             disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.idEscalaOcupacional}">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaOpcionesEscalaOcupacional}"/>
+                                <p:ajax update="rmuEscala rmuMaximo rmuDD" 
+                                        listener="#{clasificacionValoracionPuestoBean.seleccionarEscalaOcupacional()}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmu']}:" />
+                            <p:inputText id="rmuEscala" 
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.escalaOcupacional.rmu}" 
+                                         style="text-align: right; width: 200px"
+                                         disabled="#{true}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmuMaximo']}:" />
+                            <p:inputText id="rmuMaximo" disabled="#{true}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.escalaOcupacional.rmuMaximo}" 
+                                         style="text-align: right; width: 200px"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.rmu']}:" />
+                            <p:inputText id="rmuDD" 
+                                         disabled="#{true}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.rmu}" 
+                                         style="text-align: right; width: 200px"/>
+
+                            <p:outputLabel value="Fecha Inicio:" />
+                            <p:calendar  disabled="#{true}"
+                                         style="width: 200px"
+                                         showOn="button" navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.fechaInicio}"/>
+
+                            <p:outputLabel value="Fecha Fin:" />
+                            <p:calendar  disabled="#{true}"
+                                         style="width: 200px"
+                                         showOn="button" navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.fechaFin}"/>
+
+                            <p:outputLabel value="Fecha Ingreso Institución:" />
+                            <p:calendar  disabled="#{true}"
+                                         style="width: 200px"
+                                         showOn="button" navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.fechaIngresoInstitucion}"/>
+
+                            <p:outputLabel value="Fecha Ingreso Sector Público:" />
+                            <p:calendar  disabled="#{true}" 
+                                         style="width: 200px"
+                                         showOn="button" navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.fechaIngresoSectorPublico}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.partidaIndicidual']}:" />
+                            <p:inputText disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                         style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.partidaIndividual}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.ubicacionGeografica.nombre']}:" />
+                            <p:inputText disabled="#{true}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.ubicacionGeografica.ubicacionGeografica.nombre} / #{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.ubicacionGeografica.nombre}" 
+                                         style="width: 200px"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}:" />
+                            <h:panelGrid id="panelUnidadOrg" columns="2" width="200px">
+                                <p:inputText id="unidadOrgText" 
+                                             disabled="#{true}"
+                                             title="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.uo.ruta}"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.uo.ruta}"/>
+                                <p:commandButton icon="ui-icon-search" immediate="true"
+                                                 disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                                 oncomplete="dlgUnidadOrg.show()"
+                                                 actionListener="#{clasificacionValoracionPuestoBean.llenarUnidadesOrganizacionales}"
+                                                 update=":formUnidadOrg"/>
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Unidad Presupuestaria:" />
+                            <p:selectOneMenu disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.unidadPresupuestaria.id}" 
+                                             filter="true" filterMatchMode="contains"
+                                             style="width: 207px">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaOpcionesUnidadesPresupuestarias}"/>
+                                <p:ajax listener="#{clasificacionValoracionPuestoBean.seleccionarUnidadPresupuestaria}" 
+                                        update="numeroCertificacion"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.denominacionPuesto.nombreCargo']}:" />
+                            <p:selectOneMenu disabled="#{!clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.esPuestoVacante()}"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.idDenominacionPuesto}"
+                                             style="width: 207px">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaOpcionesDenominacionPuesto}"/>
+                                <p:ajax update="estadoPuesto" 
+                                        listener="#{clasificacionValoracionPuestoBean.seleccionarDenominacionPuesto}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Certificación Presupuestaria:" />
+                            <p:inputText id="numeroCertificacion" 
+                                         disabled="true"
+                                         style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.buscarNumeroDeCertificacion()}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.denominacionPuesto.estado']}:" />
+                            <p:inputText id="estadoPuesto" disabled="#{true}" style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.estadoPuesto.nombre}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}:" />
+                            <p:inputText disabled="#{true}" style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.obtenerDescripcionTipoDocumento(
+                                                  clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.tipoIdentificacion)}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}:" />
+                            <p:inputText disabled="#{true}" style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.numeroIdentificacion}"/>
+
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:" />
+                            <p:inputText disabled="#{true}" style="width: 200px"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.apellidosNombres}"/>
+
+                            <p:outputLabel value="Estado Admin. Puesto:" />
+                            <p:selectOneMenu value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.idEstadoAdminPuestoRegimenLaboralSeleccionado}"
+                                             style="width: 207px">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaOpcionesEstadoAdminPuestoRegimenLaboral}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Código Servidor de Reloj:" />
+                            <p:inputText disabled="#{true}"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.servidor.codigoEmpleado}"/>
+                        </h:panelGrid>
+                        <!-- *********************************************************-->
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+
+            <!-- POPUP PARA CONFIRMAR MODIFICACION DE PUESTO-->
+            <p:dialog widgetVar="dlgConfirmarConObservacion"
+                      header="CONFIRMACIÓN DE MODIFICACIÓN" 
+                      resizable="false" 
+                      draggable="true"
+                      showEffect="fade" 
+                      modal="true"
+                      width="400px"> 
+
+                <h:form id="frmConfirmarConObservacion">
+                    <h:panelGrid  columns="2"
+                                  width="100%">  
+                        <h:outputLabel for="observacion" 
+                                       value="* Observación:" />  
+                        <p:inputTextarea id="observacion"                                      
+                                         style="width: 98%; height: 80px;text-transform: uppercase;"  
+                                         maxlength="500"                                     
+                                         required="true"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle.observacionUltimaModificacion}"
+                                         requiredMessage="El campo Observación es requerido."/> 
+                    </h:panelGrid>  
+                    <p:separator/>
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                        
+                                         action="#{clasificacionValoracionPuestoBean.guardar()}"
+                                         update="@form :formPrincipal"/>                  
+
+                        <p:commandButton id="btnCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgConfirmarConObservacion.hide();" 
+                                         type="button" 
+                                         style="margin: auto"/>        
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- POPUP PARA SELECCIONAR UNIDAD ORGANIZACIONAL-->
+            <p:dialog widgetVar="dlgUnidadOrg" 
+                      closable="true" 
+                      height="75%" 
+                      width="65%" 
+                      position="center top"
+                      header="Selección de Unidad Organizacional" 
+                      resizable="false" 
+                      draggable="true"
+                      showEffect="fade" 
+                      modal="true"> 
+
+                <h:form id="formUnidadOrg">
+                    <p:scrollPanel id="ocobasScrollPanel" 
+                                   style="width:auto !important; height:400px !important;" 
+                                   mode="native">
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.titulo']}">
+                            <p:treeTable id="tablaUbicacion"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.root}"
+                                         var="unidadOrg"
+                                         style="overflow: scroll;"                                              
+                                         selection="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.treeNodoSeleccionado}" 
+                                         selectionMode="single">
+
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']} / #{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}"
+                                          style="font-size: 8pt;width: 95%;">
+                                    <h:outputText value="#{unidadOrg.codigo} #{unidadOrg.nombre}" 
+                                                  title="#{unidadOrg.codigo} #{unidadOrg.nombre}"  />
+                                </p:column>
+
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                          style="width: 5%; font-size: 8pt; text-align: center">
+                                    <p:commandButton icon="ui-icon-play"
+                                                     title="Seleccionar"
+                                                     update=":formPrincipal"
+                                                     oncomplete="dlgUnidadOrg.hide();"
+                                                     action="#{clasificacionValoracionPuestoBean.seleccionarUnidadOrg()}">
+                                        <f:setPropertyActionListener target="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.uo}"
+                                                                     value="#{unidadOrg}"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:treeTable>
+                        </p:fieldset>
+                    </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,108 @@
+    
+
+    <!-- DATASOURCE ADM -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="siith_pool">
+      <property name="User" value="postgres"></property>
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="DatabaseName" value="siith_evaluacion"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/siith_evaluacion"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="siith_pool" description="" jndi-name="jdbc/admSiith"></jdbc-resource>
+    
+    <!-- DATASOURCE Proteus -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="Proteus_pool">
+      <property name="User" value="postgres"></property>
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="DatabaseName" value="siith_movimientos"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/siith_movimientos"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="PortNumber" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="Proteus_pool" jndi-name="jdbc/Proteus"></jdbc-resource>
+    
+    <!-- DATASOURCE GESTOR -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="gestor_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/gestor"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="gestor"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="gestor_pool" description="" jndi-name="jdbc/gestor"></jdbc-resource>
+    
+    <!-- DATASOURCE IMPEDIDOS -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="impedidos_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/impedidos"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="impedidos"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="impedidos_pool" description="" jndi-name="jdbc/impedidos-siith-api"></jdbc-resource>
+    
+
+    <!-- DATASOURCE VACACIONES -->
+     <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="vacaciones_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/siith_vacaciones"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="siith_vacaciones"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="vacaciones_pool" description="" jndi-name="jdbc/vacaciones-siith-api"></jdbc-resource>
+    
+    <!-- DATASOURCE SELECCION PERSONAL - NORMA SUSTITUTIVA -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="sp_sustitutiva_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/seleccion_personal_291120120903"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="seleccion_personal_291120120903"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="sp_sustitutiva_pool" description="" jndi-name="jdbc/seleccion-personal-norma-sustitutiva-siith-api"></jdbc-resource>
+    
+     <!-- DATASOURCE SELECCION PERSONAL - NORMA ANTIGUA -->
+     <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="sp_antigua_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/meritocracia"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="meritocracia"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="sp_antigua_pool" description="" jndi-name="jdbc/seleccion-personal-norma-antigua-siith-api"></jdbc-resource>
+
+    <!-- DATASOURCE SELECCION PERSONAL - NORMA SALUD -->
+    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="sp_salud_pool">
+      <property name="driverClass" value="org.postgresql.Driver"></property>
+      <property name="URL" value="jdbc:postgresql://192.168.1.231:5432/meritocracia_salud_uath"></property>
+      <property name="User" value="postgres"></property>
+      <property name="DatabaseName" value="meritocracia_salud_uath"></property>
+      <property name="Password" value="postgres"></property>
+      <property name="ServerName" value="192.168.1.231"></property>
+      <property name="Port" value="5432"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="sp_salud_pool" description="" jndi-name="jdbc/seleccion-personal-norma-salud-siith-api"></jdbc-resource>
+
+
+    <mail-resource host="192.168.1.127" description="Envio de mail de movimientos" jndi-name="mail/Proteus" from="movimientos@mrl.gob.ec" user="movimientos">
+      <property name="mail.smtp.socketFactory.port" value="587"></property>
+      <property name="mail.smtp.password" value="m0v1m13nt0s"></property>
+      <property name="mail.smtp.auth" value="true"></property>
+      <property name="mail.smtp.socketFactory.fallback" value="false"></property>
+      <property name="mail.smtp.port" value="587"></property>
+    </mail-resource>
+  

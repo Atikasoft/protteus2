@@ -1,0 +1,1430 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style >
+                #frmLlenarVancante input {
+                    width: 100px;
+                }
+            </style>
+
+            <h:form id="frmLlenarVancante" >          
+                <p:panel>
+                    <p:commandButton value="GUARDAR" 
+                                     action="#{agregarServidorBean.guardar()}"
+                                     rendered="#{agregarServidorBean.agregarServidorHelper.controlNavegacion=='edt'}"
+                                     update="contenedorLlenarVacante"/>
+                    <p:commandButton value="REGRESAR"  
+                                     immediate="#{true}"
+                                     action="#{agregarServidorBean.regresar()}" 
+                                     ajax="#{false}"/>
+                    <p:commandButton value="SALIR" 
+                                     immediate="#{true}"
+                                     action="#{agregarServidorBean.salirPantallaPrincipal()}" 
+                                     ajax="#{false}"/>
+                </p:panel>
+                <p:panel header="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.clase.grupo.nombre} >> #{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.clase.nombre} >> #{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.nombre}" 
+                         id="contenedorLlenarVacante" 
+                         styleClass="panelContenedorCompleto">
+
+                    <p:fieldset legend="Periodo de Vigencia del Movimiento de Personal" id="areaRigeAPartirDe"> 
+                        <h:panelGrid columns="8">
+                            <h:outputLabel value="Rige a Partir De: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.rigeAPartirDe']}"
+                                           id="fechaRigeAPartirDe_lbl" 
+                                           styleClass="labelFormulario"/>   
+
+                            <p:selectOneMenu id="tipo_periodo" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.tipoPeriodo}" 
+                                             >
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaTipoPeriodos}"/>
+                                <p:ajax update="frmLlenarVancante:areaRigeAPartirDe" immediate="true"/>
+                            </p:selectOneMenu>
+
+                            <p:outputPanel id="fechaRigeAPartirDe_panel"
+                                           rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.tipoPeriodo=='F'}">
+                                <p:calendar id="fechaRigeAPartirDe"
+                                            showOn="button"                                        
+                                            navigator="true"  
+                                            size="10"
+                                            requiredMessage="Rige a partir de es un campo requerido."
+                                            pattern="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.ingresaHoraMinuto=='S'?'dd/MM/yyyy HH:mm':'dd/MM/yyyy'}"
+                                            value="#{agregarServidorBean.agregarServidorHelper.movimiento.rigeApartirDe}">                                                                  
+                                </p:calendar>
+                            </p:outputPanel>
+                            <h:panelGrid columns="2">
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.hasta']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.hasta']}"
+                                           id="fechaHasta_lbl" 
+                                           styleClass="labelFormulario"/>
+                            <p:calendar id="fechaHasta"
+                                        showOn="button"
+                                        size="10"
+                                        requiredMessage="Hasta es un campo requerido."
+                                        navigator="true"   
+                                        pattern="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.ingresaHoraMinuto=='S'?'dd/MM/yyyy HH:mm':'dd/MM/yyyy'}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.movimiento.fechaHasta}">                                
+                            </p:calendar>                       
+                            <h:outputLabel value="Total horas: #{agregarServidorBean.agregarServidorHelper.diferenciaHoras}"
+                                           style="font-weight: bold;"
+                                           rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.ingresaHoraMinuto=='S'}"/>
+                            <p:commandButton action="#{agregarServidorBean.calcularDiferenciaHorasFecha}"
+                                             value="Calcular Horas."                                             
+                                             rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.ingresaHoraMinuto=='S'}"
+                                             update="areaRigeAPartirDe"
+                                             process="@this, fechaHasta, fechaRigeAPartirDe"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!-- AREA DE PUESTO -->
+                    <p:fieldset legend="Información del Puesto" id="areaPuesto">
+                        <h:panelGrid columns="6">
+                            <h:outputLabel value="Código Puesto: "
+                                           id="codigoPuesto_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="codigoPuesto"
+                                         requiredMessage="El código del puesto es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.codigoPuesto}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.partidaIndividual']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.partidaIndividual']}"
+                                           id="partidaIndividual_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="partidaIndividual"
+                                         requiredMessage="La partida individual es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.partidaIndividual}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}: "
+                                           id="regimenLaboral_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="regimenLaboral"
+                                             styleClass="readOnly"                                             
+                                             readonly="true"
+                                             style="width: 250px;font-size: 10px;"
+                                             autoResize="false"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.escalaOcupacional.nivelOcupacional.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.escalaOcupacional.nombre}"/>
+                            <h:panelGrid columns="3">
+                                <p:commandButton id="regimenLaboral_search" 
+                                                 immediate="#{true}"
+                                                 update="rmu contenedorLlenarVacante, :frmRegimenLaboral:panelRegimenLaboral"                                                 
+                                                 action="#{agregarServidorBean.consultarRegimenLaboral()}"
+                                                 icon="ui-icon-search"/>
+                                <p:commandButton id="regimenLaboral_trash" 
+                                                 immediate="#{true}"
+                                                 process="@this"
+                                                 update="regimenLaboral"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{null}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.escalaOcupacional}"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.modalidad']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.modalidad']}"
+                                           id="modalidadLaboral_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="modalidadLaboral"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 260px;"
+                                             requiredMessage="La modalidad es un campo requerido."
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.distributivo.modalidadLaboral.id}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaModalidadLaboral}"/>
+                            </p:selectOneMenu>
+                            <h:panelGrid columns="2">  
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.unidadAdministrativa']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.unidadAdministrativa']}"
+                                           id="unidadOrganizacional_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="unidadOrganizacional"
+                                             styleClass="readOnly"
+                                             readonly="true"
+                                             style="width: 250px;font-size: 10px;"
+                                             autoResize="false"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.distributivo.unidadOrganizacional.ruta}"/>
+                            <h:panelGrid columns="3">
+                                <p:commandButton id="unidadOrganizacional_search" 
+                                                 immediate="#{true}"
+                                                 update="contenedorLlenarVacante, :frmUnidadOrganizacional:panelUnidadOrganizacional"                                                 
+                                                 action="#{agregarServidorBean.consultarUnidadOrganizacional}"
+                                                 icon="ui-icon-search"/>
+                                <p:commandButton id="unidadOrganizacional_trash" 
+                                                 immediate="#{true}"
+                                                 process="@this"
+                                                 update="unidadOrganizacional"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{null}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.distributivo.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+
+                            <h:outputLabel value="Unidad Presupuestaria: "
+                                           title="Unidad Presupuestaria"
+                                           id="unidadPresupuestaria_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="unidadPresupuestaria" 
+                                             styleClass="readOnly"                                             
+                                             disabled="true"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.unidadPresupuestaria.sector.codigo}#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.unidadPresupuestaria.codigo} - #{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.unidadPresupuestaria.sector.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.unidadPresupuestaria.nombre}"
+                                             style="width: 250px;font-size: 10px;" />
+                            <h:panelGrid columns="2">  
+                            </h:panelGrid>
+
+                            <h:outputLabel value="Grupo Ocupacional: "
+                                           title="Grupo Ocupacional"
+                                           id="puestoInstitucional_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="puestoInstitucional"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 260px;"
+                                             requiredMessage="El grupo ocupacional es un campo requerido."
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.id}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaDenominacionPuesto}"/>
+                            </p:selectOneMenu>
+                            <h:panelGrid columns="2">                                    
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.rmu']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.rmu']}"
+                                           id="rmu_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="rmu"
+                                         requiredMessage="El sueldo es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.rmu}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.rmu_sobrevalorado']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.rmu_sobrevalorado']}"
+                                           id="rmuSobrevalorado_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="rmuSobrevalorado"
+                                         requiredMessage="El sueldo sobrevalorado es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.rmuSobrevalorado}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.ubicacionGeografica']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.ubicacionGeografica']}"
+                                           id="ubicacionGeografica_lbl"                                                                                      
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="ubicacionGeografica" 
+                                             styleClass="readOnly"                                             
+                                             readonly="true"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.ubicacionGeografica.ubicacionGeografica.ubicacionGeografica.ubicacionGeografica.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.ubicacionGeografica.ubicacionGeografica.ubicacionGeografica.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.ubicacionGeografica.ubicacionGeografica.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.ubicacionGeografica.nombre}"
+                                             style="width: 250px;font-size: 10px;" />
+                            <h:panelGrid columns="3">
+
+                                <p:commandButton id="ubicacionGeografica_search"
+                                                 icon="ui-icon-search"
+                                                 immediate="#{true}"
+                                                 update=":frmUbicacionGeografico:panelUbicacionGeografica"
+                                                 action="#{agregarServidorBean.consultarPaises()}"
+                                                 oncomplete="popUpUbicacionGeografica.show();"/>
+                                <p:commandButton id="ubicacionGeografica_trash" 
+                                                 update="ubicacionGeografica"
+                                                 immediate="#{true}"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{null}" 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.ubicacionGeografica}"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+
+
+                            <h:outputLabel value="Sueldo Básico: "
+                                           id="sueldoBasico_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="sueldoBasico"
+                                         requiredMessage="El sueldo básico es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.sueldoBasico}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+
+
+                            <h:outputLabel value="Certificación Presupuestaria: "
+                                           id="certificacionPresupuestaria_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="certificacionPresupuestaria"
+                                         requiredMessage="La certificación presupuestaria es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.certificacionPresupuestaria}"/>
+                            <h:panelGrid columns="2">                                
+                            </h:panelGrid>
+
+
+
+                        </h:panelGrid>       
+                    </p:fieldset>
+                    <!-- AREA DE SERVIDOR -->
+                    <p:fieldset id="areaServidor" legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}"> 
+                        <p:messages id="estadoServidorId" 
+                                    rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.numeroIdentificacion!=null}"
+                                    showDetail="false" 
+                                    showSummary="true"
+                                    autoUpdate="true" 
+                                    closable="false" />
+
+                        <p:panel id="panelInformacionServido" >
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDocumento']}"
+                                               id="tipoDocumento_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoDocumento"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 200px"
+                                                 value="#{agregarServidorBean.agregarServidorHelper.movimiento.tipoIdentificacion}"
+                                                 requiredMessage="El tipo de identificación es un campo requerido." >
+                                    <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.tipoDocumento}"/>
+                                    <p:ajax listener="#{agregarServidorBean.controlSeleccionTipoDocumento()}"                                            
+                                            update="apellidos"/>
+                                </p:selectOneMenu>
+                                <h:panelGrid columns="2">                                
+                                </h:panelGrid>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroDocumento']}"
+                                               id="numeroDocumento_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"
+                                              styleClass="textoNemonico"
+                                              maxlength="15"
+                                              requiredMessage="El número de identificación es un campo requerido."
+                                              value="#{agregarServidorBean.agregarServidorHelper.movimiento.numeroIdentificacion}">  
+                                    <f:validateLength minimum="0" maximum="15" />
+                                </p:inputText>
+
+                                <h:panelGrid columns="3" >
+                                    <p:commandButton id="numeroDocumento_search"  
+                                                     icon="ui-icon-search"   
+                                                     partialSubmit="true" 
+                                                     process="@this,numeroDocumento"   
+                                                     update="areaServidor"
+                                                     actionListener="#{agregarServidorBean.buscarPersona}"/>
+                                    <p:message for="numeroDocumento_search" display="icon"/>
+                                    <p:commandButton id="numeroDocumento_trash" 
+                                                     icon="ui-icon-trash"
+                                                     rendered="false"/>
+
+                                </h:panelGrid>
+
+                                <h:outputLabel value="Apellidos y Nombres:  "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.apellidosNombres']}"
+                                               id="apellidos_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea id="apellidos" 
+                                                 styleClass="textoArea"
+                                                 disabled="#{!agregarServidorBean.agregarServidorHelper.registroManualNombres}"
+                                                 value="#{agregarServidorBean.agregarServidorHelper.movimiento.apellidosNombres}"/>
+
+                                <h:panelGrid columns="2">
+                                    <p:message for="apellidos" display="icon"/>
+                                </h:panelGrid>
+
+                                <p:spacer/>
+                                <p:spacer/>
+                                <p:spacer/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.fechaIngresoInstitucion']}"
+                                               id="fechaIngresoInstitucion_lbl"/>
+                                <p:calendar id="fechaIngresoInstitucion" 
+                                            showOn="button"
+                                            navigator="true"
+                                            requiredMessage="La fecha ingreso institución es un campo requerido."
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.fechaIngresoInstitucion}"/>
+                                <h:panelGrid columns="2">                           
+                                </h:panelGrid>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoSectorPublico']}: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.fechaIngresoSectorPublico']}"
+                                               id="fechaIngresoSectorPublico_lbl"/>
+                                <p:calendar id="fechaIngresoSectorPublico" 
+                                            showOn="button"
+                                            navigator="true"
+                                            requiredMessage="La fecha ingreso sector público es un campo requerido."
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.fechaIngresoSectorPublico}"/>
+                                <h:panelGrid columns="2">                                    
+                                </h:panelGrid>     
+                            </h:panelGrid>     
+                        </p:panel>
+                    </p:fieldset>
+                    <!-- AREA DE PERIODO FIJO -->
+                    <p:fieldset legend="Información de Periodo Fijo" id="areaPeriodoFijo"> 
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Tipo de Designación: "
+                                           id="tipoDesignacion_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tipoDesignacion" value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.tipoDesignacion}"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             requiredMessage="El tipo de designación es un campo requerido">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.tipoDesignacion}"/>
+                            </p:selectOneMenu>                            
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!-- AREA DE DISCAPACIDAD-->
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.discapacidad1']}" id="areaDiscapacidad"> 
+                        <p:panel id="camposDiscapacidad">
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.discapacidad']}:"
+                                               id="discapacidad_lbl"
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.discapacidad']}"/>
+                                <p:selectOneRadio id="discapacidad"
+                                                  value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.discapacidad}"
+                                                  required="#{true}"
+                                                  requiredMessage="La discapacidad/enfermedad catastrófica es un campo requerido">
+                                    <f:selectItem itemValue="#{true}" itemLabel="Si"/>
+                                    <f:selectItem itemValue="#{false}" itemLabel="No"/>
+                                    <p:ajax update="camposDiscapacidad" 
+                                            listener="#{agregarServidorBean.controlDiscpacidad()}"/>
+                                </p:selectOneRadio>
+                                <h:panelGrid columns="2">                                    
+                                </h:panelGrid>
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.corresponde']}: "
+                                               rendered="#{agregarServidorBean.agregarServidorHelper.areaDiscapacidad}"
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.corresponde']}"
+                                               id="correspondeDiscapacidad_lbl"/>
+                                <p:selectOneMenu id="correspondeDiscapacidad"   
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 requiredMessage="Corresponde es un campo requerido."
+                                                 rendered="#{agregarServidorBean.agregarServidorHelper.areaDiscapacidad}" 
+                                                 value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.correspondeDiscapacidad}">
+                                    <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.correspondeDiscapacidad}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* Especifique: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.especifique']}"
+                                               rendered="#{agregarServidorBean.agregarServidorHelper.areaDiscapacidad}"
+                                               id="especifiqueDiscapacidad_lbl"/>
+                                <p:selectOneMenu id="especifiqueDiscapacidad"  
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 requiredMessage="Especifique es un campo requerido."
+                                                 valueChangeListener="#{agregarServidorBean.seleccionEspecifiqueDiscapacidad}"
+                                                 rendered="#{agregarServidorBean.agregarServidorHelper.areaDiscapacidad}"
+                                                 value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.especifiqueDiscapacidad}">
+                                    <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.especifiqueDiscapacidad}"/>
+                                    <p:ajax update="camposDiscapacidad"  
+                                            process="@this, correspondeDiscapacidad"/>
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">
+                                <p:fieldset legend="Detalle de Discapacidad" 
+                                            id="discapacidadLegen" 
+                                            rendered="#{agregarServidorBean.agregarServidorHelper.areaDetalleDiscapacidad}"> 
+                                    <h:panelGrid columns="2">                                
+                                        <h:outputLabel value="* Tipo Discapacidad: "
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDiscapacidad']}"
+                                                       id="tipoDiscapacidad_lbl"/>
+                                        <p:selectOneMenu id="tipoDiscapacidad"
+                                                         filter="true" 
+                                                         filterMatchMode="contains"
+                                                         requiredMessage="Tipo Discapacidad es un campo requerido"
+                                                         required="#{agregarServidorBean.agregarServidorHelper.areaDetalleDiscapacidad}"
+                                                         value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.tipoDiscapacidad}">
+                                            <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.tiposDiscapacidad}"/>
+                                        </p:selectOneMenu>
+
+                                        <h:outputLabel value="* % Discapacidad: "
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.porcentajeDiscapacidad']}"
+                                                       id="porcentajeDiscapacidad_lbl"/>
+                                        <p:inputText id="porcentajeDiscapacidad" 
+                                                     styleClass="campoNumerico"
+                                                     requiredMessage="El % Discapacidad es un campo requerido."
+                                                     required="#{agregarServidorBean.agregarServidorHelper.areaDetalleDiscapacidad}"
+                                                     value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.porcentajeDiscapacidad}"/>                                
+
+                                        <h:outputLabel value="*  Número Carnét CONADIS: "
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroCarneConadis']}"
+                                                       id="numeroConadis_lbl"/>
+                                        <p:inputText id="numeroConadis"
+                                                     requiredMessage="El número carnét conadis es un campo requerido."
+                                                     required="#{agregarServidorBean.agregarServidorHelper.areaDetalleDiscapacidad}"
+                                                     value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.numeroConadis}"/>                                                                        
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <p:fieldset legend="Detalle de Enfermedad Catastrófica" 
+                                            id="discapacidadEnfermedadLegen"  
+                                            rendered="#{agregarServidorBean.agregarServidorHelper.areaDetalleEnfermedadCatastrofica}"> 
+                                    <h:panelGrid columns="2">                                
+                                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.descripcionEnfermedadCatastrofica']}: "
+                                                       id="descripcion_enfermedad_catastrofica_lbl"
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.descripcionEnfermedadCatastrofica']}"/>
+                                        <p:inputTextarea id="descripcion_enfermedad_catastrofica"
+                                                         autoResize="false"
+                                                         requiredMessage="La descripción enfermedad catastrófica es un campo requerido."
+                                                         required="#{agregarServidorBean.agregarServidorHelper.areaDetalleEnfermedadCatastrofica}"
+                                                         maxlength="400"
+                                                         style="width: 600px"
+                                                         value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.justificacionDiscapacidad}"/>                                                                     
+
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:fieldset>
+
+                    <!-- AREA INFORMACION DE SALIDA -->
+                    <p:fieldset legend="Información de Salida" id="areaInformacionSalida">
+                        <h:panelGrid columns="6">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaPresentaRenuncia']}: "
+                                           id="fechaPresentaRenuncia_lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.fechaPresentaRenuncia']}"/>
+                            <p:calendar id="fechaPresentaRenuncia"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.cesacion.fechaPresentaRenuncia}"/>                        
+                            <h:panelGrid columns="2">
+                                <p:message for="fechaPresentaRenuncia" display="icon"/>
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaAceptacionRenuncia']}: "
+                                           id="fechaAceptacionRenuncia_lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.fechaAceptacionRenuncia']}"/>
+                            <p:calendar id="fechaAceptacionRenuncia"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.cesacion.fechaAceptacionRenuncia}"/>      
+                            <h:panelGrid columns="2">
+                                <p:message for="fechaAceptacionRenuncia" display="icon"/>
+                            </h:panelGrid>
+
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA INFORMACION DE TERMINACION CONTRATO -->
+                    <p:fieldset legend="Información de Terminación de Contrato" id="areaTerminacionContrato">
+                        <h:panelGrid columns="6">
+                            <h:outputLabel value="Número del contrato a finalizar:"
+                                           id="numeroContratoAnterior_lbl"
+                                           title="Número del contrato que se desea finalizar"/>
+                            <p:inputText id="numeroContratoAnterior" 
+                                         styleClass="textoArea"
+                                         requiredMessage="El número de contrato a finalizar es requerido"
+                                         value="#{agregarServidorBean.agregarServidorHelper.cesacion.numeroContratoAnterior}"/>                                                                
+                            <h:panelGrid columns="2">
+                                <p:message for="numeroContratoAnterior" display="icon"/>
+                            </h:panelGrid>
+
+
+                            <h:outputLabel value="Fecha del inicio del contrato a finalizar:"
+                                           id="fechaInicioContratoAnterior_lbl"
+                                           title="Fecha de cuando inicio el contrato que se desea finalizar"/>
+                            <p:calendar id="fechaInicioContratoAnterior"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.cesacion.fechaInicioContratoAnterior}"/>      
+                            <h:panelGrid columns="2">
+                                <p:message for="fechaInicioContratoAnterior" display="icon"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE FALLECIMIENTO -->
+                    <p:fieldset legend="Información de Fallecimiento" id="areaFallecimiento"> 
+                        <h:panelGrid columns="6">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaFallecimiento']}: "
+                                           id="fechaFallecimiento_lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.fechaFallecimiento']}"/>
+                            <p:calendar  id="fechaFallecimiento" 
+                                         showOn="button"
+                                         navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{agregarServidorBean.agregarServidorHelper.cesacion.fechaFallecimiento}"/>
+                            <h:panelGrid columns="2">
+                                <p:message for="fechaFallecimiento" display="icon"/>
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.casoFallecimiento']}: "
+                                           id="casoFallecimiento_lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.casoFallecimiento']}"/>
+                            <p:selectOneMenu id="casoFallecimiento"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.cesacion.casoFallecimiento}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.tipoFallecimiento}"/>
+                            </p:selectOneMenu>
+                            <h:panelGrid columns="2">
+                                <p:message for="casoFallecimiento" display="icon"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE REGIMEN DISCIPLINARIO -->
+                    <p:fieldset id="areaRegimenDisciplinario" legend="Información de Régimen Disciplinario">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rd.falta']}:"
+                                           id="rdfalta_lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.falta']}"/>
+                            <p:selectOneMenu id="rdfalta" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.regimenDisciplinario.falta}"
+                                             requiredMessage="La falta es un campo requerido">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.opcionesFaltaRegimenDisciplinario}"/>
+                            </p:selectOneMenu>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rd.descripcion']}: "
+                                           id="rdDescripcion__lbl"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rd.tooltip.descripcion']}"/>
+                            <p:inputTextarea id="rdDescripcion"
+                                             autoResize="false"
+                                             maxlength="200"
+                                             requiredMessage="La descripción es un campo requerido"
+                                             style="width: 500px;height: 40px"
+                                             value="#{agregarServidorBean.agregarServidorHelper.regimenDisciplinario.descripcion}"/>  
+
+                            <h:outputLabel value="Porcentaje de Multa(%):"
+                                           id="porcentajeMulta_lbl"
+                                           title="Porcentaje de multa que se aplicara por regimen disciplinario."/>
+
+                            <p:inputText id="porcentajeMulta" 
+                                         styleClass="campoDecimal"
+                                         requiredMessage="El % multa es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.regimenDisciplinario.valorMulta}">
+                                <p:ajax event="keyup" 
+                                        listener="#{agregarServidorBean.calcularValorMulta()}"
+                                        update="valorMultaTexto" />
+
+                            </p:inputText>                                
+
+                            <h:outputLabel value="Valor de Multa:"
+                                           id="valorMultaEtiqueta"
+                                           title="Valor de multa que se aplicara por regimen disciplinario."/>
+
+                            <p:inputText id="valorMultaTexto" 
+                                         styleClass="campoDecimal"
+                                         disabled="true"
+                                         requiredMessage="El valor de multa es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.regimenDisciplinario.valorNominaMulta}"/>                                
+
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+                    <!-- AREA DE LICENCIA -->
+                    <p:fieldset id="areaLicencias" legend="Información de Licencias">
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="Fecha Ocurrió El Hecho: "
+                                           id="fechaOcurrioHecho_lbl"/>
+                            <p:calendar id="fechaOcurrioHecho"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="La fecha ocurrió el hecho es un campo requerido."
+                                        value="#{agregarServidorBean.agregarServidorHelper.licencia.fechaOcurrioHecho}"/>                                                    
+                            <h:outputLabel value="Fecha Presenta Documentación: "
+                                           id="fechaPresentaDocumento_lbl"/>
+                            <p:calendar id="fechaPresentaDocumento"
+                                        showOn="button"
+                                        navigator="true"
+                                        requiredMessage="La fecha presenta documentación es un campo requerido."
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.licencia.fechaPresentaDocumento}"/>                                                    
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE LICENCIA DE MATERNIDAD - PATERNIDAD -->
+                    <p:fieldset id="areaLicenciasMaternidadPaternidad" legend="Información de Licencias Maternidad / Paternidad">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Tipo de Nacimiento"
+                                           id="tipoNacimiento_lbl"/>
+                            <p:selectOneMenu id="tipoNacimiento" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.licencia.tipoNacimiento}"
+                                             requiredMessage="El tipo de nacimiento es un campo requerido.">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.opcionesTipoNacimiento}"/>
+                            </p:selectOneMenu>                         
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE REPRESENTACION ASOCIACION LABORAL -->
+
+                    <p:fieldset legend="Información de Representación Asociación Laboral" id="areaRepresentacionAsociacionLaboral">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel id="numeroHorasMensuales_lbl" 
+                                           value="Máximo Número de Horas Mensuales:"
+                                           title="#{msg['ec.gob.mrl.smp.agregar_servidor.tooltip.horas_mensuales_representacion_laboral']}"/>
+                            <p:inputText id="numeroHorasMensuales" 
+                                         styleClass="campoNumerico"
+                                         requiredMessage="Las horas mensuales es un campo reuqrido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.licencia.horasMensualesRepresentacionLaboral}"/>                                                                
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE PERMISO PARA MATRICULAS HIJOS -->
+
+                    <p:fieldset legend="Información de Permiso Para Matrícula de Hijos" id="areaPermisoMatriculaHijos">
+                        <h:panelGrid columns="4">
+
+                            <h:outputLabel id="nombreHijo_lbl" 
+                                           value="Nombre Hijo(a):"/>
+                            <p:inputText id="nombreHijo" 
+                                         maxlength="100"
+                                         style="width:400px"
+                                         requiredMessage="El nombre hijo(a) es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.licencia.matriculaNombreHijo}"/>                                    
+
+
+                            <h:outputLabel id="nivelEstudio_lbl" value="Nivel de Estudio:"/>
+                            <p:selectOneMenu id="nivelEstudio"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.licencia.matriculaNivelEstudio}"
+                                             requiredMessage="El nivel de estudio es un campo requerido.">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaNivelEstudioHijo}"/>
+                            </p:selectOneMenu>
+
+
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE TIEMPO POR DEVENGAR -->
+                    <p:fieldset id="areaTiempoPorDevengar" legend="Información De Tiempo Por Devengar">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel id="devengar_lbl" value="Devengar:"/>
+                            <p:selectBooleanCheckbox id="devengar"                                                     
+                                                     value="#{agregarServidorBean.agregarServidorHelper.licencia.devengar}"
+                                                     requiredMessage="Devengar es un campo requerido.">
+                                <p:ajax update="areaTiempoPorDevengar" process="@this" listener="#{agregarServidorBean.limpiarAreaLicencia}"/>
+                            </p:selectBooleanCheckbox>                            
+                        </h:panelGrid>
+                        <p:panel id="panelOpcionesDevengar" rendered="#{agregarServidorBean.agregarServidorHelper.licencia.devengar}">
+                            <div class="ui-messages ui-widget" id="fmrTramite:mensajessss">
+                                <div class="ui-messages-info ui-corner-all">
+                                    <span class="ui-messages-info-icon"></span>
+                                    <ul>
+                                        <li>
+                                            <span class="ui-messages-info-summary">#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.considereCalculo}</span>
+                                        </li>                                
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h:panelGrid columns="2">
+                                <h:outputLabel id="periodoDevengar_lbl" value="Periodo:"/>
+                                <p:selectOneRadio id="periodoDevengar" value="#{agregarServidorBean.agregarServidorHelper.licencia.devengarPeriodo}"
+                                                  requiredMessage="El periodo es un campo requerido.">
+                                    <f:selectItem itemLabel="Día" itemValue="D"/>
+                                    <f:selectItem itemLabel="Mes" itemValue="M"/>
+                                    <f:selectItem itemLabel="Año" itemValue="A"/>
+                                </p:selectOneRadio>                                
+                                <h:outputLabel id="valorDevengar_lbl" value="Valor Periodo:"/>
+                                <p:inputText id="valorDevengar" 
+                                             styleClass="campoNumerico"
+                                             autocomplete="off"
+                                             requiredMessage="El valor es un campo requerido."
+                                             value="#{agregarServidorBean.agregarServidorHelper.licencia.devengarValor}"/>                                    
+                                <h:outputLabel id="observacionDevengar_lbl" value="Observación:"/>
+                                <p:inputTextarea id="observacionDevengar"           
+                                                 maxlength="1000"
+                                                 style="width: 300px"
+                                                 requiredMessage="La observación es un campo requerido."
+                                                 autoResize="false"
+                                                 value="#{agregarServidorBean.agregarServidorHelper.licencia.devengarObservacion}"/>                                                                    
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:fieldset>
+                    <!-- Comision de servicio - Institucion Requirente -->
+                    <p:fieldset legend="Comisión de Servicio" id="areaComisionServicioInstitucionRequiriente">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Tipo Comisión de Servicio "                                           
+                                           id="tipoComisionServicio_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneRadio id="tipoComisionServicio" 
+                                              value="#{agregarServidorBean.agregarServidorHelper.comisionServicio.tipoComisionServicio}"
+                                              requiredMessage="El tipo de comisión de servicio es un campo requerido.">
+                                <f:selectItem itemLabel="Comisión de Servicio Con Remuneración" itemValue="CSCS"/>
+                                <f:selectItem itemLabel="Comisión de Servicio Sin Remineración" itemValue="CSSS"/>
+                            </p:selectOneRadio>                                
+
+                            <h:outputText/>
+                            <h:outputText/>
+
+
+                            <h:outputLabel value="Institución: "                                           
+                                           id="institucion_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="institucion" 
+                                         maxlength="400"
+                                         style="width:400px"
+                                         requiredMessage="El nombre de la institución es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.comisionServicio.institucion}"/>  
+                            <h:outputLabel value="Unidad:"
+                                           id="unidadAdministrativaInstitucion_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="unidadAdministrativaInstitucion" 
+                                         maxlength="400"
+                                         style="width:400px"
+                                         requiredMessage="El nombre de la unidad es un campo requerido."
+                                         value="#{agregarServidorBean.agregarServidorHelper.comisionServicio.unidad}"/>  
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE ACCION DE PERSONAL -->
+                    <p:fieldset legend="Información de Acción de Personal" id="areaAccionPersonal">
+                        <h:panelGrid columns="6">
+                            <h:outputLabel id="apDocumentoPrevio_lbl" value="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.tipoAccion']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.tipoAccion']}"/>
+                            <p:selectOneMenu id="apDocumentoPrevio"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             requiredMessage="El documento previo es un campo requerido"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.accionPersonalDocumentoPrevio}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaDocumentoPrevio}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel id="apNumeroDocumento_lbl"  value="Número Documento:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.numeroDocumento']}"/>
+                            <p:inputText id="apNumeroDocumento" 
+                                         styleClass="textoNemonico"
+                                         requiredMessage="El número documento de la acción de personal es un campo requerido."
+                                         autocomplete="off"
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.accionPersonalNumeroDocumento}"/>                                    
+                            <h:outputLabel id="apFechaDocumento_lbl" value="Fecha Documento:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.fechaDocumento']}"/>
+                            <p:calendar id="apFechaDocumento"
+                                        showOn="button"
+                                        requiredMessage="La fecha documento de la acción de personal es un campo requerido."
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        value="#{agregarServidorBean.agregarServidorHelper.movimiento.accionPersonalFechaDocumento}"/>    
+                            <h:outputLabel id="situacionActual_lbl" value="Situación Actual: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.situacionActual']}"/>
+                            <p:selectOneMenu id="situacionActual"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.situacionActual}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.imprimirAccionPersonal}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel id="situacionPropuesta_lbl" value="Situacion Propuesta:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.situacionPropuesta']}"/>
+                            <p:selectOneMenu id="situacionPropuesta"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.situacionPropuesta}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.imprimirAccionPersonal}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel id="apExplicacion_lbl" value="Explicación: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.explicacionAccionPersonal']}"/>
+                            <p:inputTextarea id="apExplicacion"           
+                                             maxlength="1000"
+                                             style="width: 700px;"
+                                             requiredMessage="La explicación es un campo requerido."
+                                             autoResize="false"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.accionPersonalExplicacion}"/>   
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!--ARREA CONTRATOS LOSEP -->
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionContratosLosep']}" id="areaContratoLosep">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.antecedentes']}:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.antecedentes']}"
+                                           id="antecedentesContrato_lbl"/>
+                            <p:editor id="antecedentesContrato" 
+                                      width="700" 
+                                      height="200" 
+                                      requiredMessage="Los antecedentes es un campo requerido"
+                                      value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.antecedentesContrato}"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.actividades']}:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.actividades']}"
+                                           id="actividadesContrato_lbl"/>
+                            <p:editor id="actividadesContrato"
+                                      width="700" 
+                                      height="200" 
+                                      value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.actividadesContrato}"
+                                      requiredMessage="las actividades es un campo requerido"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.siglasTituloAcademico']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.siglasTituloAcademico']}"
+                                           id="siglasTituloAcademico_lbl"/>
+                            <p:inputText id="siglasTituloAcademico" 
+                                         value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.siglasTituloAcademico}"
+                                         requiredMessage="Las siglas título académico es un campo requerido"/>                          
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.renovacion']}: "
+                                           id="renovacion_lbl"
+                                           styleClass="labelFormulario"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.renovacion']}"/>
+                            <p:selectOneRadio id="renovacion"
+                                              value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.renovacionContrato}">
+                                <f:selectItem itemValue="#{true}" itemLabel="Si"/>
+                                <f:selectItem itemValue="#{false}" itemLabel="No"/>
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA DE CONTRATOS DE CODIGO DE TRABAJO -->
+                    <p:fieldset legend="Información para Contratos Código del Trabajo" id="areaContratoCT"> 
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="Tiempo Jornada Diaria: "
+                                           id="tiempoJornadaDiaria_lbl"/>
+                            <h:panelGrid columns="2">
+                                <p:inputText  id="tiempoJornadaDiaria" value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.tiempoJornadaDiaria}"
+                                              requiredMessage="El tiempo jornada diaria es un campo requerido"/>
+                                <h:outputLabel value="(minutos)"/>
+                            </h:panelGrid>                       
+                            <h:outputLabel value="Tipo de Temporada: "
+                                           id="tipoTemporada_lbl"/>
+                            <p:selectOneMenu id="tipoTemporada"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.ingreso.tipoTemporada}"
+                                             requiredMessage="El tiempo temporada es un campo requerido">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.tipoTemporada}"/>
+                            </p:selectOneMenu>                           
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!-- AREA DE MEMORANDO -->
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionMemorando']}" id="areaMemorando">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroMemorando']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroMemorando']}"
+                                           id="numeroMemorando_lbl"/>
+                            <p:inputText id="numeroMemorando"
+                                         value="#{agregarServidorBean.agregarServidorHelper.movimiento.numeroMemo}"
+                                         requiredMessage="El número memorando es un campo requerido"
+                                         maxlength="30"/>                                   
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.asuntoMemorando']}:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.asuntoMemorando']}"
+                                           id="asuntoMemorando_lbl"/>
+                            <p:inputTextarea id="asuntoMemorando" 
+                                             style="width: 700px"
+                                             autoResize="false"
+                                             maxlength="400"
+                                             requiredMessage="El asunto memorando es un campo requerido"
+                                             value="#{agregarServidorBean.agregarServidorHelper.movimiento.asuntoMemo}"/>                            
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.contenidoMemorando']}:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.contenidoMemorando']}"
+                                           id="contenidoMemorando_lbl"/>
+                            <p:editor id="contenidoMemorando" 
+                                      width="700" 
+                                      height="200" 
+                                      required="#{true}"
+                                      requiredMessage="El contenido memorando es un campo requerido"
+                                      value="#{agregarServidorBean.agregarServidorHelper.movimiento.contenidoMemo}"/>
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!-- AREA DE ADENDUM -->
+                    <p:fieldset legend="Información del Adendum" id="areaAdendum">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Antecedentes:"
+                                           title="Antedecentes del adendum"
+                                           id="antecedentes_lbl"/>
+                            <p:editor id="antecedentes" 
+                                      width="700" 
+                                      height="200" 
+                                      required="#{true}"
+                                      requiredMessage="El antecedente es un campo requerido"
+                                      value="#{agregarServidorBean.agregarServidorHelper.movimiento.adendumAntecedentes}"/>
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <!-- AREA CAMBIO ADMINISTRATIVO -->
+                    <p:fieldset legend="Información Cambio Adminitrativo" id="areaCambioAdministrativo"
+                                rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.tipoRotacion=='C'}">
+                        <h:panelGrid columns="3">
+
+                            <h:outputLabel value="Unidad Organizacional:"
+                                           id="unidadOrganizacionalCambio_lbl"/>
+                            <p:inputTextarea id="unidadOrganizacionalCambio" 
+                                             style="width: 600px"
+                                             disabled="true"
+                                             maxlength="400"
+                                             value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.cambioAdministrativo.unidadOrganizacional.unidadOrganizacional.nombre} / #{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.cambioAdministrativo.unidadOrganizacional.nombre}"/>    
+                            <h:panelGrid columns="3">
+                                <p:commandButton id="unidadOrganizacionalCambio_search" 
+                                                 immediate="#{true}"
+                                                 update="contenedorLlenarVacante,:frmUnidadOrganizacionalCambio:panelUnidadOrganizacionalCambio"                                                 
+                                                 action="#{agregarServidorBean.consultarUnidadOrganizacionalPorCambioAdminitrativo()}"
+                                                 icon="ui-icon-search"/>
+                                <p:commandButton id="unidadOrganizacionalCambio_trash" 
+                                                 immediate="#{true}"
+                                                 process="@this"
+                                                 update="unidadOrganizacionalCambio"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{null}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.cambioAdministrativo.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </h:panelGrid>                            
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <!-- AREA TRASPASO MISMA INSTITUCION -->
+                    <p:fieldset legend="Información Traspaso Misma Institución" id="areaTraspasoMismaInstitucion"
+                                rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.tipoRotacion=='R'}">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Unidad Organizacional:"
+                                           id="unidadOrganizacionalTraspaso_lbl"/>
+                            <p:inputTextarea id="unidadOrganizacionalTraspaso" 
+                                             style="width: 600px"
+                                             disabled="true"
+                                             maxlength="400"
+                                             value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.traspaso.unidadOrganizacional.unidadOrganizacional.nombre} / #{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.traspaso.unidadOrganizacional.nombre}"/>    
+                            <h:panelGrid columns="3">
+                                <p:commandButton id="unidadOrganizacionalTraspaso_search" 
+                                                 immediate="#{true}"
+                                                 update="contenedorLlenarVacante,:frmUnidadOrganizacionalTraspaso:panelUnidadOrganizacionalTraspaso"                                                 
+                                                 action="#{agregarServidorBean.consultarUnidadOrganizacionalPorTraspaso()}"
+                                                 icon="ui-icon-search"/>
+                                <p:commandButton id="unidadOrganizacionalTraspaso_trash" 
+                                                 immediate="#{true}"
+                                                 process="@this"
+                                                 update="unidadOrganizacionalTraspaso"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{null}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.traspaso.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </h:panelGrid>   
+
+                            <h:outputLabel value="Unidad Presupuestaria:"
+                                           id="unidadPresupuestariaTraspaso_lbl"/>
+
+                            <p:selectOneMenu id="unidadPresupuestariaTraspaso"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.traspaso.unidadPresupuestariaId}"
+                                             style="width: 600px;" 
+                                             panelStyle="width: 600px;">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaUnidadesPresupuestarios}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+                    <!-- AREA PUESTO DESTINO -->
+                    <p:fieldset legend="Puesto Propuesto" id="areaPuestoDestino">
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="Código del Puesto:"/>
+                            <p:inputText id="codigo_puesto" 
+                                         maxlength="10"
+                                         styleClass="campoNumerico"
+                                         value="#{agregarServidorBean.agregarServidorHelper.codigoPuesto}"                                         
+                                         style="width: 200px;"/>
+                            <p:commandButton action="#{agregarServidorBean.buscarPuestoPropuesto}"
+                                             icon="ui-icon-search"
+                                             partialSubmit="true"
+                                             process="@this, codigo_puesto"
+                                             update="areaPuestoDestino,listaPuestoPropuesto"/>  
+                            <h:outputLabel value="El puesto a buscar se debe encontrar en estado 
+                                           #{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.estadoPuestoInicialPropuestaCoreNombre}
+                                           y modalidad laboral 
+                                           #{agregarServidorBean.agregarServidorHelper.movimiento.tramite.tipoMovimiento.modalidadLaboralCoreNombre}"/>
+
+                        </h:panelGrid>
+                        <p:dataTable id="listaPuestoPropuesto"
+                                     rendered="#{agregarServidorHelper.listaPuestos.size()>0}"
+                                     value="#{agregarServidorHelper.listaPuestos}"
+                                     var="puesto"
+                                     selectionMode="single"
+                                     paginator="#{true}"                                     
+                                     rowKey="#{puesto.id}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']/2}"
+                                     rowIndexVar="rowIndex"
+                                     selection="#{agregarServidorBean.agregarServidorHelper.puesto}"
+                                     style="overflow: auto;width: 900px">
+                            <p:ajax event="rowSelect" listener="#{agregarServidorBean.seleccionPuestoPropuesto}"   
+                                    update=":frmLlenarVancante:puestoSelectoPuestoPropuesto" />
+                            <p:column headerText="Codigo del Puesto">
+                                <h:outputText value="#{puesto.codigoPuesto}"/>
+                            </p:column>
+                            <p:column headerText="Regimen Laboral">
+                                <h:outputText value="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Escala Remunerativa">
+                                <h:outputText value="#{puesto.escalaOcupacional.nivelOcupacional.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Denominación de Puesto">
+                                <h:outputText value="#{puesto.escalaOcupacional.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Grado">
+                                <h:outputText value="#{puesto.escalaOcupacional.grado}"/>
+                            </p:column>
+                            <p:column headerText="Sueldo">
+                                <h:outputText value="#{puesto.escalaOcupacional.rmu}"/>
+                            </p:column>
+                            <p:column headerText="Partida Ind.">
+                                <h:outputText value="#{puesto.partidaIndividual}"/>
+                            </p:column>
+                            <p:column headerText="Modalidad Laboral">
+                                <h:outputText value="#{puesto.distributivo.modalidadLaboral.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Estado">
+                                <h:outputText value="#{puesto.estadoPuesto.nombre}"/>
+                            </p:column>                            
+                        </p:dataTable>
+                        <p:panel id="puestoSelectoPuestoPropuesto" 
+                                 rendered="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.id != agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.id}">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Código Puesto:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.codigoPuesto}"/>
+                                <h:outputLabel value="Regimen Laboral:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"/>
+                                <h:outputLabel value="Escala Remuneativa:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre}"/>
+                                <h:outputLabel value="Denominación del Puesto:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nombre}"/>
+                                <h:outputLabel value="Grado:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.grado}"/>
+                                <h:outputLabel value="Sueldo:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.rmu}"/>
+                                <h:outputLabel value="Sueldo Máximo:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.rmuMaximo}"/>
+                                <h:outputLabel value="Partida Individual:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.partidaIndividual}"/>
+                                <h:outputLabel value="Modalidad Laboral:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.distributivo.modalidadLaboral.nombre}"/>
+                                <h:outputLabel value="Unidad Organizacional:"/>
+                                <h:outputText value="#{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.distributivo.unidadOrganizacional.unidadOrganizacional.nombre} / #{agregarServidorBean.agregarServidorHelper.movimiento.movimientoSituacionPropuesta.distributivoDetalle.distributivo.unidadOrganizacional.nombre}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:fieldset>
+
+                </p:panel>
+            </h:form>
+            <!-- PopUp de  REgimenes laborales -->
+            <p:dialog modal="true"
+                      draggable="false"
+                      header="Regimen Laboral / Nivel Ocupacional / Escala Ocupacional"
+                      height="200"
+                      width="500"
+                      widgetVar="popUpRegimenLaboral">
+                <h:form id="frmRegimenLaboral">
+                    <p:panel id="panelRegimenLaboral">
+                        <h:panelGrid columns="2" cellspacing="5">
+                            <h:outputLabel value="Regimen Laboral: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 320px;"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             required="true"
+                                             requiredMessage="Regimen Laboral es obligatorio"
+                                             value="#{agregarServidorBean.agregarServidorHelper.regimenLaboralId}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaRegimenLaboral}"/>
+                                <p:ajax update="nivel_ocupacional_id, escala_ocupacional_id"  
+                                        listener="#{agregarServidorBean.buscarNivelOcupacional}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Nivel Ocupacional: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 320px;"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             id="nivel_ocupacional_id"
+                                             required="true"
+                                             requiredMessage="Nivel ocupacional es obligatorio."
+                                             value="#{agregarServidorBean.agregarServidorHelper.nivelOcupacionalId}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaNivelOcupacional}"/>
+                                <p:ajax update="escala_ocupacional_id"  
+                                        listener="#{agregarServidorBean.buscarEscalaOcupacional()}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Escala Ocupacional: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 320px;"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             id="escala_ocupacional_id"
+                                             required="true"
+                                             requiredMessage="Escala Ocupacional es obligatorio"
+                                             value="#{agregarServidorBean.agregarServidorHelper.escalaOcupacionalId}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaEscalaOcupacional}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" style=" margin: auto;text-align: center;width: 50%;">
+                            <p:commandButton value="Aceptar"
+                                             update=":frmLlenarVancante:regimenLaboral,:frmLlenarVancante:rmu"
+                                             action="#{agregarServidorBean.seleccionarEscalaOcupacional()}"/>
+                            <p:commandButton value="Cancelar" 
+                                             immediate="true"
+                                             oncomplete="popUpRegimenLaboral.hide()" >
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp de  Unidad Organizacional -->
+            <p:dialog modal="true"
+                      draggable="false"
+                      header="Unidad Organizacional"
+                      height="480"
+                      width="900"
+                      widgetVar="popUpUnidadOrganizacional">
+                <h:form id="frmUnidadOrganizacional">
+                    <p:panel id="panelUnidadOrganizacional">
+                        <p:dataTable id="listaUnidadOrganizacional" 
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     paginator="#{true}"
+                                     value="#{agregarServidorBean.agregarServidorHelper.listaUnidadOrganizacional}"
+                                     var="unidadAdm"
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" filterMatchMode="contains" 
+                                      filterBy="#{unidadAdm.ruta}" 
+                                      filterStyle="width:300px">
+                                <h:outputText value="#{unidadAdm.ruta}" style="font-size: 10px"/>
+                            </p:column>                            
+                            <p:column>
+                                <p:commandButton icon="ui-icon-check"
+                                                 oncomplete="popUpUnidadOrganizacional.hide();"
+                                                 update=":frmLlenarVancante:unidadOrganizacional">
+                                    <f:setPropertyActionListener value="#{unidadAdm}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.movimiento.distributivoDetalle.distributivo.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <!-- PopUp de  Unidad Organizacional en cambio administrativo -->
+            <p:dialog modal="true"
+                      draggable="false"
+                      header="Seleccione la unidad organizacional por cambio administrativo "
+                      height="480"
+                      width="900"
+                      widgetVar="popUpUnidadOrganizacionalCambio">
+                <h:form id="frmUnidadOrganizacionalCambio">
+                    <p:panel id="panelUnidadOrganizacionalCambio">
+                        <p:dataTable id="listaUnidadOrganizacionalCambio" 
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     paginator="#{true}"
+                                     value="#{agregarServidorBean.agregarServidorHelper.listaUnidadOrganizacional}"
+                                     var="unidadAdm"
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" 
+                                      filterMatchMode="contains" 
+                                      filterBy="#{unidadAdm.ruta}" 
+                                      filterStyle="width:300px">
+                                <h:outputText value="#{unidadAdm.nombre}" style="font-size: 10px"/>
+                            </p:column>                            
+                            <p:column>
+                                <p:commandButton icon="ui-icon-check"
+                                                 oncomplete="popUpUnidadOrganizacionalCambio.hide();"
+                                                 update=":frmLlenarVancante:unidadOrganizacionalCambio">
+                                    <f:setPropertyActionListener value="#{unidadAdm}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.cambioAdministrativo.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+
+            <!-- PopUp de  Unidad Organizacional en traspaso -->
+            <p:dialog modal="true"
+                      draggable="false"
+                      header="Seleccione la unidad organizacional por traspaso "
+                      height="480"
+                      width="900"
+                      widgetVar="popUpUnidadOrganizacionalTraspaso">
+                <h:form id="frmUnidadOrganizacionalTraspaso">
+                    <p:panel id="panelUnidadOrganizacionalTraspaso">
+                        <p:dataTable id="listaUnidadOrganizacionalTraspaso" 
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     paginator="#{true}"
+                                     value="#{agregarServidorBean.agregarServidorHelper.listaUnidadOrganizacional}"
+                                     var="unidadAdm"
+                                     style="width: 100%"
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="width: 5%;">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" 
+                                      filterMatchMode="contains" 
+                                      style="width: 95%"
+                                      filterBy="#{unidadAdm.ruta}" 
+                                      filterStyle="width:80%">
+                                <h:outputText value="#{unidadAdm.ruta}" 
+                                              style="font-size: 10px"/>
+                            </p:column>                            
+                            <p:column>
+                                <p:commandButton icon="ui-icon-check"
+                                                 oncomplete="popUpUnidadOrganizacionalTraspaso.hide();"
+                                                 update=":frmLlenarVancante:unidadOrganizacionalTraspaso">
+                                    <f:setPropertyActionListener value="#{unidadAdm}"                                                                 
+                                                                 target="#{agregarServidorBean.agregarServidorHelper.detalleMovimientoVO.traspaso.unidadOrganizacional}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp de  Ubicacion Geografica -->
+            <p:dialog modal="true"
+                      draggable="false"
+                      widgetVar="popUpUbicacionGeografica">
+                <h:form id="frmUbicacionGeografico">
+                    <p:panel id="panelUbicacionGeografica">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Pais: " styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu id="geograficaVO_paisId"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 200px" 
+                                                 value="#{agregarServidorBean.agregarServidorHelper.paisId}"
+                                                 required="#{true}"
+                                                 requiredMessage="El país es un campo requerido.">
+                                    <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaPais}"/>
+                                    <p:ajax update="geograficaVO_provinciaId"  
+                                            listener="#{agregarServidorBean.buscarProvincias()}" />
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Provincia: "
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu style="width: 200px" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 id="geograficaVO_provinciaId"                                                  
+                                                 value="#{agregarServidorBean.agregarServidorHelper.provinciaId}">
+                                    <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaProvincia}"/>
+                                    <p:ajax update="geograficaVO_cantonId"  
+                                            listener="#{agregarServidorBean.buscarCantones}" />
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Cantón: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" id="geograficaVO_cantonId" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{agregarServidorBean.agregarServidorHelper.cantonId}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaCanton}"/>
+                                <p:ajax update="geograficaVO_parroquiaId"  
+                                        listener="#{agregarServidorBean.buscarParroquias()}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Parroquia: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             id="geograficaVO_parroquiaId"                                              
+                                             value="#{agregarServidorBean.agregarServidorHelper.parroquiaId}">
+                                <f:selectItems value="#{agregarServidorBean.agregarServidorHelper.listaParroquia}"/>
+
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" style=" margin: auto;text-align: center;width: 50%;">
+                            <p:commandButton value="Aceptar"
+                                             update=":frmLlenarVancante:ubicacionGeografica"
+                                             action="#{agregarServidorBean.seleccionarUbicacionGeografica()}"/>
+                            <p:commandButton value="Cancelar" 
+                                             immediate="true"
+                                             oncomplete="popUpUbicacionGeografica.hide()" >
+                            </p:commandButton>
+
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <div id="readOnlyOk"/>
+            <c:if test="#{param['est']!='edt'}">
+                <script>
+                    $(document).ready(function () {
+                        var html = document.getElementById('readOnlyOk');
+                        html.innerHTML = '';
+                        jQuery('.panelContenedorCompleto').each(function () {
+                            var div = document.createElement('div');
+                            div.style.width = (jQuery(this).width() + 11) + 'px';
+                            div.style.left = jQuery(this).position().left + 'px';
+                            div.style.top = jQuery(this).position().top + 'px';
+                            div.style.height = (jQuery(this).height() + 11) + 'px';
+                            div.style.position = 'absolute';
+                            div.style.background = 'transparent';
+                            html.appendChild(div);
+                        });
+                    });
+                </script>
+            </c:if>
+            <script>
+
+
+                $(document).ready(function () {
+                    var html = document.getElementById('camposDsc');
+                    html.innerHTML = '';
+                    jQuery('.readOnly').each(function () {
+                        var div = document.createElement('div');
+                        div.style.width = (jQuery(this).width() + 11) + 'px';
+                        div.style.left = jQuery(this).position().left + 'px';
+                        div.style.top = jQuery(this).position().top + 'px';
+                        div.style.height = (jQuery(this).height() + 11) + 'px';
+                        div.style.position = 'absolute';
+                        div.style.background = 'transparent';
+                        html.appendChild(div);
+                    });
+                });
+
+                $(document).ajaxSuccess(function () {
+                    var html = document.getElementById('camposDsc');
+                    html.innerHTML = '';
+                    jQuery('.readOnly').each(function () {
+                        var div = document.createElement('div');
+                        div.style.width = (jQuery(this).width() + 11) + 'px';
+                        div.style.left = jQuery(this).position().left + 'px';
+                        div.style.top = jQuery(this).position().top + 'px';
+                        div.style.height = (jQuery(this).height() + 11) + 'px';
+                        div.style.position = 'absolute';
+                        div.style.background = 'transparent';
+                        html.appendChild(div);
+                    });
+                });
+
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

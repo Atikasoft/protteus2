@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form>
+                <smp:catalogo_lista controlador="#{partidaBean}" titulo="#{msg['ec.gob.mrl.smp.administracion.partida.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaPartidas" 
+                                 value="#{partidaBean.partidaHelper.listaPartida}"
+                                 var="partida"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicion" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{partidaBean.iniciarEdicion()}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{partida}" 
+                                                             target="#{partidaBean.partidaHelper.partidaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{partida}" 
+                                                             target="#{partidaBean.partidaHelper.partidaEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.partida.codigo']}" 
+                                  sortBy="#{partida.codigo}"
+                                  filterBy="#{partida.codigo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{partida.codigo}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.partida.nombre']}"
+                                  sortBy="#{partida.nombre}"
+                                  filterBy="#{partida.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{partida.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.partida.numeroPartida']}"
+                                  sortBy="#{partida.partida}"
+                                  filterBy="#{partida.partida}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 20px">
+                            <h:outputText value="#{partida.partida}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.partida.certificacionPresupuestaria']}"
+                                  style="text-align: center; width: 10px">
+                            <p:selectBooleanCheckbox value="#{partida.certificacionPresupuestariaPuesto}" 
+                                                     disabled="#{true}"/>
+                        </p:column>                            
+                                             
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaPartidas"
+                                             actionListener="#{partidaBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>             
+        </ui:define>
+    </ui:composition>
+</html>

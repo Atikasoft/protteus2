@@ -1,0 +1,497 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmLiquidacionVacaciones">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.liquidacion.titulo']}">
+
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="3"> 
+                            <p:commandButton id="btnNuevo"
+                                             process="@this"
+                                             immediate="#{true}"
+                                             ajax="#{false}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                             title="Realizar Nueva Liquidación de Vacaciones"
+                                             action="#{liquidacionVacacionesBean.iniciarEdicion}">
+                                <f:setPropertyActionListener value="#{true}"
+                                                             target="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.esNuevo}"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnSalir" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                             action="#{liquidacionVacacionesBean.salir}"
+                                             immediate="#{true}"
+                                             ajax="#{false}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                        </h:panelGrid>
+                    </h:panelGrid> 
+                </p:panel> 
+
+                <p:panel id="panelDatosServidor" 
+                         header="Búsqueda de liquidaciones realizadas">
+
+                    <p:panelGrid id="busquedaForm" columns="2"
+                                 columnClasses="col35,col65">
+
+                        <p:panelGrid id="buscarPor" columns="2">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.genericos.etiquetas.buscarPor']}: "
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu id="comboBuscarPor"
+                                             required="#{true}"
+                                             value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.buscarServidorPor}">
+                                <f:selectItems value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.opcionesBuscarServidorPor}"/>
+                                <p:ajax update="@form"
+                                        listener="#{liquidacionVacacionesBean.iniciarFormularioBusqueda()}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="buscarIdentificacion" columns="5"
+                                     columnClasses="col15,col25,col15,col25"
+                                     rendered="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.buscarServidorPor eq 'id'}">
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.identificacion.tipo']}:"
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu id="liquidacionVacaciones_servidorTipoIdentificacion"
+                                             value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion}"
+                                             required="#{true}">
+                                <f:selectItems value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.opcionesTipoIdentificacion}"/>
+                                <p:ajax update="buscarIdentificacion dtServidor"
+                                        listener="#{liquidacionVacacionesBean.limpiarNroIdentificacion()}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+
+                            <p:inputText id="liquidacionVacaciones_servidorNumeroCedula"
+                                         styleClass="campoNumerico" maxlength="10"
+                                         disabled="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion eq null}"
+                                         rendered="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion eq null
+                                                     || liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion eq'C'}"
+                                         value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.nroIdentificacion}"
+                                         style="width: 150px" required="#{true}">
+                                <f:validateRegex pattern="[0-9]{10}"/>
+                            </p:inputText>
+
+                            <p:inputText id="liquidacionVacaciones_servidorNumeroPasaporte"
+                                         styleClass="textoNemonico"
+                                         disabled="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion eq null}"
+                                         rendered="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion ne null
+                                                     and liquidacionVacacionesBean.liquidacionVacacionesHelper.tipoIdentificacion ne 'C'}"
+                                         value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.nroIdentificacion}"
+                                         style="width: 150px" required="#{true}">                                
+                            </p:inputText>
+
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                             process="busquedaForm" update="@form :frmResultados:tblResultados" 
+                                             action="#{liquidacionVacacionesBean.buscarServidor()}"/>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="busApellidosNombres" 
+                                     columns="5"
+                                     columnClasses="col60"
+                                     rendered="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.buscarServidorPor eq 'an'}">
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:"
+                                           styleClass="labelFormulario"/>
+
+                            <p:inputText id="liquidacionVacaciones_servidorNombresApellidos"
+                                         styleClass="letrasEspacio"
+                                         value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.apellidosNombres}"
+                                         style="width: 300px; text-transform:uppercase;" required="#{true}">                                
+                            </p:inputText>
+
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                             process="busquedaForm" update="@form :frmResultados:tblResultados" 
+                                             action="#{liquidacionVacacionesBean.buscarServidor()}"/>
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+                        </p:panelGrid>
+
+                    </p:panelGrid>
+
+                    <p:separator/>
+
+                    <p:panelGrid id="dtServidor" 
+                                 columns="5" 
+                                 style="width: 100%">
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                       styleClass="labelFormulario"/>                            
+                        <p:selectOneMenu styleClass="textoNemonico"
+                                         value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor.tipoIdentificacion}"
+                                         disabled="#{true}">
+                            <f:selectItems value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.opcionesTipoIdentificacion}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText id="liquidacionVacaciones_regimen"
+                                     styleClass="textoNemonico"
+                                     style="width: 100%"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.distributivoDetalleSeleccionado.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"
+                                     disabled="#{true}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText styleClass="textoNemonico" 
+                                     disabled="#{true}"
+                                     style="width: 100%"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor.numeroIdentificacion}"
+                                     >
+                        </p:inputText>
+                        
+                        <p:outputLabel/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText id="liquidacionVacaciones_servidorNombres"
+                                     styleClass="textoNemonico"
+                                     style="width: 100%; font-size: 10px;"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor.apellidosNombres}"
+                                     disabled="#{true}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText id="fechaIngreso"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor.fechaIngresoInstitucion}"
+                                     disabled="#{true}"
+                                     style="width: 100%">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+                        
+                        <p:outputLabel/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: " 
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="planificacionVacacion_saldoVacacionEfectivaDias"
+                                     styleClass="textoNemonico"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.saldoVacacionTexto}"
+                                     disabled="#{true}" 
+                                     style="width: 100%"
+                                     title="Saldo vaciones efectivas pendiente"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaSalida']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText id="fechaSalida"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor.fechaSalida}"
+                                     disabled="#{true}"
+                                     style="width: 100%">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>          
+                        
+                        <p:outputLabel/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldoProporcional']}: " 
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="planificacionVacacion_saldoVacacionProporcionalDias"
+                                     styleClass="textoNemonico"
+                                     style="width: 100%"
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.saldoVacacionProporcionalTexto}"
+                                     disabled="#{true}" title="Saldo vacaciones proporcionales pendiente"/>
+
+                    </p:panelGrid>
+                </p:panel>
+
+                <p:panel header="Lista de Registros de Liquidaciones de Vacaciones">
+                    <p:dataTable id="tblListaVacacionLiquidacion" 
+                                 value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.listaLiquidaciones}"
+                                 var="liquidacion"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 paginator="#{true}" 
+                                 paginatorPosition="bottom"  
+                                 scrollable="true" 
+                                 rowIndexVar="rowIndex">
+
+                        <p:column exportable="#{false}"
+                                  style="width: 65px; text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" />
+                            </f:facet>
+                            <p:commandLink title="Descargar Anexo: Acción de Personal Liquidación de Vacaciones"
+                                           ajax="#{false}"
+                                           immediate="#{true}"
+                                           disabled="#{liquidacion.deshabilitarOpciones}"
+                                           onclick="PrimeFaces.monitorDownload(start, stop);">
+                                <p:graphicImage value="/images/pdf.png" alt="Exportar Excel" 
+                                                style="width: 25px; height: 25px; vertical-align: middle"/>
+                                <p:fileDownload value="#{liquidacionVacacionesBean.descargarArchivo(liquidacion.archivoAccioPersonal)}" />
+                            </p:commandLink>
+                            
+                            <p:commandButton title="#{msg['message.btn.revertir']}"
+                                             icon="ui-icon-arrowreturnthick-1-w"
+                                             onclick="dlgReversionLiquidacion.show();"
+                                             update=":frmReversionLiquidacion"
+                                             immediate="#{true}"
+                                             disabled="#{liquidacion.deshabilitarOpciones}">
+                                <f:setPropertyActionListener target="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.liquidacionSeleccionada}" 
+                                                             value="#{liquidacion}"/>
+                            </p:commandButton>
+                        </p:column>  
+
+                        <p:column style="width: 20px; text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="No" />
+                            </f:facet>
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column> 
+
+                        <p:column style="width: 120px"
+                                  sortBy="#{liquidacion.regimenLaboral.nombre}"
+                                  filterBy="#{liquidacion.regimenLaboral.nombre}"
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Regimen Laboral" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.regimenLaboral.nombre}" 
+                                          style="text-align: right;"/>
+                        </p:column>
+
+                        <p:column style="width: 250px"
+                                  sortBy="#{liquidacion.unidadOrganizacional.ruta}"
+                                  filterBy="#{liquidacion.unidadOrganizacional.ruta}"
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Unidad Organizacional" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.unidadOrganizacional.ruta}" 
+                                          style="text-align: right;"/>
+                        </p:column>
+
+                        <p:column style="width: 105px"
+                                  sortBy="#{liquidacion.ultimoPuestoOcupado.codigoPuesto}"
+                                  filterBy="#{liquidacion.ultimoPuestoOcupado.codigoPuesto}"
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Código Puesto" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.ultimoPuestoOcupado.codigoPuesto}" 
+                                          style="text-align: right;"/>
+                        </p:column>
+
+                        <p:column style="width: 95px">
+                            <f:facet name="header">
+                                <h:outputText value="Lugar de Trabajo" />
+                            </f:facet>
+                            <h:outputText value="Quito" style="text-align: center;"/>
+                        </p:column>
+
+                        <p:column style="width: 50px; text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.rmu']}" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacionVacacionesBean.rmuTexto(liquidacion.rmu)}" 
+                                          style="text-align: right;"/>
+                        </p:column>
+
+                        <p:column style="text-align: left; width: 250px"
+                                  sortBy="#{liquidacion.servidorInstitucion.servidor.apellidosNombres}" 
+                                  filterBy="#{liquidacion.servidorInstitucion.servidor.apellidosNombres}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Apellidos y Nombres" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.servidorInstitucion.servidor.apellidosNombres}" 
+                                          style="font-size: 10px;"/>
+                        </p:column>
+
+                        <p:column style="width: 100px"
+                                  sortBy="#{liquidacionVacacionesBean.obtenerDescripcionTipoDocumento(liquidacion.servidorInstitucion.servidor.tipoIdentificacion)}" 
+                                  filterBy="#{liquidacionVacacionesBean.obtenerDescripcionTipoDocumento(liquidacion.servidorInstitucion.servidor.tipoIdentificacion)}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Identificación" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacionVacacionesBean.obtenerDescripcionTipoDocumento(liquidacion.servidorInstitucion.servidor.tipoIdentificacion)}"/>
+                        </p:column>
+
+                        <p:column style="width: 100px; text-align: left"
+                                  sortBy="#{liquidacion.servidorInstitucion.servidor.numeroIdentificacion}"
+                                  filterBy="#{liquidacion.servidorInstitucion.servidor.numeroIdentificacion}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="No. Identificación" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.servidorInstitucion.servidor.numeroIdentificacion}"/>
+                        </p:column>
+
+                        <p:column style="width: 110px; text-align: right"
+                                  sortBy="#{liquidacion.saldoVacacionesEfectivas}" 
+                                  filterBy="#{liquidacion.saldoVacacionesEfectivas}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Saldo Vacaciones Efectivas" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.saldoVacacionesEfectivas} minutos"/>
+                        </p:column>
+
+                        <p:column style="width: 110px; text-align: right"
+                                  sortBy="#{liquidacion.saldoVacacionesProporcionales}" 
+                                  filterBy="#{liquidacion.saldoVacacionesProporcionales}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Saldo Vacaciones Proporcionales" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.saldoVacacionesProporcionales} minutos"/>
+                        </p:column>
+
+                        <p:column style="width: 100px; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Inicio" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.fechaInicio}" style="text-align: right;">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column style="width: 100px; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Fin" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.fechaFin}" style="text-align: right;">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column style="width: 150px"
+                                  sortBy="#{liquidacion.estadoNombre}" 
+                                  filterBy="#{liquidacion.estadoNombre}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.estadoNombre}"/>
+                        </p:column>
+                        
+                        <p:column style="width: 250px"
+                                  sortBy="#{liquidacion.servidorInstitucionElaborador.servidor.apellidosNombres}" 
+                                  filterBy="#{liquidacion.servidorInstitucionElaborador.servidor.apellidosNombres}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Elaborado por" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.servidorInstitucionElaborador.servidor.apellidosNombres}"/>
+                        </p:column>
+
+                        <p:column style="width: 100px; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Elaboración" />
+                            </f:facet>
+                            <h:outputText value="#{liquidacion.fechaCreacion}" style="text-align: right;">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <!-- resultados de busqueda por nombre -->
+            <p:dialog header="RESULTADO DE LA BÚSQUEDA"
+                      id="dlgResultados"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      widgetVar="dlgResultadosBusqueda">
+
+                <h:form id="frmResultados">  
+                    <p:panel id="panelResultados">
+                        <p:dataTable id="tblResultados" 
+                                     value="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.listaServidores}"
+                                     var="servidor" rowIndexVar="rowIndex"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     sortBy="#{servidor.apellidosNombres}">
+
+                            <p:column style="text-align: center; width: 20px">
+                                <p:commandButton icon="ui-icon-play"
+                                                 update=":frmLiquidacionVacaciones"
+                                                 title="Seleccionar"
+                                                 action="#{liquidacionVacacionesBean.seleccionarServidorBuscarSusLiquidaciones()}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{liquidacionVacacionesBean.liquidacionVacacionesHelper.servidor}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}" style="float: right"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres"
+                                      sortBy="#{servidor.apellidosNombres}"
+                                      filterBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{servidor.apellidosNombres}" 
+                                              style="font-size: 10px; text-align: center"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: center"
+                                      sortBy="#{liquidacionVacacionesBean.obtenerDescripcionTipoDocumento(servidor.tipoIdentificacion)}">
+                                <h:outputText style="font-size: 10px;"
+                                              value="#{liquidacionVacacionesBean.obtenerDescripcionTipoDocumento(servidor.tipoIdentificacion)}" />
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align: center"
+                                      filterBy="#{servidor.numeroIdentificacion}">
+                                <h:outputText value="#{servidor.numeroIdentificacion}" 
+                                              style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br />
+                        <center>
+                            <p:commandButton id="btnCancelar" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgResultadosBusqueda.hide();"
+                                             style="margin: auto" />
+                        </center>
+                        <br />
+                    </p:panel>
+                </h:form>  
+            </p:dialog>
+
+            <!-- CONFIRMAR REVERTIR LIQUIDACION DE VACACIONES -->
+            <p:confirmDialog header="REVERSIÓN DE LIQUIDACIÓN DE VACACIONES"
+                             message="#{msg['ec.gob.mrl.smp.administracion.vacacion.liquidacion.reversion.confirmacionMsg']}"
+                             severity="alert"  
+                             width="350px" 
+                             closable="true" 
+                             widgetVar="dlgReversionLiquidacion">  
+
+                <h:form id="frmReversionLiquidacion">
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.revertir']}" 
+                                         title="Revertir Liquidación de Vacaciones"
+                                         update=":frmLiquidacionVacaciones"
+                                         action="#{liquidacionVacacionesBean.revertirLiquidacionVacacion()}"/>
+                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}" 
+                                         style="width: 100px;"
+                                         immediate="#{true}"
+                                         onclick="dlgReversionLiquidacion.hide();"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

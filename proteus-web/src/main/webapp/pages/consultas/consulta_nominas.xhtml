@@ -1,0 +1,186 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmprincipal">
+                <p:panel header="Consulta de Nóminas" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{consultaNominaBean.buscarNominas()}" 
+                                         ajax="false"
+                                         update="tblListaNominas"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{consultaNominaBean.imprimir()}" update="tblListaNominas"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel header="Búsqueda de Nóminas" >
+
+
+                    <h:panelGrid columns="6">
+                        <p:outputLabel for="periodoFiscal" value="Ejercicio:"/>
+                        <p:selectOneMenu id="periodoFiscal"  
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.periodoFiscal}">
+                            <f:selectItems value="#{consultaNominaBean.nominaHelper.listaPeriodoFiscal}"/>
+                            <p:ajax event="change" listener="#{consultaNominaBean.buscarPeriodos()}" 
+                                    update="periodoNominal"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoFiscal"/>
+
+
+
+                        <p:outputLabel for="estadoNomina" value="Estado:"/>
+                        <p:selectOneMenu id="estadoNomina" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.estado}">
+                            <f:selectItems value="#{consultaNominaBean.nominaHelper.listaEstadoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="estadoNomina"/>
+
+
+                        <p:outputLabel for="periodoNominal" value="Periodo:"/>
+                        <p:selectOneMenu id="periodoNominal" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.periodoNomina}">
+                            <f:selectItems value="#{consultaNominaBean.nominaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoNominal"/>
+
+
+                        <p:outputLabel for="tipoNomina" value="Tipo:"/>
+                        <p:selectOneMenu id="tipoNomina" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.tipoNomina}">
+                            <f:selectItems value="#{consultaNominaBean.nominaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="tipoNomina"/>
+
+                        <p:outputLabel for="numeroNomina" value="Número:"/>
+                        <p:inputText id="numeroNomina" 
+                                     styleClass="campoNumerico"
+                                     style="width: 300px;"
+                                     value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.numeroNomina}">                            
+                        </p:inputText>
+                        <p:message for="numeroNomina"/>
+
+                        <p:outputLabel for="descripcionNomina" value="Descripción:"/>
+                        <p:inputText id="descripcionNomina" 
+                                     style="width: 300px;"
+                                     value="#{consultaNominaBean.nominaHelper.busquedaNominaVO.descripcionNomina}">                            
+                        </p:inputText>
+                        <p:message for="descripcionNomina"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:dataTable value="#{consultaNominaBean.nominaHelper.listaNominas}"
+                             var="nomina"
+                             id="tblListaNominas"
+                             emptyMessage="#{msg['message.listaVacia']}"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" >
+                        <p:commandButton process="@this" 
+                                         ajax="false" 
+                                         value="RESULTADOS"
+                                         action="#{consultaNominaBean.irFormularioResultadoNomina()}">
+                            <f:setPropertyActionListener value="#{nomina}" target="#{consultaNominaBean.nominaHelper.nomina}"/>
+                            <f:setPropertyActionListener value="#{3}" target="#{consultaNominaBean.resultadoNominaHelper.retorno}"/>
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" >
+                        <p:panelGrid columns="2">
+                            <p:selectOneMenu id="tipoNominaEnum" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 100px;"
+                                             value="#{consultaNominaBean.nominaHelper.nominaEnumCodigo}">
+                                <f:selectItems value="#{consultaNominaBean.nominaHelper.listaTipoNominaEnum}"/>
+                                <p:ajax listener="#{consultaNominaBean.asignarNominaCodigo()}" />
+                            </p:selectOneMenu>    
+                            <p:commandButton process="@this" title="Generar reporte nomina"                                       
+                                             icon="ui-icon-print"
+                                             action="#{consultaNominaBean.generarReporte()}">
+                                <f:setPropertyActionListener value="#{nomina}" target="#{consultaNominaBean.nominaHelper.nomina}"/>
+                            </p:commandButton>
+                        </p:panelGrid>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="width: 20px;text-align: center">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>
+                    <p:column headerText="Número">
+                        <h:outputText value="#{nomina.numero}"/>
+                    </p:column>
+                    <p:column headerText="Ejercicio Fiscal">
+                        <h:outputText value="#{nomina.periodoNomina.ejercicioFiscal.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Periodo">
+                        <h:outputText value="#{nomina.periodoNomina.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{nomina.tipoNomina.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+
+                    <p:column headerText="Descripción">
+                        <h:outputText value="#{nomina.descripcion}" style="font-size: 10px;"/>
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                        <p:outputLabel value="#{nomina.estadoNombre}"/>
+                    </p:column>
+
+
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmConsultaMovimientoInsti:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

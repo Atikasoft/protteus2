@@ -1,0 +1,278 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.titulo']}"
+                                     controlador="#{tipoAnticipoBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.regimenLaboral']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="tipoAnticipo_regimenLaboral" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.regimenId}"
+                                         required="#{true}"
+                                         requiredMessage="El campo régimen laboral es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesRegimen}"/>                            
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.codigo']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="tipoAnticipo_codigo"                                      
+                                     styleClass="textoNemonico"
+                                     style="width: 200px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.codigo}"
+                                     required="true"
+                                     disabled="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"
+                                     requiredMessage="El campo código es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="tipoAnticipo_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>           
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="tipoAnticipo_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"/>    
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.rubro']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="tipoAnticipo_rubro" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.rubroId}"
+                                         required="#{true}"
+                                         requiredMessage="El campo rubro es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesRubro}"/>                            
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.diaDesde']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="tipoAnticipo_diasdesde" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.diaDesde}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Día Desde es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesDias}"/> 
+                            <p:ajax event="change" update="dias_"/>
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.diaHasta']}:"
+                                       styleClass="labelFormulario" />
+                        <p:outputPanel id="dias_">
+                            <p:selectOneMenu id="tipoAnticipo_diashasta" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.diaHasta}"
+                                             required="#{true}"
+                                             requiredMessage="El campo Día Hasta es requerido">
+                                <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesDias}"/> 
+                                <p:ajax event="change" listener="#{tipoAnticipoBean.validarRangoDias}" update="dias_"/>
+                            </p:selectOneMenu> 
+                        </p:outputPanel>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.mesDesde']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="tipoAnticipo_mesdesde" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.mesDesde}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Mes Desde es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesMeses}"/> 
+                            <p:ajax event="change" update="meses_"/>
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.mesHasta']}:"
+                                       styleClass="labelFormulario" />
+                        <p:outputPanel id="meses_">
+                            <p:selectOneMenu id="tipoAnticipo_meseshasta" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.mesHasta}"
+                                             required="#{true}"
+                                             requiredMessage="El campo Mes Hasta es requerido">
+                                <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesMeses}"/> 
+                                <p:ajax event="change" listener="#{tipoAnticipoBean.validarRangoMes}" update="meses_"/>
+                            </p:selectOneMenu> 
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.valorMaximo']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="tipoAnticipo_valorMaximo"                                      
+                                     styleClass="campoFloat"
+                                     style="width: 100px"
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.valorMaximo}"
+                                     required="true"
+                                     requiredMessage="El campo valor máximo es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.tipoTechoAnticipo']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="tipo" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoAnticipo}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Tipo Máximo Anticipo es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesTipoAnticipo}"/> 
+                            <p:ajax event="change" update="valorTechoAnticipoPanel,valorTechoAnticipoPanel1,porcentajeTechoAnticipoPanel, porcentajeTechoAnticipoPanel1" 
+                                    listener="#{tipoAnticipoBean.conciliarPorcentajeValorAnticipo}"/>
+                        </p:selectOneMenu> 
+                        <p:outputPanel id="valorTechoAnticipoPanel">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.valorTechoAnticipo']}:"
+                                           rendered="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoAnticipo == 'F'}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="valorTechoAnticipoPanel1">
+                            <p:inputText id="tipoAnticipo_techoAnticipo"                                      
+                                         styleClass="campoFloat"
+                                         style="width: 100px"
+                                         rendered="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoAnticipo == 'F'}"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.valorTechoAnticipo}"
+                                         required="true"
+                                         requiredMessage="El campo valor máximo de anticipo es requerido"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="porcentajeTechoAnticipoPanel">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.porcentajeTechoAnticipo']}:"
+                                           rendered="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoAnticipo == 'P'}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="porcentajeTechoAnticipoPanel1">
+                            <p:inputText id="tipoAnticipo_techoAnticipo_1"                                      
+                                         styleClass="campoNumerico"
+                                         style="width: 100px"
+                                         rendered="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoAnticipo == 'P'}"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.valorTechoAnticipo}"
+                                         required="true"
+                                         requiredMessage="El campo porcentaje máximo de anticipo es requerido">
+                                <f:validateLongRange minimum="0" maximum="1000" />
+                            </p:inputText>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.tipoTechoCuota']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="tipoAnticipo_tipo_cuota" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoTechoCuota}"
+                                         required="#{true}"
+                                         requiredMessage="El campo tipo cuota es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesTipoCuota}"/>   
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.porcentajeTechoCuota']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel id="panel_techocuota">
+                            <p:inputText id="tipoAnticipo_porcentajeTechoCuota"                                      
+                                         styleClass="campoNumerico"
+                                         style="width: 100px"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.valorTechoCuota}"
+                                         required="true"
+                                         requiredMessage="El campo porcentaje máximo de cuota es requerido">
+                                <p:ajax event="blur" listener="#{tipoAnticipoBean.validarRangoTechoCuota}" update="panel_techocuota"/>
+                            </p:inputText>
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.tipoGarantia']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="tipoAnticipo_tipo_garantia" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.tipoGarantia}"
+                                         required="#{true}"
+                                         requiredMessage="El campo tipo de garantía es requerido">
+                            <f:selectItems value="#{tipoAnticipoBean.tipoAnticipoHelper.listaOpcionesTipoGarantia}"/> 
+
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.porcentajeMaximoSaldoRenovacion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:outputPanel id="panelporcentajemaximo">
+                            <p:inputText id="tipoAnticipo_porcentaje_renovacion"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.porcentajeMaximoSaldoRenovacion}"
+                                         required="#{true}"
+                                         styleClass="campoNumerico"
+                                         requiredMessage="El campo porcentaje de saldo mínimo para Renovación es requerido"
+                                         style="width: 100px">
+                                <f:validateLongRange minimum="0" maximum="100"/>
+                            </p:inputText>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.porcentajeDiciembre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel id="panelPorcentajeDic">
+                            <p:inputText id="tipoAnticipo_porcentajeDiciembre"                                      
+                                         styleClass="campoNumerico"
+                                         style="width: 100px"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.porcentajeDescuentoDiciembre}"
+                                         required="true"
+                                         requiredMessage="El campo porcentaje de descuento para diciembre es requerido">
+                                <p:ajax event="blur" listener="#{tipoAnticipoBean.validarRangoDiciembre}" update="panelPorcentajeDic"/>
+                            </p:inputText>
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.plazoMaximoMeses']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel id="panelPlazoMeses">
+                            <p:inputText id="tipoAnticipo_plazoMaximoMeses"                                      
+                                         styleClass="campoNumérico"   style="width: 100px"
+                                         value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.plazoMaximoMeses}"
+                                         required="true"
+                                         requiredMessage="El campo plazo máximo en meses es requerido">
+                                <p:ajax event="blur" listener="#{tipoAnticipoBean.validarRangoPlazo}" update="panelPlazoMeses"/>
+                            </p:inputText>
+                        </p:outputPanel>         
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoAnticipo.transciendeEjercicioFiscal']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectBooleanCheckbox value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.transciendeEjercicioFiscal}" 
+                                                 required="true"
+                                                 requiredMessage="EL campo Trasciende de Ejercicio Fiscal es requerido"/>  
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.vigente}" 
+                                                 disabled="true"
+                                                 rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>
+                        <p:inputText id="tipoAnticipo_usuario_creo"
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>
+                        <p:inputText id="tipoAnticipo_fecha_creo"
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.fechaCreacion}"
+                                     rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"
+                                     disabled="true"   style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>
+                        <p:inputText id="tipoAnticipo_usuario_actua"
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.usuarioActualizacion}"
+                                     rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"
+                                     disabled="true"   style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"/>
+                        <p:inputText id="tipoAnticipo_fecha_actua"
+                                     value="#{tipoAnticipoBean.tipoAnticipoHelper.tipoAnticipo.fechaActualizacion}"
+                                     rendered="#{!(tipoAnticipoBean.tipoAnticipoHelper.esNuevo)}"
+                                     disabled="true"   style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

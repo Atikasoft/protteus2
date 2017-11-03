@@ -1,0 +1,271 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel id="pnlFiltros" header="#{msg['ec.gob.mq.proteus.administracion.generarClave.titulo']}">
+                    <p:spacer height="10"/>
+                    <h:panelGrid columns="2" id="botones">
+                        <p:commandButton id="btnMasivo"
+                                         value="#{msg['ec.gob.mq.proteus.administracion.generarClave.botonMasivo']}"
+                                         title="#{msg['ec.gob.mq.proteus.administracion.generarClave.botonMasivo']} PARA TODOS LOS SERVIDORES DEL MDMQ"                                 
+                                         onclick="confirmClave.show();" />  
+                        <p:commandButton id="btnSinClave"
+                                         value="#{msg['ec.gob.mrl.smp.procesos.novedades.titulo2']}"
+                                         title="#{msg['ec.gob.mrl.smp.procesos.novedades.titulo2']} DEL PROCESO DE GENERACIÓN MASIVA DE CLAVES"        
+                                         rendered="#{generarClaveBean.generarClaveHelper.listaServidorError.size()>0}"
+                                         update=":detServsinclave"
+                                         oncomplete="detDialog.show();"/>  
+                    </h:panelGrid>
+                   <p:separator/>
+                    <center>    
+                        <p:panel header="#{msg['ec.gob.mq.proteus.administracion.generarClave.msgFiltros']} " style="width: 370px;" >
+                            <p:panelGrid columns="2">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                               id="nombre_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="nombre"  
+                                              styleClass="textoNombre"
+                                              autocomplete="off"                                              
+                                              style="width: 200px" 
+                                              value="#{generarClaveBean.generarClaveHelper.nombreServidor}">     
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "                                                      
+                                               id="numeroDocumento_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"                                      
+                                              styleClass="textoNombre"
+                                              style="width: 200px" 
+                                              value="#{generarClaveBean.generarClaveHelper.numeroIdentificacion}">     
+                                </p:inputText>
+                                  <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.generarClave.botonSinClave']}:"
+                                               styleClass="labelFormulario"/>
+                                  <p:selectBooleanCheckbox value="#{generarClaveBean.generarClaveHelper.servidoresSinClave}" 
+                                                         disabled="false"/>
+                                <br/>
+                                <center>
+                                    <p:commandButton id="buscar"  
+                                                     value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"     
+                                                     title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                     actionListener="#{generarClaveBean.buscarServidor}"
+                                                     update="tablaServidores"/>                        
+                                </center>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+
+                    <p:panel id="tablaServidores" header="#{msg['ec.gob.mrl.smp.procesos.novedades.servidorPublico']} - Total Servidores: #{generarClaveBean.generarClaveHelper.listaServidores.size()}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{generarClaveBean.generarClaveHelper.listaServidores}"
+                                     var="servidor"
+                                     sortBy="#{servidor.servidor.apellidosNombres}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <f:facet name="header" rendered="#{generarClaveBean.generarClaveHelper.servidoresSinClave}">
+                                #{msg['ec.gob.mq.proteus.administracion.generarClave.tituloSinClave']}</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 60px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-pencil" 
+                                                 update=":popOpNuevo"
+                                                 action="#{generarClaveBean.iniciarEdicion(servidor)}" 
+                                                 title="#{msg['ec.gob.mq.proteus.administracion.generarClave.etiqueta']}">
+                                    <f:setPropertyActionListener value="#{servidor.distributivo.unidadOrganizacional.nombre}" 
+                                                                 target="#{generarClaveBean.generarClaveHelper.unidadOrganizacional}"/>
+                                    <f:setPropertyActionListener value="#{servidor.distributivo.modalidadLaboral.nombre}"
+                                                                 target="#{generarClaveBean.generarClaveHelper.modalidadLaboral}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                      style="width: 70px">                                                                 
+                                <h:outputText value="#{generarClaveBean.obtenerDescripcionTipoDocumento(servidor.servidor.tipoIdentificacion)}"/>                                
+                            </p:column>                            >
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                      style="width: 80px">                                                                 
+                                <h:outputText value="#{servidor.servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                      sortBy="#{servidor.servidor.apellidosNombres}" style="width:220px">                                                                 
+                                <h:outputText value="#{servidor.servidor.apellidosNombres}"/>                                
+                            </p:column>
+                            <p:column headerText="Con Clave" 
+                                      style="width:50px;text-align: center">                                                                 
+                                <p:selectBooleanCheckbox value="#{servidor.servidor.clave != null}" 
+                                                         disabled="true"/>                           
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.generarClave.fechaCaducidad']}" 
+                                      sortBy="#{servidor.servidor.fechaCaducidad}" style="width:90px">                                                                 
+                                <h:outputText value="#{servidor.servidor.fechaCaducidad}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column> 
+                            
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+            </h:form>
+
+            <!-- Nuevo registro -->
+            <p:dialog id="popOpNuevo" rendered="#{generarClaveBean.generarClaveHelper.servidor!=null}"
+                      header="#{msg['ec.gob.mq.proteus.administracion.generarClave.etiqueta']}: #{generarClaveBean.generarClaveHelper.servidor.apellidosNombres}" 
+                      widgetVar="editDialog" modal="true">  
+                <h:form id="formEditar">
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <center>
+                            <h:panelGrid columns="4" id="tablaformulario">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="gen_clave_servidorTipoIdentificacion"
+                                             styleClass="textoNemonico"
+                                             disabled="#{true}"
+                                             value="#{generarClaveBean.obtenerDescripcionTipoDocumento(
+                                                      generarClaveBean.generarClaveHelper.servidor.tipoIdentificacion)}"
+                                             style="width: 200px"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="gen_clave_servidorNumeroIdentificacionn"
+                                             styleClass="textoNemonico"
+                                             value="#{generarClaveBean.generarClaveHelper.servidor.numeroIdentificacion}"
+                                             disabled="#{true}" style="width: 200px"/>                           
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="gen_clave_servidorNombres"
+                                                 styleClass="textoNemonico"
+                                                 value="#{generarClaveBean.generarClaveHelper.servidor.apellidosNombres}"
+                                                 disabled="#{true}" style="width: 200px"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="gen_clave_unidadOrganizacional"
+                                                 styleClass="textoNemonico"
+                                                 value="#{generarClaveBean.generarClaveHelper.unidadOrganizacional}"
+                                                 disabled="#{true}" style="width: 200px"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.modalidadLaboral.nombre']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="gen_clave_modalidadLaboral"
+                                                 styleClass="textoNemonico"
+                                                 value="#{generarClaveBean.generarClaveHelper.modalidadLaboral}"
+                                                 disabled="#{true}" style="width: 200px"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.correoElectrónico']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="gen_clave_correo"
+                                                 rendered="#{generarClaveBean.generarClaveHelper.servidor.mail != null}"
+                                                 value="#{generarClaveBean.generarClaveHelper.servidor.mail}"
+                                                 disabled="#{true}" style="width: 200px"/>       
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.generarClave.msgSinCorreo']}"
+                                               rendered="#{generarClaveBean.generarClaveHelper.servidor.mail == null}"
+                                               styleClass="labelFormulario" style="color: red; "/>
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.generarClave.clave']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectBooleanCheckbox value="#{generarClaveBean.generarClaveHelper.servidor.clave != null}" 
+                                                         disabled="true"/>
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.generarClave.fechaCaducidad']}:"
+                                               styleClass="labelFormulario" />
+                                <p:inputText id="clavefecha_caduca_clave"
+                                             value="#{generarClaveBean.generarClaveHelper.servidor.fechaCaducidad}"
+                                             disabled="true" style="width: 200px">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </p:inputText>
+
+                            </h:panelGrid>
+                        </center>
+                    </p:panel>
+                    <br/>  <p:separator/>
+                    <p:outputPanel id="editPanel">  
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:panelGrid columns="2">
+                                <p:commandButton id="btnAceptar"
+                                                 rendered="#{generarClaveBean.generarClaveHelper.servidor.mail != null}"
+                                                 value="#{msg['ec.gob.mq.proteus.administracion.generarClave.boton']}"
+                                                 title="#{msg['ec.gob.mq.proteus.administracion.generarClave.boton']}"                                 
+                                                 action="#{generarClaveBean.guardar()}"/>     
+
+                                <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                                 onclick="editDialog.hide()" 
+                                                 type="button" 
+                                                 style="margin: auto"/>                         
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog>  
+            <!-- CONFIRMACION DE GENERACION MASIVA DE CLAVES-->
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mq.proteus.administracion.generarClave.msgMasivo']}"
+                             header="GENERACIÓN MASIVA DE CLAVES DE ACCESO PARA EL SISTEMA SIGEN" 
+                             severity="alert" 
+                             style="color: red; font-weight: bold"
+                             widgetVar="confirmClave">  
+                <div style="text-align: center">
+                    <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                     style="margin: auto"
+                                     actionListener="#{generarClaveBean.guardarMasivo()}"
+                                     update=":frmPrincipal:botones"
+                                     oncomplete="confirmClave.hide()"  />  
+                    <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="confirmClave.hide()" 
+                                     type="button" 
+                                     style="margin: auto"/> 
+                </div>
+            </p:confirmDialog> 
+
+            <!-- PopUp de Detalle de servidores sin mail -->
+            <p:dialog modal="true"    resizable="false"  width="950"   height="350"
+                      draggable="true" header="SERVIDORES SIN CUENTA DE CORREO ELECTRÓNICO - Total Registros: #{generarClaveBean.generarClaveHelper.listaServidorError.size()}"
+                      id="detServsinclave"
+                      widgetVar="detDialog" closable="false">
+                <h:form id="frmDetalles">
+                    <center>
+                        <p:scrollPanel style="width:900px;height:300px;"  mode="native">  
+                            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                                <p:dataTable id="tablaServidoresSinClave"
+                                             value="#{generarClaveBean.generarClaveHelper.listaServidorError}"
+                                             var="servidor"
+                                             sortBy="#{servidor.apellidosNombres}"
+                                             paginator="#{true}"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             filterEvent="enter"
+                                             rowIndexVar="rowIndex">
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                              style="text-align: center; width: 50px">
+                                        <h:outputText value="#{rowIndex+1}"/>                                
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                              style="width: 70px">                                                                 
+                                        <h:outputText value="#{generarClaveBean.obtenerDescripcionTipoDocumento(servidor.tipoIdentificacion)}"/>                                
+                                    </p:column>                            >
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                              filterBy="#{servidor.numeroIdentificacion}" filterMatchMode="contains"
+                                              style="width: 80px">                                                                 
+                                        <h:outputText value="#{servidor.numeroIdentificacion}"/>                                
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                              sortBy="#{servidor.apellidosNombres}" style="width:220px"
+                                              filterBy="#{servidor.apellidosNombres}" filterMatchMode="contains">                                                                 
+                                        <h:outputText value="#{servidor.apellidosNombres}"/>                                
+                                    </p:column> 
+                                </p:dataTable>
+                            </p:panel>    
+                        </p:scrollPanel>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="detDialog.hide()"
+                                         style="margin: auto" >
+                        </p:commandButton>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

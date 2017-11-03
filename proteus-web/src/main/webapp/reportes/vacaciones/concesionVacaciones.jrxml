@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="168"/>
+	<parameter name="APELLIDOS" class="java.lang.String"/>
+	<parameter name="NOMBRES" class="java.lang.String"/>
+	<parameter name="TIPO_DOCUMENTO" class="java.lang.String"/>
+	<parameter name="NUMERO_DOCUMENTO" class="java.lang.String"/>
+	<parameter name="FECHA_DESDE" class="java.lang.String"/>
+	<parameter name="FECHA_HASTA" class="java.lang.String"/>
+	<parameter name="EXPLICACION" class="java.lang.String"/>
+	<parameter name="PARTIDA_PRESUPUESTARIA" class="java.lang.String"/>
+	<parameter name="REMUNERACION" class="java.lang.Number"/>
+	<parameter name="MOVIMIENTO_PERSONAL" class="java.lang.String"/>
+	<parameter name="ACCION_PERSONAL" class="java.lang.String"/>
+	<parameter name="FECHA_ACTUAL" class="java.lang.String"/>
+	<parameter name="PROCESO" class="java.lang.String"/>
+	<parameter name="PUESTO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="802">
+			<rectangle>
+				<reportElement x="10" y="87" width="514" height="34" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="105" width="245" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="20" y="93" width="245" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{APELLIDOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="265" y="105" width="250" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="93" width="250" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NOMBRES}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="10" y="124" width="514" height="42" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="140" width="110" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Nº Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="140" width="27" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Hasta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="130" y="128" width="96" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TIPO_DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="128" width="110" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Documento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="255" y="140" width="74" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Rige a Partir Desde:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="329" y="140" width="76" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_DESDE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="152" width="96" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="431" y="140" width="76" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_HASTA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="152" width="110" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Nº de Afiliación al IESS:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="192" width="514" height="33" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="204" width="67" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EXPLICACIÓN:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="169" width="514" height="20" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="10" y="228" width="514" height="114" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<textField>
+				<reportElement x="255" y="174" width="259" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{MOVIMIENTO_PERSONAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="87" y="196" width="427" height="25"/>
+				<textElement textAlignment="Justified">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EXPLICACION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="174" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[MOVIMIENTO PERSONAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="232" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SITUACIÓN ACTUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="244" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PROCESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="256" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SUBPROCESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="268" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="280" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LUGAR DE TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="316" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRESUPUESTARIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="292" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[REMUNERACIÓN MENSUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="304" width="105" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SUELDO SALARIO BÁSICO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="268" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="280" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LUGAR DE TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="232" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SITUACIÓN PROPUESTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="244" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PROCESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="292" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[REMUNERACIÓN MENSUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="256" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SUBPROCESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="316" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRESUPUESTARIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="304" width="115" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SUELDO SALARIO BÁSICO:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="345" width="514" height="50" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="350" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACTA FINAL DEL CONCURSO DE MERITOS Y OPOSICIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="369" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="381" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="267" y="350" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[PROCESO DIRECCIÓN DE RECURSOS HUMANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="267" y="381" width="118" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Resp. De Recursos Humanos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="267" y="369" width="118" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="398" width="514" height="50" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="52" y="403" width="139" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DIOS, PATRIA Y LIBERTAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="52" y="434" width="139" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[AUTORIDAD NOMINADORA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="422" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="452" width="514" height="42" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="270" y="468" width="134" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="52" y="456" width="174" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[RECURSOS HUMANOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="480" width="134" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Responsable de Registro y Control]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="468" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="480" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="498" width="514" height="42" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="502" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PUESTO SUJETO A CAUSION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="514" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="526" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="544" width="514" height="42" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="572" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN DE PERSONAL REGISTRADA CON No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="548" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LA PERSONA REEMPLAZA A:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="560" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[QUIEN CESO EN FUNCIONES POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="364" y="572" width="150" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="364" y="548" width="150" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[EN EL PUESTO:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="590" width="514" height="69" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="594" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[POSICIÓN DEL CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="606" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Yo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="618" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[JURO LEALTAD AL ESTADO ECUATORIANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="642" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="630" width="206" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LUGAR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="606" width="120" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CON CEDULA DE CIUDADANÍA No.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="663" width="514" height="42" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="271" y="684" width="134" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Responsable de Recursos Humanos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="672" width="134" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="672" width="31" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="684" width="81" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Servidor/Servidora]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="130" y="140" width="96" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NUMERO_DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="292" width="244" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REMUNERACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="328" width="244" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PARTIDA_PRESUPUESTARIA}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="340" y="15" width="184" height="72" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="340" y="21" width="184" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN DE PERSONAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="340" y="42" width="185" height="16"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ACCION_PERSONAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="358" y="67" width="40" height="12" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="398" y="67" width="102" height="12"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="244" width="244" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PROCESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="268" width="244" height="12"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PUESTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

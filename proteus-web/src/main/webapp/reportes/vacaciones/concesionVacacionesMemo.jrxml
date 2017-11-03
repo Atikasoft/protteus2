@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="144"/>
+	<parameter name="APELLIDOS" class="java.lang.String"/>
+	<parameter name="NOMBRES" class="java.lang.String"/>
+	<parameter name="TIPO_DOCUMENTO" class="java.lang.String"/>
+	<parameter name="NUMERO_DOCUMENTO" class="java.lang.String"/>
+	<parameter name="FECHA_DESDE" class="java.lang.String"/>
+	<parameter name="FECHA_HASTA" class="java.lang.String"/>
+	<parameter name="EXPLICACION" class="java.lang.String"/>
+	<parameter name="FECHA_ACTUAL" class="java.lang.String"/>
+	<parameter name="PROCESO" class="java.lang.String"/>
+	<parameter name="FECHA_REINTEGRO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="802">
+			<rectangle>
+				<reportElement x="10" y="83" width="514" height="664" forecolor="#CCCCCC" backcolor="#FFFFFF"/>
+			</rectangle>
+			<textField>
+				<reportElement x="21" y="159" width="245" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{APELLIDOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="266" y="179" width="250" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="266" y="159" width="250" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NOMBRES}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="242" width="110" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Nº Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="242" width="41" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Hasta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="131" y="219" width="110" height="20"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TIPO_DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="219" width="110" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Documento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="256" y="242" width="74" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Rige a Partir Desde:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="330" y="242" width="74" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_DESDE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="445" y="242" width="71" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_HASTA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="267" width="110" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Reintegro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="394" width="81" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EXPLICACIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="375" width="414" height="63"/>
+				<textElement textAlignment="Justified">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EXPLICACION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="326" width="110" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="false" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PROCESO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="131" y="267" width="110" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_REINTEGRO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="203" y="502" width="139" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[AUTORIDAD ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="171" y="490" width="31" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="298" y="638" width="134" height="33" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Responsable de Talento Humano]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="298" y="578" width="134" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="583" width="123" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[f.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="638" width="123" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Servidor/Servidora]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="179" width="245" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="131" y="242" width="125" height="20"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NUMERO_DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="131" y="326" width="385" height="20"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PROCESO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="63" width="514" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CONCESIÓN DE VACACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="342" y="94" width="49" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="391" y="94" width="133" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_ACTUAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

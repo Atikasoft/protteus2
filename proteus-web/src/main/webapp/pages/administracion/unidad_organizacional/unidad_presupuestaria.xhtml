@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+
+            <h:form id="frmPrincipal">               
+
+                <p:panel>
+                    <div>
+                        <p:commandButton id="guardarBtn" 
+                                         ajax="#{false}" 
+                                         action="#{unidadPresupuestariaBean.guardar()}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{unidadPresupuestariaBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                    </div>
+                </p:panel>
+                <p:panel id="panelubg" style="overflow: auto;" header="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.titulo']}">
+                    <h:panelGrid id="panelfrm" columns="2">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.sector']}:"/>
+                        <p:selectOneMenu value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.sector.id}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true" 
+                                         style="width: 200px"
+                                         disabled="#{not unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo}" 
+                                         requiredMessage="El Sector presupuestario es un campo requerido">
+                            <f:selectItems value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.listaSectores}"/>
+                            <p:ajax update="codigoSectorId codigoId" listener="#{unidadPresupuestariaBean.buscarCodigo()}"/> 
+                        </p:selectOneMenu>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.codigo']}:"/>
+                        <p:panel style="border: none" rendered="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo}">
+                            <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.sector.codigo}" 
+                                         id="codigoSectorId"
+                                         style="width: 20px; text-align: right"
+                                         rendered="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo}"
+                                         disabled="true"
+                                         styleClass="textoNombre"/>
+                            <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.codigo}" 
+                                         required="true"
+                                         style="width: 160px"
+                                         requiredMessage="El código es un campo requerido"
+                                         styleClass="textoNombre"/>
+                        </p:panel>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.sector.codigo}#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.codigo}" 
+                                         required="true"
+                                         id="codigoId"
+                                         style="width: 200px" rendered="#{not unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo}"
+                                         disabled="true"
+                                         requiredMessage="El código es un campo requerido"
+                                         styleClass="textoNombre"/>
+                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.codigoInterno']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.codigoInterno}" 
+                                     required="true" disabled="#{not (unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"
+                                     style="width: 200px" maxlength="30" id="codigoInterno"
+                                     requiredMessage="El código interno es un campo requerido"
+                                     styleClass="textoNombre"/>
+                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.nombre']}:"/>
+                        <p:inputTextarea value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.nombre}" 
+                                         required="true"
+                                         style="width: 200px"
+                                         requiredMessage="El nombre es un campo requerido"
+                                         styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.tipo']}:"/>
+                        <p:selectOneMenu value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.tipo}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true"  style="width: 200px"
+                                         requiredMessage="El tipo es un campo requerido">
+                            <f:selectItems value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.listaTipos}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.grupo']}:"/>
+                        <p:selectOneMenu value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.grupoPresupuestario}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true" 
+                                         requiredMessage="El Grupo presupuestario es un campo requerido">
+                            <f:selectItems value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.listaGruposPresupuestarios}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.sociedad']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.sociedad}" 
+                                     maxlength="4"                                     
+                                     style="width: 40px"
+                                     required="true" 
+                                     requiredMessage="La sociedad es un campo requerido"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.centroCosto']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.centroCosto}" 
+                                     maxlength="4"
+                                     style="width: 40px"
+                                     required="true" 
+                                     requiredMessage="El Centro de Costo es un campo requerido"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.centroGestor']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.centroGestor}" 
+                                     maxlength="8"
+                                     style="width: 80px"
+                                     required="true" 
+                                     requiredMessage="El centro de gestor es un campo requerido"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.fondo']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.fondo}" 
+                                     required="true" 
+                                     requiredMessage="El Fondo presupuestario es un campo requerido"
+                                     style="width: 150px"
+                                     styleClass="textoNombre" />
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.proyecto']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.proyecto}" 
+                                     maxlength="30"
+                                     required="true" 
+                                     requiredMessage="El Proyecto es un campo requerido"
+                                     style="width: 150px"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.programa']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.programa}" 
+                                     maxlength="10"
+                                     required="true" 
+                                     requiredMessage="El Programa es un campo requerido"
+                                     style="width: 150px"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.ruc']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.ruc}" 
+                                     maxlength="13"
+                                     required="true" 
+                                     requiredMessage="El RUC es un campo requerido"
+                                     style="width: 150px"
+                                     styleClass="textoNombre" />
+<!--                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestariaContrato']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.certificacionPresupuestariaContratos}" 
+                                     maxlength="20"
+                                     style="width: 150px"
+                                     styleClass="campoNumerico" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestariaJubilados']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.certificacionPresupuestariaJubilados}" 
+                                     maxlength="20"
+                                     style="width: 150px"
+                                     styleClass="campoNumerico" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestariaPasantes']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.certificacionPresupuestariaPasantes}" 
+                                     maxlength="20"
+                                     style="width: 150px"
+                                     styleClass="campoNumerico" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestariaServiciosProfesionales']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.certificacionPresupuestariaServiciosProfesionales}" 
+                                     maxlength="20"
+                                     style="width: 150px"
+                                     styleClass="campoNumerico" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestariaConcejalesAlternos']}:"/>
+                        <p:inputText value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.certificacionPresupuestariaConcejalesAlternos}" 
+                                     maxlength="20"
+                                     style="width: 150px"
+                                     styleClass="campoNumerico" />-->
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.rrhh']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.rrhh}" />
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.vigente}" 
+                                                 rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"/>
+                        <p:inputText id="unidadPresupuestaria_usuario_creo"
+                                     value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}" style="width: 200px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"/>
+                        <p:inputText id="unidadPresupuestaria_fecha_creo"
+                                     value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.fechaCreacion}"
+                                     rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"/>
+                        <p:inputText id="unidadPresupuestaria_usuario_actual"
+                                     value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.usuarioActualizacion}"
+                                     rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"/>
+                        <p:inputText id="unidadPresupuestaria_fecha_actual"
+                                     value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestaria.fechaActualizacion}"
+                                     rendered="#{!(unidadPresupuestariaBean.unidadPresupuestariaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>           
+                </p:panel>
+            </h:form>   
+        </ui:define>
+    </ui:composition>
+</html>

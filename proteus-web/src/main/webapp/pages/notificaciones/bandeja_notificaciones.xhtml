@@ -1,0 +1,155 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmListaNotificaciones">        
+                <p:panel header="NOTIFICACIONES" 
+                         id="panelOpcionesLista">
+                    <h:panelGrid columns="2" 
+                                 id="panelOptDesigPie">
+                        <p:commandButton id="panelOptBtnNuevo" 
+                                         rendered="#{notificacionBean.notificacionHelper.enviarNotificaciones}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{notificacionBean.iniciarNuevo}"
+                                         update=":frmNotificacion"/>
+
+                        <p:commandButton id="panelOptBtnSalir" 
+                                         ajax="#{false}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{notificacionBean.salirPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <br/>
+                    <h:panelGrid columns="2" 
+                                 id="panelOpEnvRec">
+                        <p:outputLabel value="Enviadas/Recibidas: "/>
+                        <p:selectOneMenu id="opEnvRec"
+                                         value="#{notificacionBean.notificacionHelper.opcionEnviadasRecibidas}">
+                            <f:selectItems value="#{notificacionBean.notificacionHelper.opcionesEnviadasRecibidas}"/>
+                            <p:ajax update="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                                    listener="#{notificacionBean.seleccionarOpcionEnviadasRecibidas}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <br/>
+                    <p:dataTable id="tblNotificacionesRecibidas"
+                                 rendered="#{notificacionBean.notificacionHelper.mostrarRecibidas}"
+                                 value="#{notificacionBean.notificacionHelper.notificacionesRecibidas}"
+                                 var="destinatarioNotificacion"
+                                 paginator="#{true}"
+                                 paginatorPosition="bottom"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}">   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width:25px">
+                            <p:commandButton id="btnLeer" 
+                                             icon="#{notificacionBean.notificacionleida(destinatarioNotificacion.estado) 
+                                                     ? 'ui-icon-mail-open' : 'ui-icon-mail-closed'}"
+                                             title="Ver notificación"
+                                             immediate="true"
+                                             action="#{notificacionBean.iniciarEdicion}"
+                                             update=":frmNotificacion :frmNotificaciones:btnNotificaciones tblNotificacionesRecibidas">
+                                <f:setPropertyActionListener value="#{destinatarioNotificacion}" 
+                                                             target="#{notificacionBean.notificacionHelper.destinatarioNotificacion}"/>
+                                <f:setPropertyActionListener value="#{destinatarioNotificacion.notificacion}" 
+                                                             target="#{notificacionBean.notificacionHelper.notificacion}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="No" 
+                                  style="text-align: center; width: 15px; #{notificacionBean.obtenerEstiloEstado(destinatarioNotificacion.estado)}">
+                            <h:outputText value="#{rowIndex + 1}"/>                                
+                        </p:column>
+
+                        <p:column headerText="Fecha" 
+                                  style="text-align: center; width: 120px; #{notificacionBean.obtenerEstiloEstado(destinatarioNotificacion.estado)}">
+                            <h:outputText value="#{destinatarioNotificacion.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>                                
+                        </p:column>
+
+                        <p:column headerText="Remitente" 
+                                  style="width: 250px; #{notificacionBean.obtenerEstiloEstado(destinatarioNotificacion.estado)}"
+                                  sortBy="#{destinatarioNotificacion.notificacion.remitente.apellidosNombres}"
+                                  filterBy="#{destinatarioNotificacion.notificacion.remitente.apellidosNombres}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{destinatarioNotificacion.notificacion.remitente.apellidosNombres}"/>
+                        </p:column>
+
+                        <p:column headerText="Asunto" 
+                                  style="width: 320px; #{notificacionBean.obtenerEstiloEstado(destinatarioNotificacion.estado)}"
+                                  sortBy="#{destinatarioNotificacion.notificacion.asunto}"
+                                  filterBy="#{destinatarioNotificacion.notificacion.asunto}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{destinatarioNotificacion.notificacion.asunto}"/>                      
+                        </p:column>
+
+                        <p:column headerText="Estado" 
+                                  style="width: 15px; text-align: center; #{notificacionBean.obtenerEstiloEstado(destinatarioNotificacion.estado)}"
+                                  sortBy="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatarioNotificacion.estado)}"
+                                  filterBy="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatarioNotificacion.estado)}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatarioNotificacion.estado)}"/>                      
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:dataTable id="tblNotificacionesEnviadas"
+                                 rendered="#{!notificacionBean.notificacionHelper.mostrarRecibidas}"
+                                 value="#{notificacionBean.notificacionHelper.notificacionesEnviadas}"
+                                 var="notificacion"
+                                 paginator="#{true}"
+                                 paginatorPosition="bottom"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}">   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width:25px">
+
+                            <p:commandButton id="btnLeer" 
+                                             icon="ui-icon-clipboard"
+                                             title="Ver notificación"
+                                             immediate="true"
+                                             action="#{notificacionBean.iniciarEdicion}"
+                                             update=":frmNotificacion">
+                                <f:setPropertyActionListener value="#{notificacion}" 
+                                                             target="#{notificacionBean.notificacionHelper.notificacion}"/>
+                                <f:setPropertyActionListener value="#{null}" 
+                                                             target="#{notificacionBean.notificacionHelper.destinatarioNotificacion}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="No" 
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex + 1}"/>                                
+                        </p:column>
+
+                        <p:column headerText="Fecha" 
+                                  style="text-align: center; width: 115px">
+                            <h:outputText value="#{notificacion.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>                                 
+                        </p:column>
+
+                        <p:column headerText="Asunto" 
+                                  sortBy="#{notificacion.asunto}"
+                                  filterBy="#{notificacion.asunto}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{notificacion.asunto}"/>                      
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+
+            </h:form>
+            <ui:include src="notificacion.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>

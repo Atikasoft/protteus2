@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+             <h:form>     
+              <div style="text-align: left">
+                    <p:commandButton id="acpe" value="#{msg['message.btn.regresar']}" ajax="false" 
+                                     action="#{metadataTablaBean.irLista}" process="@this"/> 
+                </div>
+            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                     header="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.titulo']}">
+                    <h:panelGrid columns="2" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataTabla.tabla']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="metadataTabla_codigo"
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.tabla}"
+                                     disabled="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"
+                                     required="true" style="width: 400px"/>
+                           
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataTabla.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="metadataTabla_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.nombre}"
+                                         required="true" disabled="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+                         <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataTabla.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="metadataTabla_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.descripcion}"
+                                         required="true" disabled="true"
+                                         requiredMessage="El campo descripción es requerido"/> 
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.vigente}" 
+                                                 rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataTabla_usuario_creo"
+                                     value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}" style="width: 250px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataTabla_fecha_creo"
+                                     value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.fechaCreacion}"
+                                     rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataTabla_usuario_actual"
+                                     value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.usuarioActualizacion}"
+                                     rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"
+                                     disabled="true" style="width: 250px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataTabla_fecha_actual"
+                                     value="#{metadataTablaBean.metadataTablaHelper.metadataTabla.fechaActualizacion}"
+                                     rendered="#{!(metadataTablaBean.metadataTablaHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>                    
+                </p:panel>
+             </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

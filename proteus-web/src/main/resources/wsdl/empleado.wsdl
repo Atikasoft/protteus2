@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="consultaDatosRRHH">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="inCedula" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="inApellidoNombre" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="inDependencias" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="consultaDatosRRHHResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consultaDatosRRHHResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfClsEntidadRecursosHumanos">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="clsEntidadRecursosHumanos" nillable="true" type="tns:clsEntidadRecursosHumanos" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="clsEntidadRecursosHumanos">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CedulaRRHH" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreRRHH" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ApellidoRRHH" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="SueldorRRHH" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="DescripcionPuestoRRHH" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MailRRHH" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaNacimiento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Telefono" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nacionalidad" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sexo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Regimen" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreGrado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaIngreso" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Dependencia" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Denominacion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Codigo" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Codigo_regimen" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Codigo_c_grados" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Grupo_ocupacional" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Codigo_u_administrativa" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombre_u_adminsitrativa" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id_dependencia" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="situacionHistoricaEmpleado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="inCodEmpleado" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="inAno" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="inMes" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="situacionHistoricaEmpleadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="situacionHistoricaEmpleadoResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="dependenciaHistoricaEmpleado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="inCodEmpleado" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="dependenciaHistoricaEmpleadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="dependenciaHistoricaEmpleadoResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="regimenHistoricoEmpleado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="inCodEmpleado" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="regimenHistoricoEmpleadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="regimenHistoricoEmpleadoResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="recuperaIDEmpleado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="inCedula" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="inApellidos" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="recuperaIDEmpleadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="recuperaIDEmpleadoResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="consultaDatosRRHHUnidades">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="inDependencias" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="consultaDatosRRHHUnidadesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consultaDatosRRHHUnidadesResult" type="tns:ArrayOfClsEntidadRecursosHumanos" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="consultaDatosRRHHSoapIn">
+    <wsdl:part name="parameters" element="tns:consultaDatosRRHH" />
+  </wsdl:message>
+  <wsdl:message name="consultaDatosRRHHSoapOut">
+    <wsdl:part name="parameters" element="tns:consultaDatosRRHHResponse" />
+  </wsdl:message>
+  <wsdl:message name="situacionHistoricaEmpleadoSoapIn">
+    <wsdl:part name="parameters" element="tns:situacionHistoricaEmpleado" />
+  </wsdl:message>
+  <wsdl:message name="situacionHistoricaEmpleadoSoapOut">
+    <wsdl:part name="parameters" element="tns:situacionHistoricaEmpleadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="dependenciaHistoricaEmpleadoSoapIn">
+    <wsdl:part name="parameters" element="tns:dependenciaHistoricaEmpleado" />
+  </wsdl:message>
+  <wsdl:message name="dependenciaHistoricaEmpleadoSoapOut">
+    <wsdl:part name="parameters" element="tns:dependenciaHistoricaEmpleadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="regimenHistoricoEmpleadoSoapIn">
+    <wsdl:part name="parameters" element="tns:regimenHistoricoEmpleado" />
+  </wsdl:message>
+  <wsdl:message name="regimenHistoricoEmpleadoSoapOut">
+    <wsdl:part name="parameters" element="tns:regimenHistoricoEmpleadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="recuperaIDEmpleadoSoapIn">
+    <wsdl:part name="parameters" element="tns:recuperaIDEmpleado" />
+  </wsdl:message>
+  <wsdl:message name="recuperaIDEmpleadoSoapOut">
+    <wsdl:part name="parameters" element="tns:recuperaIDEmpleadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="consultaDatosRRHHUnidadesSoapIn">
+    <wsdl:part name="parameters" element="tns:consultaDatosRRHHUnidades" />
+  </wsdl:message>
+  <wsdl:message name="consultaDatosRRHHUnidadesSoapOut">
+    <wsdl:part name="parameters" element="tns:consultaDatosRRHHUnidadesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="wsEmpleadoSoap">
+    <wsdl:operation name="consultaDatosRRHH">
+      <wsdl:input message="tns:consultaDatosRRHHSoapIn" />
+      <wsdl:output message="tns:consultaDatosRRHHSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="situacionHistoricaEmpleado">
+      <wsdl:input message="tns:situacionHistoricaEmpleadoSoapIn" />
+      <wsdl:output message="tns:situacionHistoricaEmpleadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="dependenciaHistoricaEmpleado">
+      <wsdl:input message="tns:dependenciaHistoricaEmpleadoSoapIn" />
+      <wsdl:output message="tns:dependenciaHistoricaEmpleadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="regimenHistoricoEmpleado">
+      <wsdl:input message="tns:regimenHistoricoEmpleadoSoapIn" />
+      <wsdl:output message="tns:regimenHistoricoEmpleadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="recuperaIDEmpleado">
+      <wsdl:input message="tns:recuperaIDEmpleadoSoapIn" />
+      <wsdl:output message="tns:recuperaIDEmpleadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="consultaDatosRRHHUnidades">
+      <wsdl:input message="tns:consultaDatosRRHHUnidadesSoapIn" />
+      <wsdl:output message="tns:consultaDatosRRHHUnidadesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsEmpleadoSoap" type="tns:wsEmpleadoSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="consultaDatosRRHH">
+      <soap:operation soapAction="http://tempuri.org/consultaDatosRRHH" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="situacionHistoricaEmpleado">
+      <soap:operation soapAction="http://tempuri.org/situacionHistoricaEmpleado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="dependenciaHistoricaEmpleado">
+      <soap:operation soapAction="http://tempuri.org/dependenciaHistoricaEmpleado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="regimenHistoricoEmpleado">
+      <soap:operation soapAction="http://tempuri.org/regimenHistoricoEmpleado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="recuperaIDEmpleado">
+      <soap:operation soapAction="http://tempuri.org/recuperaIDEmpleado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="consultaDatosRRHHUnidades">
+      <soap:operation soapAction="http://tempuri.org/consultaDatosRRHHUnidades" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsEmpleadoSoap12" type="tns:wsEmpleadoSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="consultaDatosRRHH">
+      <soap12:operation soapAction="http://tempuri.org/consultaDatosRRHH" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="situacionHistoricaEmpleado">
+      <soap12:operation soapAction="http://tempuri.org/situacionHistoricaEmpleado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="dependenciaHistoricaEmpleado">
+      <soap12:operation soapAction="http://tempuri.org/dependenciaHistoricaEmpleado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="regimenHistoricoEmpleado">
+      <soap12:operation soapAction="http://tempuri.org/regimenHistoricoEmpleado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="recuperaIDEmpleado">
+      <soap12:operation soapAction="http://tempuri.org/recuperaIDEmpleado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="consultaDatosRRHHUnidades">
+      <soap12:operation soapAction="http://tempuri.org/consultaDatosRRHHUnidades" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsEmpleado">
+    <wsdl:port name="wsEmpleadoSoap" binding="tns:wsEmpleadoSoap">
+      <soap:address location="http://localhost:8080/wsEmpleado.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsEmpleadoSoap12" binding="tns:wsEmpleadoSoap12">
+      <soap12:address location="http://localhost:8080/wsEmpleado.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.cotizacionIessEspecial.titulo']}"
+                                     controlador="#{cotizacionIessEspecialBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+
+                    <h:panelGrid columns="3">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.cotizacionIessEspecial.nombre']}:"
+                                      /> 
+                        <p:inputText id="nombre" 
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.nombre}"                                      
+                                     required="#{true}" maxlength="150"
+                                     requiredMessage="El nombre es un campo requerido."/>
+                        <p:message for="nombre" showDetail="false" display="icon"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.cotizacionIessEspecial.porcentajeAporteIndividual']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="aporteIndividual" 
+                                     styleClass="campoDecimal" 
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.porcentajeAporteIndividual}"
+                                     required="#{true}"
+                                     requiredMessage="El porcentaje aporte individual es un campo requerido."
+                                     />
+                        <p:message for="aporteIndividual" showDetail="false" display="icon"/> 
+                        
+                        <h:outputText value="* #{msg['ec.gob.mrl.smp.administracion.cotizacionIessEspecial.porcentajeAportePatronal']}:"/> 
+                        <p:inputText id="aportePatronal" 
+                                     styleClass="campoDecimal" 
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.porcentajeAportePatronal}"
+                                     required="#{true}"
+                                     requiredMessage="El porcentaje aporte patronal es un campo requerido."
+                                     />
+                        <p:message for="aportePatronal" showDetail="false" display="icon" />
+                        
+                        
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.vigente}" 
+                                                 disabled="true"
+                                                 rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>  
+                        <h:outputText /> 
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>
+                        <p:inputText id="clase_usuario_creo"
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}" style="width: 200px"/>
+                        <h:outputText />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>
+                        <p:inputText id="clase_fecha_creo"
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.fechaCreacion}"
+                                     rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <h:outputText />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>
+                        <p:inputText id="clase_usuario_actual"
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.usuarioActualizacion}"
+                                     rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>   
+                        <h:outputText />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"/>
+                        <p:inputText id="clase_fecha_actual"
+                                     value="#{cotizacionIessEspecialBean.cotizacionIessEspecialHelper.cotizacionIessEspecial.fechaActualizacion}"
+                                     rendered="#{!(cotizacionIessEspecialBean.cotizacionIessEspecialHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <h:outputText />
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,284 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel >
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{reclutamientoBean.iniciarNuevo()}"
+                                         ajax="false"/>
+                        <p:commandButton value="MASIVO" 
+                                         action="#{reclutamientoBean.inciarReclutamientoMasivo}"/>
+                        <p:commandButton value="SALIR"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{reclutamientoBean.buscar()}"/>
+                    </h:panelGrid>
+                </p:panel >
+
+                <p:panel id="pnlFiltros" header="Reclutamiento de Personal">
+                    <center>
+                        <p:panelGrid columns="7">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                           id="nombre_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="nombre"  
+                                          styleClass="textoNombre"
+                                          autocomplete="off"                                              
+                                          style="width: 200px" 
+                                          value="#{reclutamientoBean.reclutamientoHelper.nombreServidor}"/>     
+
+                            <h:outputLabel value="Identificación: "                                                      
+                                           id="numeroDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="numeroDocumento"  
+                                          autocomplete="off"                                      
+                                          styleClass="textoNombre"
+                                          style="width: 100px" 
+                                          value="#{reclutamientoBean.reclutamientoHelper.numeroIdentificacion}"/>     
+
+                            <h:outputLabel value="Codigo Puesto:"                                                      
+                                           id="codigoPuesto_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="codigoPuesto"  
+                                          autocomplete="off"                                      
+                                          styleClass="textoNombre"
+                                          style="width: 100px" 
+                                          value="#{reclutamientoBean.reclutamientoHelper.codigoPuesto}"/>     
+
+                            <p:commandButton id="buscar"  
+                                             value="BUSCAR"                                                     
+                                             action="#{reclutamientoBean.buscarServidorPorNombre()}"
+                                             update="tabla"/>                        
+                        </p:panelGrid>
+                    </center>
+
+                    <p:panel id="DetalleNovedad" header="Lista de Reclutamientos" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{reclutamientoBean.reclutamientoHelper.listaReclutamientos}"
+                                     var="servidor"
+                                     editable="true"     
+                                     editMode="cell"
+                                     sortBy="#{servidor.apellidosPaterno}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                            <p:ajax event="cellEdit" />
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 70px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                                 ajax="#{false}"
+                                                 action="#{reclutamientoBean.iniciarEdicion}"
+                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{reclutamientoBean.reclutamientoHelper.reclutamientoEditDelete}"/>
+                                </p:commandButton>
+
+                                <p:commandButton id="botonEliminar" icon="ui-icon-trash"  
+                                                 rendered="#{servidor.estado eq 'R'}"
+                                                 onclick="confirmEliminacion.show()"                                          
+                                                 title="#{msg['message.btn.eliminar']}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{reclutamientoBean.reclutamientoHelper.reclutamientoEditDelete}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="No Reclutamiento" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{servidor.id}"/>                                 
+                            </p:column>
+                            <p:column headerText="Identificación" 
+                                      style="width: 60px">                                                                 
+                                <h:outputText value="#{servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                      sortBy="#{servidor.apellidosPaterno}" style="width: 300px">                                                                 
+                                <h:outputText value="#{servidor.apellidoNombre}"/>                                
+                            </p:column>                                          
+                            <p:column headerText="Código Puesto" 
+                                      style="width: 100px">                                                                 
+                                <h:outputText value="#{servidor.distributivoDetalle.codigoPuesto}"/>                                
+                            </p:column>
+                            <p:column headerText="Estado" 
+                                      style="width: 20px">                                                                 
+                                <h:outputText value="#{servidor.estado}"/>                                
+                            </p:column>
+
+
+
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+                <!-- eliminar reclutamiento. -->
+                <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                 header="Eliminación" 
+                                 severity="alert" 
+                                 widgetVar="confirmEliminacion">  
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update="DetalleNovedad"
+                                         actionListener="#{reclutamientoBean.borrar()}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </p:confirmDialog> 
+            </h:form>
+
+
+            <!-- Dialogo para subida de archivos para reclutamiento masivo -->
+            <p:dialog modal="true"     
+                      resizable="false"
+                      width="800"  
+                      height="375"
+                      draggable="true"   
+                      header="Archivos para reclutamiento masivo" 
+                      widgetVar="dlgReclutamientoMasivo"
+                      closable="true">
+
+                <h:form id="frmReclutamientoMasivo">
+                    <p:panel style="border-style: none">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="* Reclutamiento (Datos Generales):"/>
+                            <h:panelGrid columns="2">                                
+                                <p:fileUpload id="archivoRDG"
+                                              required="true"
+                                              mode="advanced"
+                                              showButtons="false"                       
+                                              process="@this"
+                                              update="linkArchivoRDG"
+                                              widgetVar="fileuplaod_RDG"
+                                              allowTypes="/(\.|\/)(csv)$/"
+                                              label="Seleccione...."
+                                              sizeLimit="2097152"
+                                              style="width: 350px;"
+                                              fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                              oncomplete="clearInvalidFileMsg(fileuplaod_RDG);" 
+                                              invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                              invalidFileMessage="El archivo debe ser csv "
+                                              requiredMessage="Debes cargar un archivo"
+                                              auto="true">
+                                    <f:attribute name="archivoId" value="RDG"/>
+                                </p:fileUpload>    
+                                <p:commandLink id="linkArchivoRDG"
+                                               value="#{reclutamientoBean.reclutamientoHelper.archivoRDG.fileName}"
+                                               actionListener="#{reclutamientoBean.presentarDialog()}"/>
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Reclutamiento (Capacitación):"/>
+                            <h:panelGrid columns="2">                                
+                                <p:fileUpload
+                                    id="archivoRC"
+                                    mode="advanced"
+                                    showButtons="false"                       
+                                    process="@this" 
+                                    update="linkArchivoRC"
+                                    widgetVar="fileuplaod_RC"
+                                    allowTypes="/(\.|\/)(csv)$/"
+                                    label="Seleccione...."
+                                    sizeLimit="2097152"
+                                    style="width: 350px;"
+                                    fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                    oncomplete="clearInvalidFileMsg(fileuplaod_RC);" 
+                                    invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                    invalidFileMessage="El archivo debe ser csv "
+                                    requiredMessage="Debes cargar un archivo"
+                                    auto="true">
+                                    <f:attribute name="archivoId" value="RC"/>
+                                </p:fileUpload>        
+                                <p:commandLink id="linkArchivoRC" 
+                                               value="#{reclutamientoBean.reclutamientoHelper.archivoRC.fileName}"
+                                               actionListener="#{reclutamientoBean.presentarDialog()}"/>
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Reclutamiento (Datos Instrucción):"/>
+                            <h:panelGrid columns="2">                                
+                                <p:fileUpload
+                                    id="archivoRI"
+                                    mode="advanced"
+                                    showButtons="false"                       
+                                    process="@this"   
+                                    update="linkArchivoRI"
+                                    widgetVar="fileuplaod_RI"
+                                    allowTypes="/(\.|\/)(csv)$/"
+                                    label="Seleccione...."
+                                    sizeLimit="2097152"
+                                    style="width: 350px;"
+                                    fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                    oncomplete="clearInvalidFileMsg(fileuplaod_RI)"
+                                    invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                    invalidFileMessage="El archivo debe ser csv "
+                                    requiredMessage="Debe cargar un archivo"
+                                    auto="true">
+                                    <f:attribute name="archivoId" value="RI"/>
+                                </p:fileUpload> 
+                                <p:commandLink id="linkArchivoRI" 
+                                               value="#{reclutamientoBean.reclutamientoHelper.archivoRI.fileName}"
+                                               actionListener="#{reclutamientoBean.presentarDialog()}"/>
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Reclutamiento (Trayectoria Laboral):"/>
+                            <h:panelGrid columns="2">                                
+                                <p:fileUpload id="archivoRTL"
+                                              mode="advanced"
+                                              showButtons="false"                       
+                                              process="@this"
+                                              update="linkArchivoRTL"
+                                              widgetVar="fileuplaod_RTL"
+                                              allowTypes="/(\.|\/)(csv)$/"
+                                              label="Seleccione...."
+                                              sizeLimit="2097152"
+                                              style="width: 350px;"
+                                              fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                              oncomplete="clearInvalidFileMsg(fileuplaod_RTL);" 
+                                              invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                              invalidFileMessage="El archivo debe ser csv "
+                                              requiredMessage="Debes cargar un archivo"
+                                              auto="true">
+                                    <f:attribute name="archivoId" value="RTL"/>
+                                </p:fileUpload>  
+                                <p:commandLink id="linkArchivoRTL" 
+                                               value="#{reclutamientoBean.reclutamientoHelper.archivoRTL.fileName}"
+                                               actionListener="#{reclutamientoBean.presentarDialog()}"/>
+                            </h:panelGrid>
+                        </p:panelGrid>
+
+                    </p:panel>
+
+                    <center>
+                        <p:commandButton id="btnAceptar" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{reclutamientoBean.guardarMasivamente()}"
+                                         update="@form" style="margin: auto"/>
+                        <p:outputLabel value=" "/>
+                        <p:commandButton id="btnCancelar" immediate="true" update="@form"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{reclutamientoBean.cancelarReclutamientoMasivo}"
+                                         style="margin: auto"/>
+                    </center>
+                    <br />
+                    <br />
+                </h:form>
+            </p:dialog>
+            <script>
+                function mostrarNombreArchivo(origen, destino) {
+                    console.log(("div[id$='" + destino + "'] div.fileupload-content.ui-widget-content.ui-corner-bottom").id);
+                    alert(("div[id$='" + destino + "'] div.fileupload-content.ui-widget-content.ui-corner-bottom").id);
+//                    ("div[id$='"+destino+"'] div.fileupload-content.ui-widget-content.ui-corner-bottom")
+//                            .append(("'#"+origen+"'"));
+                }
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

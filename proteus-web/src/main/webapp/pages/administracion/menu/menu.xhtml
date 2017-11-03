@@ -1,0 +1,182 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">               
+                <p:panel id="panelMenuMain">
+                    <p:fieldset legend="#{msg['ec.gob.mq.proteus.administracion.menu.titulo']}">
+                        <p:contextMenu for="tablaMenu" id="menu" >  
+                            <p:menuitem value="Nuevo" update=":frmMenu:panelfrm" icon="ui-icon-document"                                         
+                                        actionListener="#{menuBean.iniciarNuevo()}" />  
+                            <p:menuitem value="Editar" actionListener="#{menuBean.iniciarEdicion()}" 
+                                        update="tablaMenu,:frmMenu:panelfrm" icon="ui-icon-pencil" />
+                            <p:menuitem value="Eliminar"                                         
+                                        update="tablaMenu,:frmMenu:panelfrm" icon="ui-icon-trash"
+                                        oncomplete="confirmEliminacion.show()"
+                                        />
+                        </p:contextMenu>  
+                        <p:treeTable id="tablaMenu"
+                                     value="#{menuBean.menuHelper.root}"
+                                     var="menu"
+                                     style="overflow: auto"                                              
+                                     selection="#{menuBean.menuHelper.menuSeleccionado}" 
+                                     selectionMode="single">
+
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{menu.nombre}"
+                                      filterBy="#{menu.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.nombre}" 
+                                              title="#{menu.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.etiqueta']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{menu.etiqueta}"
+                                      filterBy="#{menu.etiqueta}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.etiqueta}" 
+                                              title="#{menu.etiqueta}"  />
+                            </p:column>
+
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.url']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{menu.url}"
+                                      filterBy="#{menu.url}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.url}" 
+                                              title="#{menu.url}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.orden']}"
+                                      style="font-size: 8pt; width: 40px;"
+                                      sortBy="#{menu.orden}"
+                                      filterBy="#{menu.orden}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.orden}" 
+                                              title="#{menu.orden}"  />
+                            </p:column>                          
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.tipo']}"
+                                      style="font-size: 8pt; width: 20px;">
+                                <h:outputText value="#{menu.tipo}" 
+                                              title="#{menu.tipo=='E'?'Externo':'Interno'}"  />
+                            </p:column>
+                        </p:treeTable>
+                    </p:fieldset>
+                </p:panel>
+            </h:form>
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación"
+                             severity="alert"
+                             widgetVar="confirmEliminacion">  
+                <h:form id="formEliminarRegimenLaboral">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         style="margin: auto"
+                                         update=":frmPrincipal:panelMenuMain, :frmPrincipal:tablaMenu"
+                                         actionListener="#{menuBean.borrar()}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+            <p:dialog modal="true"
+                      resizable="false"
+                      width="400"
+                      height="270"
+                      draggable="true"
+                      header="#{msg['ec.gob.mq.proteus.administracion.menu.menu']}"
+                      widgetVar="dlgMenu"
+                      closable="true">
+                <h:form id="frmMenu">
+                    <p:panel>
+                        <h:panelGrid id="panelfrm" columns="2">
+
+                            <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.menu.menuPadre']} #{msg['ec.gob.mq.proteus.administracion.menu.codigo']}:"
+                                           rendered="#{menuBean.menuHelper.menu.menu!=null}"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.menu.codigo}" 
+                                         rendered="#{menuBean.menuHelper.menu.menu.codigo!=null}"
+                                         disabled="true"
+                                         styleClass="textoNombre" />
+                            <h:outputLabel value="#{msg['ec.gob.mq.proteus.administracion.menu.menuPadre']} #{msg['ec.gob.mq.proteus.administracion.menu.nombre']}:"
+                                           rendered="#{menuBean.menuHelper.menu.menu!=null}"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.menu.nombre}" 
+                                         style="width: 200px"
+                                         rendered="#{menuBean.menuHelper.menu.menu!=null}"
+                                         disabled="true"
+                                         styleClass="textoNombre" />
+
+                            <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.menu.codigo']}:"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.codigo}" 
+                                         disabled="#{!menuBean.menuHelper.esNuevo}"
+                                         styleClass="textoNeumonico" />     
+                            <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.menu.nombre']}:"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.nombre}" 
+                                         required="true"
+                                         requiredMessage="El nombre es un campo requerido" />
+                            <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.menu.etiqueta']}:"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.etiqueta}" 
+                                         required="true"
+                                         requiredMessage="La etiqueta es un campo requerido"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.menu.url']}:"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.url}" 
+                                         required="true"
+                                         style="width: 200px"
+                                         requiredMessage="El url es un campo requerido" />
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.rubro.tipo']}:" title="Menús Externos se dibujan en Menú Principal"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:selectOneMenu id="menu_tipo_menu" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{menuBean.menuHelper.menu.tipo}"
+                                             required="#{true}" style="width: 200px;"
+                                             requiredMessage="El campo tipo es requerido">
+                                <f:selectItems value="#{menuBean.menuHelper.listaTipoMenu}"/>    
+                            </p:selectOneMenu> 
+                            <h:outputLabel value=" #{msg['ec.gob.mq.proteus.administracion.menu.orden']}:"/>
+                            <p:inputText value="#{menuBean.menuHelper.menu.orden}" 
+                                         required="true"
+                                         style="width: 50px" maxlength="2"
+                                         requiredMessage="El orden es un campo requerido"
+                                         styleClass="campoNumerico" >
+                            </p:inputText>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:spacer/><br/>
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                         
+                                         actionListener="#{menuBean.guardar()}"
+                                         update=":frmPrincipal:panelMenuMain, :frmPrincipal:tablaMenu"
+                                         />
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgMenu.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+
+                </h:form>
+            </p:dialog>
+
+            <p:confirmDialog id="popOpMSG" message="Opción no disponible para este nivel jerárquico."
+                             header="OPCIÓN NO DISPONIBLE" 
+                             severity="alert" 
+                             widgetVar="msgDialog">  
+                <h:form id="formMsg">
+                    <div style="text-align: center">
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         onclick="msgDialog.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+        </ui:define>
+    </ui:composition>
+</html>

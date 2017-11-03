@@ -1,0 +1,400 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.variable.titulo']}"
+                                     controlador="#{variableBean}" id="smpFromulario">
+                <f:facet name="contenido" id="fcontenido">
+                    <h:panelGrid columns="3" id="tablaformulario_externa">
+                        <h:panelGrid columns="2" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.variable.codigo']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:outputPanel>
+                                <h:outputLabel id="prefijo" value="V_"
+                                               style=" font-style: oblique;font-weight: bold;margin: auto auto auto 5px;    padding-top: 6px;    position: absolute;"
+                                               rendered="#{variableBean.variableHelper.esNuevo}"/>  
+                                <p:inputText id="variable_codigo"      
+                                             styleClass="textoNemonico"
+                                             style="#{variableBean.variableHelper.esNuevo?'padding-left: 18px;width: 197px;':''}"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codEspecial.max']}"                                     
+                                             value="#{variableBean.variableHelper.variableP.codigo}"
+                                             required="true"
+                                             disabled="#{!(variableBean.variableHelper.esNuevo)}"
+                                             requiredMessage="El campo código es requerido"/>
+                            </p:outputPanel>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.variable.nombre']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="variable_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="200"
+                                             value="#{variableBean.variableHelper.variableP.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>           
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.variable.descripcion']}:"
+                                           styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                            <p:inputTextarea id="variable_descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{variableBean.variableHelper.variableP.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>    
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.variable.operacion']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:selectOneMenu id="variable_operacion" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{variableBean.variableHelper.variableP.operacion}"
+                                             required="#{true}"
+                                             disabled="#{!variableBean.variableHelper.esNuevo}"
+                                             requiredMessage="El campo operación es requerido">
+                                <f:selectItems value="#{variableBean.variableHelper.operacionMatematica}"/>  
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.variable.origen']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:selectOneRadio id="variable_origen" 
+                                              value="#{variableBean.variableHelper.variableP.origen}"
+                                              required="#{true}"
+                                              disabled="#{!variableBean.variableHelper.esNuevo}"
+                                              requiredMessage="El campo origen es requerido">
+                                <f:selectItems value="#{variableBean.variableHelper.origenDatos}"/>    
+                                <p:ajax event="change" listener="#{variableBean.OnOrigenDatosSeleccionado}"
+                                        update="panelDatosAdicionales,panelDatosAdicionalesLbl,panelCampoAcceso,panelCampoAccesoLbl,panelPreconstruidos, panelPreconstruidosLbl"/>
+                            </p:selectOneRadio>
+
+
+
+                            <p:outputPanel id="panelDatosAdicionalesLbl" >
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.datoAdicional']}:"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" rendered="#{variableBean.variableHelper.variableP.origen=='D'}"/>
+
+                            </p:outputPanel>   <p:outputPanel id="panelDatosAdicionales" >
+                                <p:selectOneMenu id="variable_DatosAdicionales" rendered="#{variableBean.variableHelper.variableP.origen=='D'}"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{variableBean.variableHelper.variableP.datoAdicionalId}"
+                                                 required="#{true}"
+                                                 disabled="#{!variableBean.variableHelper.esNuevo}"
+                                                 requiredMessage="El campo dato adicional es requerido">
+                                    <f:selectItems value="#{variableBean.variableHelper.opcionesDatosAdicionales}"/>  
+                                </p:selectOneMenu> 
+
+                            </p:outputPanel>
+
+                            <p:outputPanel id="panelCampoAccesoLbl" >
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.campoAcceso.campoAcceso']}:"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" rendered="#{variableBean.variableHelper.variableP.origen=='C'}"/>
+
+                            </p:outputPanel>  
+                            <p:outputPanel id="panelCampoAcceso" >
+                                <p:selectOneMenu id="variable_campoAcceso"  
+                                                 rendered="#{variableBean.variableHelper.variableP.origen=='C'}"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{variableBean.variableHelper.variableP.campoAccesoId}"
+                                                 required="#{true}"
+                                                 disabled="#{!variableBean.variableHelper.esNuevo}"
+                                                 requiredMessage="El campo de acceso es requerido">
+                                    <f:selectItems value="#{variableBean.variableHelper.opcionesCamposAcceso}"/>  
+                                    <p:ajax event="change" listener="#{variableBean.onChangeCampoAcceso}"
+                                            update="panelcondic, condicionV" />
+                                </p:selectOneMenu> 
+
+                            </p:outputPanel>
+                            <p:outputPanel id="panelPreconstruidosLbl" >
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.variable.codigoPreconstruido']}:"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" rendered="#{variableBean.variableHelper.variableP.origen=='P'}" />
+                            </p:outputPanel>
+                            <p:outputPanel id="panelPreconstruidos" >
+                                <p:selectOneMenu id="variable_Preconstruidos" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 rendered="#{variableBean.variableHelper.variableP.origen=='P'}"
+                                                 value="#{variableBean.variableHelper.variableP.codigoPreconstruido}"
+                                                 required="#{true}"
+                                                 requiredMessage="El campo código preconstruido es requerido">
+                                    <f:selectItems value="#{variableBean.variableHelper.preconstruidos}"/>  
+                                </p:selectOneMenu> 
+
+                            </p:outputPanel>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.variable.uso']}:"
+                                           styleClass="labelUso" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+
+                            <p:dataList value="#{variableBean.variableHelper.listaUsosFormula}" var="var" 
+                                        rendered="#{!(variableBean.variableHelper.esNuevo) 
+                                                    and variableBean.variableHelper.listaUsosFormula.size()>0}" itemType="square">  
+                                        #{var.nombre}
+                            </p:dataList>  
+                            <p:spacer rendered="#{!(variableBean.variableHelper.esNuevo) 
+                                                  and variableBean.variableHelper.listaUsosFormula.size()==0}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+                            <p:selectBooleanCheckbox value="#{variableBean.variableHelper.variableP.vigente}" disabled="true"
+                                                     rendered="#{!(variableBean.variableHelper.esNuevo)}"/>      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+                            <p:inputText id="variable_usuario_creo"
+                                         value="#{variableBean.variableHelper.variableP.usuarioCreacion}"
+                                         disabled="true" rendered="#{!(variableBean.variableHelper.esNuevo)}"
+                                         style="width: 200px"/>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+                            <p:inputText id="variable_fecha_creo"
+                                         value="#{variableBean.variableHelper.variableP.fechaCreacion}"
+                                         rendered="#{!(variableBean.variableHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+                            <p:inputText id="variable_usuario_actua"
+                                         value="#{variableBean.variableHelper.variableP.usuarioActualizacion}"
+                                         rendered="#{!(variableBean.variableHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(variableBean.variableHelper.esNuevo)}"/>
+                            <p:inputText id="variable_fecha_actua"
+                                         value="#{variableBean.variableHelper.variableP.fechaActualizacion}"
+                                         rendered="#{!(variableBean.variableHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>       
+
+                        <p:spacer width="10" height="10" />
+                        <p:outputPanel id="panelcondic" >
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.condiciones']}" id="condicionV"
+                                        rendered="#{variableBean.variableHelper.variableP.origen=='C' and !variableBean.variableHelper.esNuevo}"
+                                        >
+                                <h:form id="formAniadir">
+                                    <h:panelGrid columns="3" id="panelAniadir">
+                                        <p:commandButton id="botonAniadir" icon="ui-icon-plusthick"
+                                                         action="#{variableBean.iniciarNuevaCondicion}"
+                                                         oncomplete="addDialog.show()" 
+                                                         update=":modalAgregar"
+                                                         title="#{msg['ec.gob.mrl.smp.generico.boton.aniadir']}"/>
+                                        <p:spacer width="30" height="10" />
+
+                                        <p:commandButton id="botonValidar" icon="ui-icon-check"
+                                                         update=":modalValidar"
+                                                         action="#{variableBean.cadenaCondicionPorValidar}"
+                                                         title="#{msg['ec.gob.mrl.smp.generico.boton.validar']}"/>
+                                    </h:panelGrid>
+                                    <br/>
+                                    <p:scrollPanel  style="overflow: auto;" mode="native" id="panelTablaCondiciones" 
+                                                    rendered="#{variableBean.variableHelper.listaVariableCondiciones.size()>0}">  
+
+                                        <p:dataTable id="tablaCondiciones" 
+                                                     value="#{variableBean.variableHelper.listaVariableCondiciones}"
+
+                                                     var="codicion" 
+                                                     sortBy="#{codicion.ordinal}"  sortOrder="ascending"
+                                                     style="overflow: auto">    
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.ordinal']}" 
+                                                      sortBy="#{codicion.ordinal}" style="width: 150px">                               
+                                                <h:outputText value="#{codicion.ordinal}"/>                                
+                                            </p:column>   
+                                            <p:column headerText=" ( "   style="width: 50px">                               
+                                                <h:outputText value="#{codicion.parentesisIzq}"/>                                
+                                            </p:column>    
+                                            <p:column headerText=" #{msg['ec.gob.mrl.smp.administracion.campoAcceso.campoAcceso']}"  style="width: 150px">                               
+                                                <h:outputText value="#{codicion.campoAcceso.nombre}"/>                                
+                                            </p:column> 
+
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.operacion']} "  style="width: 150px">                               
+                                                <h:outputText value="#{codicion.tipoOperacionComparacion}"/>                                
+                                            </p:column> 
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.literal']} " style="width: 150px">                               
+                                                <h:outputText value="#{msg['message.comilla']}#{codicion.literal}#{msg['message.comilla']}"/>                                                                        </p:column> 
+                                            <p:column headerText=" ) "   style="width: 50px">                               
+                                                <h:outputText value="#{codicion.parentesisDer}"/>                                
+                                            </p:column> 
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.operadorLogico']} " style="width: 150px">                               
+                                                <h:outputText value="#{variableBean.obtenerDescripcionOperacionLogica(codicion.operadorLogico)}"/>                                
+                                            </p:column> 
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                                                <p:commandButton id="botonEdicion" icon="ui-icon-pencil"
+                                                                 action="#{variableBean.iniciarEdicionCondicion(codicion)}"
+                                                                 oncomplete="addDialog.show()" 
+                                                                 update=":modalAgregar"
+                                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"/>
+                                                <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                                                 oncomplete="confirmEliminacion.show()"  update=":popOp" 
+                                                                 action="#{variableBean.iniciarEdicionCondicion(codicion)}"
+                                                                 title="#{msg['message.btn.eliminar']}"/>
+                                            </p:column>
+                                        </p:dataTable> 
+                                    </p:scrollPanel>
+                                    <h:panelGrid columns="2" id="panelAniadirMSg">
+
+                                        <h:outputLabel id ="lbl_valor" value="#{msg['ec.gob.mrl.smp.administracion.variable.mensajeValidacion']}:"
+                                                       styleClass="labelFormulario" style="text-align: right"
+                                                       rendered="#{!variableBean.variableHelper.esNuevo}"/>
+
+                                        <p:inputTextarea id="variable_mensajeValidacion"
+                                                         styleClass="textoDescripcion"
+                                                         style="width: 200px"
+                                                         value="#{variableBean.variableHelper.variableP.mensajeValidacion}"
+                                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                                         rendered="#{!variableBean.variableHelper.esNuevo}"/>    
+
+                                    </h:panelGrid>
+                                </h:form>
+                            </p:fieldset>
+                        </p:outputPanel>
+                    </h:panelGrid>  
+
+                </f:facet>
+
+            </smp:catalogo_formulario>
+
+
+            <p:dialog id="modalAgregar" 
+                      header="#{variableBean.variableCondicionHelper.esNuevaCondicion?'Agregar ':'Editar '}#{msg['ec.gob.mrl.smp.administracion.variableCondicion.condiciones']}" 
+                      showEffect="fade" widgetVar="addDialog" modal="true">  
+                <h:form id="formAgregarCondicion">
+                    <p:outputPanel id="addPanel">  
+                        <h:panelGrid  columns="2">  
+                            <h:outputLabel for="ordinal" value="* #{msg['ec.gob.mrl.smp.administracion.variableCondicion.ordinal']}" />  
+                            <p:inputText id="ordinal"                                      
+                                         styleClass="campoNumerico"
+                                         style="width: 200px"
+                                         value="#{variableBean.variableCondicionHelper.variableCondicion.ordinal}"
+                                         required="true"
+                                         requiredMessage="El campo ordinal es requerido"/> 
+
+                            <h:outputLabel id="parentesisIzquierda_lbl" for="parentesisIzquierda" value="* ("  title="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.parentesisIzquierda']}"/>  
+                            <p:inputText id="parentesisIzquierda"
+                                         styleClass="campoNumerico"
+                                         style="width: 200px"
+                                         value="#{variableBean.variableCondicionHelper.variableCondicion.cantidadParentesisIzq}"
+                                         required="true"
+                                         requiredMessage="El número de paréntesis de la izquierda es requerido"/>  
+
+
+                            <h:outputLabel for="campoAccesoTipo"  value="* #{msg['ec.gob.mrl.smp.administracion.campoAcceso.campoAcceso']} (Código):" />  
+                            <p:selectOneMenu id="campoAccesoTipo" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{variableBean.variableCondicionHelper.variableCondicion.campoAccesoId}"
+                                             required="#{true}"
+                                             requiredMessage="El campo de acceso es requerido">
+                                <f:selectItems value="#{variableBean.variableHelper.opcionesCamposAccesoPorTipo}"/>  
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel for="operadorComparacion"  value="* #{msg['ec.gob.mrl.smp.administracion.variableCondicion.operacion']}:" />  
+                            <p:selectOneMenu id="operadorComparacion" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{variableBean.variableCondicionHelper.variableCondicion.tipoOperacionComparacion}"
+                                             required="#{true}"
+                                             requiredMessage="El campo de operador es requerido">
+                                <f:selectItems value="#{variableBean.variableCondicionHelper.operadorComparacion}"/>  
+                            </p:selectOneMenu> 
+
+
+
+                            <h:outputLabel for="literal"  value="* #{msg['ec.gob.mrl.smp.administracion.variableCondicion.literal']}:" />  
+                            <p:inputText id="literal"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         value="#{variableBean.variableCondicionHelper.variableCondicion.literal}"
+                                         required="true"
+                                         requiredMessage="El campo literal es requerido"/>    
+
+                            <h:outputLabel for="operadorLogic"  value="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.operadorLogico']}:" />  
+                            <p:selectOneMenu id="operadorLogic" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{variableBean.variableCondicionHelper.variableCondicion.operadorLogico}">
+                                <f:selectItem itemLabel="Ninguno" itemValue="" /> 
+                                <f:selectItems value="#{variableBean.variableHelper.opcionesOperadoresLogicos}"/>  
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel id="parentesisDerecha_lbl" for="parentesisDerecha" value="* )"  title="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.parentesisDerecha']}"/>  
+                            <p:inputText id="parentesisDerecha"
+                                         styleClass="campoNumerico"
+                                         style="width: 200px"
+                                         value="#{variableBean.variableCondicionHelper.variableCondicion.cantidadParentesisDer}"
+                                         required="true"
+                                         requiredMessage="El número de paréntesis de la derecha es requerido"/>   
+
+
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"     
+                                             update=":smpFromulario:condicionV"  
+                                             rendered="#{variableBean.variableCondicionHelper.esNuevaCondicion}"
+                                             ajax="#{true}" 
+                                             action="#{variableBean.agregarCondicion}"/>
+
+
+                            <p:commandButton id="btnActualizar"
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"     
+                                             update=":smpFromulario:condicionV"  
+                                             ajax="#{true}"
+                                             rendered="#{!variableBean.variableCondicionHelper.esNuevaCondicion}"
+                                             action="#{variableBean.actualizarCondicion}"/>  
+
+                            <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="addDialog.hide()"  
+                                             type="button" 
+                                             style="margin: auto"/>                         
+
+                        </h:panelGrid>  
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog> 
+
+
+            <p:dialog id="modalValidar" 
+                      header="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.validacion']}" 
+                      showEffect="fade" widgetVar="validDialog" modal="true">  
+                <h:form id="formValidarCondicion">
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.visor']}">
+                        <p:outputPanel id="validPanel" > 
+                            <br/><br/>
+                            <p:inputTextarea id="visorMsg" rows="6" cols="33" readonly="#{true}"
+                                             style="width: 200px"
+                                             value="#{variableBean.variableCondicionHelper.cadenaCondicion}" />  
+                            <br/><br/><br/>
+                            <p:commandButton id="btnAceptar" ajax="false"
+                                             value="#{msg['ec.gob.mrl.smp.administracion.variableCondicion.validarExpresion']}" 
+                                             update=":smpFromulario:variable_mensajeValidacion"
+                                             action="#{variableBean.validarCondicion}"/>                             
+                        </p:outputPanel>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+
+            <p:confirmDialog id="popOp" 
+                             message=" #{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.condicion']}#{variableBean.variableCondicionHelper.variableCondicion.cadenaCondicion} " 
+                             header="Eliminación" 
+                             severity="alert" 
+                             widgetVar="confirmEliminacion">  
+                <div style="text-align: center">
+                    <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                     style="margin: auto"
+                                     update=":smpFromulario:condicionV"
+                                     actionListener="#{variableBean.eliminarCondicion}"
+                                     oncomplete="confirmEliminacion.hide()"  />  
+                    <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="confirmEliminacion.hide()" 
+                                     type="button" 
+                                     style="margin: auto"/> 
+                </div>
+            </p:confirmDialog> 
+
+        </ui:define>
+    </ui:composition>
+</html>

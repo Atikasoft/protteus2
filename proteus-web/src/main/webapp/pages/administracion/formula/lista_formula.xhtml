@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{formulaBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.formula.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaformula"
+                                 value="#{formulaBean.formulaHelper.listaFormula}"
+                                 var="formula"
+                                 filterEvent="enter"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{formula.codigo}"  sortOrder="ascending"
+                                 style="overflow: auto">    
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 60px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{formulaBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{formula}" 
+                                                             target="#{formulaBean.formulaHelper.formulaEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.formula.codigo']}" 
+                                  sortBy="#{formula.codigo}" 
+                                  style="width: 100px"
+                                  filterBy="#{formula.codigo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px">                                                                 
+                            <h:outputText value="#{formula.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.formula.nombre']}" 
+                                  sortBy="#{formula.nombre}" 
+                                  filterBy="#{formula.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 300px"                                                                 
+                                  style="width: 400px">                               
+                            <h:outputText value="#{formula.nombre}"/>                                
+                        </p:column>   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" 
+                                  style="text-align: center; width: 50px">                                
+                            <p:selectBooleanCheckbox value="#{formula.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

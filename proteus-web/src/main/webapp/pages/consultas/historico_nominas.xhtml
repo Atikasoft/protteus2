@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style>.autocomplete_servidor input, .autocomplete_servidor{width: 280px;}</style>
+            <h:form id="frmprincipal">
+                <p:panel header="Histórico de Nóminas" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{historicoNominaBean.buscar()}"
+                                         ajax="false"/>
+
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:remoteCommand name="limpiarCommand" process="@this"
+                                 actionListener="#{historicoNominaBean.limpiarServidor}" update="infoServidor tblConsultaMovimientoInsti tipoIdentificacion numeroIdentificacion"/>
+                <p:panel header="Búsqueda de Nómina" >
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="nombreServidor" value="Apellidos Nombres:"/>                       
+                        <p:autoComplete value="#{historicoNominaBean.resultadoNominaHelper.servidor}" id="nombreServidor"
+                                        completeMethod="#{historicoNominaBean.buscarServidor}" onblur="limpiarCommand();"
+                                        var="s" itemLabel="#{s.apellidosNombres}" itemValue="#{s}" converter="servidorConverter" styleClass="autocomplete_servidor">
+                            <f:facet name="itemtip">
+                                <h:panelGrid columns="2" cellpadding="5" style="width: 400px">
+                                    <h:outputText value="Apellidos Nombres: " style="font-weight: bold"/>
+                                    <h:outputText id="modelNo" value="#{s.apellidosNombres}" />
+                                    <h:outputText value="Tipo Identificación" style="font-weight: bold"/>
+                                    <h:outputText id="year" value="#{s.nombreTipoIdentificacion}" />
+                                    <h:outputText value="Número Identificación " style="font-weight: bold"/>
+                                    <h:outputText value="#{s.numeroIdentificacion}"/>
+                                </h:panelGrid>
+                            </f:facet>
+                            <p:ajax event="itemSelect" listener="#{historicoNominaBean.seleccionarServidor}" update="frmprincipal"/>
+                        </p:autoComplete>
+                        <p:message for="nombreServidor"/>
+
+                        <p:outputLabel for="tipoIdentificacion" value="Tipo Identificación:"/>
+                        <p:selectOneMenu id="tipoIdentificacion" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{historicoNominaBean.resultadoNominaHelper.tipoIdentificacion}">
+                            <f:selectItems value="#{historicoNominaBean.resultadoNominaHelper.tiposDocumentos}"/>
+                        </p:selectOneMenu>
+                        <p:message for="tipoIdentificacion"/>
+
+                        <p:outputLabel for="numeroIdentificacion" value="Número Identificación:"/>
+                        <p:inputText id="numeroIdentificacion" value="#{historicoNominaBean.resultadoNominaHelper.numeroIdentificacion}"/>
+                        <p:message for="numeroIdentificacion"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel header="Información del Servidor" id="infoServidor">
+                    <h:panelGrid columns="6">
+                        <p:outputLabel for="detalleNombreServidor" value="Apellidos Nombres:"/>
+                        <p:inputText styleClass="autocomplete_servidor" disabled="true" id="detalleNombreServidor" value="#{historicoNominaBean.resultadoNominaHelper.servidor.apellidosNombres}"/>
+
+                        <p:outputLabel for="detalleTipoIdentificacion" value="Tipo Identificación:"/>
+                        <p:inputText disabled="true" id="detalleTipoIdentificacion" value="#{historicoNominaBean.resultadoNominaHelper.servidor.nombreTipoIdentificacion}"/>
+
+                        <p:outputLabel for="detalleNumeroIdentificacion" value="Número Identificación:"/>
+                        <p:inputText disabled="true" id="detalleNumeroIdentificacion" value="#{historicoNominaBean.resultadoNominaHelper.servidor.numeroIdentificacion}"/>
+
+                        <p:outputLabel for="detalleFechaIngreso" value="Fecha Ingreso Institución:"/>
+                        <p:inputText disabled="true" id="detalleFechaIngreso" value="#{historicoNominaBean.resultadoNominaHelper.servidor.fechaIngresoInstitucion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+
+                        <p:outputLabel for="detalleCodigo" value="Código:"/>
+                        <p:inputText disabled="true" id="detalleCodigo" value="#{historicoNominaBean.resultadoNominaHelper.servidor.codigoEmpleado}"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:dataTable 
+                    lazy="true"
+                    scrollable="true"
+                    paginator="true"
+                    rows="10"
+                    id="tblConsultaMovimientoInsti"                                    
+                    value="#{historicoNominaPaginacion}"
+                    var="nomina"
+                    emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                    rowIndexVar="rowIndex"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                    <f:facet name="header">
+                        Nóminas del Servidor
+                    </f:facet>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 80px">
+                        <p:commandButton   action="#{nominaBean.buscarDetalles}" 
+                                           update=":popDetalles,:fmrdet" 
+                                           icon="ui-icon-note"
+                                           title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}">
+                            <f:setPropertyActionListener value="#{historicoNominaBean.resultadoNominaHelper.servidor.numeroIdentificacion}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.resultadoNomina.numeroIdentificacion}"/>
+                            <f:setPropertyActionListener value="#{historicoNominaBean.resultadoNominaHelper.servidor.apellidosNombres}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.resultadoNomina.nombreServidor}"/>
+                            <f:setPropertyActionListener value="#{null}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.resultadoNomina.totalLiquidoPagarServidor}"/>
+                            <f:setPropertyActionListener value="#{null}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.nominaDetalle}"/>
+                            <f:setPropertyActionListener value="#{nomina.nomina}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.resultadoNomina.nomina}"/>
+                        </p:commandButton>                     
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 15px">
+                        <h:outputText value="#{rowIndex+1}"/>                                
+                    </p:column>
+                    <p:column headerText="Año" style="width: 100px; text-align: center">
+                        <h:outputText value="#{nomina.nomina.institucionEjercicioFiscal.ejercicioFiscal.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Mes" style="width: 100px; text-align: center">
+                        <h:outputText value="#{nomina.nomina.periodoNomina.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Tipo Nómina" style="width: 100px; text-align: center">
+                        <h:outputText value="#{nomina.nomina.tipoNomina.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Nómina" style="text-align: center">
+                        <h:outputText value="#{nomina.nomina.descripcion}"/>
+                    </p:column>
+                    <p:column headerText="Número" style="width: 100px; text-align: center">
+                        <h:outputText value="#{nomina.nomina.numero}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <ui:include src="detalle_nomina_servidor.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form>       
+
+                <p:panel>
+                    <p:commandButton value="GUARDAR"                                      
+                                     onclick="confirmGuardar.show()"/>
+                    <p:commandButton value="SALIR" 
+                                     immediate="#{true}"
+                                     action="#{pagoTiempoDevengarBean.salirPantallaPrincipal()}" 
+                                     ajax="#{false}"/>
+                </p:panel>
+                <p:fieldset id="areaServidor" legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">  
+                    <p:panel id="panelInformacionServido" > 
+                        <h:panelGrid columns="6">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDocumento']}"
+                                           id="tipoDocumento_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tipoDocumento"      
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{devengamientoBean.devengamientoHelper.tipoIdentificacion}">
+                                <f:selectItems value="#{devengamientoBean.devengamientoHelper.tipoDocumento}"/>
+                                <p:ajax listener="#{devengamientoBean.controlSeleccionTipoDocumento()}"                                            
+                                        update="panelInformacionServido"/>                                
+                            </p:selectOneMenu>
+                            <h:panelGrid columns="2">
+                                <p:message for="tipoDocumento" display="icon"/>
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroDocumento']}"
+                                           id="numeroDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="numeroDocumento"  
+                                          autocomplete="off"
+                                          maxlength="15"
+                                          disabled="#{devengamientoBean.devengamientoHelper.tipoIdentificacion==null}"
+                                          style="width: 100px"
+                                          onkeypress="return pulsar(event)"
+                                          value="#{devengamientoBean.devengamientoHelper.numeroIdentificacion}">  
+                                <f:validateLength minimum="0" maximum="15" />
+                            </p:inputText>
+
+                            <h:panelGrid columns="2" >
+                                <p:commandButton id="numeroDocumento_search"  
+                                                 icon="ui-icon-search"   
+
+                                                 disabled="#{devengamientoBean.devengamientoHelper.tipoIdentificacion==null}"
+                                                 update="panelInformacionServido, apellidoNombre, panelInformacionDevengar"                                                                                               
+                                                 action="#{devengamientoBean.buscarPorCedula()}"/>
+                                <p:message for="numeroDocumento_search" display="icon"/>
+                            </h:panelGrid>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:  "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.apellidosNombres']}"
+                                           id="apellidoNombre_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="apellidoNombre"                                              
+                                             style="width: 300px"
+                                             value="#{devengamientoBean.devengamientoHelper.parametrosBusqueda.nombreCompleto}"
+                                             disabled="#{true}"/>
+                            <h:panelGrid columns="2">
+                                <p:message for="apellidoNombre" display="icon"/>
+                            </h:panelGrid>                           
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:fieldset id="areaDevengar" legend="Informacion de Devengar">  
+                        <p:panel id="panelInformacionDevengar" > 
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.fechaInicioDevengar']}:"                                           
+                                               id="fechaInicio_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:calendar id="fechaInicioDevengar"                                              
+                                            showOn="button"
+                                            navigator="true"
+                                            style="width: 85px"                                            
+                                            disabled="#{!devengamientoBean.devengamientoHelper.activar}"
+                                            requiredMessage="La fecha inicio devengar es un campo requerido."
+                                            required="true"
+                                            value="#{devengamientoBean.devengamientoHelper.devengamiento.fechaInicio}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>                      
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.fechaFinDevengar']}:"                                           
+                                               id="fechiFin_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:calendar id="fechaFinDevengar"   
+                                            showOn="button"   
+                                            navigator="true"
+                                            disabled="#{!devengamientoBean.devengamientoHelper.activar}"
+                                            style="width: 85px"
+                                            requiredMessage="La fecha fin devengar es un campo requerido."
+                                            required="true"
+                                            value="#{devengamientoBean.devengamientoHelper.devengamiento.fechaFinal}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+
+                                <h:outputLabel value="Observación: "
+                                               title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroDocumento']}"
+                                               id="observacionDevengar_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea  id="observacionDevengar"   
+                                                  style="width: 300px"                                                  
+                                                  disabled="#{!devengamientoBean.devengamientoHelper.activar}"
+                                                  requiredMessage="La observación es un campo requerido."
+                                                  required="true"
+                                                  value="#{devengamientoBean.devengamientoHelper.devengamiento.observacionRegistro}">
+                                </p:inputTextarea>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:fieldset> 
+                </p:fieldset>
+                <p:confirmDialog id="popOp" message="¿ Esta seguro que desea registrar?"
+                                 header="Guardar" 
+                                 severity="alert" 
+                                 widgetVar="confirmGuardar">  
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"   
+                                         update="panelInformacionDevengar,panelInformacionServido"
+                                         actionListener="#{devengamientoBean.guardar()}"
+                                         oncomplete="confirmGuardar.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmGuardar.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </p:confirmDialog> 
+            </h:form> 
+        </ui:define>
+    </ui:composition>
+</html>

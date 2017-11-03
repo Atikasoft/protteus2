@@ -1,0 +1,262 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="#{msg['ec.gob.mrl.smp.procesos.novedades.titulo2']} DE NÓMINA: #{novedadNominaBean.nominaNovedadHelper.nomina.descripcion} - TIPO: #{novedadNominaBean.nominaNovedadHelper.nomina.tipoNomina.nombre}" >
+                    <h:panelGrid columns="2">
+
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         immediate="true"       
+                                         rendered="#{novedadNominaBean.nominaNovedadHelper.retorno==1}"
+                                         action="#{novedadNominaBean.irListaNomina}" 
+                                         ajax="false"/>     
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         immediate="true"       
+                                         rendered="#{novedadNominaBean.nominaNovedadHelper.retorno==2}"
+                                         action="#{novedadNominaBean.irListaNominaEspecial}" 
+                                         ajax="false"/>  
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel style="overflow: auto">
+                    <p:dataTable value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.listaNovedades}"
+                                 var="novedad"
+                                 id="tblListaNovedades"
+                                 filterEvent="enter"
+                                 paginator="#{true}" scrollable="true"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  width="70" 
+                                  style="text-align: center">
+                            <p:commandButton   action="#{novedadNominaBean.buscarNovedadesDetalles(true)}" 
+                                               update=":popDetalles,:fmrdet" 
+                                               icon="ui-icon-note"
+                                               title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}">
+                                <f:setPropertyActionListener value="#{novedad}" 
+                                                             target="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad}"/>
+
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"  
+                                             rendered="#{!novedad.nomina.bloqueado}"
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{novedad}" 
+                                                             target="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 20px;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.datoAdicional']}" width="350"
+                                  filterBy="#{novedad.datoAdicional.nombre}" filterMatchMode="contains">
+                            <h:outputText value="#{novedad.datoAdicional.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Número de Novedad" width="90"
+                                  filterBy="#{novedad.numero}" filterMatchMode="contains">
+                            <h:outputText value="#{novedad.numero}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}" width="100">
+                            <h:outputText value="#{novedad.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <!-- PopUp  confirmacion eliminacion -->
+                <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                 header="Eliminación" 
+                                 severity="alert" 
+                                 widgetVar="confirmEliminacion">  
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update="tblListaNovedades"
+                                         actionListener="#{novedadNominaBean.borrarNovedad}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </p:confirmDialog> 
+            </h:form>
+
+            <!-- pop Up detalles -->
+            <p:dialog modal="true"  id="popDetalles"
+                      header="#{msg['ec.gob.mrl.smp.procesos.novedades.detalle.titulo']} DE:
+                      #{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad.datoAdicional.nombre}-#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad.numero}
+                      ( #{novedadNominaBean.obtenerFechaFormateada(novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad.datoAdicional.fechaCreacion)})"
+                      resizable="false" 
+                      draggable="true"
+                      width="75%"
+                      height="490px"
+                      showEffect="fade" 
+                      widgetVar="dlgDetalleNovedad">
+                <h:form id="fmrdet">
+                    <p:scrollPanel style="width:100%;height:430px; alignment-adjust: central"  mode="native">  
+                        <p:separator/> 
+                        <p:panel id="panelDetalles" style="overflow: auto">
+                            <h:panelGrid columns="1">
+                                <p:dataTable id="tabla"
+                                             value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.listaNovedadesDetalles}"
+                                             var="det"
+                                             editable="true"     
+                                             editMode="cell"
+                                             filterEvent="enter"
+                                             scrollable="true"
+                                             style="width: 100%"
+                                             sortBy="#{tipo.servidor.apellidosNombres}"
+                                             paginator="#{true}" 
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             rowIndexVar="rowIndex">
+                                    <p:ajax event="cellEdit" 
+                                            listener="#{novedadNominaBean.esValorDetalleEditado(det)}" 
+                                            process="@this" />
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                              style="width: 5%;text-align: center"
+                                              rendered="#{!novedadNominaBean.nominaNovedadHelper.nomina.bloqueado}">
+                                        <p:commandButton id="botonEliminarDetalles" 
+                                                         icon="ui-icon-trash"                                             
+                                                         action="#{novedadNominaBean.borrarNovedadDetalle}" 
+                                                         update="tabla"
+                                                         title="#{msg['message.btn.eliminar']}">
+                                            <f:setPropertyActionListener value="#{det}"  
+                                                                         target="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedadDetalle}"/>
+                                        </p:commandButton>
+                                        <f:facet name="footer" >        </f:facet>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                              style="width: 5%;text-align: center">
+                                        <h:outputText value="#{rowIndex+1}"/>
+                                        <f:facet name="footer" ></f:facet>
+                                    </p:column> 
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}" 
+                                              style="width: 5%;text-align: center" >
+                                        <h:outputText value="#{det.servidor.tipoIdentificacion}"/>
+                                        <f:facet name="footer" > </f:facet>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}" 
+                                              style="width: 9%;text-align: center" 
+                                              filterBy="#{det.servidor.numeroIdentificacion}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{det.servidor.numeroIdentificacion}"/>
+                                        <f:facet name="footer" >    </f:facet>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}" 
+                                              style="width: 20%"
+                                              filterBy="#{det.servidor.apellidosNombres}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{det.servidor.apellidosNombres}"/>
+                                        <f:facet name="footer" >
+                                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                                          style="text-align: right"/>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column headerText="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad.datoAdicional.unidad}" 
+                                              style="width: 8%;text-align: center" 
+                                              rendered="#{!det.novedad.nomina.bloqueado}">  
+                                        <p:cellEditor >
+                                            <f:facet name="output">
+                                                <h:outputText value="#{det.valor}" 
+                                                              style="float: right"
+                                                              title="Click para Editar Valor"/>
+                                            </f:facet>
+                                            <f:facet name="input" >
+                                                <h:inputText value="#{det.valor}" 
+                                                             styleClass="campoFloat" 
+                                                             rendered="true" id="valor" 
+                                                             style="width: 50%"
+                                                             required="true" 
+                                                             requiredMessage="El valor es un campo requerido.">
+                                                    <f:validateDoubleRange minimum="0"/>
+                                                </h:inputText>
+                                            </f:facet>
+                                        </p:cellEditor> 
+                                        <f:facet name="footer" >
+                                            <h:outputText value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.totalValor}" 
+                                                          style="float: right"/>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column headerText="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.novedad.datoAdicional.unidad}" 
+                                              style="width: 8%;text-align: center" 
+                                              rendered="#{det.novedad.nomina.bloqueado}">  
+                                        <h:outputText value="#{det.valor}"
+                                                      style="float: right"/>
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.totalValor}" 
+                                                          style="float: right"/>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column headerText="Valor Calculado" 
+                                              style="width: 8%;text-align: center">  
+                                        <h:outputText value="#{det.valorCalculado}"
+                                                      style="float: right"/>
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.totalValorCalculado}" 
+                                                          style="float: right"/>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column headerText="Valor Descontado" 
+                                              style="width: 8%;text-align: center">  
+                                        <h:outputText value="#{det.valorDescontado}"
+                                                      style="float: right"/>
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{novedadNominaBean.nominaNovedadHelper.novedadNominaVO.totalValorDescontado}" 
+                                                          style="float: right"/>
+                                        </f:facet>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:separator/>
+                    </p:scrollPanel>
+                    <p:spacer height="10"/>
+                    <center>
+                        <p:outputPanel id="panelBotonesModal" 
+                                       autoUpdate="true" 
+                                       rendered="#{!novedadNominaBean.nominaNovedadHelper.nomina.bloqueado}">
+                            <p:commandButton value="ACEPTAR CAMBIOS"
+                                             action="#{novedadNominaBean.buscarNovedadesDetalles(false)}"
+                                             update="tabla,panelBotonesModal"
+                                             rendered="#{!novedadNominaBean.nominaNovedadHelper.nomina.bloqueado}"
+                                             title="Clic para Aceptar todos los cambios antes de Guardar" ajax="true">
+                                <f:setPropertyActionListener value="#{true}" 
+                                                             target="#{novedadNominaBean.nominaNovedadHelper.aceptaCambios}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonGuardar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}" ajax="true"
+                                             action="#{novedadNominaBean.guardar}" 
+                                             update="panelBotonesModal"
+                                             disabled="#{!novedadNominaBean.nominaNovedadHelper.aceptaCambios}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                            <p:commandButton id="botonCerrar1" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgDetalleNovedad.hide()"                                          
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"/>
+                        </p:outputPanel>   
+                        <p:commandButton id="botonCerrar" 
+                                         rendered="#{novedadNominaBean.nominaNovedadHelper.nomina.bloqueado}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgDetalleNovedad.hide()"                                          
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,382 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script>
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelTotal" header="Búsqueda de Servidores">                                         
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="2" >
+                            <p:commandButton value="BUSCAR"   
+                                             action="#{busquedaServidorBean.refreshPagination()}"
+                                             update="busquedaServidorHelper_listaPuestos"/>          
+                            <p:commandButton value="SALIR" 
+                                             ajax="#{false}"
+                                             action="#{busquedaServidorBean.salirPantallaPrincipal()}"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" style="text-align: right;width: 100%;">
+                            <h:commandLink  id="exp_xls" title="Exportar Excel">
+                                <p:graphicImage value="/images/excel.png" alt="Exportar Excel" style="width: 25px; height: 25px" />
+                                <p:dataExporter type="xls" target="busquedaServidorHelper_listaPuestos" 
+                                                fileName="#{busquedaServidorBean.busquedaServidorHelper.nombreArchivo}"
+                                                postProcessor="#{busquedaServidorBean.postProcessXLS}" >                                    
+                                </p:dataExporter>                                
+                            </h:commandLink>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:separator />
+                    <p:accordionPanel  activeIndex="#{busquedaServidorBean.busquedaServidorHelper.activo}" widgetVar="accordionPanel" id="tab1">
+                        <p:tab title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaServidor.tooltip.rotulo']}"  >
+
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="Unidad Organizacional: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="font-size: 9px"
+                                                     rows="5"
+                                                     cols="50"
+                                                     disabled="#{true}"
+                                                     value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.unidadAdministrativaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     rendered="#{busquedaServidorBean.busquedaServidorHelper.seleccionarUnidadOrganizacional}"
+                                                     update="parametrosBusqueda_unidadAdministrativa">
+                                        <f:setPropertyActionListener target="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.unidadAdministrativaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.unidadAdministrativaId}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                                <h:outputLabel value="Código Puesto:"
+                                               styleClass="labelFormulario"/>                  
+                                <p:inputText style="width: 80px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.codigoPuesto}"/>                  
+
+                                <h:outputLabel value="Fecha Nacimiento Desde:"
+                                               styleClass="labelFormulario"/>   
+                                <p:calendar  id="fechaVigenciaDesde"
+                                             showOn="button"
+                                             yearRange="#{msg['ec.gob.mq.prometeo.genericos.rangoAnioCalendarEstudiante']}"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.fechaInicio}"/>
+                                <h:outputLabel value="Fecha Nacimiento Hasta:"
+                                               styleClass="labelFormulario"/>    
+                                <p:calendar  id="fechaVigenciaHasta"
+                                             showOn="button"
+                                             navigator="true"
+                                             yearRange="#{msg['ec.gob.mq.prometeo.genericos.rangoAnioCalendarEstudiante']}"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.fechaFin}"/>
+
+                                <h:outputLabel value="Fecha Ingreso Institución Desde:"
+                                               styleClass="labelFormulario"/>   
+                                <p:calendar  id="fechaIngresoDesde"
+                                             showOn="button"
+                                             yearRange="#{msg['ec.gob.mq.prometeo.genericos.rangoAnioCalendarEstudiante']}"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.fechaInicioIns}"/>
+                                <h:outputLabel value="Fecha Ingreso Institución Hasta:"
+                                               styleClass="labelFormulario"/>    
+                                <p:calendar  id="fechaIngresoHasta"
+                                             showOn="button"
+                                             navigator="true"
+                                             yearRange="#{msg['ec.gob.mq.prometeo.genericos.rangoAnioCalendarEstudiante']}"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.fechaFinIns}"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.tipoDocumentoServidor}">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaTipoDocumento}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}:"
+                                               styleClass="labelFormulario"/>                  
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.numeroDocumentoServidor}"/>                  
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"                                             
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.nombreServidor}"/>
+                                <h:outputLabel value="Estado Civil"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaServidorBean.tramiteHelper.tramite.tipoMovimiento.estadoPersonalInicialCore!=null}"
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.catalogoEstadoCivil}">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaTipoEstadoCivil}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Género"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaServidorBean.tramiteHelper.tramite.tipoMovimiento.estadoPersonalInicialCore!=null}"
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.catalogoGeneroId}">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaCatalogoGenero}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="Estado del Servidor "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaServidorBean.tramiteHelper.tramite.tipoMovimiento.estadoPersonalInicialCore!=null}"
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.estadoServidorId}">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaEstadoPersonal}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:tab> 
+                    </p:accordionPanel>  
+                </p:panel>                
+
+                <p:dataTable id="busquedaServidorHelper_listaPuestos" 
+                             value="#{consultaServidorPaginacion}"
+                             var="puesto"
+                             lazy="true"
+                             rows="10"
+                             scrollable="true" 
+                             paginator="#{true}"                             
+                             rowIndexVar="rowIndex"
+                             filterEvent="enter">
+                    <f:facet name="header">#{msg['ec.gob.mrl.smp.pantalla2.busqedaServidor.tooltip.tabla']}</f:facet>             
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="No" />
+                        </f:facet>
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column  style="text-align: center;width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{busquedaServidorBean.obtenerDescripcionTipoDocumento(puesto.tipoIdentificacion)}"/>
+                    </p:column>
+                    <p:column style="width: 65px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.numeroIdentificacion}"/>
+                    </p:column>
+                    <p:column style="width: 220px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.apellidosNombres}"/>
+                    </p:column>                
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Nacimiento" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.fechaNacimiento}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Ingreso Institución" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.fechaIngresoInstitucion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Salida" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.fechaSalida}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Género" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.catalogoGenero.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Estado Civil" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.catalogoEstadoCivil.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="Partidad Individual " />
+                        </f:facet>
+                        <h:outputText value=" #{puesto.distributivoDetalle.partidaIndividual}"/>
+                    </p:column>  
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="Código Puesto " />
+                        </f:facet>
+                        <h:outputText value="#{puesto.distributivoDetalle.codigoPuesto }"/>
+                    </p:column>      
+                    <p:column style="width: 220px">
+                        <f:facet name="header">
+                            <h:outputText value="Unidad Organizacional" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.distributivoDetalle.distributivo.unidadOrganizacional.unidadOrganizacional.nombre} / #{puesto.distributivoDetalle.distributivo.unidadOrganizacional.nombre}"/>
+                    </p:column>                    
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Estado Puesto" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.distributivoDetalle.estadoPuesto.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Estado Servidor" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.estadoPersonal.nombre}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{busquedaServidorBean.busquedaServidorHelper.unidadesOrganizacionalPermitidas}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmPrincipal:tab1:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.nombre}"
+                                                             target="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp de Ubicación Geográfica. -->
+            <p:dialog 
+                widgetVar="ubcgo"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                header="Ubicación Geográfica">
+                <h:form id="fmrPpUbiGeo">
+                    <p:panel id="contenidoUbiGeo">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Pais: "
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu id="geograficaVO_paisId"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 200px" 
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.paisId}"
+                                                 required="#{true}"
+                                                 requiredMessage="El país es un campo requerido.">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaPais}"/>
+                                    <p:ajax update="geograficaVO_provinciaId"  
+                                            listener="#{busquedaServidorBean.buscarProvincias()}" />
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Provincia: "
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu style="width: 200px" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 id="geograficaVO_provinciaId"                                                  
+                                                 value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.provinciaId}">
+                                    <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaProvincia}"/>
+                                    <p:ajax update="geograficaVO_cantonId"  
+                                            listener="#{busquedaServidorBean.buscarCantones}" />
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Cantón: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" 
+                                             id="geograficaVO_cantonId" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.cantonId}">
+                                <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaCanton}"/>
+                                <p:ajax update="geograficaVO_parroquiaId"  
+                                        listener="#{busquedaServidorBean.buscarParroquias()}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Parroquia: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             id="geograficaVO_parroquiaId"                                              
+                                             value="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.parroquiaId}">
+                                <f:selectItems value="#{busquedaServidorBean.busquedaServidorHelper.listaParroquia}"/>
+
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" style=" margin: auto;text-align: center;width: 90%;">
+                            <p:commandButton value="Aceptar"
+                                             update="contenidoUbiGeo, :frmPrincipal:tab1:parametrosBusqueda_parroquia"
+                                             action="#{busquedaServidorBean.procesarUbicacionGeografica()}"/>
+                            <p:commandButton value="Cancelar" 
+                                             immediate="true"
+                                             oncomplete="ubcgo.hide()" 
+                                             update=":frmPrincipal:tab1:parametrosBusqueda_parroquia">
+                                <f:setPropertyActionListener target="#{busquedaServidorBean.busquedaServidorHelper.busquedaServidorVO.ubicacionGeograficaNombre}" 
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <p:dialog  id="progres" modal="false" widgetVar="statusDialog1" header="Generando archivo Excel - Consulta de Servidor..." dynamic="#{true}"   
+                       draggable="true" resizable="false" closable="true" position="right bottom" style="margin: 20px 20px;" width="250px" >  
+                <p:graphicImage value="/images/ajaxloadingbar.gif" />
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

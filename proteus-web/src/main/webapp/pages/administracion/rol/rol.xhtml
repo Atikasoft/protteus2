@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mq.proteus.rol.titulo']}"
+                                     controlador="#{rolBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.proteus.rol.codigo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="rol_codigo"
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{rolBean.rolHelper.rol.codigo}"
+                                     disabled="#{!(rolBean.rolHelper.esNuevo)}"
+                                     required="true" style="width: 200px"
+                                     requiredMessage="El campo código es requerido"/>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.proteus.rol.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="rol_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="200"
+                                         value="#{rolBean.rolHelper.rol.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.proteus.rol.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="rol_descr"
+                                     styleClass="textoDescripcion"
+                                     maxlength="400"
+					required="true"
+                                     requiredMessage="El campo descripción es requerido"
+                                     value="#{rolBean.rolHelper.rol.descripcion}"
+                                     style="width: 200px"/>                        
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(rolBean.rolHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{rolBean.rolHelper.rol.vigente}" 
+                                                 rendered="#{!(rolBean.rolHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(rolBean.rolHelper.esNuevo)}"/>
+                        <p:inputText id="rol_usuario_creo"
+                                     value="#{rolBean.rolHelper.rol.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(rolBean.rolHelper.esNuevo)}" style="width: 200px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(rolBean.rolHelper.esNuevo)}"/>
+                        <p:inputText id="rol_fecha_creo"
+                                     value="#{rolBean.rolHelper.rol.fechaCreacion}"
+                                     rendered="#{!(rolBean.rolHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(rolBean.rolHelper.esNuevo)}"/>
+                        <p:inputText id="rol_usuario_actual"
+                                     value="#{rolBean.rolHelper.rol.usuarioActualizacion}"
+                                     rendered="#{!(rolBean.rolHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(rolBean.rolHelper.esNuevo)}"/>
+                        <p:inputText id="rol_fecha_actual"
+                                     value="#{rolBean.rolHelper.rol.fechaActualizacion}"
+                                     rendered="#{!(rolBean.rolHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

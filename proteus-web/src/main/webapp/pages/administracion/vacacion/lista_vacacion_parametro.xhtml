@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{vacacionParametroBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablavacacionParametro"
+                                 value="#{vacacionParametroBean.vacacionParametroHelper.listaVacacionParametros}"
+                                 var="vacacionParametro"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{vacacionParametro.nombre}"  sortOrder="ascending"
+                                 style="overflow: auto">  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{vacacionParametroBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{vacacionParametro}" 
+                                                             target="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametroEditDelete}"/>
+                            </p:commandButton>
+                             <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{vacacionParametro}" 
+                                                             target="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametroEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.regimenLaboral']}" 
+                                  sortBy="#{vacacionParametro.regimenLaboral.nombre}" style="width: 200px">                                                                 
+                            <h:outputText value="#{vacacionParametro.regimenLaboral.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.nombre']}" 
+                                  sortBy="#{vacacionParametro.nombre}" style="width: 200px">                               
+                            <h:outputText value="#{vacacionParametro.nombre}"/>                                
+                        </p:column>  
+                          <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.numeroDias']}" 
+                                  sortBy="#{vacacionParametro.numeroDias}" style="width: 80px">                               
+                              <h:outputText value="#{vacacionParametro.numeroDias}"/>                                
+                        </p:column> 
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.tipoAcumulación']}" 
+                                  sortBy="#{vacacionParametro.tipoAcumulacion}" style="width: 80px">                               
+                            <h:outputText value="#{vacacionParametroBean.obtenerDescripcionTipoAcumulacion(vacacionParametro.tipoAcumulacion)}"/>                                
+                        </p:column> 
+                       
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maximoAcumulacion']}" 
+                                  sortBy="#{vacacionParametro.maximoAcumulacion}" style="width: 80px">                               
+                            <h:outputText value="#{vacacionParametro.maximoAcumulacion}"/>                                
+                        </p:column>
+                       
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{vacacionParametro.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        
+                    </p:dataTable>
+                     <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablavacacionParametro"
+                                             actionListener="#{vacacionParametroBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,188 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">     
+                <p:panel>               
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                     ajax="false"
+                                     action="#{menuRolBean.regresar}"/>
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" 
+                                     action="#{menuRolBean.salirPantallaPrincipal}"
+                                     ajax="false"/>
+                </p:panel>
+                <p:separator/>
+                <p:panel id="panelMenuMain" header="#{msg['ec.gob.mq.proteus.rol.menu.asignacion']}">
+                    <h:panelGrid columns="2" >
+                        <h:outputLabel value=" #{msg['ec.gob.mq.proteus.rol.codigo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="rol_codigo"
+                                     styleClass="textoNemonico" 
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{menuRolBean.menuRolHelper.menuRol.rol.codigo}"
+                                     disabled="#{true}"
+                                     required="true" style="width: 200px"
+                                     requiredMessage="El campo código es requerido"/>
+
+                        <h:outputLabel value=" #{msg['ec.gob.mq.proteus.rol.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="rol_nombre" disabled="#{true}"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="200"
+                                         value="#{menuRolBean.menuRolHelper.menuRol.rol.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+
+
+                        <h:outputLabel value=" #{msg['ec.gob.mq.proteus.rol.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="rol_descripcion" disabled="#{true}"
+                                         styleClass="textoDescripcion"
+                                         maxlength="400" 
+                                         value="#{menuRolBean.menuRolHelper.menuRol.rol.descripcion}"
+                                         style="width: 200px"/>           
+                        <f:verbatim/>
+                        <p:commandButton id="agregarOpcionesMenu" value="#{msg['ec.gob.mq.proteus.rol.asignarMenu']}"
+                                         style="margin: auto"
+                                         update=":frmMenu"
+                                         actionListener="#{menuRolBean.llenarArbolMenu}"
+                                         oncomplete="dlgMenu.show()"  />  
+                    </h:panelGrid>
+                    <p:separator/>
+                    <p:dataTable id="tablarol"
+                                 value="#{menuRolBean.menuRolHelper.listaMenusRol}"
+                                 var="reg" emptyMessage="#{msg['message.listaVacia']}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex" selection=""
+                                 sortBy="#{reg.rol.codigo}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="Nombre Completo Menú" style=" width: 200px">                                
+                            <h:outputText value="#{reg.menu.nombreCompleto}"/>                                 
+                        </p:column>                
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.menu']}" style=" width: 200px"
+                                  filterBy="#{reg.menu.nombre}" filterMatchMode="contains" filterStyle="width: 80px">                                
+                            <h:outputText value="#{reg.menu.nombre}"/>                                 
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.etiqueta']}" style=" width: 200px"
+                                  filterBy="#{reg.menu.etiqueta}" filterMatchMode="contains" filterStyle="width: 80px">                                
+                            <h:outputText value="#{reg.menu.etiqueta}"/>                                 
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.url']}" style=" width: 300px"
+                                  filterBy="#{reg.menu.nombre}" filterMatchMode="contains" filterStyle="width: 80px">                                
+                            <h:outputText value="#{reg.menu.url}"/>                                 
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.orden']}" style=" width: 70px"
+                                  filterBy="#{reg.menu.orden}" filterMatchMode="contains" filterStyle="width: 50px">                                
+                            <h:outputText value="#{reg.menu.orden}"/>                                 
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style=" width: 100px; text-align: center;">
+
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{reg}" 
+                                                             target="#{menuRolBean.menuRolHelper.menuRolEdit}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación"
+                             severity="alert"
+                             widgetVar="confirmEliminacion">  
+                <h:form id="for_eliminar">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         style="margin: auto"
+                                         update=":frmPrincipal:panelMenuMain"
+                                         actionListener="#{menuRolBean.eliminarMenus}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+            <p:dialog modal="true"
+                      resizable="false"
+                      width="80%"
+                      height="350"
+                      draggable="true" 
+                      header="#{msg['ec.gob.mq.proteus.administracion.menu.menu']}"
+                      widgetVar="dlgMenu"
+                      closable="true">
+                <h:form id="frmMenu">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+
+                        <p:treeTable value="#{menuRolBean.menuRolHelper.root}" 
+                                     var="menu" >                                 
+
+
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.menu']}" 
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{menu.nombre}"
+                                      filterBy="#{menu.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.nombre}" 
+                                              title="#{menu.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['message.btn.seleccionar']}" 
+                                      style=" font-size: 8pt; width: 20px; text-align: center">
+                                <p:selectBooleanCheckbox value="#{menu.seleccionado}" rendered="#{menu.menu!=null}">
+                                    <p:ajax event="change" listener="#{menuRolBean.asignarSeleccionado(menu)}" />  
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.etiqueta']}"
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{menu.etiqueta}"
+                                      filterBy="#{menu.etiqueta}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.etiqueta}" 
+                                              title="#{menu.etiqueta}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.url']}"
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{menu.url}"
+                                      filterBy="#{menu.url}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.url}" 
+                                              title="#{menu.url}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.menu.orden']}"
+                                      style="font-size: 8pt; width: 30px;"
+                                      sortBy="#{menu.orden}"
+                                      filterBy="#{menu.orden}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{menu.orden}" 
+                                              title="#{menu.orden}"  />
+                            </p:column>                          
+
+                        </p:treeTable>
+                    </p:scrollPanel>  
+                    <p:spacer/><br/>
+                    <center>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{menuRolBean.guardar}"  ajax="#{false}" 
+                                         type="submit"
+                                         update=":frmPrincipal:panelMenuMain"/> 
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgMenu.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>            
+        </ui:define>
+    </ui:composition>
+</html>

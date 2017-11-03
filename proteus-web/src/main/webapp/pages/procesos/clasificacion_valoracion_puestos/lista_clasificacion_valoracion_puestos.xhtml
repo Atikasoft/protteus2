@@ -1,0 +1,662 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelTotal" header="ADMINISTRACIÓN DE PUESTOS Y ESPACIOS PRESUPUESTARIOS">
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="3">                     
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                             action="#{clasificacionValoracionPuestoBean.buscarPuestos()}"                                        
+                                             update="tblListaPuestos totalPanel exp_xls"/>
+                            <p:commandButton value="CAMBIO MASIVO" 
+                                             onclick="dlgCambioMasivo.show()"/>
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                             ajax="#{false}"
+                                             immediate="#{true}"
+                                             action="#{clasificacionValoracionPuestoBean.salirPantallaPrincipal()}"/>
+                        </h:panelGrid> 
+                        <h:panelGrid style="text-align: right;">
+                            <h:commandLink id="exp_xls" 
+                                           title="Exportar Excel"
+                                           disabled="#{empty(clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaPuestos)}">
+                                <p:graphicImage value="/images/excel.png" alt="Exportar Excel" 
+                                                style="width: 25px; height: 25px"/>
+                                <p:dataExporter id="dexporter" 
+                                                type="xls" 
+                                                target="tblListaPuestos"
+                                                fileName="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.nombreArchivo}"
+                                                postProcessor="#{clasificacionValoracionPuestoBean.postProcessXLS}" />                    
+                            </h:commandLink>
+                        </h:panelGrid>
+                    </h:panelGrid> 
+
+                    <p:separator />
+
+                    <p:fieldset id="accordionPanel" widgetVar="accordionPanel" 
+                                legend="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.rotulo']}">    
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="Número Identificación:"
+                                           styleClass="labelFormulario"/>                  
+                            <p:inputText style="width: 310px;"
+                                         styleClass="campoNumerico" maxlength="10"
+                                         onkeypress="return pulsar(event);"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.busquedaPuestoVO.numeroDocumentoServidor}"/>                  
+
+                            <h:outputLabel value="Nombres: "
+                                           styleClass="labelFormulario"/>
+                            <p:inputText style="width: 310px; text-transform: uppercase" 
+                                         styleClass="letrasEspacio"
+                                         onkeypress="return pulsar(event);"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.busquedaPuestoVO.nombreServidor}"/>
+
+                            <h:outputLabel value="Código Puesto: "
+                                           styleClass="labelFormulario"/>
+                            <p:inputText style="width: 310px;"
+                                         styleClass="textoNemonico"
+                                         onkeypress="return pulsar(event);"
+                                         value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.busquedaPuestoVO.codigoPuesto}"/>
+
+                            <h:outputLabel value="Estado del Puesto: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 320px;"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.busquedaPuestoVO.estadoPuestoId}">
+                                <f:selectItems value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaEstadoPuesto}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:panel>
+
+                <p:panel id="totalPanel">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Total de Registos Encontrados:" />
+                        <h:outputText style="font-weight: bold" 
+                                      value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.totalRegistros}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:dataTable id="tblListaPuestos" 
+                             value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaPuestos}"
+                             var="puesto"
+                             rows="10"
+                             paginator="#{true}"    
+                             scrollable="true" 
+                             rowIndexVar="rowIndex">
+
+                    <p:column style="width: 90px"
+                              exportable="#{false}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" />
+                        </f:facet>
+                        <p:commandButton title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                         icon="ui-icon-pencil"
+                                         ajax="#{false}"
+                                         action="#{clasificacionValoracionPuestoBean.iniciarEdicion}">
+                            <f:setPropertyActionListener target="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle}" 
+                                                         value="#{puesto}"/>
+                        </p:commandButton>
+                        <p:commandButton title="Históricos" 
+                                         icon="ui-icon-clock" 
+                                         update=":frmHistorico:tblHistorico"
+                                         action="#{clasificacionValoracionPuestoBean.buscarHistorico}">
+                            <f:setPropertyActionListener target="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle}" 
+                                                         value="#{puesto}"/>
+                        </p:commandButton>
+                        <p:commandButton title="Nóminas" 
+                                         icon="ui-icon-clipboard" 
+                                         update=":frmNomina:tblNomina"
+                                         action="#{clasificacionValoracionPuestoBean.buscarNominasDetalle()}">
+                            <f:setPropertyActionListener target="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.distributivoDetalle}" 
+                                                         value="#{puesto}"/>
+                        </p:commandButton>
+                    </p:column>  
+
+                    <p:column style="width: 35px; text-align: right">
+                        <f:facet name="header">
+                            <h:outputText value="No" />
+                        </f:facet>
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>    
+                    <p:column style="text-align: center;width: 50px"
+                              sortBy="#{puesto.codigoPuesto}" 
+                              filterBy="#{puesto.codigoPuesto}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Código Puesto" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.codigoPuesto}" style="font-size: 10px;"/>
+                    </p:column>
+
+
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}" 
+                              filterBy="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.escalaOcupacional.nivelOcupacional.nombre}" 
+                              filterBy="#{puesto.escalaOcupacional.nivelOcupacional.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.nivel.nombre']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.escalaOcupacional.nivelOcupacional.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 180px"
+                              sortBy="#{puesto.escalaOcupacional.nombre}" 
+                              filterBy="#{puesto.escalaOcupacional.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escala.nombre']}" />
+                        </f:facet>
+                        <h:outputText value=" #{puesto.escalaOcupacional.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.escalaOcupacional.grado}" 
+                              filterBy="#{puesto.escalaOcupacional.grado}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escala.grado']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.escalaOcupacional.grado}"/>
+                    </p:column>
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmu']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.escalaOcupacional.rmu}" style="text-align: right;"/>
+                    </p:column>
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmuMaximo']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.escalaOcupacional.rmuMaximo}" style="text-align: right;"/>
+                    </p:column>
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.rmu']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.rmu}" style="text-align: right;"/>
+                    </p:column>
+                    <p:column  style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.sueldoBasico']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.sueldoBasico}"/>
+                    </p:column>
+                    <p:column style="width: 70px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Inicio" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.fechaInicio}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 70px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Fin" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.fechaFin}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 70px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Ingreso Institución" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.servidor.fechaIngresoInstitucion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 70px">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Ingreso Sector Público" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.servidor.fechaIngresoSectorPublico}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="width: 80px"
+                              sortBy="#{puesto.partidaIndividual}" 
+                              filterBy="#{puesto.partidaIndividual}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.partidaIndicidual']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.partidaIndividual}"/>
+                    </p:column>  
+
+                    <p:column  style="width: 250px"
+                               sortBy="#{puesto.distributivo.modalidadLaboral.nombre}" 
+                               filterBy="#{puesto.distributivo.modalidadLaboral.nombre}" 
+                               filterStyle="width: 90%"
+                               filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Modalidad Laboral" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.distributivo.modalidadLaboral.nombre}" 
+                                      style="font-size:10px"/>
+                    </p:column>
+
+
+                    <p:column  style="width: 250px"
+                               sortBy="#{puesto.distributivo.unidadOrganizacional.ruta}" 
+                               filterBy="#{puesto.distributivo.unidadOrganizacional.ruta}" 
+                               filterStyle="width: 90%"
+                               filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.distributivo.unidadOrganizacional.ruta}" 
+                                      style="font-size:10px"/>
+                    </p:column>
+
+                    <p:column  style="width: 150px"
+                               sortBy="#{puesto.unidadPresupuestaria.sector.nombre}" 
+                               filterBy="#{puesto.unidadPresupuestaria.sector.nombre}" 
+                               filterStyle="width: 90%"
+                               filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Sector" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.unidadPresupuestaria.sector.nombre}" 
+                                      style="font-size:10px"/>
+                    </p:column>
+                    <p:column  style="width: 50px"
+                               sortBy="#{puesto.unidadPresupuestaria.codigo}" 
+                               filterBy="#{puesto.unidadPresupuestaria.codigo}" 
+                               filterStyle="width: 90%"
+                               filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Cod. Unidad Presupuestaria" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.unidadPresupuestaria.sector.codigo}#{puesto.unidadPresupuestaria.codigo}" 
+                                      style="font-size:10px"/>
+                    </p:column>
+                    <p:column  style="width: 250px"
+                               sortBy="#{puesto.unidadPresupuestaria.nombre}" 
+                               filterBy="#{puesto.unidadPresupuestaria.nombre}" 
+                               filterStyle="width: 90%"
+                               filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Unidad Presupuestaria" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.unidadPresupuestaria.sector.nombre} / #{puesto.unidadPresupuestaria.nombre}" 
+                                      style="font-size:10px"/>
+                    </p:column>
+
+
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.ubicacionGeografica.nombre}" 
+                              filterBy="#{puesto.ubicacionGeografica.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.ubicacionGeografica.nombre']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.ubicacionGeografica.ubicacionGeografica.nombre} / #{puesto.ubicacionGeografica.nombre}" style="font-size:10px"/>
+                    </p:column>                    
+                    <p:column style="width: 150px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.denominacionPuesto.nombreCargo']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.denominacionPuesto.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.certificacionPresupuestaria}" 
+                              filterBy="#{puesto.certificacionPresupuestaria}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Certificación Presupuestaria" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.certificacionPresupuestaria}"/>
+                    </p:column>
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.unidadPresupuestaria.grupoPresupuestario}" 
+                              filterBy="#{puesto.unidadPresupuestaria.grupoPresupuestario}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Unidad Presupuestaria" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.unidadPresupuestaria.grupoPresupuestario}"/>
+                    </p:column>
+
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.estadoPuesto.nombre}" 
+                              filterBy="#{puesto.estadoPuesto.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.denominacionPuesto.estado']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.estadoPuesto.nombre}"/>
+                    </p:column>
+
+                    <p:column style="width: 150px"
+                              sortBy="#{puesto.estadosAdmPuestosRegimenLaboral.estadoAdministracionPuesto.nombre}" 
+                              filterBy="#{puesto.estadosAdmPuestosRegimenLaboral.estadoAdministracionPuesto.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Estado Actual" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.estadosAdmPuestosRegimenLaboral.estadoAdministracionPuesto.nombre}"/>
+                    </p:column>
+
+                    <p:column style="width: 50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{clasificacionValoracionPuestoBean.obtenerDescripcionTipoDocumento(puesto.servidor.tipoIdentificacion)}"/>
+                    </p:column>
+                    <p:column style="width: 100px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.servidor.numeroIdentificacion}"/>
+                    </p:column>
+                    <p:column style="width: 250px">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.servidor.apellidosNombres}"/>
+                    </p:column>
+                    <p:column style="width: 80px">
+                        <f:facet name="header">
+                            <h:outputText value="Código Servidor de Reloj" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.servidor.codigoEmpleado}"/>
+                    </p:column>
+                    <p:column style="width: 300px">
+                        <f:facet name="header">
+                            <h:outputText value="Observación" />
+                        </f:facet>
+                        <h:outputText value="#{puesto.observacionUltimaModificacion}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <!-- PopUp Históricos del puesto. -->
+            <p:dialog 
+                widgetVar="historicoPuesto"
+                draggable="#{true}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                resizable="true"
+                width="900"
+                header="Histórico">
+                <h:form id="frmHistorico">
+                    <h:panelGrid>
+                        <h:commandLink id="historicoXls"
+                                       title="Exportar Excel"
+                                       disabled="#{empty(clasificacionValoracionPuestoBean.
+                                                   clasificacionValoracionPuestoHelper.listaHistoricos)}">
+                            <p:graphicImage value="/images/excel.png" 
+                                            alt="Exportar Excel" 
+                                            style="width: 25px; height: 25px"/>
+                            <p:dataExporter id="dexporterHistorico" 
+                                            type="xls" 
+                                            target="tblHistorico" 
+                                            fileName="#{clasificacionValoracionPuestoBean.
+                                                        clasificacionValoracionPuestoHelper.nombreArchivoHistorico}"
+                                            postProcessor="#{clasificacionValoracionPuestoBean.xlsEncabezado}"
+                                            />
+                        </h:commandLink>
+                    </h:panelGrid>
+                    <p:dataTable 
+                        value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaHistoricos}"
+                        var="registro" 
+                        paginator="#{true}"
+                        paginatorPosition="bottom"
+                        rows="10"
+                        rowIndexVar="rowIndex"
+                        id="tblHistorico">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center;width: 50px;">
+                            <h:outputText value="#{rowIndex+1}"  
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Usuario Cambio"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.usuarioCreacion}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Fecha Cambio" 
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.fechaCreacion}" 
+                                          style="font-size: 10px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Observación"
+                                  style="width: 200px">
+                            <h:outputText value="#{registro.observacion}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.codigoPuesto']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.codigoPuesto}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}"
+                                  style="width: 120px">
+                            <h:outputText value="#{registro.regimenLaboralNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.nivel.nombre']}"
+                                  style="width: 120px">
+                            <h:outputText value="#{registro.nivelOcupacionalNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.escala.nombre']}"
+                                  style="width: 120px">
+                            <h:outputText value="#{registro.escalaOcupacionalNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.escala.grado']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.escalaOcupacionalGrado}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.modalidadLaboral.nombre']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.modalidadLaboralNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmu']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.escalaOcupacionalRmu}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.rmuMaximo']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.escalaOcupacionalRmuMaximo}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.rmu']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.rmu}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.sueldoBasico']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.sueldoBasico}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.fechaInicio']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.fechaInicio}" 
+                                          style="font-size: 10px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.fechaFin']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.fechaFin}" 
+                                          style="font-size: 10px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Fecha ingreso" 
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.fechaIngreso}" 
+                                          style="font-size: 10px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.partidaIndicidual']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.partidaIndividual}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}"
+                                  style="width: 150px;white-space: nowrap;">
+                            <h:outputText value="#{registro.unidadOrganizacionalNombre}" 
+                                          style="font-size: 10px;"/>
+                        </p:column>
+                        <p:column headerText="Sector"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.unidadPresupuestariaSector}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadPresupuestaria.codigo']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.unidadPresupuestariaCodigo}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadPresupuestaria.nombre']}"
+                                  style="width: 150px">
+                            <h:outputText value="#{registro.unidadPresupuestariaNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.ubicacionGeografica.nombre']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.ubicacionGeograficaNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.denominacionPuesto.nombreCargo']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.denominacionPuestoNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.certificacionPresupuestaria']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.certificacionPresupuestaria}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.estadoPuesto']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.estadoPuestoNombre}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Estado Actual Puesto"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.estadoAdministracionPuesto}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}"
+                                  style="width: 80px">
+                            <h:outputText value="CÉDULA" rendered="#{registro.servidorTipoIdentificacion eq 'C'}"
+                                          style="font-size: 10px"/>
+                            <h:outputText value="PASAPORTE" rendered="#{registro.servidorTipoIdentificacion eq 'P'}"
+                                          style="font-size: 10px"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}"
+                                  style="width: 80px">
+                            <h:outputText value="#{registro.servidorNumeroIdentificacion}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}"
+                                  style="width: 100px">
+                            <h:outputText value="#{registro.servidorNombres}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp Nóminas del puesto. -->
+            <p:dialog 
+                widgetVar="nominasPuesto"
+                draggable="#{true}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                resizable="true"
+                width="900"
+                header="Nóminas">
+                <h:form id="frmNomina">
+                    <h:panelGrid>
+                        <h:commandLink id="nominaXls" 
+                                       title="Exportar Excel"
+                                       disabled="#{empty(clasificacionValoracionPuestoBean.
+                                                   clasificacionValoracionPuestoHelper.listaNominas)}">
+                            <p:graphicImage value="/images/excel.png" 
+                                            alt="Exportar Excel" 
+                                            style="width: 25px; height: 25px"/>
+                            <p:dataExporter id="dexporterNomina" 
+                                            type="xls" 
+                                            target="tblNomina" 
+                                            fileName="#{clasificacionValoracionPuestoBean.
+                                                        clasificacionValoracionPuestoHelper.nombreArchivoNomina}" 
+                                            postProcessor="#{clasificacionValoracionPuestoBean.xlsEncabezado}"
+                                            />
+                        </h:commandLink>
+                    </h:panelGrid>
+                    <p:dataTable 
+                        value="#{clasificacionValoracionPuestoBean.clasificacionValoracionPuestoHelper.listaNominas}"
+                        var="nominaDetalle"
+                        paginator="#{true}"
+                        paginatorPosition="bottom"
+                        rows="10"
+                        rowIndexVar="rowIndex"
+                        id="tblNomina">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Año">
+                            <h:outputText value="#{nominaDetalle.year}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Mes">
+                            <h:outputText value="#{nominaDetalle.mes}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Número Nómina">
+                            <h:outputText value="#{nominaDetalle.numero}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Tipo Nómina">
+                            <h:outputText value="#{nominaDetalle.tipo}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Servidor">
+                            <h:outputText value="#{nominaDetalle.nombreServidor}" 
+                                          style="font-size: 10px"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+            <ui:include src="cambio_masivo_puestos.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucional.titulo']}">
+
+                    <p:dataTable id="tablaParametroInstitucional"
+                                 value="#{parametroInstitucionalBean.parametroInstitucionalHelper.listaParametroInstitucional}"
+                                 var="parametro"
+                                 filterEvent="enter"
+                                 sortBy="#{parametro.valorNumerico}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{parametroInstitucionalBean.iniciarEdicion()}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{parametro}" 
+                                                             target="#{parametroInstitucionalBean.parametroInstitucionalHelper.parametroInstitucionalEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucional.nombreCatalogo']}" 
+                                  sortBy="#{parametro.parametroInstitucionalCatalogo.nombre}" style="width: 200px"
+                                  filterBy="#{parametro.parametroInstitucionalCatalogo.nombre}" filterMatchMode="contains">                                                                 
+                            <h:outputText value="#{parametro.parametroInstitucionalCatalogo.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucional.tipo']}" 
+                                  style="text-align: center; width: 100px"
+                                  sortBy="#{parametro.parametroInstitucionalCatalogo.tipo}">                               
+                            <h:outputText value="#{parametroInstitucionalBean.obtenerDescripcionTipoParametro(parametro.parametroInstitucionalCatalogo.tipo)}"/>                                
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucional.valor']}"
+                                  style="width: 200px">                               
+                            <h:outputText value="#{parametro.valorFecha}"
+                                          rendered="#{parametro.parametroInstitucionalCatalogo.tipo=='F'}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                            <h:outputText value="#{parametro.valorNumerico}"
+                                          rendered="#{parametro.parametroInstitucionalCatalogo.tipo=='N'}"/>
+                            <h:outputText value="#{parametro.valorTexto}"
+                                          rendered="#{parametro.parametroInstitucionalCatalogo.tipo=='T'}"/>
+                            <h:outputText value="#{parametro.archivo.nombre}"
+                                          rendered="#{parametro.parametroInstitucionalCatalogo.tipo=='A'}"/>
+                            <h:outputText value="#{parametro.valorTexto}"
+                                          rendered="#{parametro.parametroInstitucionalCatalogo.tipo=='L'}"/>
+                        </p:column>                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroInstitucional.cumple']}" 
+                                  style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{parametro.vigente}" 
+                                                     disabled="#{true}"/>                                   
+                        </p:column>
+                        
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

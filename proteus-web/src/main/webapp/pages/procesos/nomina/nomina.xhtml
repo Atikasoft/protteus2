@@ -1,0 +1,506 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">   
+
+        <ui:define name="page-content">
+            <!-- Formulario  creacion -->
+            <h:form rendered="#{nominaBean.nominaHelper.esNuevo}" id="frmMain" >
+                <p:panel header="NUEVA NÓMINA" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="GUARDAR"   
+                                         update="@form,panelNomina"
+                                         action="#{nominaBean.guardarNomina}"/>
+                        <p:commandButton value="REGRESAR" 
+                                         immediate="true" 
+                                         action="#{nominaBean.listarNominas}" 
+                                         ajax="false">
+                            <f:setPropertyActionListener value="#{null}" 
+                                                         target="#{nominaBean.nominaHelper.esNuevo}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel id="panelNomina">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="nomina_ejercicioId" value="* Ejercicio Fiscal:"/>
+                        <p:inputText id="nomina_ejercicioId"
+                                     disabled="true"
+                                     requiredMessage="El Ejercicio Fiscal es un campo requerido"
+                                     value="#{nominaBean.nominaHelper.nomina.periodoNomina.ejercicioFiscal.nombre}"/>
+
+
+                        <p:outputLabel for="nomina_periodoNominaId" value="* Periodos:"/>
+                        <p:selectOneMenu id="nomina_periodoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         disabled="true"
+                                         requiredMessage="El Periodo de la Nómina es un campo requerido"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.nomina.periodoNominaId}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="* Tipo:"/>
+                        <p:selectOneMenu id="nomina_tipoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true"
+                                         requiredMessage="El Tipo de Nómina es un campo requerido"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.nomina.tipoNominaId}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="* Tipo mínimo a pagar:"/>
+                        <p:selectOneRadio id="nomina_minimoPagarTipo" 
+                                          style="width: 200px;"
+                                          required="true"
+                                          requiredMessage="El Tipo mínimo a pagar es un campo requerido"
+                                          value="#{nominaBean.nominaHelper.nomina.minimoPagarTipo}">  
+                            <f:selectItem itemLabel="Fijo" itemValue="F" />  
+                            <f:selectItem itemLabel="Porcentual" itemValue="P" />  
+                        </p:selectOneRadio> 
+
+                        <p:outputLabel value="* Valor mínimo a pagar:"/>
+                        <p:inputText required="true"
+                                     requiredMessage="El Valor mínimo a pagar es un campo requerido"
+                                     id="nomina_minimoPagarValor"
+                                     style="width: 200px;"
+                                     value="#{nominaBean.nominaHelper.nomina.minimoPagarValor}" />
+
+                        <p:outputLabel value="*Descripción:"/>
+                        <p:inputTextarea id="nomina_descripcion" 
+                                         required="true"
+                                         requiredMessage="La descripción es un campo requerido"
+                                         style="width: 400px;"
+                                         value="#{nominaBean.nominaHelper.nomina.descripcion}" />
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+            <!-- Formulario no creacion -->
+            <h:form rendered="#{!nominaBean.nominaHelper.esNuevo}" 
+                    id="frmMainNoCrear">
+                <p:blockUI block="pntContnt" widgetVar="bui" blocked="true"/>  
+                <p:panel header="NÓMINA '#{nominaBean.nominaHelper.nomina.descripcion}'" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="REGRESAR" 
+                                         immediate="true" 
+                                         action="#{nominaBean.listarNominas}" 
+                                         ajax="false"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel id="pntContnt">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="nomina_periodoNominaId" value="Periodo:"/>
+                        <p:selectOneMenu id="nomina_periodoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.nomina.periodoNominaId}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel for="nomina_tipoNominaId"
+                                       value="Tipo:"/>
+                        <p:selectOneMenu id="nomina_tipoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.nomina.tipoNominaId}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="Tipo mínimo pagar:"/>
+                        <p:selectOneRadio id="nomina_minimoPagarTipo" 
+                                          value="#{nominaBean.nominaHelper.nomina.minimoPagarTipo}">  
+                            <f:selectItem itemLabel="Fijo" itemValue="F" />  
+                            <f:selectItem itemLabel="Porcentual" itemValue="P" />  
+                        </p:selectOneRadio> 
+
+
+                        <p:outputLabel for="nomina_minimoPagarValor" value="Valor mínimo pagar:"/>
+                        <p:inputText                        id="nomina_minimoPagarValor"
+                                                            value="#{nominaBean.nominaHelper.nomina.minimoPagarValor}" />
+
+                        <p:outputLabel value="Estado:"/>
+
+                        <p:inputText id="nomina_estado"
+                                     value="#{nominaBean.nominaHelper.nomina.estadoNombre}" />
+                        <p:outputLabel for="nomina_observacion" value="Comentario" rendered="#{nominaBean.nominaHelper.nominaAnulada}"/>                        
+                        <p:inputTextarea                    id="nomina_observacion"
+                                                            rendered="#{nominaBean.nominaHelper.nominaAnulada}"
+                                                            value="#{nominaBean.nominaHelper.nomina.observacion}" />         
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:outputPanel rendered="#{!nominaBean.nominaHelper.nominaAnulada}">
+                    <h:panelGrid columns="6"  >
+                        <p:commandButton value="CÁLCULO" 
+                                         immediate="true"
+                                         ajax="false"
+                                         rendered="#{nominaBean.nominaHelper.calcular}"
+                                         action="#{nominaBean.iniciarCalculo}"/>
+
+                        <p:commandButton value="RESULTADOS"  
+                                         immediate="true" 
+                                         ajax="false"
+                                         rendered="#{nominaBean.nominaHelper.nomina.calculando==false}"
+                                         action="#{nominaBean.irFormularioResultadoNomina}">
+                            <f:setPropertyActionListener value="#{1}" target="#{nominaBean.resultadoNominaHelper.retorno}"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="OBSERVACIONES"
+                                         immediate="true"
+                                         rendered="#{nominaBean.nominaHelper.nomina.calculando==false}"
+                                         action="#{nominaBean.verObservaciones}" update=":fmrObservacionesNomina"/>
+                        <p:commandButton value="ELIMINAR DETALLES" 
+                                         immediate="true"
+                                         rendered="#{nominaBean.nominaHelper.calcular and nominaBean.nominaHelper.nomina.calculando==false}"
+                                         onclick="confirmEliminacion.show();"/>
+
+                        <p:commandButton value="ARCHIVOS SPI" 
+                                         title="GENERAR ARCHIVOS SPI DEL BANCO CENTRAL"
+                                         immediate="true" ajax="false"
+                                         rendered="#{nominaBean.nominaHelper.nominaAprobada}"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)">
+                            <p:fileDownload value="#{nominaBean.iniciarListaTipoArchivoSPI(true)}" />    
+                        </p:commandButton>
+
+                        <p:commandButton value="ARCHIVOS SIPARI"
+                                         title="GENERAR ARCHIVOS SIPARI" 
+                                         immediate="true" ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                         rendered="#{nominaBean.nominaHelper.nominaAprobada}" >
+                            <p:fileDownload value="#{nominaBean.iniciarListaTipoArchivoSIPARI(true)}"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="DESBLOQUEAR" 
+                                         id="boton_desbloquear_id"
+                                         immediate="true"
+                                         rendered="#{nominaBean.nominaHelper.calcular 
+                                                     and nominaBean.nominaHelper.nomina.calculando==false 
+                                                     and nominaBean.nominaHelper.nomina.bloqueado==true}"
+                                         onclick="desbloqueoWidget.show();"/>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <p:panel rendered="#{!nominaBean.nominaHelper.nominaAnulada}"  style="margin:auto; ">
+                        <p:outputPanel autoUpdate="true">
+                            <h:panelGrid columns="2" style="margin: 0 auto;" id="gridComentario">                      
+                                <p:outputLabel  value="* COMENTARIO:" rendered="#{!nominaBean.nominaHelper.nominaAnulada}"/>
+                                <p:inputTextarea  id="nomina_comentario"
+                                                  value="#{nominaBean.nominaHelper.nomina.observacion}"
+                                                  required="#{true}" style="width: 300px;"
+                                                  requiredMessage="El campo Comentario es requerido">
+                                </p:inputTextarea>
+
+                                <p:outputLabel  value="* ACCIÓN:"/>
+                                <p:selectOneMenu id="nomina_accionId" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 style="width: 300px;"
+                                                 value="#{nominaBean.nominaHelper.accion}"
+                                                 requiredMessage="El campo Acción es requerido"> 
+                                    <f:selectItems value="#{nominaBean.nominaHelper.listaAcciones}"/>
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <center>
+                                <p:commandButton id="botonContinuar" value="CONTINUAR"  
+                                                 action="#{nominaBean.activarPanelActualizarEstado}" 
+                                                 update=":popOpAcciones"
+                                                 ajax="true"
+                                                 title="CONTINUAR"/>
+                            </center>
+                        </p:outputPanel>
+                    </p:panel>
+                </p:outputPanel>
+            </h:form>
+            <!-- popup eliminacion -->
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación" 
+                             severity="alert" 
+                             widgetVar="confirmEliminacion">  
+                <div style="text-align: center">
+                    <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                     style="margin: auto"
+                                     actionListener="#{nominaBean.eliminarDetalles}"
+                                     oncomplete="confirmEliminacion.hide()"  />  
+                    <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="confirmEliminacion.hide()" 
+                                     type="button" 
+                                     style="margin: auto"/> 
+                </div>
+            </p:confirmDialog> 
+
+            <!-- popup desbloqueo -->
+            <p:confirmDialog id="desbloqueoId" 
+                             message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.desbloqueo']}"
+                             header="Desbloqueo" 
+                             severity="alert" 
+                             widgetVar="desbloqueoWidget">  
+                <div style="text-align: center">
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                     style="margin: auto"
+                                     update="frmMainNoCrear:boton_desbloquear_id"
+                                     action="#{nominaBean.desbloquear()}"
+                                     oncomplete="desbloqueoWidget.hide()"  />  
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="desbloqueoWidget.hide()" 
+                                     type="button" 
+                                     style="margin: auto"/> 
+                </div>
+            </p:confirmDialog> 
+
+            <!-- pop Up generacion -->
+            <p:dialog modal="true" 
+                      resizable="false" 
+                      draggable="false"
+                      width="700"
+                      height="250"
+                      widgetVar="dlgCalculoNomina">
+
+                <h:form id="fmrCalculoNomina">
+                    <p:growl id="growl" />  
+                    <p:panel>
+                        <h:panelGrid columns="2"  style="margin: 0 auto;">
+                            <p:commandButton value="PROCESAR" 
+                                             immediate="true"
+                                             action="#{nominaBean.enviarProcesarNomina()}" />
+                            <p:commandButton value="CERRAR" 
+                                             immediate="true"
+                                             oncomplete="dlgCalculoNomina.hide()"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <h:panelGrid columns="2">
+                        <p:selectOneRadio id="nomina_minimoPagarTipo"   
+                                          style="text-align: center"
+                                          value="#{nominaBean.nominaHelper.datosNomina.tipoCalculo}">  
+                            <p:ajax update="cntCalucloNominaD" 
+                                    event="change"
+                                    process="@this"/>
+                            <f:selectItem itemLabel="Nómina Completa" itemValue="C"  />  
+                            <f:selectItem itemLabel="Nómina Parcial" itemValue="P" />  
+                        </p:selectOneRadio> 
+                    </h:panelGrid>
+                    <p:panel id="cntCalucloNominaD">
+                        <p:panel id="pnlCalculoNominaCompleta" 
+                                 rendered="#{nominaBean.nominaHelper.datosNomina.tipoCalculo=='C'}" 
+                                 style="height: 150px;">
+                            <h:panelGrid columns="1"  style="margin: 0 auto;">
+                                <h:outputLabel value="SE EJECUTARA LA NÓMINA DE TODOS LOS SERVIDORES MUNICIPALES"/>
+                            </h:panelGrid>
+
+                        </p:panel>
+                        <p:panel id="pnlCalculoNominaParcial" 
+                                 rendered="#{nominaBean.nominaHelper.datosNomina.tipoCalculo=='P'}"
+                                 style="height: 150px;">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="RÉGIMEN LABORAL:"/>
+                                <p:selectOneMenu value="#{nominaHelper.datosNomina.regimenLaboralId}" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 300px;">
+                                    <p:ajax update="datosNomina_nivelOcupacionalId"  
+                                            listener="#{nominaBean.buscarNivelesPorRegimen}" />  
+                                    <f:selectItems value="#{nominaHelper.listaRegimenLaboral}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="ESCALA REMUNERATIVA:"/>
+                                <p:selectOneMenu id="datosNomina_nivelOcupacionalId" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 300px;"
+                                                 value="#{nominaHelper.datosNomina.nivelOcupacionalId}">
+                                    <f:selectItems value="#{nominaHelper.listaNivelOcupacional}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="MODALIDAD LABORAL:"/>
+                                <p:selectOneMenu id="datosNomina_modalidadLaboralId" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 300px;"
+                                                 value="#{nominaHelper.datosNomina.modalidadLaboralId}">
+                                    <f:selectItems value="#{nominaHelper.listaModalidadLaboral}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="SERVIDOR"/>
+                                <p:autoComplete value="#{nominaBean.nominaHelper.listaServidores}" 
+                                                completeMethod="#{nominaBean.buscarServidorPorNombre}"  
+                                                var="p" itemLabel="#{p.apellidosNombres}" itemValue="#{p}"
+                                                forceSelection="false" maxResults="10"
+                                                minQueryLength="3"
+                                                scrollHeight="100" 
+                                                converter="servidorConverter" multiple="true">  
+                                </p:autoComplete>  
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panel>
+
+                </h:form>
+            </p:dialog>
+
+            <!-- pop Up observaciones -->
+            <p:dialog modal="true" 
+                      resizable="false" 
+                      draggable="false"
+                      width="80%"
+                      height="50%"
+                      widgetVar="dlgObservacionesNomina">
+                <h:form id="fmrObservacionesNomina">
+                    <p:panel>
+                        <h:panelGrid columns="2"  style="margin: 0 auto;">
+                            <p:commandButton value="CERRAR" 
+                                             immediate="true"
+                                             oncomplete="dlgObservacionesNomina.hide()"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="OBSERVACIONES DE LA NÓMINA">                              
+                        <p:dataTable id="tablaObservaciones" 
+                                     value="#{nominaBean.nominaHelper.listaProblemas}"
+                                     var="obs"         
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex"                                     
+                                     style="overflow: auto;font-size: 9px;">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="width: 2%;text-align: center">
+                                <h:outputLabel value="#{rowIndex+1}"/>
+                            </p:column>
+
+                            <p:column headerText="Identificación"
+                                      style="text-align: center; width: 8%"
+                                      sortBy="#{obs.numeroDocumento}">
+                                <h:outputLabel value="#{obs.numeroDocumento}"/>
+                            </p:column>
+                            <p:column headerText="Nombres"
+                                      style="text-align: left; width: 25%;"
+                                      sortBy="#{obs.apellidosNombres}">
+                                <h:outputLabel value="#{obs.apellidosNombres}"/>
+                            </p:column>
+                            <p:column headerText="Rubro"
+                                      style="text-align: left; width: 20%"
+                                      sortBy="#{obs.nombreRubro}">
+                                <h:outputLabel value="#{obs.nombreRubro}"/>
+                            </p:column>
+                            <p:column headerText="Observación"
+                                      style="text-align: left; width: 45%"
+                                      sortBy="#{obs.problema}">
+                                <h:outputLabel value="#{obs.problema}"/>
+                            </p:column>                                
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <!-- confirmacion de acciones -->
+            <p:confirmDialog id="popOpAcciones" 
+                             message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar.acciones']}"
+                             header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']} ACCIÓN : #{nominaBean.obtenerAccionEstado(nominaBean.nominaHelper.accion)}" 
+                             severity="alert" 
+                             widgetVar="confirmAccion">  
+                <br/>
+                <h:form id="frmacciones">
+                    <div style="text-align: center">
+                        <p:commandButton id="guardarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         actionListener="#{nominaBean.guardarNomina}" ajax="false"
+                                         update=":frmMainNoCrear" />  
+
+                        <p:commandButton id="confimAccionCerrar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmAccion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <!-- confirmacion de creación de archivo sipari -->
+            <p:dialog modal="true"    resizable="false"  width="70%"   height="430"
+                      draggable="true"  
+                      header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']} CREACIÓN ARCHIVOS SIPARI: " 
+                      id="popOpArchivo"
+                      widgetVar="confirmArchivo" closable="true">
+                <h:form id="frmMenu">
+                    <br/>
+                    <center>
+                        <h:outputText value="¿Está seguro de enviar a CREAR los archivos para el Sistema SIPARI ? " 
+                                      style="font-size: 10pt; "/>
+                        <br/>
+                        <h:outputText value="Este proceso puede tardar varios minutos !!!!" 
+                                      style="font-size: 9pt; color: #003399;font-weight: bold"/>
+                        <br/>  
+                        <p:separator/>
+                        <p:fieldset legend="ARCHIVOS" id="panelArchivo">
+                            <br/>
+                            <h:outputText value=" Seleccione los archivos que va a enviar a crear. Una vez creados podrá descargarlos." 
+                                          style="font-size: 9pt;"/>
+                            <br/>
+                            <p:dataTable id="tablaArchivos" 
+                                         value="#{nominaBean.nominaHelper.listaTipoArchivoSIPARI}"
+                                         var="file"    rowKey="#{rowIndex+1}"     
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"                              
+                                         style="overflow: auto;font-size: 10px;">
+
+                                <p:column headerText="Archivo" style="width:15%" >  
+                                    <h:outputLabel value="#{nominaBean.obtenerDescripcionTipoArchivo(file.tipo)} " rendered="#{file.id==null}"/>
+                                    <h:outputLabel value="#{file.tipoNombre} " rendered="#{file.id!=null}"/>
+                                </p:column>  
+                                <p:column headerText="Nombre" style="width:50%">  
+                                    <h:outputLabel value="#{file.nombre} " rendered="#{file.id!=null}"/>
+                                </p:column>  
+
+                                <p:column headerText="Fecha" style="width:15%" >                                  
+                                    <h:outputText value="#{file.fechaCreacion}" rendered="#{file.id!=null}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                    </h:outputText> 
+                                </p:column>                              
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                          style=" width: 10%; text-align: center;">
+                                    <p:commandButton id="botonCrear" value="Crear"
+                                                     immediate="true"
+                                                     rendered="#{file.id ==null}"
+                                                     style="margin: auto" 
+                                                     update=":frmMenu:tablaArchivos"
+                                                     actionListener="#{nominaBean.generarArchivoSipari(file)}"
+                                                     title="Crear Archivo Sipari"/>
+                                    <p:outputPanel id ="panelDescarga" rendered="#{file.id!=null}">
+                                        <a href="#{nominaBean.invocarServlet(file.id, file.nombre,file.tipo)}" >Descargar</a>    
+
+                                    </p:outputPanel>                                     
+                                </p:column>
+
+                            </p:dataTable> 
+                            <p:outputPanel autoUpdate="true" style="text-align: left;">
+                                <p:dataList value="#{nominaBean.nominaHelper.listaMensajes}" var="item" itemType="disc" style="text-align: left;"
+                                            rendered="#{not empty nominaBean.nominaHelper.listaMensajes}">
+                                    <h:outputLabel value="#{item}"
+                                                   styleClass="labelFormulario" style="color: #D20005"/>
+                                </p:dataList>
+                            </p:outputPanel>
+                        </p:fieldset>
+                    </center>
+                    <br/><p:separator/>
+                    <div style="text-align: center">
+                        <p:commandButton id="cerrarArchivosBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmArchivo.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:dialog> 
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,325 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.titulo']}">  
+                    <br/>
+                    <div>
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:commandButton id="guardarBtn" 
+                                             ajax="#{false}" 
+                                             action="#{gastoPersonalBean.guardar}"
+                                             disabled="#{!gastoPersonalBean.gastoPersonalHelper.botonGuardar}"
+                                             rendered="#{gastoPersonalBean.gastoPersonalHelper.edicionGastos}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                        </p:outputPanel>
+
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{gastoPersonalBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+
+                    </div>
+                    <p:separator/>
+                    <p:panel id="panelDatosServidor" 
+                             header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="8" id="tablaformularioPrinc">
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="gastoPersonal_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.servidor.apellidosNombres}"
+                                         disabled="#{true}" style="width: 300px"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="gastoPersonal_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" style="width: 80px;"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="gastoPersonal_fechaIng"
+                                         styleClass="textoNemonico"
+                                         value="#{gastoPersonalBean.gastoPersonalHelper.fechIngreso}"
+                                         disabled="#{true}" style="width: 80px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="gastoPersonal_rmu"
+                                         styleClass="textoNemonico"
+                                         rendered="#{gastoPersonalBean.gastoPersonalHelper.distributivoDetalle!=null}"
+                                         value="#{gastoPersonalBean.gastoPersonalHelper.distributivoDetalle.rmu}"
+                                         disabled="#{true}" 
+                                         style="width: 100px; text-align: right">
+                                <f:convertNumber pattern="##,##0.00" />
+                            </p:inputText>
+
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <p:separator/>
+                    <h:panelGrid columns="12" id="tablaformulario">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.fechaRegistro']}:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 300px"/>
+                        <p:inputText id="gastoPersonal_servidorFechaRegistro"
+                                     styleClass="textoNemonico"
+                                     value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.fechaCreacion}"
+                                     disabled="#{true}" 
+                                     style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 300px"
+                                       rendered="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.fechaActualizacion !=null}"/>
+                        <p:inputText id="gastoPersonal_servidorFechaActualizacion"
+                                     styleClass="textoNemonico"
+                                     rendered="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.fechaActualizacion !=null}"
+                                     value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.fechaActualizacion}"
+                                     disabled="#{true}" 
+                                     style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.tipo']}:"
+                                       styleClass="labelFormulario" 
+                                       style="text-align: right"/>
+                        <p:inputText id="gastoPersonal_tipo"
+                                     styleClass="textoNemonico"
+                                     value="#{gastoPersonalBean.obtenerDescripcionTipoProyeccion(gastoPersonalBean.gastoPersonalHelper.gastoPersonal.tipo)}"
+                                     disabled="#{true}" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid id="datos" columns="2" styleClass="arriba">
+
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.deducibles']}" 
+                                    id="deducibles"
+                                    style="width: 400px;">
+                            <h:panelGrid columns="3" id="tablaformularioGastos">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.alimentacion']}:"
+                                               style="text-align: right"/>
+                                <p:inputText id="gastoPersonal_alimentacion"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.alimentacion}"
+                                             required="true"
+                                             requiredMessage="El campo Alimentación es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText> 
+                                <h:outputLabel value="Max: #{gastoPersonalBean.gastoPersonalHelper.maxGastosVVEA}"
+                                               styleClass="labelFormulario" style="color: #045491"/>             
+                                
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.educacion']}:"
+                                               styleClass="labelFormulario" />
+                                <p:inputText id="gastoPersonal_educacion"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.educacion}"
+                                             required="true"
+                                             requiredMessage="El campo Educación es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form" />
+                                </p:inputText> 
+                                <h:outputLabel value="Max: #{gastoPersonalBean.gastoPersonalHelper.maxGastosVVEA}"
+                                               styleClass="labelFormulario" 
+                                               style="color: #045491"/> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.salud']}:"
+                                               styleClass="labelFormulario" />
+                                <p:inputText id="gastoPersonal_salud"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.salud}"
+                                             required="true"
+                                             requiredMessage="El campo Salud es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText> 
+                                <h:outputLabel value="Max: #{gastoPersonalBean.gastoPersonalHelper.maxSalud}"
+                                               styleClass="labelFormulario" style="color: #045491"/> 
+                                
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.vivienda']}:"
+                                               styleClass="labelFormulario" />
+                                <p:inputText id="gastoPersonal_vivivenda"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.vivienda}"
+                                             required="true"
+                                             requiredMessage="El campo Vivienda es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText> 
+                                <h:outputLabel value="Max:#{gastoPersonalBean.gastoPersonalHelper.maxGastosVVEA}"
+                                               styleClass="labelFormulario" style="color: #045491"/> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.vestimenta']}:"
+                                               styleClass="labelFormulario" />
+                                <p:inputText id="gastoPersonal_vestimenta"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.vestimenta}"
+                                             required="true"
+                                             requiredMessage="El campo Vestimenta es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText>
+                                <h:outputLabel value="Max:#{gastoPersonalBean.gastoPersonalHelper.maxGastosVVEA}"
+                                               styleClass="labelFormulario" style="color: #045491"/> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.exoneracion_discapacidad']}:"
+                                               styleClass="labelFormulario" 
+                                               rendered="#{gastoPersonalBean.gastoPersonalHelper.esDiscapacitado}"/>
+                                <p:inputText id="gastoPersonal_discapacidad"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             rendered="#{gastoPersonalBean.gastoPersonalHelper.esDiscapacitado}"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.exoneracionDiscapacidad}"
+                                             required="true"
+                                             requiredMessage="El campo Exoneración por Discapacidad es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText> 
+                                <h:outputLabel value="Max:#{gastoPersonalBean.gastoPersonalHelper.maxExoneraciones}"
+                                               styleClass="labelFormulario" style="color: #045491" rendered="#{gastoPersonalBean.gastoPersonalHelper.esDiscapacitado}"/> 
+                                
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.exoneracion_tercera_edad']}:"
+                                               styleClass="labelFormulario" 
+                                               rendered="#{gastoPersonalBean.gastoPersonalHelper.esTerceraEdad}"/>
+                                <p:inputText id="gastoPersonal_terceraedad"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.exoneracionTerceraEdad}"
+                                             rendered="#{gastoPersonalBean.gastoPersonalHelper.esTerceraEdad}"
+                                             required="true"
+                                             requiredMessage="El campo Exoneración por Tercera Edad es requerido">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText>
+                                <h:outputLabel value="Max:#{gastoPersonalBean.gastoPersonalHelper.maxExoneraciones}"
+                                               styleClass="labelFormulario" style="color: #045491" rendered="#{gastoPersonalBean.gastoPersonalHelper.esTerceraEdad}"/> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.totalDeducible']}:"
+                                               styleClass="labelFormulario" />
+                                <p:outputPanel id="totalDeducibleLbl">
+                                    <p:inputText id="gastoPersonal_totalDeducible"
+                                                 style="width: 50px; text-align: right;color: #D20005"
+                                                 maxlength="100"
+                                                 disabled="true"
+                                                 value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.totalDeducible}">
+                                        <f:convertNumber pattern="###,##0.00" />
+                                    </p:inputText> 
+                                </p:outputPanel>
+                                <p:outputPanel id="maxtotalDeducibleLbl">
+                                    <h:outputLabel value="Max Deducibles: #{gastoPersonalBean.gastoPersonalHelper.maxDeducible}"
+                                                   styleClass="labelFormulario" style="color: #045491"/> <br/>
+                                    <h:outputLabel value="Max Fra Basi:#{gastoPersonalBean.gastoPersonalHelper.maxDeducibleSobreFraccion}"
+                                                   styleClass="labelFormulario" style="color: #045491"/> 
+                                </p:outputPanel>
+                            </h:panelGrid>  
+
+                        </p:fieldset>
+
+
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.tituloIngresos']}" 
+                                    id="ingresos"
+                                    style="width: 400px;">
+                            <h:panelGrid columns="2" id="tablaformularioIngresos">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.ejercicioFiscal']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:selectOneMenu id="gastoPersonal_tipo_dato" 
+                                                 style="width: 60px"
+                                                 value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.idEjercicioFiscal}"
+                                                 disabled="#{true}">
+                                    <f:selectItems value="#{gastoPersonalBean.gastoPersonalHelper.opcionEjercicioFiscal}"/>  
+                                </p:selectOneMenu> 
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.ingresos']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:outputPanel id="ingresosLbl">
+                                    <p:inputText id="gastoPersonal_ingresos"
+                                                 style="width: 50px; text-align: right"
+                                                 maxlength="100"
+                                                 disabled="true"
+                                                 value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.ingresos}">
+                                        <f:convertNumber pattern="###,##0.00" />
+                                    </p:inputText>  
+                                </p:outputPanel>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.ingresosAdicionales']}:"
+                                               styleClass="labelFormulario" 
+                                               rendered="false"
+                                               style="text-align: right"/>
+                                <p:inputText id="gastoPersonal_ingresos_adicional"
+                                             style="width: 50px; text-align: right"
+                                             rendered="false"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.ingresosAdicionales}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText>   
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.ingresosOtroEmpleador']}:"
+                                               styleClass="labetotalinlFormulario" style="text-align: right"/>
+                                <p:inputText id="gastoPersonal_ingresos_otro"
+                                             style="width: 50px; text-align: right"
+                                             maxlength="100"
+                                             value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.ingresosOtroEmpleador}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                    <p:ajax listener="#{gastoPersonalBean.calcularTotales}"  
+                                            update="@form"/>
+                                </p:inputText>   
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.totalIngresos']}:"
+                                               styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                                <p:outputPanel id="totalIngresoLbl">
+                                    <p:inputText id="gastoPersonal_tINgresos"
+                                                 style="width: 50px; text-align: right;color: #D20005"
+                                                 maxlength="100" 
+                                                 disabled="true"
+                                                 value="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonal.totalIngresos}">
+                                        <f:convertNumber pattern="###,##0.00" />
+                                    </p:inputText> 
+                                </p:outputPanel>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+                    </h:panelGrid>
+
+                    <p:outputPanel id="msgLbl">
+                        <p:dataList value="#{gastoPersonalBean.gastoPersonalHelper.msgValidacion}" 
+                                    var="var"  
+                                    itemType="square">  
+                            <h:outputLabel value="#{var}"
+                                           styleClass="labelFormulario" 
+                                           style="color: #D20005"/>
+                        </p:dataList>  
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

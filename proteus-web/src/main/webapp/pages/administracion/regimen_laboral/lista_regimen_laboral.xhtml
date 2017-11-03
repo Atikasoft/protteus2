@@ -1,0 +1,347 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="regimenForm">                
+                <p:contextMenu for="treetable" id="menuOPciones"  style="width: 250px">  
+
+                    <p:menuitem value="#{msg['message.btn.nuevo']} "
+                                update=":popOpEdit, :popOpEditNivel, :popOpEditEscala" icon="ui-icon-document" 
+                                actionListener="#{regimenLaboralBean.iniciarNuevo}"/>    
+                    <p:menuitem value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}" 
+                                update=":popOpEdit, :popOpEditNivel, :popOpEditEscala" icon="ui-icon-pencil"
+                                actionListener="#{regimenLaboralBean.iniciarEdicion}"/>
+                    <p:menuitem value="#{msg['message.btn.eliminar']}"  onclick="confirmEliminacion.show()" 
+                                update=":formEliminarRegimenLaboral" icon="ui-icon-trash"/>  
+
+                    <p:menuitem value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.verlistaEscalas']}"  
+                                icon="ui-icon-copy" 
+                                ajax="false"
+                                action="#{regimenLaboralBean.irListaEscalas}"/>  
+                </p:contextMenu>  
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.regimenLaboral']}">
+                        <p:treeTable id="treetable" value="#{regimenLaboralBean.regimenLaboralHelper.root}" var="item"
+                                     selectionMode="single" selection="#{regimenLaboralBean.regimenLaboralHelper.regimenSeleccionado}">  
+                            <p:column headerText="Régimen Laboral"
+                                      sortBy="#{item.nombre}" style=" overflow: auto; width: 400px"
+                                      filterBy="#{item.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.codigo} - #{item.nombre}" style=" padding-left: 0; width: 71px"/>
+                            </p:column>  
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.grado']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{item.grado}"
+                                      filterBy="#{item.grado}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.grado}" 
+                                              title="#{item.grado}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{item.rmu}"
+                                      filterBy="#{item.rmu}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.rmu}" 
+                                              title="#{item.rmu}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu.max']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{item.rmuMaximo}"
+                                      filterBy="#{item.rmuMaximo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.rmuMaximo}" 
+                                              title="#{item.rmuMaximo}"  />
+                            </p:column>
+                        </p:treeTable>
+                    </p:fieldset>
+                </p:panel>      
+            </h:form>
+
+
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación" 
+                             severity="alert" 
+                             widgetVar="confirmEliminacion">  
+                <h:form id="formEliminarRegimenLaboral">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update=":regimenForm:treetable"
+                                         actionListener="#{regimenLaboralBean.borrar}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <p:dialog id="popOpEdit" 
+                      width="600px"
+                      header="#{regimenLaboralBean.regimenLaboralHelper.esNuevo?'Nuevo ':'Editar '} Régimen Laboral" 
+                      showEffect="fade" 
+                      widgetVar="editDialog" 
+                      modal="true"  
+                      resizable="false" >  
+                <h:form id="formEditarRegimenLaboral">
+                    <p:outputPanel id="editPanel">  
+                        <h:panelGrid  columns="2" 
+                                      columnClasses="colLb,colVal" 
+                                      width="100%">  
+                            <h:outputLabel for="regimen_codigo" 
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.codigo']}" />  
+                            <p:inputText id="regimen_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="width: 25%"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                         value="#{regimenLaboralBean.regimenLaboralHelper.regimenLaboralEditDelete.codigo}"
+                                         disabled="#{!(regimenLaboralBean.regimenLaboralHelper.esNuevo)}"
+                                         required="true"
+                                         requiredMessage="El campo código es requerido"/> 
+
+                            <h:outputLabel id="nombre" for="regimen_nombre" 
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.nombre']}" />  
+                            <p:inputTextarea id="regimen_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 98%"
+                                             maxlength="100"
+                                             value="#{regimenLaboralBean.regimenLaboralHelper.regimenLaboralEditDelete.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>                 
+
+                            <h:outputLabel for="descripcion"  
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.descripcion']}" />  
+                            <p:inputTextarea id="descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 98%; height: 50px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{regimenLaboralBean.regimenLaboralHelper.regimenLaboralEditDelete.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>    
+
+                            <h:outputLabel for="explicacionVacacion"  
+                                           title="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.tooltip.explicacionVacacion']}"
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.explicacionVacacion']}" />  
+                            <p:inputTextarea id="explicacionVacacion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 98%; height: 100px"
+                                             maxlength="500" 
+                                             title="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.tooltip.explicacionVacacion']}"
+                                             value="#{regimenLaboralBean.regimenLaboralHelper.regimenLaboralEditDelete.explicacionVacacion}"/>
+
+                            <h:outputLabel for="explicacionLiquidacionVacacion"  
+                                           title="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.tooltip.explicacionLiquidacionVacacion']}"
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.explicacionLiquidacionVacacion']}" />  
+                            <p:inputTextarea id="explicacionLiquidacionVacacion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 98%; height: 100px"
+                                             maxlength="500" 
+                                             title="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.tooltip.explicacionLiquidacionVacacion']}"
+                                             value="#{regimenLaboralBean.regimenLaboralHelper.regimenLaboralEditDelete.explicacionLiquidacionVacacion}"/>
+                        </h:panelGrid>  
+                        <p:separator/>
+                        <center>
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                        
+                                             action="#{regimenLaboralBean.guardar()}"
+                                             update=":regimenForm:treetable"/>                  
+
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="editDialog.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>        
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+                <style>
+                    .colLb {
+                        width: 150px;
+                    }
+                </style>
+            </p:dialog> 
+
+
+            <p:confirmDialog id="popOpMSG" message="Opción no disponible para este nivel jerárquico."
+                             header="OPCIÓN NO DISPONIBLE" 
+                             severity="alert" 
+                             widgetVar="msgDialog">  
+                <h:form id="formMsg">
+                    <div style="text-align: center">
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         onclick="msgDialog.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <p:dialog id="popOpEditNivel"
+                      header="#{regimenLaboralBean.regimenLaboralHelper.esNuevo?'Nuevo ':'Editar '} Escala Remunerativa" 
+                      showEffect="fade" widgetVar="editDialogNivel" modal="true"  resizable="false" >  
+                <h:form id="formEditarNivelOcupacional">
+                    <p:outputPanel id="editPanel">  
+                        <h:panelGrid  columns="2">  
+                            <h:outputLabel value="Régimen Laboral:"
+                                           styleClass="labelFormulario"/>
+                            <h:outputText value="#{regimenLaboralBean.nivelOcupacionalHelper.nivelOcupacionalEditDelete.regimenLaboral.nombre}"
+                                          styleClass="labelFormulario"/>
+                            <h:outputLabel for="regimen_codigo" 
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.codigo']}" />  
+                            <p:inputText id="regimen_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                         value="#{regimenLaboralBean.nivelOcupacionalHelper.nivelOcupacionalEditDelete.codigo}"
+                                         required="true"
+                                         disabled="#{!(regimenLaboralBean.regimenLaboralHelper.esNuevo)}"
+                                         requiredMessage="El campo código es requerido"/> 
+
+                            <h:outputLabel id="nombre" for="regimen_nombre" 
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.nombre']}" />  
+                            <p:inputTextarea id="regimen_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{regimenLaboralBean.nivelOcupacionalHelper.nivelOcupacionalEditDelete.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>  
+
+                            <h:outputLabel for="descripcion"  
+                                           value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.descripcion']}" />  
+                            <p:inputTextarea id="descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{regimenLaboralBean.nivelOcupacionalHelper.nivelOcupacionalEditDelete.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>    
+
+                            <h:outputLabel value="Es Libre Remoción" 
+                                           for="libreRemocion"/>  
+                            <h:selectBooleanCheckbox id="libreRemocion" 
+                                                     value="#{regimenLaboralBean.nivelOcupacionalHelper.nivelOcupacionalEditDelete.esLibreRemocion }"/>
+
+
+                        </h:panelGrid>  
+                        <p:separator/>
+                        <center>
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                        
+                                             action="#{regimenLaboralBean.guardar()}"
+                                             update=":regimenForm:treetable"/>        
+
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="editDialogNivel.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog id="popOpEditEscala" 
+                      header="#{regimenLaboralBean.regimenLaboralHelper.esNuevo? ec.gob.mrl.smp.administracion.regimenLaboral.escalaOcupacional.nueva:ec.gob.mrl.smp.genericos.etiquetas.editar} Denominación de Puesto" 
+                      showEffect="fade" widgetVar="editDialogEscala" modal="true"  resizable="false" >  
+                <h:form id="formEditarEscalaOcupacional">
+                    <p:outputPanel id="editPanel">  
+                        <h:panelGrid  columns="2">  
+                            <h:outputLabel value="Régimen Laboral:"
+                                           styleClass="labelFormulario"/>
+                            <h:inputText value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.nivelOcupacional.regimenLaboral.nombre}"
+                                         styleClass="textoNemonico" disabled="true"/>
+                            <h:outputLabel value="Escala Remunerativa:"
+                                           styleClass="labelFormulario"/>
+                            <h:inputText value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.nivelOcupacional.nombre}"
+                                         styleClass="textoNemonico" disabled="true"/>
+                            <h:outputLabel for="regimen_codigo" value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.codigo']}" />  
+                            <p:inputText id="regimen_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                         value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.codigo}"
+                                         required="true"
+                                         disabled="#{!(regimenLaboralBean.regimenLaboralHelper.esNuevo)}"
+                                         requiredMessage="El campo código es requerido"/> 
+
+                            <h:outputLabel id="nombre" for="regimen_nombre" value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.nombre']}" />  
+                            <p:inputTextarea id="regimen_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>   
+
+                            <h:outputLabel for="descripcion"  value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.descripcion']}" />  
+                            <p:inputTextarea id="descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>  
+
+                            <h:outputLabel for="rmu" value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu']}" />  
+                            <p:inputText id="rmu"                                      
+                                         styleClass="campoFloat"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                         value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.rmu}"
+                                         required="true"
+                                         requiredMessage="El campo remuneración mensual es requerido">
+                                <f:validateLongRange minimum="1"/>
+                            </p:inputText>
+
+                            <h:outputLabel for="rmuMax" value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu.max']}" />  
+                            <p:inputText id="rmuMax"                                      
+                                         styleClass="campoFloat"
+                                         style="width: 200px"
+                                         value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.rmuMaximo}"
+                                         required="false"
+                                         requiredMessage="El campo remuneración mensual máxima es requerido"> 
+                                <f:validateLongRange minimum="1"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.marcacionObligatoria']}" />  
+                            <h:selectBooleanCheckbox id="marcacionObligatoria" value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.marcacionObligatoria }"/>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.recibeHorasExtra']}" />  
+                            <h:selectBooleanCheckbox id="horasExtra" value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.recibeHorasExtra}"/>
+
+
+                            <h:outputLabel for="grado" value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.grado']}" />  
+                            <p:inputText id="grado"                                       
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                         value="#{regimenLaboralBean.escalaOcupacionalHelper.escalaOcupacionalEditDelete.grado}"
+                                         required="false"
+                                         disabled="#{!(regimenLaboralBean.regimenLaboralHelper.esNuevo)}"
+                                         requiredMessage="El campo grado es requerido"/> 
+                        </h:panelGrid>  
+                        <p:separator/>
+                        <center>
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                        
+                                             action="#{regimenLaboralBean.guardar()}"
+                                             update=":regimenForm:treetable"/>        
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="editDialogEscala.hide()" 
+                                             update=":regimenForm:treetable"
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog> 
+
+        </ui:define>
+    </ui:composition>
+</html>

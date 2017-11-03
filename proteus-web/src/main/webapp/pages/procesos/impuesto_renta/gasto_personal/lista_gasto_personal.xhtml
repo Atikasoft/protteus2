@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <br/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" header="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.titulo']}">
+                    <div>
+
+                        <p:commandButton id="nuevoBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{gastoPersonalBean.iniciarNuevo}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         disabled="#{!gastoPersonalBean.gastoPersonalHelper.edicionGastos}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{gastoPersonalBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:spacer/>
+                    <p:outputPanel id="msgLbl">
+                        <p:dataList value="#{gastoPersonalBean.gastoPersonalHelper.msgValidacion}" 
+                                    var="var"  itemType="square">  
+                            <h:outputLabel value="#{var}"
+                                           styleClass="labelFormulario" style="color: #D20005"/>
+                        </p:dataList>  
+                    </p:outputPanel>
+                    <p:spacer/>
+                    <p:dataTable id="tablagastoPersonal"
+                                 value="#{gastoPersonalBean.gastoPersonalHelper.listaGastosPersonales}"
+                                 var="gastoPersonal"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 sortBy="#{gastoPersonal.nombreEjercicioFiscal}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 80px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{gastoPersonalBean.iniciarEdicion}"
+                                             disabled="#{!gastoPersonalBean.gastoPersonalHelper.edicionGastos}"
+                                             rendered="#{gastoPersonal.editable}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{gastoPersonal}" 
+                                                             target="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonalEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonImprimir" icon="ui-icon-print"
+                                             ajax="#{true}"
+                                             action="#{gastoPersonalBean.imprimirFormulario}"                                             
+                                             title="#{msg['message.btn.imprimir']}">
+                                <f:setPropertyActionListener value="#{gastoPersonal}" 
+                                                             target="#{gastoPersonalBean.gastoPersonalHelper.gastoPersonalEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.ejercicioFiscal']}" 
+                                  sortBy="#{gastoPersonal.nombreEjercicioFiscal}" style="width: 60px">                                                                 
+                            <h:outputText value="#{gastoPersonal.nombreEjercicioFiscal}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.fechaRegistro']}" 
+                                  sortBy="#{gastoPersonal.fechaCreacion}" style="width: 120px">                               
+                            <h:outputText value="#{gastoPersonal.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.alimentacion']}" 
+                                  sortBy="#{gastoPersonal.alimentacion}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.alimentacion}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.educacion']}" 
+                                  sortBy="#{gastoPersonal.educacion}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.educacion}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>                        
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.salud']}" 
+                                  sortBy="#{gastoPersonal.salud}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.salud}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.vivienda']}" 
+                                  sortBy="#{gastoPersonal.vivienda}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.vivienda}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.vestimenta']}" 
+                                  sortBy="#{gastoPersonal.vestimenta}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.vestimenta}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.totalDeducible']}" 
+                                  sortBy="#{gastoPersonal.totalDeducible}" style="width: 90px;text-align: right">                               
+                            <h:outputText value="#{gastoPersonal.totalDeducible}">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.tipo']}" 
+                                  sortBy="#{gastoPersonal.tipo}" style="width: 50px">                               
+                            <h:outputText value="#{gastoPersonalBean.obtenerDescripcionTipoProyeccion(gastoPersonal.tipo)}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

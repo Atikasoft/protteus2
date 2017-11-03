@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelBotones" header="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.titulo']}">
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{tipoMovimientoAlertaBean.guardar}"
+                                         update="panelBotones, panelCabezera, panelTablaAlertas"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{tipoMovimientoAlertaBean.buscar}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{tipoMovimientoAlertaBean.generarReporte}"/>
+                    </h:panelGrid>
+                </p:panel> 
+                <p:panel id="panelCabezera">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.grupo']}:"
+                                       style="text-align: left"/>
+                        <p:inputText id="tipoMovimientoAlerta_grupo"                                                
+                                     value="#{tipoMovimientoAlertaBean.tipoMovimientoAlertaHelper.tipoMovimiento.clase.grupo.nombre}"
+                                     required="true"
+                                     disabled="true"
+                                     style="width: 300px" requiredMessage="El campo grupo es requerido"/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.clase']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoAlerta_clase"                                                
+                                         value="#{tipoMovimientoAlertaBean.tipoMovimientoAlertaHelper.tipoMovimiento.clase.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px" requiredMessage="El campo clase es requerido"/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.tipoMovimiento']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoAlerta_tipoMovimiento"                                                
+                                         value="#{tipoMovimientoAlertaBean.tipoMovimientoAlertaHelper.tipoMovimiento.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px" requiredMessage="El campo tipo de movimiento es obligatorio"/>
+                        
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="panelTablaAlertas">
+                    <p:dataTable id="tablaTipoMovimientoAlertas"
+                                 value="#{tipoMovimientoAlertaBean.tipoMovimientoAlertaHelper.listaTipoMovimientoAlertaVO}"
+                                 var="tipoMovimientoAlerta"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center;">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.validar']}" style="text-align: center;">
+                            <p:selectBooleanCheckbox value="#{tipoMovimientoAlerta.seleccionar}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.nombre']}"
+                                  sortBy="#{tipoMovimientoAlerta.alerta.nombre}">
+                            <h:outputText value="#{tipoMovimientoAlerta.alerta.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.tipoPeriodo']}"
+                                  sortBy="#{tipoMovimientoAlerta.alerta.tipoPeriodo}">
+                            <h:outputText value="#{tipoMovimientoAlertaBean.obtenerDescripcionTipoPeriodo(tipoMovimientoAlerta.alerta.tipoPeriodo)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.tiempoDias']}"
+                                  sortBy="#{alertas.valorPeriodo}">
+                            <h:outputText value="#{tipoMovimientoAlerta.alerta.valorPeriodo}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoAlerta.mensaje']}"
+                                  sortBy="#{tipoMovimientoAlerta.mensaje}" style="text-align: center;">
+                            <h:inputTextarea id="tipoMovimientoAlerta_mensaje" value="#{tipoMovimientoAlerta.mensaje}" required="false"
+                                             requiredMessage="El campo mensaje es requerido"/>
+                            
+                        </p:column>                                                      
+                    </p:dataTable>
+                </p:panel>    
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

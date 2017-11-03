@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.regla.titulo']}"
+                                     controlador="#{reglaBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.regla.nemonico']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="regla_nemonico"                                      
+                                     styleClass="textoNemonico"  
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                     value="#{reglaBean.reglaHelper.regla.nemonico}"
+                                     required="true" style="width: 200px"
+                                     disabled="#{!(reglaBean.reglaHelper.esNuevo)}"
+                                     requiredMessage="El campo nemónico es requerido"/>                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.regla.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="regla_nombre"
+                                         styleClass="textoNombre"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{reglaBean.reglaHelper.regla.nombre}"
+                                         required="true" style="width: 200px"
+                                         requiredMessage="El campo nombre es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.regla.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="regla_descripcion"
+                                         styleClass="textoDescripcion" 
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{reglaBean.reglaHelper.regla.descripcion}"
+                                         required="true" style="width: 200px"
+                                         requiredMessage="El campo descripción es requerido"/>
+                        <h:outputLabel value="Tipo Periodo"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="regla_tipoPeriodo"   
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{reglaBean.reglaHelper.regla.tipoPeriodo}"
+                                         requiredMessage="El campo tipo perido es requerido">                            
+                            <f:selectItems value="#{reglaBean.reglaHelper.tipoPeriodo}"/>                        
+                            <p:ajax update="regla_valorPeriodo"
+                                    listener="#{reglaBean.cambioEstadoCombo()}"/>
+                        </p:selectOneMenu>                       
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.regla.valorPeriodo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="regla_valorPeriodo"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{reglaBean.reglaHelper.regla.valorPeriodo}"                                                                    
+                                     required="#{reglaBean.reglaHelper.campoTipoPeriodo}"
+                                     style="width: 90px"
+                                     requiredMessage="El campo valor periodo es requerido">
+                            <f:validateLongRange minimum="1"/>
+                        </p:inputText>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{reglaBean.reglaHelper.regla.vigente}" 
+                                                 rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+                        <p:inputText id="regla_usuario_creo"
+                                     value="#{reglaBean.reglaHelper.regla.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(reglaBean.reglaHelper.esNuevo)}" style="width: 200px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+                        <p:inputText id="regla_fecha_creo"
+                                     value="#{reglaBean.reglaHelper.regla.fechaCreacion}"
+                                     rendered="#{!(reglaBean.reglaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>  
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+                        <p:inputText id="regla_usuario_actual"
+                                     value="#{reglaBean.reglaHelper.regla.usuarioActualizacion}"
+                                     rendered="#{!(reglaBean.reglaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(reglaBean.reglaHelper.esNuevo)}"/>
+                        <p:inputText id="regla_fecha_actual"
+                                     value="#{reglaBean.reglaHelper.regla.fechaActualizacion}"
+                                     rendered="#{!(reglaBean.reglaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

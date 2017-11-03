@@ -1,0 +1,241 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">
+                <p:panel>
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"   
+                                         process="@this"     ajax="false"
+                                         action="#{terceroBean.guardar}">
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         immediate="true" process="@this"
+                                         action="#{terceroBean.irLista}"
+                                         ajax="false"/>
+                        <p:commandButton id="botonAniadir" value="#{msg['ec.gob.mrl.smp.generico.boton.verDetalle']}"
+                                         action="#{terceroBean.buscarDetalles}"
+                                         process="@this"
+                                         rendered="#{!terceroBean.terceroHelper.esNuevo}"
+                                         update=":frmDetalles" 
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.verDetalle']}"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="formularioPrincipal"
+                         header="#{msg['ec.gob.mrl.smp.administracion.terceros.titulo']}">    
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel id="lbl_tercero_tipo_identificicion"                                      
+                                       value="* #{msg['ec.gob.mrl.smp.administracion.terceros.tipoIdentificacion']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu value="#{terceroBean.terceroHelper.tercero.tipoIdentificacion}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true" style="width: 200px;"
+                                         requiredMessage="El campo tipo de identificación es requerido">
+                            <f:selectItems value="#{terceroBean.terceroHelper.listaTipoIdentificacion}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel id="lbl_tercero_identificacion"                                      
+                                       value="* #{msg['ec.gob.mrl.smp.administracion.terceros.numeroIdentificacion']}:"
+                                       styleClass="labelFormulario" />
+                        <h:panelGrid columns="2" id="panelBuscar">
+                            <p:inputText id="tercero_identificacion"                                      
+                                         styleClass="campoNumerico"
+                                         style="width: 200px" 
+                                         required="true"
+                                         requiredMessage="El campo número de identificación es requerido"
+                                         value="#{terceroBean.terceroHelper.tercero.numeroIdentificacion}">
+                            </p:inputText>
+                            <p:commandButton icon="ui-icon-search" 
+                                             action="#{terceroBean.buscarTercero}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                             process="@this"    
+                                             ajax="false"
+                                             update="panelBeneficiario"/>
+                        </h:panelGrid>
+                        <h:outputLabel  id="lbl_tercero_nombreBeneficiario"  
+                                        value="* #{msg['ec.gob.mrl.smp.administracion.terceros.nombres']}:"
+                                        styleClass="labelFormulario"/>
+                        <p:outputPanel id="panelBeneficiario" autoUpdate="true">
+                            <p:inputTextarea id="tercero_nombre"                                      
+                                             styleClass="textoNombre" 
+                                             style="width: 200px"     
+                                             disabled="#{true}"
+                                             value="#{terceroBean.terceroHelper.tercero.nombres}"/>
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.terceros.valor']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="tercero_valor"
+                                     styleClass="campoFloat"
+                                     value="#{terceroBean.terceroHelper.tercero.valor}"
+                                     required="false" style="width: 100px;"
+                                     requiredMessage="El campo valor es requerido"/>          
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.terceros.descripcion']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="tercero_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="1000"
+                                         value="#{terceroBean.terceroHelper.tercero.descripcion}"
+                                         required="false"
+                                         requiredMessage="El campo descripción es requerido"/>    
+                        <h:outputLabel id="lbl_tercero_estado"                                      
+                                       value="* #{msg['ec.gob.mrl.smp.administracion.terceros.estado']}"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:selectOneMenu value="#{terceroBean.terceroHelper.tercero.estado}" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 200px;"
+                                         rendered="#{!(terceroBean.terceroHelper.esNuevo)}">
+                            <f:selectItems value="#{terceroBean.terceroHelper.listaEstados}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.terceros.archivo']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:panelGrid columns="2" id="panelCargaArchivo">
+                            <p:outputPanel rendered="#{terceroBean.terceroHelper.tercero.archivo.id != null}">
+                                <a id="nombreArchivo" 
+                                   href="#{terceroBean.invocarServlet(terceroBean.terceroHelper.tercero.archivo.id)}" >
+                                    #{terceroBean.terceroHelper.nombreArchivo}</a>  
+                            </p:outputPanel>
+                            <p:outputLabel  rendered="#{terceroBean.terceroHelper.tercero.archivo.id==null}" 
+                                            value="#{terceroBean.terceroHelper.nombreArchivo}"/>
+                            <p:commandButton style="margin-left: 30px"                                                             
+                                             value="Cargar Archivo"                                                                                                                                             
+                                             onclick="cargarArchivoPopUp.show()"
+                                             immediate="true"
+                                             title="Cargar archivo pdf">   
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{terceroBean.terceroHelper.tercero.vigente}" 
+                                                 rendered="#{!(terceroBean.terceroHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:inputText id="tercero_usuario_creo"
+                                     value="#{terceroBean.terceroHelper.tercero.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(terceroBean.terceroHelper.esNuevo)}" style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:inputText id="tercero_fecha_creo"
+                                     value="#{terceroBean.terceroHelper.tercero.fechaCreacion}"
+                                     rendered="#{!(terceroBean.terceroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:inputText id="tercero_usuario_actual"
+                                     value="#{terceroBean.terceroHelper.tercero.usuarioActualizacion}"
+                                     rendered="#{!(terceroBean.terceroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(terceroBean.terceroHelper.esNuevo)}"/>
+                        <p:inputText id="tercero_fecha_actual"
+                                     value="#{terceroBean.terceroHelper.tercero.fechaActualizacion}"
+                                     rendered="#{!(terceroBean.terceroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>  
+                </p:panel>
+            </h:form>
+            <!-- cargar archivo de la foto   -->
+            <p:dialog 
+                header="Cargar Archivo" 
+                widgetVar="cargarArchivoPopUp"
+                modal="true"
+                draggable="false"
+                resizable="false"> 
+                <h:form enctype="multipart/form-data">                    
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">                        
+                        <h:panelGrid columns="2" style="width: 400px">
+                            <p:fileUpload
+                                id="bandejaTareaBean_cargarDocumento"
+                                mode="advanced"
+                                showButtons="false"                       
+                                process="@this"                               
+                                widgetVar="fileuplaod_wgts"
+                                update=":frmPrincipal:panelCargaArchivo"
+                                allowTypes="/(\.|\/)(pdf)$/"
+                                label="Seleccione...."
+                                sizeLimit="2097152"
+                                oncomplete="clearInvalidFileMsg(fileuplaod_wgts); cargarArchivoPopUp.hide()"                                
+                                fileUploadListener="#{terceroBean.cargarArchivo}"
+                                invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                invalidFileMessage="El archivo debe ser pdf "
+                                auto="true">
+                            </p:fileUpload>
+                        </h:panelGrid>
+                    </p:panel>  
+                </h:form>
+            </p:dialog>
+            <!-- detalles -->
+            <p:dialog modal="true"     resizable="false"   width="800"  height="350"
+                      draggable="true"   
+                      header="Detalles de Pagos a Terceros." 
+                      widgetVar="dlgDetalles"
+                      closable="true">
+                <h:form id="frmDetalles">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:dataTable id="tablaregP"
+                                     value="#{terceroBean.terceroHelper.listaTercerosEnNomina}"
+                                     var="reg"
+                                     paginator="#{true}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     rowKey="#{reg.id}"  
+                                     filterEvent="enter"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     style="overflow: auto" >
+
+                            <p:column headerText="Nómina"
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{reg.nominaDetalle.nomina.descripcion}"
+                                      filterBy="#{reg.nominaDetalle.nomina.descripcion}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nominaDetalle.nomina.descripcion}" 
+                                              title="#{reg.nominaDetalle.nomina.descripcion}"  />
+                            </p:column>
+                            <p:column headerText="Periodo Nómina"
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{reg.nominaDetalle.nomina.periodoNomina.nombre}"
+                                      filterBy="#{reg.nominaDetalle.nomina.periodoNomina.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nominaDetalle.nomina.periodoNomina.nombre}" 
+                                              title="#{reg.nominaDetalle.nomina.periodoNomina.nombre}"  />
+                            </p:column>
+                            <p:column headerText="Tipo Nómina"
+                                      style="width: 200px; font-size: 8pt"
+                                      sortBy="#{reg.nominaDetalle.nomina.tipoNomina.nombre}"
+                                      filterBy="#{reg.nominaDetalle.nomina.tipoNomina.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nominaDetalle.nomina.tipoNomina.nombre}" 
+                                              title="#{reg.nominaDetalle.nomina.tipoNomina.nombre}"  />
+                            </p:column>
+                            <p:column headerText="Estado"
+                                      style="width: 200px; font-size: 8pt"
+                                      filterBy="#{reg.estado}"
+                                      filterOptions="#{terceroBean.listaEstadosTerceroNomina}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{terceroBean.obtenerDescripcionEstadoTercero(reg.estado)}"  />
+                            </p:column>
+                        </p:dataTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgDetalles.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

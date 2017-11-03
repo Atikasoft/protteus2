@@ -1,0 +1,574 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelPrincipal" header="#{msg['ec.gob.mq.proteus.consulta.anticipo.titulo']}">  
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="5">                      
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" action="#{anticipoConsultaBean.buscar()}"   
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                             update="anticipoConsultaHelper_listaAnticipo"/>          
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" 
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                             ajax="#{false}"
+                                             action="#{anticipoConsultaBean.salirPantallaPrincipal()}"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" style="text-align: right;width: 100%;">
+                            <h:commandLink  id="exp_xls" title="Exportar Excel">
+                                <p:graphicImage value="/images/excel.png" alt="Exportar Excel" style="width: 25px; height: 25px" />
+                                <p:dataExporter type="xls" target="anticipoConsultaHelper_listaAnticipo" 
+                                                fileName="#{anticipoConsultaBean.anticipoConsultaHelper.nombreArchivo}"
+                                                postProcessor="#{anticipoConsultaBean.postProcessXLS}" >                                    
+                                </p:dataExporter>                                
+                            </h:commandLink>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:separator />
+                    <p:accordionPanel  activeIndex="#{anticipoConsultaBean.anticipoConsultaHelper.activo}"
+                                       widgetVar="accordionPanel" id="tab1">
+                        <p:tab title="#{msg['ec.gob.mq.proteus.consulta.anticipo.rotulo']}"  >
+
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.tipo']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.tipoAnticipoId}">
+                                    <f:selectItems value="#{anticipoConsultaBean.anticipoConsultaHelper.listaOpcionTipoAnticipo}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.estado']} Anticipo:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.estadoAnticipo}">
+                                    <f:selectItems value="#{anticipoConsultaBean.anticipoConsultaHelper.listaOpcionEstadoAnticipo}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.tipoDocumentoServidor}">
+                                    <f:selectItems value="#{anticipoConsultaBean.anticipoConsultaHelper.listaTipoDocumento}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}:"
+                                               styleClass="labelFormulario"/>                  
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.numeroDocumentoServidor}"/>                  
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.apellidosNombresServidor}"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.garante']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:outputPanel id="panel_garante">
+                                    <p:inputText id="anticipo_garanteNombres"
+                                                 styleClass="textoNemonico"
+                                                 value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.servidorApellidosNombres}"
+                                                 required="#{true}" disabled="#{true}"
+                                                 requiredMessage="El campo garante es requerido"
+                                                 style="width: 200px"/> 
+
+                                    <p:commandButton icon="ui-icon-search"
+                                                     actionListener="#{anticipoConsultaBean.buscarServidoresInstitucion}"
+                                                     oncomplete="dlgGarante.show()"
+                                                     update=":frmGarante"/>
+                                    <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                     update="panel_garante">
+                                        <f:setPropertyActionListener value="#{servidor.servidor.apellidosNombres}" target="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.servidorApellidosNombres}" />  
+                                        <f:setPropertyActionListener value="#{servidor.servidor.id}" target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.garanteId}" />  
+
+                                    </p:commandButton>
+                                </p:outputPanel>
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.consulta.anticipo.fechaDesde']}"
+                                               styleClass="labelFormulario"/>   
+                                <p:calendar  id="fechaDesde"
+                                             showOn="button"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.fechaSolicitudDesde}"/>
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.consulta.anticipo.fechaHasta']}"
+                                               styleClass="labelFormulario"/>    
+                                <p:calendar  id="fechaHasta"
+                                             showOn="button"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.fechaSolicitudHasta}"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.consulta.anticipo.valorDesde']}:"
+                                               styleClass="labelFormulario"/>   
+                                <p:inputText  id="valorDesde"
+                                              value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.valorDesde}"/>
+                                <h:outputLabel value="#{msg['ec.gob.mq.proteus.consulta.anticipo.valorHasta']}:"
+                                               styleClass="labelFormulario"/>    
+                                <p:inputText  id="valorHasta"
+                                              value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.valorHasta}"/>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="width: 250px;"
+                                                     disabled="#{true}"
+                                                     value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.unidadOrganizacionalNombre}"/>
+                                    <p:commandButton icon="ui-icon-search"                                                          
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     update="parametrosBusqueda_unidadAdministrativa">                                       
+                                        <f:setPropertyActionListener target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.unidadOrganizacionalId}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.unidadOrganizacionalNombre}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.modalidadLaboral.nombre']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 250px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.modalidadLaboralId}">
+                                    <f:selectItems value="#{anticipoConsultaBean.anticipoConsultaHelper.listaOpcionModalidadLaboral}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel  value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.escalaOcupacional']}:"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                                <p:outputPanel id="rmuEscalaLbl0">
+                                    <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                        <p:inputTextarea id="distributivo_escalaOcupacional"
+                                                         styleClass="textoNombre"
+                                                         style="width: 250px;"
+                                                         disabled="true"
+                                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.escalaOcupacionalNombre}"/>   
+                                        <p:commandButton icon="ui-icon-search"                                                          
+                                                         oncomplete="dlgRegimenLaboral.show()"/>
+                                        <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                         update="rmuEscalaLbl0">                                       
+                                            <f:setPropertyActionListener target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.escalaOcupacionalNombre}"                                                             
+                                                                         value="#{null}" />
+                                            <f:setPropertyActionListener target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.escalaOcupacionalId}"                                                             
+                                                                         value="#{null}" />
+                                        </p:commandButton>
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </p:tab> 
+                    </p:accordionPanel>  
+                </p:panel>
+                <p:dataTable id="anticipoConsultaHelper_listaAnticipo" 
+                             value="#{anticipoConsultaBean.anticipoConsultaHelper.listaAnticipos}"
+                             var="reg" emptyMessage="#{msg['message.listaVacia']}"
+                             rows="10" scrollable="true"
+                             paginator="#{true}"
+                             rowIndexVar="rowIndex">
+                    <f:facet name="header">#{msg['ec.gob.mq.proteus.consulta.anticipo.tabla']}</f:facet>
+                    <p:column  style="text-align: center; width: 60px" exportable="false">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" />
+                        </f:facet>
+                        <p:commandButton id="botonEdicio" icon="ui-icon-search" 
+                                         actionListener="#{anticipoConsultaBean.buscarPlanPagoAnticipo(reg.anticipoId)}"
+                                         oncomplete="planPlagos.show();" update=":pop_plapagos"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.verDetalle']}">
+                            <f:setPropertyActionListener value="#{reg}" 
+                                                         target="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo}"/>
+                            <f:setPropertyActionListener value="#{reg.valorAnticipo}" 
+                                                         target="#{anticipoConsultaBean.anticipoConsultaHelper.totalPlanPago}"/>
+                            <f:setPropertyActionListener value="#{reg.servidorApellidosNombres}" 
+                                                         target="#{anticipoConsultaBean.anticipoConsultaHelper.nombresServidor}"/>
+                        </p:commandButton>                           
+                    </p:column>
+                    <p:column style="width:15px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" />
+                        </f:facet>
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{anticipoConsultaBean.obtenerDescripcionTipoDocumento(reg.servidorTipoIdentificacion)}"/>
+                    </p:column>
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.servidorNumeroIdentificacion}"/>
+                    </p:column>
+                    <p:column style="width:200px;">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.servidorApellidosNombres}"/>
+                    </p:column>                
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.feriado.ejercicioFiscal']}" />
+                        </f:facet>
+                        <h:outputText value=" #{reg.ejercicioAnio}"/>
+                    </p:column>                 
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.plazoMeses']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.plazoMeses}"/>
+                    </p:column>
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoInicio']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.periodoInicio}"/>
+                    </p:column>
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoFin']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.periodoFin}"/>
+                    </p:column>
+                    <p:column style="width:80px;" styleClass="alineacionDerecha">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.valorAnticipo}"/>
+                    </p:column>
+                    <p:column style="width:80px;" styleClass="alineacionDerecha">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.saldo']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.saldoAnticipo}"/>
+                    </p:column>
+                    <p:column style="width:80px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.estado']}" />
+                        </f:facet>
+                        <h:outputText value="#{anticipoConsultaBean.obtenerDescripcionEstadoAnticipo(reg.estado)}"/>
+                    </p:column>
+                    <p:column style="width:80px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.fecha']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.fechaSolicitudAnticipo}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:70px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.garante']} #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.numeroIdentificacion']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.garanteNumeroIdentificacion}"/>
+                    </p:column>
+                    <p:column style="width:150px;">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.garante']} #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}" />
+                        </f:facet>
+                        <h:outputText value="#{reg.garanteApellidosNombres}"/>
+                    </p:column>
+                    <p:column style="width:80px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="Nómina Código" />
+                        </f:facet>
+                        <h:outputText value="#{reg.nominaId}"/>
+                    </p:column>
+                    <p:column style="width:200px;">
+                        <f:facet name="header">
+                            <h:outputText value="Nómina" />
+                        </f:facet>
+                        <h:outputText value="#{reg.nominaDescripcion}"/>
+                    </p:column>
+                    <p:column style="width:100px; text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="Estado Nómina" />
+                        </f:facet>
+                        <h:outputText value="#{novedadConsultaBean.obtenerDescripcionEstadoNomina(reg.nominaEstado)}"/>
+                    </p:column>                    
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp de Plan de Plagos -->
+            <p:dialog 
+                widgetVar="planPlagos" id="pop_plapagos"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                width="60%"
+                height="550px"
+                header="DETALLE DEL ANTICIPO DE: #{anticipoConsultaBean.anticipoConsultaHelper.nombresServidor}">
+                <h:form id="frmPlaPago">
+                    <p:separator/> 
+                    <p:scrollPanel style="width:100%;height:500px; alignment-adjust: central"  mode="native"> 
+
+                        <h:panelGrid columns="6" rendered="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo!=null}">
+
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.ejercicioFiscal']}: "/>
+                            <p:inputText style="width: 100px;"
+                                         disabled="true"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.ejercicioAnio}"/>                  
+
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}: "/>
+                            <p:inputText style="width: 100px;"
+                                         disabled="true"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.valorAnticipo}"/>                  
+
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.plazoMeses']}: "/>
+                            <p:inputText style="width: 100px;"
+                                         disabled="true"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.plazoMeses}"/>                  
+
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoInicio']}: "/>
+                            <p:inputText style="width: 100px;"
+                                         disabled="true"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.periodoInicio}"/>                  
+
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoFin']}: "/>
+                            <p:inputText style="width: 100px;"
+                                         disabled="true"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.periodoFin}"/>                  
+                        </h:panelGrid>
+                        <p:separator/> 
+                        <p:dataTable value="#{anticipoConsultaBean.anticipoConsultaHelper.listaPlanPago}"
+                                     var="det"
+                                     paginator="#{true}"
+                                     rows="10" emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex"
+                                     id="unidadAdministrativa" scrollable="true"
+                                     filterEvent="enter">
+                            <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.anticipo.planPago']}</f:facet>
+                            <p:column headerText= "" style="width:2%">  
+                                <p:rowToggler  />  
+                            </p:column>  
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                <h:outputText value="#{det.dividendo}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.anio']}" 
+                                      sortBy="#{det.anio}" style=" width: 80px">                               
+                                <h:outputText value="#{det.anio}" />
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.mes']}" 
+                                      sortBy="#{det.mesPalabras}" style=" width: 150px;">                               
+                                <h:outputText value="#{det.mes} - #{det.mesPalabras}" />
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}" 
+                                      sortBy="#{det.monto}"  style="text-align: right; width: 100px">                               
+                                <h:outputText value="#{det.monto}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.estado']}" 
+                                      sortBy="#{det.monto}" style=" width: 80px">                               
+                                <h:outputText value="#{anticipoBean.obtenerDescripcionEstadoPlanPago(det.estadoPago)}"/>
+                            </p:column>
+                            <p:rowExpansion>  
+                                <center>
+                                    <h:panelGrid columns="1">
+                                        <f:facet name="header">DETALLES DE LOS PAGOS DE LA CUOTA "#{det.dividendo}" : #{det.anio} - #{det.mesPalabras}</f:facet>
+                                        <p:panel  style="overflow: auto;">  
+
+
+                                            <p:dataTable id="detalle_pagos"
+                                                         value="#{anticipoConsultaBean.buscarPagosAnticipo(det.id)}"
+                                                         var="reg" emptyMessage="#{msg['message.listaVacia']}"
+                                                         rows="10"  paginator="#{true}" paginatorAlwaysVisible="false"
+                                                         rowIndexVar="rowIndex">                               
+                                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"  style="width:50px;">
+                                                    <h:outputText value="#{rowIndex+1}"/>
+                                                </p:column> 
+                                                <p:column headerText="Monto Pagado"  style="width:50px;">
+                                                    <h:outputText value="#{reg.montoPagado}"/>
+                                                </p:column> 
+                                                <p:column headerText="Nómina"  style="width:200px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.nomina.descripcion}"/>
+                                                </p:column> 
+                                                <p:column headerText="Estado Nómina"  style="width:80px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.nomina.estadoNombre}"/>
+                                                </p:column> 
+                                                <p:column headerText="Tipo Nómina"  style="width:100px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.nomina.tipoNomina.nombre}"/>
+                                                </p:column> 
+                                                <p:column headerText="Periodo Nómina"  style="width:80px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.nomina.periodoNomina.nombre}"/>
+                                                </p:column>
+                                                <p:column headerText="Valor Descontado Nómina"  style="width:80px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.valorDescontadoRubroDescuentos}"/>
+                                                </p:column>
+                                                <p:column headerText="Partida Individual"  style="width:100px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.partidaIndividual}"/>
+                                                </p:column>
+                                                <p:column headerText="Modalidad Laboral"  style="width:100px;">
+                                                    <h:outputText value="#{reg.nominaDetalle.nombreModalidadLaboral}"/>
+                                                </p:column>
+                                            </p:dataTable>
+
+                                        </p:panel> 
+                                    </h:panelGrid>
+                                </center>
+                            </p:rowExpansion>
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column/><p:column/><p:column/>
+                                    <p:column footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" style="text-align:right"/>  
+                                    <p:column footerText="#{anticipoConsultaBean.anticipoConsultaHelper.totalPlanPago}" style="text-align:right"/>  
+                                    <p:column/>
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                    </p:scrollPanel>
+                    <div style="text-align: center">
+                        <p:separator/> 
+                        <p:spacer height="10"/>
+                        <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="planPlagos.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>      
+                </h:form>
+            </p:dialog>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{anticipoConsultaBean.anticipoConsultaHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10" emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}">
+                            <p:commandButton icon="ui-icon-check"
+                                             title="Seleccionar"
+                                             update=":frmPrincipal:tab1:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.unidadOrganizacionalNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.unidadOrganizacionalId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog modal="true"    resizable="false"  width="800"   height="350"
+                      draggable="false" header="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']} - #{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.nombre']}"
+                      widgetVar="dlgRegimenLaboral" closable="true">
+                <h:form id="frmRegimen">
+                    <center>
+                        <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                                <p:treeTable id="treetable" value="#{anticipoConsultaBean.anticipoConsultaHelper.rootRegimen}" var="item"
+                                             selectionMode="single" selection="#{anticipoConsultaBean.anticipoConsultaHelper.escalaSeleccionada}">  
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}"
+                                              sortBy="#{item.nombre}" style=" overflow: auto; width: 400px"
+                                              filterBy="#{item.nombre}"
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.nombre}" style=" padding-left: 0; width: 71px"/>
+                                    </p:column>  
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.codigo']}" 
+                                              sortBy="#{item.codigo}" style="width: 50px"
+                                              filterBy="#{item.codigo}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.codigo}" style=" padding-left: 0; width: 71px" title="#{msg['message.para.seleccion']}"/>
+                                    </p:column> 
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.grado']}" 
+                                              sortBy="#{item.grado}" style="width: 50px"
+                                              filterBy="#{item.grado}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.grado}" style=" padding-left: 0; width: 71px" title="#{msg['message.para.seleccion']}"/>
+                                    </p:column>  
+                                    <p:ajax event="select" listener="#{anticipoConsultaBean.onNodeSelectRegimen}" 
+                                            update=":frmPrincipal"/>  
+                                </p:treeTable>
+                            </p:panel>    
+                        </p:scrollPanel>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgRegimenLaboral.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            <!-- PopUp del Garante -->
+            <p:dialog widgetVar="dlgGarante"
+                      modal="true"
+                      width="800"  height="530"
+                      showEffect="fade"
+                      header="Seleccionar el #{msg['ec.gob.mrl.smp.administracion.anticipo.garante']} " 
+                      >
+                <h:form id="frmGarante">
+                    <p:scrollPanel style="width:100%;height:500px;"  mode="native">  
+                        <p:panel id="listaServidor" >
+                            <p:dataTable id="tablaClase"
+                                         value="#{anticipoConsultaBean.anticipoConsultaHelper.listaOpcionGarante}"
+                                         var="servidor"   
+                                         rowKey="#{servidor.id}"                                                                                                      
+                                         paginator="#{true}" filterEvent="enter"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="text-align: center; width: 50px">
+                                    <h:outputText value="#{rowIndex+1}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                          style="width: 80px">                                                                 
+                                    <h:outputText value="#{anticipoBean.obtenerDescripcionTipoDocumento(servidor.servidor.tipoIdentificacion)}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                          style="width: 80px"
+                                          filterBy="#{servidor.servidor.numeroIdentificacion}" filterMatchMode="contains">                                                                 
+                                    <h:outputText value="#{servidor.servidor.numeroIdentificacion}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                          sortBy="#{servidor.servidor.apellidosNombres}" style="width: 250px"
+                                          filterBy="#{servidor.servidor.apellidosNombres}" filterMatchMode="contains">                                                                 
+                                    <h:outputText value="#{servidor.servidor.apellidosNombres}"/>                                
+                                </p:column> 
+                                <p:column style="width:4%" headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" >  
+                                    <p:commandButton id="selectButton" 
+                                                     update=":frmPrincipal:tab1:panel_garante" 
+                                                     oncomplete="dlgGarante.hide()"
+                                                     icon="ui-icon-check"
+                                                     title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.etiqueta.seleccionar']}" >  
+                                        <f:setPropertyActionListener value="#{servidor.servidor.apellidosNombres}" target="#{anticipoConsultaBean.anticipoConsultaHelper.vistaAnticipo.servidorApellidosNombres}" />  
+                                        <f:setPropertyActionListener value="#{servidor.servidor.id}" target="#{anticipoConsultaBean.anticipoConsultaHelper.consultaAnticipoVO.garanteId}" />  
+                                    </p:commandButton>  
+                                </p:column>  
+                            </p:dataTable>
+                        </p:panel>
+                    </p:scrollPanel>
+                    <div style="text-align: center">                            
+                        <p:commandButton id="confirm" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgGarante.hide()" 
+                                         update=":frmPrincipal:tab1:panel_garante" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

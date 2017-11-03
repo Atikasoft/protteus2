@@ -1,0 +1,437 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario  controlador="#{comprobanteRetencionBean}" mostrarGuardar="#{!comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                      titulo="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.titulo']}"
+                                      extendido="false">
+                <f:facet name="contenido">
+                    <link href="#{request.contextPath}/css/formulario107.css" rel="stylesheet" type="text/css"/>
+                    <h:form>
+                      <p:remoteCommand name="updateMainForm" update=":j_idt32:panelFormulario"/>
+                    </h:form>
+                    <p:panel style="border:0px solid red;" id="panelFormulario">
+
+                        <h:panelGrid styleClass="cabeceraFormulario" columnClasses="cabeceraFormulario_1,cabeceraFormulario_2" style="background-color: #e0e0e0;border:1px solid #9e9e9e;">
+
+                            <h:panelGrid style="width: 100%" styleClass="cabeceraFormulario_2_grid">
+                                <h:panelGrid columns="3" style="width: 100%" columnClasses="cabeceraFormulario_title_2,cabeceraFormulario_title,cabeceraFormulario_title_2" styleClass="cabeceraFormulario_title_container">
+                                    <h:panelGrid columns="2" style="border:0px solid #9e9e9e;">
+                                    </h:panelGrid>
+                                    <h:outputText value="COMPROBANTE DE RETENCIONES EN LA FUENTE DEL IMPUESTO A LA RENTA POR INGRESOS DEL TRABAJO EN RELACIÓN DE DEPENDENCIA"/>
+                                    <h:panelGrid columns="2" style="border:0px solid #9e9e9e;">
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                                <h:panelGrid columns="6" 
+                                             columnClasses="cabeceraFormulario_data_1,cabeceraFormulario_data_2,cabeceraFormulario_data_3,cabeceraFormulario_data_4,cabeceraFormulario_data_5,cabeceraFormulario_data_6"
+                                             style="border:1px solid #9e9e9e; width: 100%; background-color: white;">
+                                    <h:outputText value="(*)Ejercicio Fiscal"/>
+                                    <h:outputText value="102"/>
+                                    <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.ejercicioFiscal.nombre}" disabled="true"/>
+                                    <h:outputText value="(*)Fecha Entrega"/>
+                                    <h:outputText value="103"/>
+                                    <p:calendar id="fechaEntrega" showOn="button" navigator="true" 
+                                                disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                                value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.fechaEntrega}" required="false"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                                mindate="#{comprobanteRetencionBean.comprobanteRetencioHelper.minFecha}"
+                                                maxdate="#{comprobanteRetencionBean.comprobanteRetencioHelper.maxFecha}"
+                                                requiredMessage="El campo hora de entrada es requerida">
+                                    </p:calendar>                                
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                        <!-- Fin de la cabecera -->
+                        <!-- Id de empleador-->
+                        <h:panelGrid styleClass="identificacionEmpleador" 
+                                     style="border: 1px solid #9e9e9e"
+                                     columnClasses="identificacionEmpleador_1">
+                            <h:outputText value="100 Identificación del Empleador (Agente de Retención)"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4" 
+                                     columnClasses="celdaNum,identificacionEmpleador_2_a,celdaNum,identificacionEmpleador_2_b"
+                                     style="background-color: white; width: 100%; border: 1px solid #9e9e9e">
+                            <h:outputText value="105"/>
+                            <h:panelGrid style="width: 100%;">
+                                <h:outputText value="(*)RUC" styleClass="tituloSmall"/>
+                                <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.rucEmpleador}"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                />
+                            </h:panelGrid>
+                            <h:outputText value="106"/>
+                            <h:panelGrid style="width: 100%;">
+                                <h:outputText value="(*)RAZÓN SOCIAL O APELLIDOS Y NOMBRES COMPLETOS" styleClass="tituloSmall"/>
+                                <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.nombreEmpleador}"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                />
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <!-- Fin Id de empleador-->
+                        <!-- Id de servidor-->
+                        <h:panelGrid styleClass="identificacionEmpleador" 
+                                     style="border: 1px solid #9e9e9e" id="datosServidor"
+                                     columnClasses="identificacionEmpleador_1">
+                            <h:outputText value="200 Identificación del Trabajador (Contribuyente)"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4" 
+                                     columnClasses="celdaNum,identificacionEmpleador_2_a,celdaNum,identificacionEmpleador_2_b"
+                                     style="background-color: white; width: 100%; border: 1px solid #9e9e9e">
+                            <h:outputText value="201"/>
+                            <h:panelGrid style="width: 100%;">
+                                <h:outputText value="(*)CÉDULA O PASAPORTE" styleClass="tituloSmall"/>
+                                <h:panelGrid style="width: 100%;" columns="2">
+                                    <p:inputText id="numeroIdentificacion" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.servidor.numeroIdentificacion}" disabled="true"/>
+                                    <p:commandButton icon="ui-icon-search" process="@this"
+                                                     rendered="#{comprobanteRetencionBean.comprobanteRetencioHelper.esNuevo}"
+                                                     action="#{comprobanteRetencionBean.iniciarBusqueda}"
+                                                     oncomplete="editDialog.show();" update="popOpNuevo"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:outputText value="202"/>
+                            <h:panelGrid style="width: 100%;">
+                                <h:outputText value="(*)APELLIDOS Y NOMBRES COMPLETOS" styleClass="tituloSmall"/>
+                                <p:inputText id="apellidosNombres" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.servidor.apellidosNombres}" disabled="true"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <!-- Fin Id de servidor-->
+                        <!-- Liquidaciones -->
+                        <h:panelGrid styleClass="identificacionEmpleador" 
+                                     style="border: 1px solid #9e9e9e"
+                                     columnClasses="identificacionEmpleador_1">
+                            <h:outputText value="Liquidación del Impuesto"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4" styleClass="liquidacion"
+                                     columnClasses="liquidacion_col_1,celdaNum,celdaNum,liquidacion_col_4"
+                                     style="background-color: white; width: 100%; border: 1px solid #9e9e9e">
+                            <h:outputText value="SUELDOS Y SALARIOS"/>
+                            <h:outputText value="301"/>
+                            <h:outputText value="+"/>                           
+                            <p:inputText id="liquidacion_301" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.sueldosSalarios}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="SOBRESUELDOS, COMISIONES, BONOS Y OTROS INGRESOS GRAVADOS"/>
+                            <h:outputText value="303"/>
+                            <h:outputText value="+"/>                           
+                            <p:inputText id="liquidacion_303" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.sobreSueldos}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="PARTICIPACIÓN UTILIDADES"/>
+                            <h:outputText value="305"/>
+                            <h:outputText value="+"/>                           
+                            <p:inputText id="liquidacion_305" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.participacionUtilidades}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="INGRESOS GRAVADOS GENERADOS CON OTROS EMPLEADORES"/>
+                            <h:outputText value="307"/>
+                            <h:outputText value="+"/>                           
+                            <p:inputText id="liquidacion_307" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.ingresosOtroEmpleador}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="DÉCIMO TERCER SUELDO"/>
+                            <h:outputText value="311"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_311" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.decimoTercero}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="DÉCIMO CUARTO SUELDO"/>
+                            <h:outputText value="313"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_313" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.decimoCuarto}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="FONDO RESERVA"/>
+                            <h:outputText value="315"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_315" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.fondoReserva}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="OTROS INGRESOS EN RELACIÓN DE DEPENDENCIA QUE NO CONSTITUYEN RENTA GRAVADA"/>
+                            <h:outputText value="317"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_317" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.otrosIngresos}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)APORTE PERSONAL IESS CON ESTE EMPLEADOR (únicamente pagado por el trabajador)"/>
+                            <h:outputText value="351"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_351" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.aportePersonal}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)APORTE PERSONAL IESS CON OTROS EMPLEADORES (únicamente pagado por el trabajador)"/>
+                            <h:outputText value="353"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_353" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.aportePersonalOtroEmpleador}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)DEDUCCIÓN GASTOS PERSONALES-VIVIENDA"/>
+                            <h:outputText value="361"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_361" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.vivienda}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)DEDUCCIÓN GASTOS PERSONALES-SALUD"/>
+                            <h:outputText value="363"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_363" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.salud}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)DEDUCCIÓN GASTOS PERSONALES-EDUCACIÓN"/>
+                            <h:outputText value="365"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_365" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.educacion}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)DEDUCCIÓN GASTOS PERSONALES-ALIMENTACIÓN"/>
+                            <h:outputText value="367"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_367" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.alimentacion}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)DEDUCCIÓN GASTOS PERSONALES-VESTIMENTA"/>
+                            <h:outputText value="369"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_369" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.vestimenta}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)EXONERACIÓN POR DISCAPACIDAD"/>
+                            <h:outputText value="371"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_371" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.exoneracionDiscapacidad}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="(-)EXONERACIÓN POR TERCERA EDAD"/>
+                            <h:outputText value="373"/>
+                            <h:outputText value="-"/>                           
+                            <p:inputText id="liquidacion_373" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.exoneracionTerceraEdad}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="IMPUESTO A LA RENTA ASUMIDO POR ESTE EMPLEADOR"/>
+                            <h:outputText value="381"/>
+                            <h:outputText value="+"/>                           
+                            <p:inputText id="liquidacion_381" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.impuestoRenta}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText escape="false" value="&lt;b&gt; BASE IMPONIBLE GRABADA &lt;SPAN style='font-size: 9px;'&gt;301+303+305+307-351-353-361-363-365-367-369-371-373+381 &gt;=0 &lt;/SPAN&gt; &lt;/b&gt;"/>
+                            <h:outputText  value="399"/>
+                            <h:outputText  value="="/>                           
+                            <p:inputText id="liquidacion_399" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.baseImponibleGravada}" disabled="true" styleClass="campoFloat"/>
+
+                            <h:outputText value="IMPUESTO A LA RENTA CAUSADO"/>
+                            <h:outputText value="401"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_401" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.impuestoRentaCausado}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="VALOR DEL IMPUESTO RETENIDO Y ASUMIDO POR OTROS EMPLEADORES DURANTE EL PERIODO DECLARADO"/>
+                            <h:outputText value="403"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_403" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.impuestoRetenidoOtroEmpleador}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="VALOR DEL IMPUESTO ASUMIDO POR ESTE EMPLEADOR"/>
+                            <h:outputText value="405"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_405" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.impuestoAsumido}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText value="VALOR DEL IMPUESTO RETENIDO AL TRABAJADOR POR ESTE EMPLEADOR"/>
+                            <h:outputText value="407"/>
+                            <h:outputText value=""/>                           
+                            <p:inputText id="liquidacion_407" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.impuestoRetenido}" styleClass="campoFloat"
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                            />
+
+                            <h:outputText escape="false" value="&lt;b&gt;INGRESOS GRAVADOS CON ESTE EMPLEADOR &lt;/b&gt; (informativo) &lt;SPAN style='font-size: 9px; font-weight: bold' &gt; 301+303+305+381 &lt;/SPAN&gt;"/>
+                            <h:outputText value="349"/>
+                            <h:outputText value="="/>                           
+                            <p:inputText id="liquidacion_349" value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.ingresosGravados}" disabled="true" styleClass="campoFloat"/>
+
+
+                        </h:panelGrid>
+                        <!-- Fin de Liquidaciones-->
+
+
+                        <!-- Firma del Contador-->
+
+
+                        <h:panelGrid styleClass="identificacionEmpleador" 
+                                     style="border: 1px solid #9e9e9e"
+                                     columnClasses="identificacionEmpleador_1">
+                            <h:outputText value="Firma del Contador"/>
+
+                        </h:panelGrid>                                                     
+                        <h:panelGrid columns="5" 
+                                     columnClasses="celdaNum,identificacionEmpleador_2_a,celdaNum,identificacionContador,tablaArchivo_2"
+                                     style="background-color: white; width: 100%; border: 1px solid #9e9e9e">
+                            <h:outputText value="199"/>
+                            <h:panelGrid style="width: 100%;">
+                                <h:outputText value="(*)RUC CONTADOR" styleClass="tituloSmall"/>
+                                <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.rucContador}" 
+disabled="#{comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                />
+                            </h:panelGrid>
+                            <h:outputText value=""/>                                                          
+                            <h:panelGrid style="width: 100%;" id="panelArchivo">
+                                <h:outputText value="COPIA DEL ARCHIVO" styleClass="tituloSmall"/>
+                                <h:form id="downloadLink_form">
+                                    <p:commandLink id="downloadLink"
+                                                   rendered ="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.archivo != null}"
+                                                   value="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.archivo.nombre}" ajax="false" process="@this"                                                  
+                                                   actionListener="#{comprobanteRetencionBean.descargarArchivo}"
+                                                   onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                   >
+                                        <p:fileDownload value="#{comprobanteRetencionBean.file}" /> 
+                                    </p:commandLink>
+                                </h:form>
+                                <h:outputText value="No hay Archivo Seleccionado" 
+                                              rendered ="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRenta.archivo == null}"
+                                              />
+                            </h:panelGrid>
+                            <p:commandButton icon="ui-icon-arrowthickstop-1-n"
+                            rendered="#{!comprobanteRetencionBean.comprobanteRetencioHelper.soloVer}"
+                                             process="@this" onclick="cargarArchivoPopUp.show();"
+                                             />
+                        </h:panelGrid>
+
+
+                        <!-- Fin Firma del Contador-->
+
+                    </p:panel>
+
+                    <p:dialog id="popOpNuevo" resizable="false"
+                              header="Búsqueda de Servidor" width="600"
+                              showEffect="fade" widgetVar="editDialog" modal="true"> 
+                        <h:form id="formEditar">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Número de Identificación"/>
+                                <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.numeroIdentificacionServidor}"/>
+                                <h:outputText value="Apellidos Nombres"/>
+                                <p:inputText value="#{comprobanteRetencionBean.comprobanteRetencioHelper.nombreServidor}"/>
+                                <p:commandButton icon="ui-icon-search" action="#{comprobanteRetencionBean.buscarServidor}" value="Buscar" update="tabla_servidores" process="formEditar"/>
+                            </h:panelGrid>
+                            <br/>
+                            <p:dataTable id="tabla_servidores"
+                                         value="#{comprobanteRetencionBean.comprobanteRetencioHelper.listaServidores}"
+                                         var="servidor"
+                                         sortBy="#{servidor.numeroIdentificacion}"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rowIndexVar="rowIndex">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                          style="text-align: center; width: 50px">
+                                    <p:commandButton id="botonEdicio" icon="ui-icon-check"
+                                                     process="@this" update=":j_idt32:numeroIdentificacion :j_idt32:apellidosNombres"
+                                                     action="#{comprobanteRetencionBean.seleccionarServidor}" >
+                                        <f:setPropertyActionListener value="#{servidor}" 
+                                                                     target="#{comprobanteRetencionBean.comprobanteRetencioHelper.servidorSeleccionado}"/>
+                                    </p:commandButton>                                                        
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="text-align: center; width: 15px">
+                                    <h:outputText value="#{rowIndex+1}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                          style="width: 100px; text-align: center">                                                                 
+                                    <h:outputText value="#{servidor.numeroIdentificacion}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.nombres']}" >                                                                 
+                                    <h:outputText value="#{servidor.apellidosNombres}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                            <br/>
+                            <div style="text-align: center">
+                                <p:commandButton icon="ui-icon-close" immediate="true" value="Cerrar"  
+                                                 onclick="editDialog.hide();" process="formEditar"/>
+                            </div>
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog 
+                        header="Cargar Archivo" 
+                        widgetVar="cargarArchivoPopUp"
+                        modal="true"                
+                        resizable="false"> 
+                        <h:form enctype="multipart/form-data">                    
+                            <p:panel id="panelDlgCargaDocHab" style="border: none;">                        
+                                <h:panelGrid columns="2" style="width: 400px">
+                                    <p:fileUpload
+                                        id="formulario_cargarDocumento"
+                                        mode="advanced"
+                                        showButtons="false"                       
+                                        process="@this"                               
+                                        widgetVar="fileuplaod_wgts"
+                                        update="messages, :j_idt32:panelArchivo"
+                                        allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|zip|tar|tar.gz|rar)$/"
+                                        label="Seleccione...."
+                                        sizeLimit="2097152"
+                                        oncomplete="clearInvalidFileMsg(fileuplaod_wgts); cargarArchivoPopUp.hide()"
+                                        invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                        invalidFileMessage="El archivo debe ser gif,jpg,png,pdf,zip,rar,tar,tar.gz "
+                                        fileUploadListener="#{comprobanteRetencionBean.cargarArchivo}"
+                                        auto="true">
+                                    </p:fileUpload>
+
+                                </h:panelGrid>
+                                <p:growl id="messages" showDetail="true" for="bandejaTareaBean_cargarDocumento"/>
+                            </p:panel>           
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog 
+                        header="Cargar Formulario 107" 
+                        widgetVar="cargarFormularioPopUp"
+                        modal="true" width="700"               
+                        resizable="false"> 
+                        <h:form id="cargarFormularioForm">                    
+                            <p:panel id="panelDlgcargarFormularioHab" style="border: none;">
+                                <div style="text-align: center">
+                                    El servidor #{comprobanteRetencionBean.comprobanteRetencioHelper.servidorSeleccionado.apellidosNombres} tiene un Formulario 107 registrado para este Ejercicio Fiscal. Para seleccionar este
+                                    servidor deberá editar el formulario existente.
+                                    Desea proceder con la edición?
+                                </div>
+                                <br/>
+                                <div style="text-align: center">
+                                    <p:commandButton icon="ui-icon-check" value="Aceptar"
+                                                     action="#{comprobanteRetencionBean.utilizarServidor}"
+                                                     process="@this" oncomplete="cargarFormularioPopUp.hide();" 
+                                                     update=":j_idt32:smpForm"/>
+                                    <p:commandButton icon="ui-icon-close" immediate="true" value="Cancelar"  
+                                                     onclick="cargarFormularioPopUp.hide();" process="cargarFormularioForm"/>
+                                </div>
+                            </p:panel>           
+                        </h:form>
+                    </p:dialog>
+                    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/formulario107.js"></script>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

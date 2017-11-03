@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{variableBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.variable.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablavariable"
+                                 value="#{variableBean.variableHelper.listaVariableP}"
+                                 var="variable"
+                                 filterEvent="enter"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{variable.codigo}"  
+                                 sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{variableBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{variable}" 
+                                                             target="#{variableBean.variableHelper.variablePEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{variable}" 
+                                                             target="#{variableBean.variableHelper.variablePEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variable.codigo']}" 
+                                  filterBy="#{variable.codigo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px"     
+                                  sortBy="#{variable.codigo}" 
+                                  style="width: 100px">                                                                 
+                            <h:outputText value="#{variable.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variable.nombre']}" 
+                                  filterBy="#{variable.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 300px"     
+                                  sortBy="#{variable.nombre}" 
+                                  style="width: 400px">                               
+                            <h:outputText value="#{variable.nombre}"/>                                
+                        </p:column>   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variable.operacion']}" 
+                                  sortBy="#{variable.operacion}" style="width: 80px">                               
+                            <h:outputText value="#{variableBean.obtenerDescripcionOperacion(variable.operacion)}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.variable.validado']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{variable.validado}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{variable.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablavariable"
+                                             actionListener="#{variableBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

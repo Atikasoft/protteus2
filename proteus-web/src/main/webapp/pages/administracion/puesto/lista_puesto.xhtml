@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal"> 
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.puestos.titulo']}" >
+                    <h:panelGrid columns="4">
+                        <p:commandButton id="btnNuevo" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{distributivoBean.iniciarNuevo()}"
+                                         ajax="false"
+                                         immediate="true"/>
+                        <p:commandButton id="btnBuscar" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         action="#{distributivoBean.buscar()}"
+                                         ajax="false"/>
+                        <p:commandButton id="btnCargaMasiva" 
+                                         value="#{msg['ec.gob.mrl.smp.administracion.puestos.btn.cargaMasiva']}"
+                                         action="#{distributivoBean.inicializarCargaMasiva()}" process="@this"
+                                         immediate="true" update=":cargaMasivaPuestosFrm"
+                                         />
+                        <p:commandButton id="btnCargaMasivaHistorico" 
+                                         value="#{msg['ec.gob.mrl.smp.administracion.puestos.btn.cargaMasivaHistorico']}"
+                                         action="#{distributivoBean.cargarCargasMasivasRealizadas()}" process="@this"
+                                         immediate="true" update=":registrosCargaMasivaPuestosHistoricoDlgFrm"
+                                         />
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator />
+                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+
+                    <p:inputTextarea id="distributivo_unidad"
+                                     styleClass="textoNombre"
+                                     style="width: 400px; text-align: left"
+                                     required="#{true}"
+                                     value="#{distributivoBean.distributivoHelper.distributivo.unidadOrganizacional.nombre}"
+                                     disabled="#{!(distributivoBean.distributivoHelper.esNuevo)}"
+                                     requiredMessage="El campo Unidad Organizacional es requerido"/>   
+
+                    <p:commandButton icon="ui-icon-search"        
+                                     immediate="true"
+                                     actionListener="#{distributivoBean.cargarArbolUnidadOrganizacional}"/>
+                    <p:commandButton icon="ui-icon-trash"  
+                                     immediate="true" 
+                                     actionListener="#{distributivoBean.limpiar()}"
+                                     update="distributivo_unidad tabladistributivo"
+                                     process="@this">                                       
+                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivo.unidadOrganizacional}"                                                             
+                                                     value="#{null}" />
+                    </p:commandButton>
+                </h:panelGrid>
+                <p:separator />
+
+                <p:dataTable id="tabladistributivo"
+                             value="#{distributivoBean.distributivoHelper.listaDistributivos}"
+                             var="distributivo" 
+                             paginator="#{true}" filterEvent="enter"
+                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex"
+                             sortBy="#{distributivo.nombre}"  sortOrder="ascending"
+                             style="overflow: auto">                            
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 50px">
+                        <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                         ajax="#{false}"
+                                         action="#{distributivoBean.iniciarEdicion}"
+                                         title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                            <f:setPropertyActionListener value="#{distributivo}" 
+                                                         target="#{distributivoBean.distributivoHelper.distributivoEditDelete}"/>
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                        <h:outputText value="#{rowIndex+1}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" 
+                              sortBy="#{distributivo.unidadOrganizacional.nombre}" style="width: 350px" filterBy="#{distributivo.unidadOrganizacional.nombre}" filterMatchMode="contains">                               
+                        <h:outputText value="#{distributivo.unidadOrganizacional.nombre}"/>                                
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.modalidadLaboral']}" 
+                              sortBy="#{distributivo.modalidadLaboral.nombre}" style="width: 250px"
+                              filterBy="#{distributivo.modalidadLaboral.nombre}" filterMatchMode="contains">                               
+                        <h:outputText value="#{distributivo.modalidadLaboral.nombre}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.totalPuestos']}" 
+                              sortBy="#{distributivo.totalDetalles}" style="width:50px">                               
+                        <h:outputText value="#{distributivo.totalDetalles}" />        
+                    </p:column> 
+                    <f:facet name="footer">
+                        TOTAL DE PUESTOS: #{distributivoBean.distributivoHelper.totalPuestos} 
+                    </f:facet>
+
+
+                </p:dataTable>
+            </h:form>
+
+            <ui:include src="carga_masiva_puestos.xhtml" />
+
+            <p:dialog modal="true"     
+                      resizable="false"   
+                      width="800"  
+                      height="350"
+                      draggable="true"   
+                      header="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}" 
+                      widgetVar="dlgUnidadOrganizacional"
+                      closable="true">
+                <h:form id="frmUnidad">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:treeTable id="tablaUbicacion" 
+                                     value="#{distributivoBean.distributivoHelper.rootUnidadOrganizacional}"
+                                     var="reg" 
+                                     style="overflow: auto"                                              
+                                     selection="#{distributivoBean.distributivoHelper.unidadSeleccionada}" 
+                                     selectionMode="single">
+                            <p:ajax event="select" 
+                                    immediate="false"
+                                    listener="#{distributivoBean.onNodeSelectUnidad}" 
+                                    update=":frmPrincipal:distributivo_unidad"/> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{reg.nombre}"
+                                      filterBy="#{reg.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nombre}" 
+                                              title="#{reg.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                      style="width: 100px; font-size: 8pt"
+                                      sortBy="#{reg.codigo}"
+                                      filterBy="#{reg.codigo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.codigo}" title="#{msg['message.para.seleccion']}" />
+                            </p:column>                    
+                        </p:treeTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" value="SELECCIONAR"
+                                         onclick="dlgUnidadOrganizacional.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="Confidencial de Pago" >
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{confidencialPagoBean.buscarNominas()}" 
+                                         update="tblListaNominas" 
+                                         ajax="false" />          
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{confidencialPagoBean.irPortal}"/>      
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{confidencialPagoBean.salirPantallaPrincipal}"/>   
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel header="Filtros de Búsqueda" >
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="periodoFiscal" value="Ejercicio:"/>
+                        <p:selectOneMenu id="periodoFiscal"    
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{confidencialPagoBean.confidencialPagoHelper.busquedaNominaVO.periodoFiscal}">
+                            <f:selectItems value="#{confidencialPagoBean.confidencialPagoHelper.listaPeriodoFiscal}"/>
+                            <p:ajax event="change" 
+                                    listener="#{confidencialPagoBean.buscarPeriodosNominas()}" 
+                                    update="periodoNominal" 
+                                    partialSubmit="true"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoFiscal"/>
+                        <p:outputLabel for="periodoNominal" value="Periodo:"/>
+                        <p:selectOneMenu id="periodoNominal" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{confidencialPagoBean.confidencialPagoHelper.busquedaNominaVO.periodoNomina}">
+                            <f:selectItems value="#{confidencialPagoBean.confidencialPagoHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoNominal"/>                        
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:dataTable value="#{confidencialPagoBean.confidencialPagoHelper.listaNominas}"
+                             var="nomina"
+                             id="tblListaNominas"
+                             emptyMessage="#{msg['message.listaVacia']}"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="width: 20px;text-align: center">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>                   
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                              style="width: 60px;text-align: center">
+                        <p:commandButton process="@this"
+                                         icon="ui-icon-note"
+                                         ajax="false" 
+                                         rendered="#{nomina.estado eq 'R' or nomina.estado eq 'P'}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}"
+                                         action="#{confidencialPagoBean.irFormularioResultadoNomina()}">
+                            <f:setPropertyActionListener value="#{nomina}" target="#{confidencialPagoBean.confidencialPagoHelper.nomina}"/>                            
+                        </p:commandButton>
+
+                        <p:commandButton process="@this" title="Generar reporte confidencial de pago"                                       
+                                         icon="ui-icon-print"
+                                         rendered="#{nomina.estado eq 'R' or nomina.estado eq 'P'}"
+                                         action="#{confidencialPagoBean.generarConfidecialPago()}"
+                                         immediate="true">  
+                            <f:setPropertyActionListener value="#{nomina}" target="#{confidencialPagoBean.confidencialPagoHelper.nomina}"/>                            
+                        </p:commandButton> 
+                    </p:column>  
+                    <p:column headerText="Ejercicio Fiscal">
+                        <h:outputText value="#{nomina.periodoNomina.ejercicioFiscal.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Periodo">
+                        <h:outputText value="#{nomina.periodoNomina.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{nomina.tipoNomina.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+
+                    <p:column headerText="Descripción">
+                        <h:outputText value="#{nomina.descripcion}" style="font-size: 10px;"/>
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                        <p:outputLabel value="#{nomina.estadoNombre}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,263 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form id="asigHorario">
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="ASIGNACIÓN DE HORARIOS A SERVIDORES">
+                    <p:panelGrid columns="5">
+                        <p:outputLabel value="Tipo:"/>
+                        <p:selectOneMenu value="#{horarioServidorBean.horarioServidorHelper.opcionTipoServidorHorario}">
+                            <f:selectItems value="#{horarioServidorBean.horarioServidorHelper.opcionesTipoServidorHorario}"/>
+                            <p:ajax listener="#{horarioServidorBean.buscar()}" 
+                                    update="@form"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Asignar Masivamente"
+                                         action="#{horarioServidorBean.iniciarAsignacionDeHorario()}"
+                                         update=":frmAsignacionMasivaHorario">
+                            <f:setPropertyActionListener target="#{horarioServidorBean.horarioServidorHelper.asignacionMasivaActivada}" 
+                                                         value="#{true}"/>
+                        </p:commandButton>
+
+                        <h:commandLink  id="exp_xls" 
+                                        title="Exportar Excel"
+                                        rendered="#{not empty horarioServidorBean.horarioServidorHelper.listaPuestos}">
+                            <p:graphicImage value="/images/excel.png" 
+                                            alt="Exportar Excel" 
+                                            style="width: 25px; height: 25px" />
+                            <p:dataExporter type="xls" target="tablaServidores" 
+                                            fileName="#{horarioServidorBean.horarioServidorHelper.nombreArchivo}"
+                                            postProcessor="#{horarioServidorBean.postProcessXLS}" >                                    
+                            </p:dataExporter>                                
+                        </h:commandLink>
+                    </p:panelGrid>
+                    
+                    <p:separator/>
+                    
+                    <p:dataTable id="tablaServidores" 
+                                 widgetVar="tblServidoresWV"
+                                 value="#{horarioServidorBean.horarioServidorHelper.listaPuestos}"
+                                 var="puesto"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 30px"
+                                  exportable="#{false}">
+                            <p:commandButton id="btnAsigHorario" 
+                                             icon="ui-icon-clock"
+                                             title="Asignar Horario"
+                                             action="#{horarioServidorBean.iniciarAsignacionDeHorario}"
+                                             update=":frmSeleccionHorario">
+                                <f:setPropertyActionListener value="#{puesto}" 
+                                                             target="#{horarioServidorBean.horarioServidorHelper.puesto}"/>
+                                <f:setPropertyActionListener target="#{horarioServidorBean.horarioServidorHelper.asignacionMasivaActivada}" 
+                                                             value="#{false}"/>
+                            </p:commandButton>
+                        </p:column>  
+
+                        <p:column style="text-align: center; width: 15px">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" />
+                            </f:facet>
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 15px"
+                                  sortBy="#{horarioServidorBean.obtenerTipoIdentificacionDadoCodigo(puesto.servidor.tipoIdentificacion)}"
+                                  filterBy="#{horarioServidorBean.obtenerTipoIdentificacionDadoCodigo(puesto.servidor.tipoIdentificacion)}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mq.prometeo.administracion.tipoIdentificacion']}" />
+                            </f:facet>
+                            <h:outputText value="#{horarioServidorBean.obtenerTipoIdentificacionDadoCodigo(puesto.servidor.tipoIdentificacion)}"/>
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 20px"
+                                  sortBy="#{puesto.servidor.numeroIdentificacion}"
+                                  filterBy="#{puesto.servidor.numeroIdentificacion}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mq.prometeo.administracion.numeroIdentificacion']}" />
+                            </f:facet>
+                            <h:outputText value="#{puesto.servidor.numeroIdentificacion}"/>
+                        </p:column>
+
+                        <p:column style="text-align: center;"
+                                  sortBy="#{puesto.servidor.apellidosNombres}"
+                                  filterBy="#{puesto.servidor.apellidosNombres}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mq.prometeo.administracion.apellidosNombres']}"/>
+                            </f:facet>
+                            <h:outputText value="#{puesto.servidor.apellidosNombres}" 
+                                          style="float: left;"/>
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 15px"
+                                  sortBy="#{puesto.servidor.codigoEmpleado}"
+                                  filterBy="#{puesto.servidor.codigoEmpleado}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Código Reloj" />
+                            </f:facet>
+                            <h:outputText value="#{puesto.servidor.codigoEmpleado}"/>
+                        </p:column>
+
+                        <p:column sortBy="#{horarioServidorBean.buscarNombreUnidadOrganizacional(puesto.distributivo.unidadOrganizacional)}"
+                                  filterBy="#{horarioServidorBean.buscarNombreUnidadOrganizacional(puesto.distributivo.unidadOrganizacional)}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" />
+                            </f:facet>
+                            <h:outputLabel value="#{horarioServidorBean.buscarNombreUnidadOrganizacional(puesto.distributivo.unidadOrganizacional)}"/>
+                        </p:column>
+
+                        <p:column style="text-align: center;"
+                                  rendered="#{not horarioServidorBean.horarioServidorHelper.sinHorario}"
+                                  filterBy="#{puesto.servidor.horario.id}" 
+                                  filterMatchMode="exact"
+                                  filterOptions="#{horarioServidorBean.horarioServidorHelper.opcionesHorario}">
+                            <f:facet name="header">
+                                <h:outputText value="Horario" />
+                            </f:facet>
+                            <p:commandLink value="#{puesto.servidor.horario.nombre}"
+                                           action="#{horarioServidorBean.mostrarDlgHorarioDetalles()}"
+                                           update=":frmLecturaHorarioDetalle"
+                                           title="Ver detalle">
+                                <f:setPropertyActionListener target="#{horarioServidorBean.horarioServidorHelper.horario}"
+                                                             value="#{puesto.servidor.horario}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>  
+
+            <style>
+                .col1 {
+                    width: 140px;
+                }
+            </style>
+
+            <ui:include src="dlgAsignacionMasivaHorario.xhtml"/>
+
+            <!-- DIALOGO PARA LA ASIGNACI[ON DE HORARIO-->
+            <p:dialog modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      width="700px"  
+                      header="Asignación de Horario"
+                      widgetVar="seleccionHorarioDlg">
+
+                <h:form id="frmSeleccionHorario">
+                    <p:panelGrid columns="2" 
+                                 style="width: 100%;"
+                                 columnClasses="col1">
+                        <p:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.tipoIdentificacion']}: "/>
+                        <p:outputLabel value="#{horarioServidorBean.obtenerTipoIdentificacionDadoCodigo(horarioServidorBean.horarioServidorHelper.puesto.servidor.tipoIdentificacion)}"/>
+                        <p:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.numeroIdentificacion']}: "/>
+                        <p:outputLabel value="#{horarioServidorBean.horarioServidorHelper.puesto.servidor.numeroIdentificacion}"/>
+                        <p:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.apellidosNombres']}: "/>
+                        <p:outputLabel value="#{horarioServidorBean.horarioServidorHelper.puesto.servidor.apellidosNombres}"/>
+                        <p:outputLabel value="Código Reloj: "/>
+                        <p:outputLabel value="#{horarioServidorBean.horarioServidorHelper.puesto.servidor.codigoEmpleado}"/>
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}: " />
+                        <p:outputLabel value="#{horarioServidorBean.buscarNombreUnidadOrganizacional(horarioServidorBean.horarioServidorHelper.puesto.distributivo.unidadOrganizacional)}"/>
+                        <p:outputLabel value="* Horario: "/>
+                        <p:selectOneMenu value="#{horarioServidorBean.horarioServidorHelper.horario.id}"
+                                         requiredMessage="El campo 'Horario' es requerido">
+                            <f:selectItems value="#{horarioServidorBean.horarioServidorHelper.opcionesHorario}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+
+                    <p:separator />
+
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         update=":asigHorario"
+                                         action="#{horarioServidorBean.guardar}" 
+                                         style="margin: auto; margin-right: 5px" /> 
+
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="seleccionHorarioDlg.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </h:form>
+            </p:dialog>
+
+            <!-- DIALOGO QUE MUESTRA LOS DETALLES DE UN HORARIO SELECCIONAD-->
+            <p:dialog id="dlgLecturaHorarioDetalle" 
+                      widgetVar="dlgLecturaHorarioDetalleWV"
+                      closable="true"
+                      header="Detalle de Horario">
+                <p:outputPanel>
+                    <h:form id="frmLecturaHorarioDetalle">
+                        <p:dataTable value="#{horarioServidorBean.nombresDias}"
+                                     var="dia" >
+                            <f:facet name="header">
+                                #{horarioDesconcentrado.horario.nombre}
+                            </f:facet>
+
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column rowspan="2" 
+                                              headerText="Días" />
+                                    <p:column colspan="5" 
+                                              headerText="Eventos" />
+                                </p:row>
+                                <p:row>
+                                    <p:column headerText="Entrada" />
+                                    <p:column headerText="Inicio Almuerzo" />
+                                    <p:column headerText="Fín Almuerzo" />
+                                    <p:column headerText="Salida" />
+                                    <p:column headerText="Total Horas" />
+                                </p:row>
+                            </p:columnGroup>
+
+                            <p:column>
+                                <h:outputText value="#{dia}" />
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioServidorBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntrada}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioServidorBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalidaAlmuerzo}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioServidorBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntradaAlmuerzo}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioServidorBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalida}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioServidorBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).totalHorasDiaria}" >
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:outputPanel>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

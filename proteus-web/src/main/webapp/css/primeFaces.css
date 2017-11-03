@@ -1,0 +1,119 @@
+.ui-widget {
+    font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+    font-size: 0.8em;
+}
+
+.wijmo-wijmenu .wijmo-wijmenu-parent .wijmo-wijmenu-child {
+    display: table-row;
+    padding: 0.3em;
+    width: 300px;
+    line-height: 14px;
+}
+
+/*.ui-widget-header {
+    background-image: url("/SeleccionPersonalWeb/javax.faces.resource/images/");
+    background-color: #CCC;
+}*/
+
+
+/*.ui-paginator-top{
+    background-image: url("/SeleccionPersonalWeb/javax.faces.resource/images/");
+    background-color: white;
+    border: 0px solid white;
+}
+
+.ui-paginator-bottom{
+    background-image: url("/SeleccionPersonalWeb/javax.faces.resource/images/");
+    background-color: white;
+    border: 0px solid white;
+}*/
+
+
+.wijmo-wijmenu {
+    border: 0px solid white;
+
+    background: url(../images/pixelGris3.png) repeat; 
+    padding: 0.1em;
+    position: absolute;
+    width: 998px;
+    height: 28px;
+    top: 72px;
+}
+
+/* theme arbol */
+.nodeContent 
+{ margin-left:20px;}
+
+.documentStyle 
+{background: url(../images/folders/doc.png) no-repeat; padding-left: 20px;}
+
+.ygtvtn 
+{background:url(../images/folders/tn.gif) 0 0 no-repeat; width:17px;height:22px;}
+
+.ygtvtm 
+{background:url(../images/folders/tm.gif) 0 0 no-repeat; width:34px;height:22px;cursor:pointer}
+
+.ygtvtmh 
+{background:url(../images/folders/tmh.gif) 0 0 no-repeat; width:34px; height:22px;cursor:pointer}
+
+.ygtvtp 
+{background:url(../images/folders/tp.gif) 0 0 no-repeat; width:34px; height:22px;cursor:pointer}
+
+.ygtvtph 
+{ background: url(../images/folders/tph.gif) 0 0 no-repeat; width:34px; height:22px;cursor:pointer }
+
+.ygtvln 
+{ background: url(../images/folders/ln.gif) 0 0 no-repeat; width:17px; height:22px; }
+
+.ygtvlm 
+{ background: url(../images/folders/lm.gif) 0 0 no-repeat; width:34px; height:22px;cursor:pointer }
+
+.ygtvlmh 
+{ background: url(../images/folders/lmh.gif) 0 0 no-repeat; width:34px; height:22px;cursor:pointer }
+
+.ygtvlp 
+{ background: url(../images/folders/lp.gif) 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+.ygtvlph 
+{ background: url(../images/folders/lph.gif) 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+
+.panelgrid-sin-bordes td, .panelgrid-sin-bordes tr{
+    border-width: 0;
+}
+
+.ui-panel .ui-panel-content {
+    padding: 0px;
+}
+
+.ui-icon {
+    background-repeat:repeat;
+    display: block;
+}
+.ui-message-info, .ui-message-error, .ui-message-warn, .ui-message-fatal{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled{
+    opacity: 0.82;
+}
+
+.fc-event-skin{
+    background-color:transparent;
+    border-color: transparent;        
+}
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td{
+    white-space: pre-wrap;
+}
+.ui-panelgrid td {
+    border-style: none;
+}
+
+.ui-panelgrid tr {
+    border-style: none;
+}
+.ui-widget-overlay{
+    opacity: 0.34;
+}

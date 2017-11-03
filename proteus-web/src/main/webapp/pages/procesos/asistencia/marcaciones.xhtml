@@ -1,0 +1,174 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="formEditar">
+                <p:panel id="pnlPrincipal" header="#{msg['ec.gob.mrl.smp.administracion.asistencia.titulo']}" >
+                    <br/>
+                    <p:commandButton id="regresarBtn" 
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                     action="#{justificacionAsistenciaBean.irBuscar}"
+                                     ajax="#{false}"
+                                     immediate="#{true}"
+                                     title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"/>
+                    <p:outputPanel id="panelBotonGuardar">
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                 
+                                         action="#{asistenciaBean.guardar}"
+                                         rendered="#{!asistenciaBean.asistenciaHelper.estaEnNomina or asistenciaBean.asistenciaHelper.asistencia!=null}"
+                                         disabled="#{asistenciaBean.asistenciaHelper.estaAtrasoJustificado}"/>     
+                    </p:outputPanel>
+                    <p:spacer height="10"/>
+                     <br/>
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="6" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="horario_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{asistenciaBean.obtenerDescripcionTipoDocumento(
+                                                  asistenciaBean.asistenciaHelper.servidor.tipoIdentificacion)}"
+                                         style="width: 100px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="horario_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{asistenciaBean.asistenciaHelper.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" style="width: 100px"/>                           
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="horario_servidorNombres"
+                                             styleClass="textoNemonico"
+                                             value="#{asistenciaBean.asistenciaHelper.servidor.apellidosNombres}"
+                                             disabled="#{true}" style="width: 200px"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel>
+                        <h:panelGrid  columns="3"> 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.fecha']}: " />  
+                            <p:calendar id="fecha" 
+                                        required="true" showOn="button" 
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        navigator="true"
+                                        maxdate="#{asistenciaBean.asistenciaHelper.ayer}"
+                                        value="#{asistenciaBean.asistenciaHelper.asistencia.fecha}"
+                                        requiredMessage="La fecha es campo requerido">
+                            </p:calendar>   
+                            <p:commandButton icon="ui-icon-search"
+                                             action="#{asistenciaBean.buscar(asistenciaBean.asistenciaHelper.servidor.codigoEmpleado)}"
+                                             update="editPanel,mensaje,panelBotonGuardar" 
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"/>   
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:outputPanel id="mensaje" >
+                        <p:panel id="mensajes" rendered="#{asistenciaBean.asistenciaHelper.estaEnNomina}">
+                            <b>    <h:outputLabel value="La asistencia de la fecha seleccionada, no puede ser modificada debido a que ya fue incluida en la Nómina!"
+                                                  style="width: 80px; text-align: right;color: #528BB7;"/>
+                            </b>
+                        </p:panel>
+                        <p:panel rendered="#{ asistenciaBean.asistenciaHelper.estaAtrasoJustificado}">
+                            <b>   
+                                <h:outputLabel value="La asistencia de la fecha seleccionada, no puede ser modificada debido a que registra Justificaciones "
+                                               style="width: 80px; text-align: right;color: #528BB7;"/>
+                            </b>
+                        </p:panel>
+                        <p:spacer height="10" rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.tipoJustificacion=='V'}"/>
+                    </p:outputPanel>
+                    <br/>  <p:separator/>
+                    <p:outputPanel id="editPanel" >  
+                        <h:panelGrid  columns="4">    
+                            <h:outputLabel id="hora_inicio"  value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.horaInicioJornada']}:" />  
+                            <p:outputPanel id="panelHEntrada">
+                                <p:calendar id="horaInicio"  minHour="1" 
+                                            maxHour="24" timeOnly="true"
+                                            required="false" showOn="button" 
+                                            value="#{asistenciaBean.asistenciaHelper.hEntrada}"
+                                            disabled="#{asistenciaBean.asistenciaHelper.estaEnNomina}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de entrada es requerida">
+                                </p:calendar>  
+                                <p:commandButton icon="ui-icon-trash" title="Limpiar hora"
+                                                 immediate="true" process="@this"
+                                                 update="panelHEntrada">                                       
+                                    <f:setPropertyActionListener target="#{asistenciaBean.asistenciaHelper.hEntrada}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </p:outputPanel>
+                            <h:outputLabel  value="  #{msg['ec.gob.mrl.smp.administracion.asistencia.horaInicioAlmuerzo']}: " />  
+                            <p:outputPanel id="p_horaInicioAlmuerzo">
+                                <p:calendar id="horaInicioAlmuerzo"   minHour="1" 
+                                            maxHour="24" 
+                                            timeOnly="true"
+                                            required="false" showOn="button" 
+                                            disabled="#{asistenciaBean.asistenciaHelper.estaEnNomina}"
+                                            value="#{asistenciaBean.asistenciaHelper.hInicioAlmuerzo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de inicio de almuerzo es requerida">
+                                </p:calendar>     
+                                <p:commandButton icon="ui-icon-trash" title="Limpiar hora"
+                                                 immediate="true" process="@this"
+                                                 update="p_horaInicioAlmuerzo">                                       
+                                    <f:setPropertyActionListener target="#{asistenciaBean.asistenciaHelper.hInicioAlmuerzo}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </p:outputPanel>
+
+                            <h:outputLabel  value="  #{msg['ec.gob.mrl.smp.administracion.asistencia.horaFinAlmuerzo']}: " />  
+                            <p:outputPanel id="p_horaFinAlmuerzo">
+                                <p:calendar id="horaFinAlmuerzo"   minHour="1" maxHour="24" timeOnly="true"
+                                            required="false" showOn="button" 
+                                            disabled="#{asistenciaBean.asistenciaHelper.estaEnNomina}"
+                                            value="#{asistenciaBean.asistenciaHelper.hFinAlmuerzo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de fin de almuerzo es requerida">
+                                </p:calendar>
+                                <p:commandButton icon="ui-icon-trash" title="Limpiar hora"
+                                                 immediate="true" process="@this"
+                                                 update="p_horaFinAlmuerzo">                                       
+                                    <f:setPropertyActionListener target="#{asistenciaBean.asistenciaHelper.hFinAlmuerzo}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </p:outputPanel>
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.horaFinJornada']}: " />  
+                            <p:outputPanel id="p_horaFin">
+                                <p:calendar id="horaFin"   minHour="1" 
+                                            maxHour="24" timeOnly="true" 
+                                            required="false" showOn="button" 
+                                            disabled="#{asistenciaBean.asistenciaHelper.estaEnNomina}"
+                                            value="#{asistenciaBean.asistenciaHelper.hSalida}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de salida es requerida">
+                                </p:calendar>   
+                                <p:commandButton icon="ui-icon-trash" title="Limpiar hora"
+                                                 immediate="true" process="@this"
+                                                 update="p_horaFin">                                       
+                                    <f:setPropertyActionListener target="#{asistenciaBean.asistenciaHelper.hSalida}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </p:outputPanel>
+                        </h:panelGrid> 
+                        <h:panelGrid columns="3">
+                            <h:outputLabel id="lbl_motivo"  value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.motivo']}:" />  
+                            <p:spacer width="50px;"/>
+                            <p:inputTextarea value="#{asistenciaBean.asistenciaHelper.asistencia.observacion}" 
+                                             maxlength="200"
+                                             required="false"
+                                             style="width: 500px;"
+                                             disabled="#{asistenciaBean.asistenciaHelper.estaEnNomina}"
+                                             requiredMessage="El campo motivo es obligatorio"/>
+                        </h:panelGrid> 
+                    </p:outputPanel>  
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+
+            <h:form>
+                <p:panel id="panelBotones" >
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{institucionCatalogoControladorBean.insertarInstitucion()}"
+                                         update="panelSiith, panelInstitucion"/>
+                    </h:panelGrid>
+                </p:panel> 
+
+
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.institucion.titulo']}" 
+                         id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+
+                    <p:panel id="panelSiith">
+
+                        <p:inputText value="#{institucionCatalogoControladorBean.institucionHelper.nombre}"
+                                     onkeypress="return pulsar(event)"
+                                     style="text-align: left; width: 200px"/>
+
+                        <p:commandButton style="background: none;border: none;"
+                                         action="#{institucionCatalogoControladorBean.buscarInstitucionActiva()}"
+                                         icon="ui-icon-search"
+                                         update="tablaInstitucionSiith"/>
+                        <p:dataTable id="tablaInstitucionSiith"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.listaInstitucionVO}"
+                                     var="institucion"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.seleccion']}"
+                                      style="text-align: center; width: 50px">
+                                <h:selectBooleanCheckbox value="#{institucion.seleccionar}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.nombre']}" 
+                                      sortBy="#{institucion.institucionSiith.nombre}"
+                                      style="text-align: left; width: 200px">
+                                <h:outputText value="#{institucion.institucionSiith.nombre}">
+
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.codigo']}" 
+                                      style="text-align: center; width: 100px">
+
+                                <h:outputText value="#{institucion.institucionSiith.codigoCatastro}">
+
+                                </h:outputText>
+                            </p:column>
+
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.ruc']}" 
+                                      style="text-align: center; width: 90px">
+
+                                <h:outputText value="#{institucion.institucionSiith.ruc}">
+
+                                </h:outputText>
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:panel>
+
+
+                    <p:panel id="panelInstitucion">
+                        <p:inputText value="#{institucionCatalogoControladorBean.institucionHelper.campoBusqueda}"
+                                     style="text-align: left; width: 200px"
+                                     onkeypress="return pulsar(event)"/>
+                        <p:commandButton style="background: none;border: none;"
+                                         icon="ui-icon-search"
+                                         action="#{institucionCatalogoControladorBean.buscar()}" 
+                                         update="tablaInstitucion"/> 
+                        <p:dataTable id="tablaInstitucion"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.listaInstitucion}"
+                                     var="instituciones"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                                                                 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.nombre']}" 
+                                      sortBy="#{instituciones.nombre}"
+                                      style="width: 200px">                                                                 
+                                <h:outputText value="#{instituciones.institucion.nombre}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.codigo']}" 
+                                      style="width: 100px">                                                                 
+                                <h:outputText value="#{instituciones.institucion.codigo}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.ruc']}" 
+                                      style="width: 90px">                                                                 
+                                <h:outputText value="#{instituciones.institucion.ruc}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.estado']}" 
+                                      style= "text-align: center; width: 80px">                                                                 
+                                <h:outputText value="#{institucionCatalogoControladorBean.verificarVigente(instituciones.institucion.vigente)}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 100px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                                 ajax="#{false}"
+                                                 action="#{institucionCatalogoControladorBean.iniciarEdicion()}"
+                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                    <f:setPropertyActionListener value="#{instituciones}" 
+                                                                 target="#{institucionCatalogoControladorBean.institucionHelper.institucionEditDelete}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

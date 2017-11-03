@@ -1,0 +1,272 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel id="pnlFiltros" header="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.titulo']}" >
+                    <br/>
+                    <p:commandButton id="regresarBtn" 
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                     action="#{justificacionAsistenciaBean.irBuscar}"
+                                     ajax="#{false}"
+                                     immediate="#{true}"
+                                     title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"/>
+                    <p:spacer height="10"/>
+                     <br/>
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}" style="overflow: auto">
+                        <h:panelGrid columns="6" id="tablaformulario" >
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="horario_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{justificacionAsistenciaBean.obtenerDescripcionTipoDocumento(
+                                                  justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor.tipoIdentificacion)}"
+                                         style="width: 100px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="horario_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" style="width: 100px"/>                           
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="horario_servidorNombres"
+                                             styleClass="textoNemonico"
+                                             value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor.apellidosNombres}"
+                                             disabled="#{true}" style="width: 200px;overflow: auto "/>
+                        </h:panelGrid>
+
+                    </p:panel>  <br/>
+                    <p:panel id="panelFechasFiltros">
+                        <h:panelGrid  columns="5" >    
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.fechaDesde']}: " />  
+                            <p:calendar id="fechaDesde"   
+                                        required="#{true}" showOn="button" 
+                                        value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.fechaDesde}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo Fecha Desde es requerido">
+                            </p:calendar>     
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.asistencia.fechaHasta']}: " />  
+                            <p:calendar id="fechaHasta"   
+                                        required="#{true}" showOn="button" 
+                                        value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.fechaHasta}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo Fecha Hasta es requerido">
+                            </p:calendar>     
+                            <p:commandButton icon="ui-icon-search"
+                                             action="#{justificacionAsistenciaBean.buscar}"
+                                             update="tablaServidores,panelFechasFiltros" 
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"/>     
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <br/>  <p:separator/>
+                    <!-- lista de atrasos-->
+                    <p:panel id="tablaServidores" header="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.listaAsistencias']}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.listaAtraso}"
+                                     var="reg"
+                                     sortBy="#{reg.servidor.id}"
+                                     paginator="#{true}"
+                                     scrollable="true"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.asistencia.fecha']}" style="width: 70px;">
+                                <h:outputText value="#{reg.fecha}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tipoAusentismo']}" 
+                                      style="width: 150px">                                                                 
+                                <h:outputText value="#{justificacionAsistenciaBean.obtenerDescripcionTipoAusentismo(reg.tipo)}"/>                                
+                            </p:column>                            >
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tiempo']}" 
+                                      style="width: 80px">                                                                 
+                                <h:outputText value="#{reg.minutosAtraso} Minutos"  rendered="#{reg.tipo != 'F'}"/>                                
+                                <h:outputText value="#{reg.minutosAtraso} Día" rendered="#{reg.tipo == 'F'}" />   
+                            </p:column>
+
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tiempo']} Por Justificar" 
+                                      style="width: 80px">                                                                 
+                                <h:outputText value="#{reg.minutosXJustificar} Día"  rendered="#{reg.tipo=='F'}"/> 
+                                <h:outputText value="#{reg.minutosXJustificar} Minutos" rendered="#{reg.tipo!='F'}"/> 
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.justificado']}"  style="width: 50px">                                                                 
+                                <p:selectBooleanCheckbox value="#{reg.esJustificado}"  disabled="true"/>                            
+                            </p:column>  
+                            <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.horasPlanificadas']}"  style="width: 50px">  
+                                 <h:outputText value="#{reg.planificacionHorario ==null? 'NO':'SI'} " rendered="#{reg.tipo == 'C' or reg.tipo == 'S'}"/>  
+                            </p:column>
+                            <p:column headerText="En Nómina"  style="width: 50px">  
+
+                                <h:outputText value="#{reg.asistenciaProceso.nomina ==null? 'NO':'SI'} " rendered="#{reg.asistenciaProceso!=null}"/>           
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 100px">
+                                <p:commandButton id="botonJustificacion" icon="ui-icon-pencil" 
+                                                 actionListener="#{justificacionAsistenciaBean.iniciarNuevaJustificacion(reg)}"
+                                                 update=":popUpJustificar,:formDet" 
+                                                 disabled="#{reg.asistenciaProceso.nomina!=null}"
+                                                 title="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.botonJustificar']}">
+                                    <f:setPropertyActionListener value="#{reg}" 
+                                                                 target="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso}"/>
+                                </p:commandButton>                                 
+                            </p:column>
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+            </h:form>
+            <!-- Registro de Justificacion-->
+            <p:dialog id="popUpJustificar" rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor!=null and justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso!=null}"
+                      header="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.titulo']}: #{justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor.apellidosNombres}:
+                      #{justificacionAsistenciaBean.formatearFecha(justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.fecha)}:
+                      #{justificacionAsistenciaBean.obtenerDescripcionTipoAusentismo(justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo)}"
+                      showEffect="fade" widgetVar="justificarDialog" modal="true"
+                      resizable="false"  width="810"   height="420">  
+                <h:form id="formDet">
+                    <p:panel>
+                        <div style="text-align: center">
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                        
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                             action="#{justificacionAsistenciaBean.guardar()}"
+                                             rendered="#{!justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.esJustificado}"
+                                             disabled="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.minutosXJustificar==0}"
+                                             update=":frmPrincipal:tablaServidores,:formDet"/>        
+                            <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="justificarDialog.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:panel>
+                    <p:panel id="panelDetalle" style="overflow: auto" header="Tipo Justificación">
+                        <center>
+                            <h:panelGrid columns="2" >
+                                <p:selectOneRadio id="nomina_TipoJ"   
+                                                  style="text-align: center"
+                                                  required="true"
+                                                  requiredMessage="El campo  tipo de justificación es requerido"
+                                                  value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.tipoJustificacion}">  
+                                    <p:ajax update="mensaje" event="change" listener="#{justificacionAsistenciaBean.obtenerSaldo}"
+                                            />
+                                    <f:selectItems value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.listaOpcionesTipoJustificacion}"/>
+                                </p:selectOneRadio> 
+                            </h:panelGrid>
+                        </center>
+                        <p:separator/>
+                        <center>
+                            <p:outputPanel id="mensaje" autoUpdate="true">
+                                <p:panel id="mensajes" rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.tipoJustificacion=='V'}"
+                                         style="width: 75%; height: 40px;">
+                                    <b>   <h:outputLabel value="Verifique los datos, ya que se descontará inmediatamente del saldo de las Vacaciones de #{justificacionAsistenciaBean.justificacionAsistenciaHelper.servidor.apellidosNombres}
+                                                         cuyo saldo de vacaciones a la fecha es de #{justificacionAsistenciaBean.justificacionAsistenciaHelper.saldoDiaVacacion} Días"
+                                                         style="width: 80px; text-align: right;color: #528BB7;"/>  </b>
+                                </p:panel>
+                                <p:spacer height="10" rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.tipoJustificacion=='V'}"/>
+                            </p:outputPanel>
+                            <p:panel id="panelDatosJustificacion">
+                                <h:panelGrid  columns="6">  
+                                    <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.fecha']}: " />  
+                                    <p:inputText id="fechaAtraso"                                      
+                                                 styleClass="textNumerico"
+                                                 style="width: 100px"
+                                                 disabled="true"
+                                                 value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.justificacionAsistencia.fecha}"> 
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                    </p:inputText>
+                                    <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tipoAusentismo']}: " />  
+                                    <p:inputText id="tipoAtrasosFalta"                                      
+                                                 style="width: 150px"
+                                                 disabled="true"
+                                                 value="#{justificacionAsistenciaBean.obtenerDescripcionTipoAusentismo(justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo)}"> 
+                                    </p:inputText>
+                                    <h:outputLabel value=" #{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tiempo']} Total: " 
+                                                   rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo != 'F'}"/>  
+                                    <p:inputText id="cantidadTiempoTotalAtraso"                                      
+                                                 styleClass="textNumerico"
+                                                 style="width: 80px"
+                                                 disabled="true"
+                                                 rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo != 'F'}"
+                                                 value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.justificacionAsistencia.atraso.minutosAtraso} MINUTOS"/>
+                                    <p:spacer  rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo == 'F'}"/>
+                                    <p:spacer  rendered="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo == 'F'}"/>
+                                    <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tiempo']}: " />  
+                                    <h:panelGrid  columns="2"> 
+                                        <p:inputText id="cantidadTiempoAtraso"                                      
+                                                     styleClass="textNumerico"
+                                                     style="width: 80px"
+                                                     disabled="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.tipo == 'F'}"
+                                                     value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.justificacionAsistencia.cantidadTiempo}"
+                                                     > 
+                                            <f:validateLongRange minimum="1"/>
+                                        </p:inputText>
+                                        <p:inputText value="#{justificacionAsistenciaBean.obtenerDescripcionPeriodo(justificacionAsistenciaBean.justificacionAsistenciaHelper.justificacionAsistencia.unidadTiempo)}" disabled="true" style="width: 60px"/>  
+                                    </h:panelGrid>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.motivo']}: " />   
+                                    <p:inputTextarea id="motivo"
+                                                     styleClass="textoDescripcion"
+                                                     style="width: 320px; height: 50px; overflow: auto;"
+                                                     maxlength="1000"
+                                                     value="#{justificacionAsistenciaBean.justificacionAsistenciaHelper.justificacionAsistencia.observacion}"
+                                                     required="true"
+                                                     requiredMessage="El campo motivo es requerido"/>                      
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <p:separator/><br/>
+                            <!-- Detalles de la justificacion-->
+                            <p:spacer height="10"/>
+                            <p:panel id="panelJustificaciones" header="Lista de Justificaciones de Asistencia">
+                                <p:dataTable id="tablaJustif" scrollable="true"
+                                             value="#{justificacionAsistenciaBean.getListaJustificaciones(justificacionAsistenciaBean.justificacionAsistenciaHelper.atraso.id)}"
+                                             var="reg"
+                                             sortBy="#{reg.fecha}"
+                                             paginator="#{false}"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             rowIndexVar="rowIndex">
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                              style="text-align: center; width: 50px">
+                                        <h:outputText value="#{rowIndex+1}"/>                                
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.asistencia.fecha']}" style="width: 70px;">
+                                        <h:outputText value="#{reg.fecha}">
+                                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tiempo']}"  style="width: 100px">                                                                 
+
+                                        <h:outputText value="#{reg.cantidadTiempo} Minutos"  rendered="#{reg.atraso.tipo != 'F'}"/>                                
+                                        <h:outputText value="#{reg.cantidadTiempo} Día(s)" rendered="#{reg.atraso.tipo == 'F'}" />   
+                                    </p:column> 
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.tipoJustificacion']}"  style="width: 100px">                                                                 
+                                        <h:outputText value="#{reg.vacacionSolicitud==null ?'AUTORIZACION':'PERMISO CON CARGO A VACACIÓN'} " />                            
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.aprobador']}"  style="width: 200px">                                                                 
+                                        <h:outputText value="#{reg.servidorAprobador.apellidosNombres} " />      
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.justificacion.asistencia.motivo']}"  style="width: 200px">                                                                 
+                                        <h:outputText value="#{reg.observacion} " />      
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>    
+        </ui:define>
+    </ui:composition>
+</html>

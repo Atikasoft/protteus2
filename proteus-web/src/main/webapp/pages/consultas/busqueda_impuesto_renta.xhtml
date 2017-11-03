@@ -1,0 +1,263 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script>
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelTotal" header="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.titulo']}">                                         
+                    <h:panelGrid columns="5">                      
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"   
+                                         action="#{busquedaImpuestoRentaBean.refreshPagination()}"
+                                         ajax="true"
+                                         
+                                         update="busquedaImpuestoRentaHelper_listaServidores"/>  
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.btn.formulario107']}"   
+                                         action="#{busquedaImpuestoRentaBean.imprimirFormulario107}"
+                                         update="busquedaImpuestoRentaHelper_listaServidores"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.btn.impuestoRenta']}"  
+                                         rendered="false"
+                                         onclick="seleccionPeriodo.show()"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" 
+                                         ajax="#{false}"
+                                         action="#{busquedaImpuestoRentaBean.salirPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                    <p:separator />
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.popup.impuestoRenta.mensaje']}"
+                                     header="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.btn.impuestoRenta']}" 
+                                     severity="alert" 
+                                     widgetVar="seleccionPeriodo">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.priodo']}: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 320px;"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.periodoId}">
+                                <f:selectItems value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.listaPeriodos}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             actionListener="#{busquedaImpuestoRentaBean.imprimirIRPeriodos()}"
+                                             oncomplete="seleccionPeriodo.hide()"  
+                                             update="busquedaImpuestoRentaHelper_listaServidores"/>  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="seleccionPeriodo.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog>
+                    <p:accordionPanel   activeIndex="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.activo}" 
+                                        widgetVar="accordionPanel" id="tab1">
+                        <p:tab title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaServidor.tooltip.rotulo']}"  >
+
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="*#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.ejercicioFiscal']}: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.intitucionEjercicioFiscalId}">
+                                    <f:selectItems value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.listaEjercicioFiscal}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.unidadOrganizacional']}: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="font-size: 10px"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="#{true}"
+                                                     value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.unidadAdministrativaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     update="parametrosBusqueda_unidadAdministrativa">
+                                        <f:setPropertyActionListener target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.unidadAdministrativaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.unidadAdministrativaId}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.unidadOrganizacionalCodigo}"                                                             
+                                                                     value="" />
+                                    </p:commandButton>
+                                </h:panelGrid>                                
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.tipoIdentificacion']}: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.tipoDocumentoServidor}">
+                                    <f:selectItems value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.listaTipoDocumento}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.numeroIdentificacion']}:"
+                                               styleClass="labelFormulario"/>                  
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.numeroDocumentoServidor}"/>                  
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.apellidosNombres']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"                                             
+                                             value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.nombreServidor}"/>                                
+                            </h:panelGrid>
+                        </p:tab> 
+                    </p:accordionPanel>  
+                </p:panel>
+                <p:dataTable id="busquedaImpuestoRentaHelper_listaServidores" 
+                             value="#{consultaServidorImpuestoRentaPaginador}"
+                             var="consulta"
+                             lazy="true"
+                             rows="10"
+                             paginator="true"
+                             rowIndexVar="rowIndex"
+                             filterEvent="enter">
+                    <f:facet name="header">#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.tooltip.tabla']}</f:facet>             
+                    <p:column headerText="No" >
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.ejercicioFiscal']}" 
+                              style="text-align: center">
+                        <h:outputText value="#{consulta.formularioIR.ejercicioFiscal}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.unidadOrganizacional']}">
+                        <h:outputText value="#{consulta.formularioIR.unidadOrganizacionalNombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.tipoIdentificacion']}" 
+                              style="text-align: center">
+                        <h:outputText value="#{busquedaImpuestoRentaBean.obtenerDescripcionTipoDocumento(consulta.formularioIR.tipoIdentificacion)}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.numeroIdentificacion']}">
+                        <h:outputText value="#{consulta.formularioIR.numeroIdentificacion}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.apellidosNombres']}">
+                        <h:outputText value="#{consulta.formularioIR.nombres}"/>
+                    </p:column> 
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.totalImpuesto']}">
+                        <h:outputText value="#{consulta.formularioIR.impuestoRenta}"/>
+                    </p:column> 
+
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="#{msg['ec.gob.mrl.smp.consulta.impuestoRenta.unidadOrganizacional']}">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmPrincipal:tab1:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.unidadAdministrativaId}"/>
+                                <f:setPropertyActionListener value="#{unidad.codigo}"
+                                                             target="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.unidadOrganizacionalCodigo}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp de Detalle de Periodos -->
+            <p:dialog modal="true"    resizable="false"  width="950"   height="350"
+                      draggable="true" header="Detalle de Impuesto a la renta de #{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.busquedaServidorVO.nombreServidor}"
+                      id="detPeriodosModal"
+                      widgetVar="detDialog" closable="false">
+                <h:form id="frmDetalles">
+                    <center>
+                        <p:scrollPanel style="width:900px;height:300px;"  mode="native">  
+                            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                                     header="#{msg['ec.gob.mrl.smp.administracion.feriado.ejercicioFiscal']}: #{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.vo.formularioIR.ejercicioFiscal}">
+                                <p:dataTable id="tablaDetalles"
+                                             value="#{busquedaImpuestoRentaBean.busquedaImpuestoRentaHelper.listaNominasIR}"
+                                             var="det"
+                                             paginator="#{true}"
+                                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                             rowIndexVar="rowIndex"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             style="overflow: auto" >
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                        <h:outputText value="#{rowIndex+1}"/>                                
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.vacacion.ajustes.fecha']}"
+                                              style="width: 80px; font-size: 8pt"
+                                              sortBy="#{det}">
+                                        <h:outputText value="#{det}" 
+                                                      title="#{det.fechaInicio}" >
+                                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.vacacion.ajustes.debito']}"
+                                              style="width: 80px;font-size: 8pt">
+                                        <h:outputText value="#{consultaSaldoVacacionBean.obtenerTiempo(det.debito)}" 
+                                                      rendered="#{det.debito!=null and det.debito>0}"/>
+                                    </p:column>    
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.vacacion.ajustes.credito']}"
+                                              style="width: 80px;font-size: 8pt">
+                                        <h:outputText value="#{consultaSaldoVacacionBean.obtenerTiempo(det.credito)}" 
+                                                      rendered="#{det.credito!=null and det.credito>0}"/>
+                                    </p:column>  
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.vacacion.ajustes.solicitud']}"
+                                              style="width: 70px;font-size: 8pt"
+                                              filterStyle="width: 50px"
+                                              filterBy="#{det.vacacionSolicitud.id}"
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{det.vacacionSolicitud.id}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mq.proteus.administracion.vacacion.ajustes.observacion']}"
+                                              style="width: 150px;font-size: 8pt"
+                                              filterStyle="width: 80px"
+                                              filterBy="#{det.observacion}"
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{det.observacion}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>    
+                        </p:scrollPanel>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="detDialog.hide()"
+                                         style="margin: auto" >
+                        </p:commandButton>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"   
+                                         process="@this"     ajax="false"
+                                         action="#{feriadoBean.guardar}">
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         immediate="true" process="@this"
+                                         action="#{feriadoBean.irLista}"
+                                         ajax="false"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.feriado.titulo']}">
+                    <h:panelGrid columns="2" id="tablaformulario">
+
+                        <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}:"
+                                        styleClass="labelFormulario" style="width: 200px; text-align: right" />
+                        <p:selectOneMenu id="feriado_regimenLaboral" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 200px"
+                                         value="#{feriadoBean.feriadoHelper.feriado.regimenLaboral.id}"
+                                         disabled="#{true}">
+                            <f:selectItems value="#{feriadoBean.feriadoHelper.listaOpcionRegimenLaboral}"/>    
+                        </p:selectOneMenu> 
+                        <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.feriado.ejercicioFiscal']}:"
+                                        styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="feriado_ejercicioFiscal" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{feriadoBean.feriadoHelper.feriado.idEjercicioFiscal}"
+                                         required="#{true}" style="width: 200px"
+                                         requiredMessage="El campo ejercicio fiscal es requerido">
+                            <f:selectItems value="#{feriadoBean.feriadoHelper.listaOpcionEjercicioFiscal}"/>    
+                        </p:selectOneMenu> 
+                        <h:outputLabel id ="lbl_valor" value="* #{msg['ec.gob.mrl.smp.administracion.feriado.fecha']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:calendar id="valorFecha"  navigator="true" 
+                                    required="true" showOn="button"
+                                    style="width: 200px"
+                                    value="#{feriadoBean.feriadoHelper.feriado.fecha}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="El campo fecha es requerido"/>   
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.feriado.descripcion']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="feriado_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{feriadoBean.feriadoHelper.feriado.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>       
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{feriadoBean.feriadoHelper.feriado.vigente}" disabled="true"
+                                                 rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>
+                        <p:inputText id="feriado_usuario_creo"
+                                     value="#{feriadoBean.feriadoHelper.feriado.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>
+                        <p:inputText id="feriado_fecha_creo"
+                                     value="#{feriadoBean.feriadoHelper.feriado.fechaCreacion}"
+                                     rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>
+                        <p:inputText id="feriado_usuario_actua"
+                                     value="#{feriadoBean.feriadoHelper.feriado.usuarioActualizacion}"
+                                     rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"/>
+                        <p:inputText id="feriado_fecha_actua"
+                                     value="#{feriadoBean.feriadoHelper.feriado.fechaActualizacion}"
+                                     rendered="#{!(feriadoBean.feriadoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

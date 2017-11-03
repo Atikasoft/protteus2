@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <smp:contenedor controlador="#{tramiteRevisionBean}" >
+                    <f:facet name="contenido">
+                        <h:panelGrid style="margin: auto;" columns="2">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.comentarios']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.comentario']}"/>
+                            <p:inputTextarea id="comentario"
+                                              maxlength="400"
+                                             style="width: 500px"                                              
+                                             required="#{true}"
+                                             value="#{tramiteRevisionBean.tramiteRevisionHelper.comentario}"
+                                             requiredMessage="El comentario es un campo requerido."/>                            
+                        </h:panelGrid>
+                    </f:facet>
+                </smp:contenedor>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

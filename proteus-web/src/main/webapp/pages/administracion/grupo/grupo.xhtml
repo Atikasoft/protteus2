@@ -1,0 +1,102 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{grupoBean}" 
+                                     extendido="false"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.grupo.titulo']}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.grupo.nemonico']}:"                                       
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="grupo_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     style="width: 200px"
+                                     requiredMessage="El código es un campo requerido."
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                     value="#{grupoBean.grupoHelper.grupo.nemonico}"
+                                     required="true"
+                                     disabled="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.grupo.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="grupo_nombre" 
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         requiredMessage="El nombre es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{grupoBean.grupoHelper.grupo.nombre}"
+                                         required="true"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.grupo.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="grupo_descripcion" 
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         requiredMessage="La descripción es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{grupoBean.grupoHelper.grupo.descripcion}"
+                                         required="true"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox id="grupo_vigente"                                                 
+                                                 value="#{grupoBean.grupoHelper.grupo.vigente}"                                                 
+                                                 rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+                        <p:inputText id="grupo_fechaCreacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{grupoBean.grupoHelper.grupo.fechaCreacion}"                                     
+                                     rendered="#{!(grupoBean.grupoHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+                        <p:inputText id="grupo_usuarioCreacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{grupoBean.grupoHelper.grupo.usuarioCreacion}"                                     
+                                     rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+                        <p:inputText id="grupo_fechaActualizacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{grupoBean.grupoHelper.grupo.fechaActualizacion}"                                     
+                                     rendered="#{!(grupoBean.grupoHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+                        <p:inputText id="grupo_usuarioActualizacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{grupoBean.grupoHelper.grupo.usuarioActualizacion}"                                     
+                                     rendered="#{!(grupoBean.grupoHelper.esNuevo)}"/>
+
+
+                    </h:panelGrid>
+
+                </f:facet>
+
+            </smp:catalogo_formulario>
+
+        </ui:define>
+    </ui:composition>
+</html>

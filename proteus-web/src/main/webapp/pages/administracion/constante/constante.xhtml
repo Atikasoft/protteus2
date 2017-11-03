@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.constante.titulo']}"
+                                     controlador="#{constanteBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.constante.codigo']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel>
+                            <h:outputLabel id="prefijo" value="C_"
+                                           style=" font-style: oblique;font-weight: bold;margin: auto auto auto 5px;    padding-top: 6px;    position: absolute;"
+                                           rendered="#{constanteBean.constanteHelper.esNuevo}"/>  
+                            <p:inputText id="constante_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="#{constanteBean.constanteHelper.esNuevo?'padding-left: 18px;width: 197px;':''}"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codEspecial.max']}"                                     
+                                         value="#{constanteBean.constanteHelper.constante.codigo}"
+                                         required="true"
+                                         disabled="#{!(constanteBean.constanteHelper.esNuevo)}"
+                                         requiredMessage="El campo código es requerido"/>
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.constante.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="constante_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{constanteBean.constanteHelper.constante.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>           
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.constante.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="constante_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{constanteBean.constanteHelper.constante.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"/>    
+
+                        <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.constante.tipoDato']}:"
+                                        styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="constante_tipo_dato" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{constanteBean.constanteHelper.constante.tipo}"
+                                         required="#{true}"
+                                         requiredMessage="El campo tipo dato es requerido">
+                            <f:selectItems value="#{constanteBean.constanteHelper.tipoDato}"/>    
+                            <p:ajax event="change" listener="#{constanteBean.OnTipoDatoSeleccionado}" 
+                                    update="panelControles,panelLabel"/>
+                        </p:selectOneMenu> 
+                        <p:outputPanel id="panelLabel">
+                            <h:outputLabel id ="lbl_valor" value="* #{msg['ec.gob.mrl.smp.administracion.constante.valor']}:"
+                                           styleClass="labelFormulario" style="text-align: right"
+                                           rendered="#{constanteBean.constanteHelper.constante.tipo!=null}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="panelControles" >
+
+
+                            <p:inputTextarea id="constante_valorTexto"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{constanteBean.constanteHelper.constante.valorTexto}"
+                                             rendered="#{constanteBean.constanteHelper.constante.tipo=='T'}"
+                                             required="true"
+                                             requiredMessage="El campo valor texto es requerido"/>      
+                            <p:inputText id="constante_valorNumerico"
+                                         styleClass="campoFloat"
+                                         rendered="#{constanteBean.constanteHelper.constante.tipo=='N'}"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{constanteBean.constanteHelper.constante.valorNumerico}"
+                                         required="true"
+                                         requiredMessage="El campo valor numérico es requerido">
+                                <f:validateLongRange minimum="1"/>
+                            </p:inputText>
+                            <p:calendar id="valorFecha"  navigator="true" 
+                                        required="true"
+                                        rendered="#{constanteBean.constanteHelper.constante.tipo=='F'}"
+                                        value="#{constanteBean.constanteHelper.constante.valorFecha}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha es requerido"/>    
+                        </p:outputPanel>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{constanteBean.constanteHelper.constante.vigente}" disabled="true"
+                                                 rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>
+                        <p:inputText id="constante_usuario_creo"
+                                     value="#{constanteBean.constanteHelper.constante.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>
+                        <p:inputText id="constante_fecha_creo"
+                                     value="#{constanteBean.constanteHelper.constante.fechaCreacion}"
+                                     rendered="#{!(constanteBean.constanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>
+                        <p:inputText id="constante_usuario_actua"
+                                     value="#{constanteBean.constanteHelper.constante.usuarioActualizacion}"
+                                     rendered="#{!(constanteBean.constanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(constanteBean.constanteHelper.esNuevo)}"/>
+                        <p:inputText id="constante_fecha_actua"
+                                     value="#{constanteBean.constanteHelper.constante.fechaActualizacion}"
+                                     rendered="#{!(constanteBean.constanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

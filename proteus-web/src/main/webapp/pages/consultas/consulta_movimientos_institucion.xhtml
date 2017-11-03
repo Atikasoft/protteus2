@@ -1,0 +1,458 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form id="frmConsultaMovimientoInsti">
+                <p:panel id="panelBuscadorDeServidorFiltros" header="Consulta Trámites">
+                    <h:panelGrid columns="4">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{consultaPuestoBean.buscar}" 
+                                         update="contenedorResultados"
+                                         partialSubmit="false"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.limpiar']}"
+                                         action="#{consultaPuestoBean.limpiar}" 
+                                         update="contenedorResultados, fldFiltroBusqueda"/>                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{consultaPuestoBean.salirPantallaPrincipal}" ajax="false"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" style="text-align: right;width: 100%;">
+                        <h:commandLink id="exp_xls" title="Exportar Excel">
+                            <p:graphicImage value="/images/excel.png" alt="Exportar Excel" 
+                                            style="width: 25px; height: 25px"/>
+                            <p:dataExporter id="dexporter" type="xls" 
+                                            target="contenedorResultados" 
+                                            pageOnly="false"
+                                            fileName="#{consultaPuestoBean.consultaPuestoHelper.nombreArchivo}"
+                                            postProcessor="#{consultaPuestoBean.postProcessXLS}" />                        
+                        </h:commandLink>
+                    </h:panelGrid>
+
+
+                    <p:fieldset id="fldFiltroBusqueda" legend="Filtro de Búsqueda:" 
+                                style=" text-align: left; width: 95%;margin:auto;"
+                                toggleable="true" 
+                                toggleSpeed="500">
+                        <p:panel style="border: 0">    
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="Grupo:" />
+                                <h:selectOneMenu value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.grupo}" 
+                                                 style="width: 200px;">
+                                    <f:selectItems value="#{consultaPuestoBean.consultaPuestoHelper.grupos}"/>
+                                    <p:ajax event="change" listener="#{consultaPuestoBean.cargarClases}" 
+                                            update="filtro_clases filtro_movimiento"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Clase:"/>
+                                <h:selectOneMenu value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.clase}"
+                                                 style="width: 200px;" 
+                                                 id="filtro_clases">
+                                    <f:selectItems value="#{consultaPuestoBean.consultaPuestoHelper.clases}"/>
+                                    <p:ajax event="change" listener="#{consultaPuestoBean.cargarTiposMovimientos}" 
+                                            update="filtro_movimiento"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Tipo Movimiento:"/>
+                                <h:selectOneMenu value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.tipoMovimiento}"
+                                                 style="width: 200px;" 
+                                                 id="filtro_movimiento">
+                                    <f:selectItems value="#{consultaPuestoBean.consultaPuestoHelper.tiposMovimientos}"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="2" style="text-align: center">
+
+                                <h:outputLabel value="Unidad Organizacional: "
+                                               rendered="#{consultaPuestoBean.consultaPuestoHelper.seleccionarUnidadOrganizacional}"
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
+                                             rendered="#{consultaPuestoBean.consultaPuestoHelper.seleccionarUnidadOrganizacional}">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="font-size: 10px; width: 300px"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="#{true}"
+                                                     value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     update=":frmUnidadAdministrativa:unidadAdministrativa"       
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     update=":frmConsultaMovimientoInsti:parametrosBusqueda_unidadAdministrativa">
+                                        <f:setPropertyActionListener target="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaId}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <h:panelGrid columns="6">      
+                            <h:outputLabel value="Cod.Puesto:"/>
+                            <p:inputText value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.codigoPuesto}"
+                                         style="width: 150px;"/>                               
+                            <h:outputLabel value="Número Trámite:"/>                        
+                            <p:inputText value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.numeroTramite}" 
+                                         style="width: 150px;"/>
+                            <h:outputLabel value="Número Doc. Habilitante:"/>
+                            <p:inputText value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.numeroDocumentoHabilitante}"
+                                         style="width: 150px;"/>  
+                            <h:outputLabel value="Estado Trámite:"/>
+                            <h:selectOneMenu value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.estado}"
+                                             style="width: 150px;">
+                                <f:selectItems value="#{consultaPuestoBean.consultaPuestoHelper.estadosTramite}"/>
+                            </h:selectOneMenu> 
+                            <h:outputLabel value="Fecha Rige Desde:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaVigenciaDesde}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            <h:outputLabel value="Fecha Rige Hasta:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaVigenciaHasta}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+                            <h:outputLabel value="Fecha Elab. Desde:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaElaboracionDesde}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            <h:outputLabel value="Fecha Elab. Hasta:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaElaboracionHasta}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+                            <h:outputLabel value="Fecha Legal. Desde:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaLegalizacionDesde}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            <h:outputLabel value="Fecha Legal. Hasta:"/>
+                            <p:calendar value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.fechaLegalizacionHasta}"
+                                        showOn="button"
+                                        navigator="true"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+
+
+                        </h:panelGrid>
+                        <br/>
+                        <p:fieldset legend="Servidor Público" style=" text-align:left; width: 90%; margin:auto; ">
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="Tipo Identificación:"/>
+                                <h:selectOneMenu value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.tipoIdentificacion}"
+                                                 style="width: 150px;">
+                                    <f:selectItems value="#{consultaPuestoBean.consultaPuestoHelper.tipoIdentificacion}"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Número Identificación:"/>
+                                <p:inputText  value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.numeroIdentificacion}"
+                                              style="width: 150px;"/>
+                                <h:outputLabel value="Apellidos y/o nombres:"/>
+                                <p:inputText value="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.nombres}"
+                                             style="width: 150px;"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:fieldset>
+                    <!-- cambiar la lista listaMovimientosSinConteo por la ListaMovimientos -->
+                    <p:panel style="overflow: auto">
+                        <p:dataTable 
+                            lazy="true"
+                            paginator="true"
+                            rows="10"
+                            id="contenedorResultados"   
+                            style="width: 400%"
+                            value="#{consultaPuestoPaginador}"
+                            var="movimiento"
+                            emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                            rowIndexVar="rowIndex"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                            <f:facet name="header">
+                                Información de Trámites
+                            </f:facet>
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column rowspan="2" headerText="Opciones" style="width: 80px"/>
+                                    <p:column rowspan="2" headerText="No."/>
+                                    <p:column rowspan="2" headerText="Distributivo" />
+                                    <p:column rowspan="2" headerText="No Trámite" />
+                                    <p:column rowspan="2" headerText="No Doc.Habilitante" />
+                                    <p:column rowspan="2" headerText="Tipo de Movimiento" style="width: 300px"/>
+                                    <p:column rowspan="2" headerText="Rige a Partir "/>
+                                    <p:column rowspan="2" headerText="Hasta"/>
+                                    <p:column colspan="2" headerText="EMPLEADO" style="background: sandybrown;color: white "/>
+                                    <p:column colspan="7" headerText="SITUACION ACTUAL" style="background: cadetblue ;color: white "/>
+                                    <p:column colspan="7" headerText="SITUACION PROPUESTA" style="background: steelblue ;color: white "/>
+                                    <p:column rowspan="2" headerText="Elaborador" />
+                                    <p:column rowspan="2" headerText="Fecha Elaboración" /> 
+                                    <p:column rowspan="2" headerText="Fecha Legalización" /> 
+                                    <p:column rowspan="2" headerText="Estado" />
+                                    <p:column rowspan="2" headerText="Usuario Asignado" />
+                                    <p:column rowspan="2" headerText="Nombre Usuario Asignado" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="1" headerText="Identificación" style="width: 20px;background: sandybrown;color: white "/>
+                                    <p:column colspan="1" headerText="Apellidos y Nombres" style="width: 200px;background: sandybrown;color: white "/>
+
+                                    <p:column colspan="1" headerText="Cód Puesto"  style="text-align: center;background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Regimen Laboral" style="background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Nivel Ocupacional" style="background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Denominación Puesto" style="background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Modalidad Laboral" style="background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Unidad Organizacional"  style="width: 200px;background: cadetblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Sueldo" style="background: cadetblue ;color: white;"/>
+
+                                    <p:column colspan="1" headerText="Cód Puesto"  style="text-align: center;background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Regimen Laboral" style="background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Nivel Ocupacional" style="background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Denominación Puesto" style="background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Modalidad Laboral" style="background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Unidad Organizacional"  style="width: 200px;background: steelblue ;color: white;"/>
+                                    <p:column colspan="1" headerText="Sueldo" style="background: steelblue ;color: white;"/>
+
+                                </p:row>
+
+
+                            </p:columnGroup>
+                            <p:column style="text-align: center">
+
+                                <p:commandButton id="botonAccionPersonal" icon="ui-icon-print"                                                     
+                                                 ajax="#{true}"
+                                                 action="#{consultaPuestoBean.generarReporte()}"
+                                                 title="Imprimir Documento Habilitante">                            
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{consultaPuestoBean.consultaPuestoHelper.movimiento}"/>
+                                </p:commandButton>
+                                <h:commandLink action="#{consultaPuestoBean.descargarArchivo}" 
+                                               target="_blank"
+                                               rendered="#{movimiento.tramite.codigoFase=='REG' and movimiento.archivo!=null}"
+                                               value="Archivo">
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.movimiento}"/>
+                                </h:commandLink>
+                                <p:commandButton icon="ui-icon-comment" 
+                                                 title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verHistorial']}"
+                                                 action="#{consultaPuestoBean.verDetalleHistorico}"
+                                                 update=":popUpHistoricoTramiteWin"
+                                                 oncomplete="popUpHistoricoTramite.show();">
+                                    <f:setPropertyActionListener value="#{movimiento.tramite}" 
+                                                                 target="#{consultaPuestoBean.consultaPuestoHelper.tramite}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column style="text-align: center">
+                                <p:selectBooleanCheckbox value="#{movimiento.existeDistributivo}" disabled="true"/>
+                            </p:column>
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{movimiento.tramite.numericoTramite}"/>
+                            </p:column>
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{movimiento.numeroDocumentoHabilitante}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.tipoMovimiento.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.rigeApartirDe}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.fechaHasta}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column style="background: peachpuff">
+                                <h:outputText value="#{movimiento.numeroIdentificacion}" />
+                            </p:column>
+                            <p:column style="background: peachpuff">
+                                <h:outputText value="#{movimiento.apellidosNombres}" style="font-size: 9px;"/>
+                            </p:column>
+
+
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.distributivoDetalle.codigoPuesto}"/>
+                            </p:column>
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.escalaOcupacional.nivelOcupacional.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.escalaOcupacional.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.distributivoDetalle.distributivo.modalidadLaboral.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.distributivoDetalle.distributivo.unidadOrganizacional.ruta}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="text-align: right;background: darkseagreen">
+                                <h:outputText value="#{movimiento.movimientoSituacionActual.rmu}" style="font-size: 9px"/>
+                            </p:column>
+
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.codigoPuesto}"/>
+                            </p:column>
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.escalaOcupacional.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.distributivo.modalidadLaboral.nombre}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.distributivo.unidadOrganizacional.ruta}" style="font-size: 9px"/>
+                            </p:column>
+                            <p:column style="text-align: right; background: #AABCFE">
+                                <h:outputText value="#{movimiento.movimientoSituacionPropuesta.distributivoDetalle.rmu}" style="font-size: 9px"/>
+                            </p:column>
+
+
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.usuarioAsignadoNombreElaborador}" style="font-size: 9px;"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaElaboracion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaLegalizacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column >
+                                <h:outputText value="#{movimiento.tramite.estado}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.usuarioAsignadoCedula}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{movimiento.tramite.usuarioAsignadoNombre}" style="font-size: 9px;"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{consultaPuestoBean.consultaPuestoHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmConsultaMovimientoInsti:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{consultaPuestoBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+            <!-- Historico -->
+            <!-- PopUp de Historial del tramite -->
+            <p:dialog widgetVar="popUpHistoricoTramite"
+                      modal="true" id="popUpHistoricoTramiteWin"
+                      resizable="false" style="width: 750px"
+                      header="Histórico del Tramite">
+                <p:panel id="contenidoPopUpHistoricoTramite"> 
+                    <h:form id="formHistoricoTramite">                       
+                        <p:dataTable value="#{consultaPuestoBean.consultaPuestoHelper.listaDetalles}"
+                                     var="detalle"
+                                     style="width: 800px;"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align:center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="Fecha" >
+                                <h:outputText value="#{detalle.fechaCreacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align:center;">
+                                <h:outputText value="#{detalle.usuario}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" >
+                                <h:outputText value="#{detalle.nombreUsuario}"/>
+                            </p:column>
+                            <p:column headerText="Comentario" >
+                                <h:outputText value="#{detalle.comentario}"/>
+                            </p:column>
+                            <p:column headerText="Estado" style="text-align:center;">
+                                <h:outputText value="#{detalle.estado.nombre}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                        <br/>
+                        <div style="text-align:center">
+                            <p:commandButton onclick="popUpHistoricoTramite.hide();"
+                                             immediate="true" value="Cerrar" process="formHistoricoTramite"/>
+                        </div>
+                    </h:form>
+                </p:panel>
+            </p:dialog>
+            <script type="text/javascript">
+                function alternarCampoDocumento() {
+                    var tipos = $("SELECT[id$=_combo_tipo_documentos]");
+                    var celdaDocumento = $("TABLE[id$=celda_numero_documento]");
+                    if (!tipos.val()) {
+                        celdaDocumento.hide();
+                    } else {
+                        celdaDocumento.find("INPUT").first().val("");
+                        celdaDocumento.show();
+                    }
+                }
+                $(function () {
+                    var tipos = $("SELECT[id$=_combo_tipo_documentos]");
+                    tipos.val("");
+                    alternarCampoDocumento();
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

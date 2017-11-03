@@ -1,0 +1,424 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.aprobacion.titulo']}">  
+                    <br/>
+                    <div>
+                        <p:commandButton id="aprobarBtn" 
+                                         action="#{vacacionAprobacionBean.validarCamposRequeridos}"
+                                         disabled="#{vacacionAprobacionBean.vacacionAprobacionHelper.guardado}"
+                                         value="ATENDER"
+                                         title="ATENDER LA SOLICITUD"/>
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{vacacionAprobacionBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{vacacionAprobacionBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:separator/>
+
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panelDatosServidor" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="4" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacionSolicitud_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{vacacionAprobacionBean.obtenerDescripcionTipoDocumento(
+                                                  vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.servidorInstitucion.servidor.tipoIdentificacion)}"
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacionSolicitud_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" 
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacionSolicitud_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}"
+                                         disabled="#{true}" 
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacionSolicitud_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.vacacionParametro.regimenLaboral.nombre}"
+                                         disabled="#{true}" style="width: 300px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+
+                            <p:inputText id="vacacionSolicitud_servidorFechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.servidorInstitucion.servidor.fechaIngresoInstitucion}"
+                                         disabled="#{true}" 
+                                         style="width: 300px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+
+                            <h:outputLabel value="Saldo Vacaciones Efectivas: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <h:outputLabel value=" #{vacacionAprobacionBean.vacacionAprobacionHelper.cadenaSaldo}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <h:outputLabel value="Saldo Vacaciones Proporcionales: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <h:outputLabel value=" #{vacacionAprobacionBean.vacacionAprobacionHelper.cadenaSaldoProporcional}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <br/>  <p:separator/>
+                    <!-- Informacion de la solicitud-->
+                    <style>
+                        .alinearTop{
+                            vertical-align: top;
+                        }
+                    </style>
+                    <h:panelGrid columns="2" columnClasses="alinearTop,alinearTop">
+                        <p:panel id="panelSolicitudVacacion" 
+                                 header="#{msg['ec.gob.mrl.smp.administracion.vacacion.datosSolicitud']}" 
+                                 >
+
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="* Número"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputText id="tipoSolicitudVacacion_id"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.id}"
+                                             disabled="#{true}"
+                                             styleClass="campoNumerico" 
+                                             style="width: 100px" />
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputText id="tipoSolicitudVacacion_cantidadSolDias"
+                                             value="#{vacacionAprobacionBean.obtenerDescripcionTipoVacacion(vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipo)}"
+                                             disabled="#{true}"
+                                             styleClass="campoNumerico" 
+                                             maxlength="3"
+                                             style="width: 200px" />
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tiempoSolicitado']}:"
+                                               styleClass="labelFormulario"/>                                
+                                <p:outputPanel>
+                                    <p:inputText value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.cantidadSolicitadaTexto}" disabled="#{true}" style="width: 200px"/>
+                                    <p:inputText id="solicitudVacacion_cantidadSolDias"
+                                                 value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.cantidadSolicitada}:#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.cantidadSolicitadaMinutos}"
+                                                 disabled="#{true}" rendered="#{false}"
+                                                 styleClass="campoNumerico" 
+                                                 maxlength="3"
+                                                 style="width: 70px" />
+                                    <p:inputText id="solicitudVacacion_cantidadSolDias_periodo"
+                                                 value="#{vacacionAprobacionBean.obtenerDescripcionPeriodoVacacion((vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo))}"
+                                                 disabled="#{true}" rendered="#{false}"
+                                                 styleClass="campoNumerico" 
+                                                 maxlength="3"
+                                                 style="width: 100px" />
+                                </p:outputPanel>
+                                <h:outputLabel value="* Fecha:" rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:calendar id="valorFecha"
+                                            disabled="true"
+                                            rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                            style="width: 200px" 
+                                            value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.fecha}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+
+                                <h:outputLabel value="* Hora Salida:"
+                                               rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:calendar id="valorHoraInicio"  
+                                            style="width: 200px" 
+                                            rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                            value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.horaInicio}"
+                                            disabled="#{true}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+
+                                <h:outputLabel value="* Hora Entrada:"
+                                               rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:calendar id="valorHoraFin"  
+                                            style="width: 200px" 
+                                            rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'H'}"
+                                            value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.horaFin}"
+                                            disabled="#{true}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="1" rendered="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.tipoPeriodo eq 'D'}">
+                                <div id="diasPlanificadosCalenar" class="datesPicker"></div> 
+                                <p:inputText id="diasPlanificadosInput" style="width: 95%; visibility: hidden" styleClass="stringDates"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.diasPlanificados}"/>
+                                <script>
+                                    $('.datesPicker').multiDatesPicker({
+                                        dateFormat: 'dd/mm/yy',
+                                        numberOfMonths: [6, 2],
+                                        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sábado'],
+                                        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                                        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                                        onSelect: function () {
+                                            establecerDiasPlanificados();
+                                        }
+                                    });
+                                    function establecerDiasPlanificados() {
+                                        try {
+                                            var fechas = $("INPUT[id$='diasPlanificadosInput']").val();
+                                            $('#diasPlanificadosCalenar').multiDatesPicker("resetDates");
+                                            if (fechas.length > 0) {
+                                                fechas = fechas.split(',');
+                                                $('#diasPlanificadosCalenar').multiDatesPicker("addDates", fechas);
+                                            }
+                                        } catch (e) {
+                                        }
+                                    }
+
+                                    $(function () {
+                                        try {
+                                            establecerDiasPlanificados();
+                                        } catch (e) {
+                                        }
+                                    });
+                                </script>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel id="panelAprobacionVacacion" 
+                                 header="#{msg['ec.gob.mrl.smp.administracion.vacacion.datosSolicitud']}" style="height: 380px">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="* Acción:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:selectOneMenu id="tipoSolicitud" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.estado}"
+                                                 required="true"
+                                                 requiredMessage="El campo estado es requerido">
+                                    <f:selectItems value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaOpcionesEstadoVacacion}"/> 
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="observacion_lbl"
+                                                 styleClass="textoDescripcion"
+                                                 style="width: 200px" required="true"
+                                                 maxlength="400"
+                                                 requiredMessage="El campo observación es requerido"
+                                                 value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.motivo}"/>   
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+
+            <!-- vacaciones por periodo -->
+            <p:dialog modal="true"     resizable="false"   width="800"  height="350"
+                      draggable="true"   
+                      header="Detalles de Saldo de Vacaciones" 
+                      widgetVar="dlgDetalles"
+                      closable="true">
+                <h:form id="frmDetalles">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:dataTable id="tablaregP"
+                                     value="#{vacacionAprobacionBean.listaSaldosVacaciones}"
+                                     var="vacacion"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     rowKey="#{reg.id}"  
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     style="overflow: auto" >
+
+                            <f:facet name="header">Detalle de Saldo de Vacaciones</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tiempoSolicitado']}" 
+                                      sortBy="#{vacacion.observacion}" style="width: 350px" >                               
+                                <!--<h:outputText value="#{vacacion.saldo}"/>-->                                
+                            </p:column> 
+                        </p:dataTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgDetalles.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- cONFIRMACIÓN de vacacion -->
+            <p:confirmDialog id="popOpAprobar" message="¿Está seguro de Aprobar/Negar la Solicitud ?"
+                             header="SOLICITUD DE VACACIONES:" 
+                             severity="alert" 
+                             widgetVar="confirmAprobar">  
+                <h:form id="repfrmApr">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpeReg1" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update=":frmInfoAprobar :frmSolicitudVacacion"
+                                         action="#{vacacionAprobacionBean.guardar}"
+                                         oncomplete="confirmAprobar.hide()"/>  
+                        <p:commandButton id="elimReprog1" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmAprobar.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <!-- INFORMACION DE APROBACION -->
+            <p:confirmDialog header="SOLICITUD DE VACACIONES APROBADA"
+                             message="#{msg['message.solicitudAprobada']}"
+                             severity="info"  width="300px" 
+                             closable="true" widgetVar="dlgInfoAprobar">  
+                <h:form id="frmInfoAprobar">
+                    <div style="text-align: center">
+                        <p:commandButton value="Descargar" 
+                                         title="Descargar Anexo: Acción Personal Vacación"
+                                         icon="ui-icon-arrowthick-1-s"
+                                         ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop);
+                                                 dlgInfoAprobar.hide();">
+                            <p:fileDownload value="#{vacacionAprobacionBean.pdf}" />
+                        </p:commandButton>
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <!-- APROBACION SOLICITUD CON Configuracion de documento previo PARA ACCION DE PERSONAL-->
+            <p:dialog widgetVar="dlgAprobarConDatosAccionPersona"
+                      modal="true"
+                      header="CONFIRMAR APROBACIÓN DE SOLICITUD VACACIONES"
+                      resizable="false"
+                      width="710"
+                      draggable="true">
+                <h:form id="frmPanelDocumentoPrevio" >
+                    <p:focus for="botonCancelar"/>
+
+                    <h:panelGrid style="width: 100%">
+                        <h:panelGrid columns="2" 
+                                     columnClasses="grid2lb_area,grid2val_area" 
+                                     style="width: 100%">
+                            <p:outputLabel id="apExplicacion_lbl" 
+                                           value="Explicación: " 
+                                           style="width: 100%"/>
+                            <p:inputTextarea id="apExplicacion"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.explicacion}"
+                                             autoResize="false" 
+                                             disabled="true"
+                                             style="width: 600px; text-align: justify"
+                                             maxlength="1000"/>
+                        </h:panelGrid>
+
+                        <p:separator/>
+                        <h:panelGrid columns="4">
+                            <p:outputLabel id="apRepresentanteRRHH_lbl" 
+                                           value="* Representante RRHH:" 
+                                           style="width: 100%"/>
+                            <p:selectOneMenu id="apRepresentanteRRHH" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.representanteRRHHId}"
+                                             style="width: 200px;" 
+                                             required="true"
+                                             requiredMessage="El representan de rrhh es un campo requerido.">
+                                <f:selectItems value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaRepresentanteRRHH}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel id="apNombreRepresentanteRRHH_lbl" 
+                                           value="* Nombre Representante RRHH: "/>
+                            <p:inputText id="apNombreRepresentanteRRHH" 
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.nombreRepresentanteRRHH}"
+                                         style="width: 200px;" 
+                                         required="true"
+                                         requiredMessage="El nombre del representante de rrhh es un campo requerido."/>
+
+                            <p:outputLabel id="apAutoridaNominadora_lbl" 
+                                           value="* Autoridad Nominadora:" 
+                                           style="width: 100%"/>
+                            <p:selectOneMenu id="pAutoridaNominadora" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.autoridadNominadoraId}"
+                                             style="width: 200px;" 
+                                             required="true"
+                                             requiredMessage="La autoridad nominadora es un campo requerido.">
+                                <f:selectItems value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaAutoridadNominadora}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel id="apNombreAutoridadNominadora_lbl" 
+                                           value="* Nombre Autoridad Nominadora: "/>
+                            <p:inputText id="apNombreAutoridadNominadora" 
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.nombreAutoridadNominadora}"
+                                         style="width: 200px;" 
+                                         required="true"
+                                         requiredMessage="El nombre autoridad nominadora es un campo requerido."/>
+                        </h:panelGrid>
+                        <p:separator/>
+
+                        <h:panelGrid columns="2"
+                                     columnClasses="grid6lb,grid6val">   
+                            <p:outputLabel id="apDocumentoPrevio_lbl" 
+                                           value="* Documento Previo: "/>
+                            <p:selectOneMenu id="apDocumentoPrevio" required="true"
+                                             filter="true" filterMatchMode="contains"
+                                             value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.codigoDocumentoPrevio}"
+                                             requiredMessage="El documento previo es un campo requerido.">
+                                <f:selectItems value="#{vacacionAprobacionBean.vacacionAprobacionHelper.listaDocumentoPrevio}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel id="apNumeroDocumento_lbl" value="* Numero Documento: "/>
+                            <p:inputText id="apNumeroDocumento" style="width: 60% !important"
+                                         styleClass="textoNemonico" required="true"
+                                         value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.numeroDocumentoPrevio}"
+                                         requiredMessage="El número documento es un campo requerido."/>
+                            <p:outputLabel id="apFechaDocumento_lbl" value="* Fecha Documento: "/>
+                            <p:calendar id="apFechaDocumento" 
+                                        required="true"
+                                        value="#{vacacionAprobacionBean.vacacionAprobacionHelper.vacacionSolicitud.fechaDocumentoPrevio}"
+                                        showOn="button"                                        
+                                        navigator="true"  
+                                        requiredMessage="La fecha documento es un campo requerido."
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update=":frmInfoAprobar :frmSolicitudVacacion"                                      
+                                         action="#{vacacionAprobacionBean.guardar}" /> 
+                        <p:commandButton id="botonCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgAprobarConDatosAccionPersona.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

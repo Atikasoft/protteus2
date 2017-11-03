@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ comisiones.xml
+ MEF $Revision 1.0 $
+ *
+ Todos los derechos reservados. All rights reserved.
+ This software is the confidential and proprietary information Compuseg
+ ("Confidential Information").  You shall not disclose such Confidential Information
+ and shall use it only in accordance with the terms of the license agreement you entered into
+ with Advance Consulting and AtikaSoft.
+ *
+  
+ ESTRUCTURA DE DATOS PARA LA RECEPCION DE COMISIONES. 
+
+ AtikaSoft
+ Quito - Ecuador
+ http://www.atikasoft.com.ec/
+ *
+ Jan 23, 2013
+ *
+ Copyright (C) 2013 AtikaSoft.
+-->
+
+
+<root>
+    <comisiones>
+        <comision>
+            <saldo_comision>456.45</saldo_comision>
+            <emision>
+                <numero_factura>232432</numero_factura>
+                <numero_anexo>4645643</numero_anexo>
+                <valor_prima_neta>334.67</valor_prima_neta>
+                <poliza>
+                    <numero>456</numero>
+                    <ramos>
+                        <ramo>
+                            <codigo_en_broker>xxxx</codigo_en_broker>
+                            <codigo_en_aseguradora>yyyyy</codigo_en_aseguradora>
+                            <nombre>RAMO 1</nombre>
+                        </ramo>
+                        <ramo>
+                            <codigo_en_broker>uuuu</codigo_en_broker>
+                            <codigo_en_aseguradora>rrrrr</codigo_en_aseguradora>
+                            <nombre>RAMO 2</nombre>
+                        </ramo>
+                    </ramos>
+                    <aseguradora>
+                        <codigo_en_broker>xxxx</codigo_en_broker>
+                        <codigo_en_aseguradora>yyyyy</codigo_en_aseguradora>
+                        <ruc>24324343453453453</ruc>
+                        <nombre>ASEGURADORA 1</nombre>
+                        <!--Sistema que proveeran los datos FUSION,SISTRAN,ENSURANCE -->
+                        <sistema>FUSION</sistema>
+                        <provee_comision>SI</provee_comision>
+                        <provee_cotizacion>SI</provee_cotizacion>
+                        <provee_emision>SI</provee_emision>
+                    </aseguradora>
+                    <broker>
+                        <codigo_en_broker>xxxx</codigo_en_broker>
+                        <codigo_en_aseguradora>yyyyy</codigo_en_aseguradora>
+                        <ruc>3535345454656</ruc>
+                        <nombre>BROKER 1</nombre>
+                    </broker>
+                    <cliente>
+                        <numero_identificacion>1743434634</numero_identificacion>
+                        <nombres>XXXX TTTTTT</nombres>
+                        <apellidos>WWWWWWWWWWWW SSSSSSSSSSSSSSSS</apellidos>
+                    </cliente>
+                </poliza>
+            </emision>
+        </comision>
+    </comisiones>
+</root>

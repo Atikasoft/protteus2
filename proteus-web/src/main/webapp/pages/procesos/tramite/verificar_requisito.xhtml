@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form enctype="multipart/form-data">
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="3">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{verificarRequisitoBean.guardarValidacionRequisito}"
+                                         update="panelOpcionesPrincipal, panelIngresoInformacion"/>                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{verificarRequisitoBean.cancelarVerificarRequisitos}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{verificarRequisitoBean.salirPantallaPrincipal}"/>
+                    </h:panelGrid>                
+                </p:panel>
+                <p:panel id="panelIngresoInformacion" header="#{msg['ec.gob.mrl.smp.verificarRequisito.titulo']}">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.requisito']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="requisito_nombre"                                                
+                                         value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.tipoMovimientoRequisito.requisito.nombre}"
+                                         disabled="true"
+                                         style="width: 285px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.numeroDocumento']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="validacion_numeroDocumento"                                                
+                                     value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.validacion.numeroDocumento}"
+                                     style="width: 285px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.fechaDocumento']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="validacion_fechaDocumento"                                                
+                                    value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.validacion.fechaDocumento}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    showOn="button"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.observacion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="validacion_observacion"                                                
+                                         value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.validacion.observacion}"
+                                         style="width: 285px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.archivo']}:"
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="3">
+                            <p:fileUpload id="cargaArchivo"
+                                          value="#{verificarRequisitoBean.verificarRequisitoHelper.archivoCargado}" 
+                                          mode="simple"
+                                          allowTypes="/(\.|\/)(pdf)$/"/>  
+                            <p:commandButton title="#{msg['ec.gob.mrl.smp.generico.boton.cargar']}" 
+                                             icon="ui-icon-arrowthickstop-1-n" ajax="false"  
+                                             actionListener="#{verificarRequisitoBean.upload}"/>  
+                            <p:message for="cargaArchivo" showDetail="true"/>
+                        </h:panelGrid>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.calificacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{verificarRequisitoBean.verificarRequisitoHelper.tieneCalificacion}"/>
+                        <h:panelGrid columns="2" rendered="#{verificarRequisitoBean.verificarRequisitoHelper.tieneCalificacion}">
+                            <p:inputText id="validacion_calificacion"                                                
+                                         value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.validacion.calificacion}"
+                                         rendered="#{verificarRequisitoBean.verificarRequisitoHelper.tieneCalificacion}"
+                                         style="width: 285px"/>
+                            <p:message for="validacion_calificacion" display="icon" rendered="#{verificarRequisitoBean.verificarRequisitoHelper.tieneCalificacion}"/>
+                        </h:panelGrid>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.verificarRequisito.cumple']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectBooleanCheckbox id="validacion_cumple"                                                
+                                                 value="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO.validacion.cumple}"/>                        
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,153 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{parametroGlobalBean}" 
+                                     extendido="false"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.titulo']}">
+                <f:facet name="contenido">
+                    <p:panel id="panelContenido">
+                        <h:panelGrid columns="2" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.parametroGlobal.nemonico']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="parametroGlobal_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         autocomplete="off"  
+                                         required="true"
+                                         disabled="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                         value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.nemonico}"
+                                         requiredMessage="El campo nemónico es requerido"/>
+                            
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.parametroGlobal.nombre']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="parametroGlobal_nombre" 
+                                             styleClass="textoNombre" 
+                                             style="width: 200px"
+                                             required="true"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                             value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.nombre}"
+                                             requiredMessage="El campo nombre es requerido"/>
+                            
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.parametroGlobal.descripcion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="parametroGlobal_descripcion" 
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             required="true"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.descripcion}"
+                                             requiredMessage="El campo Descripción es Requerido"/>
+                            
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.parametroGlobal.tipo']}:"
+                                            styleClass="labelFormulario"/>
+                            <p:selectOneRadio  id="parametroGlobal_tipoDato" 
+                                               value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato}"
+                                               required="#{true}"
+                                               requiredMessage="El campo tipo es requerido">
+                                <f:selectItems value="#{parametroGlobalBean.parametroGlobalHelper.tipoParametro}"/>
+                                <p:ajax update="panelLabelValor panelValorValor"/>
+                            </p:selectOneRadio>
+                            
+                            <h:panelGrid columns="2" id="panelLabelValor"> 
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.valor']}:"
+                                               rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='T'}"
+                                               styleClass="labelFormulario"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.valor']}:"
+                                               rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='N'}"
+                                               styleClass="labelFormulario"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.valor']}:"
+                                               rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='F'}"
+                                               styleClass="labelFormulario"/>
+                            </h:panelGrid>                
+
+                            <h:panelGrid columns="2" id="panelValorValor">                                
+                                <p:inputText id="parametroGlobal_valorTexto" 
+                                             required="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='T'}"
+                                             rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='T'}"
+                                             value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.valorTexto}"
+                                             requiredMessage="El campo valor es requerido"/>
+                                
+                                <p:inputText id="parametroGlobal_valorNumerico"     
+                                             styleClass="campoNumerico"
+                                             rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='N'}"
+                                             required="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='N'}"
+                                             value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.valorNumerico}"
+                                             requiredMessage="El campo valor es requerido"/>            
+                                                            
+                                <p:calendar id="parametroGlobal_valorFecha" 
+                                            value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.valorFecha}"
+                                            required="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='F'}"                                    
+                                            rendered="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.tipoDato=='F'}"
+                                            requiredMessage="El campo valor es requerido">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </p:calendar>  
+                            </h:panelGrid>
+                            <p:outputLabel/>  
+                            
+                            
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox id="parametroGlobal_vigente" 
+                                                     rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                                     value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.vigente}"/>
+                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="parametroGlobal_fechaCreacion"
+                                         style="width: 200px"
+                                         disabled="#{true}"
+                                         rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                         value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="parametroGlobal_usuarioCreacion" 
+                                         style="width: 200px"
+                                         disabled="#{true}"
+                                         rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                         value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.usuarioCreacion}"/>
+                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="parametroGlobal_fechaActualizacion" 
+                                         style="width: 200px"
+                                         disabled="#{true}"
+                                         rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                         value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.fechaActualizacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="parametroGlobal_usuarioActualizacion" 
+                                         style="width: 200px"
+                                         disabled="#{true}"
+                                         rendered="#{!parametroGlobalBean.parametroGlobalHelper.esNuevo}"
+                                         value="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobal.usuarioActualizacion}"/>
+                            
+                        </h:panelGrid>
+                    </p:panel>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

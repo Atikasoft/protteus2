@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="1">   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{delegacionAprobacionBean.salirPantallaPrincipal()}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <p:separator/>
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.titulo']}">
+                    <p:dataTable id="tablaTiposMovimientos"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 value="#{delegacionAprobacionBean.delegacionAprobacionHelper.listaTipoMovimientoDelegadoVO}"
+                                 var="listaTiposMovimientos"
+                                 sortBy="#{listaTiposMovimientos.tipoMovimiento.clase.grupo.nombre}"
+                                 rowIndexVar="rowIndex"
+                                 style="overflow: auto"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.opciones']}" style="text-align: center">
+                            <p:commandButton icon="ui-icon-person" ajax="false" 
+                                             title="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.delegar']}"
+                                             action="#{delegacionAprobacionBean.comenzarDelegacion()}"                                             >
+                                <f:setPropertyActionListener value="#{listaTiposMovimientos}" 
+                                                             target="#{delegacionAprobacionBean.delegacionAprobacionHelper.tipoMovimientoDelegadoVO}"/>                                 
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.grupo']}"
+                                  sortBy="#{listaTiposMovimientos.tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{listaTiposMovimientos.tipoMovimiento.clase.grupo.nombre}"
+                                  filterMatchMode="contains"
+                                  style="width: 80px"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{listaTiposMovimientos.tipoMovimiento.clase.grupo.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.clase']}"
+                                  sortBy="#{listaTiposMovimientos.tipoMovimiento.clase.nombre}"
+                                  filterBy="#{listaTiposMovimientos.tipoMovimiento.clase.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{listaTiposMovimientos.tipoMovimiento.clase.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.movimiento']}"
+                                  sortBy="#{listaTiposMovimientos.tipoMovimiento.nombre}"
+                                  filterBy="#{listaTiposMovimientos.tipoMovimiento.nombre}"                                 
+                                  style="width: 300px"
+                                  filterStyle="width: 100"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{listaTiposMovimientos.tipoMovimiento.nombre}"/>
+                        </p:column>                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.delegado']}" >                            
+                            <p:dataTable id="tablaDelegados"                                          
+                                         value="#{listaTiposMovimientos.listaTipoMovimientoDelegado}"
+                                         var="delegados"
+                                         rendered="#{listaTiposMovimientos.listaTipoMovimientoDelegado.size()>0}">
+                                <p:column>
+                                    <h:outputText value="#{delegados.delegadoNombre}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>                        
+                        
+                    </p:dataTable>
+
+
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

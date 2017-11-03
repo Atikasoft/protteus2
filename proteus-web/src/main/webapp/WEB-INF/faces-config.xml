@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">  
+    <application>
+        <resource-bundle>
+            <base-name>messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        <message-bundle>messages</message-bundle>
+        <locale-config>
+            <default-locale>es</default-locale>
+        </locale-config>
+    </application>
+    <converter>   
+        <converter-id>servidorConverter</converter-id>
+        <converter-class>ec.com.atikasoft.proteus.converter.ServidorConverter</converter-class>
+    </converter>
+    <validator>
+        <validator-id>validadorMail</validator-id>	
+        <validator-class>ec.com.atikasoft.proteus.validador.EmailValidador</validator-class>
+    </validator>
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.PickListRenderer</renderer-type>
+            <renderer-class>ec.com.atikasoft.proteus.utilitarios.PickListBugfixRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+</faces-config>

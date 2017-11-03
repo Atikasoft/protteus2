@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form > 
+                <p:growl id="growl" showDetail="true" sticky="true" />  
+                <p:panel>
+                    <h:panelGrid columns="2">                    
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{catalogoPBean.iniciarNuevo()}"
+                                         ajax="#{false}"
+                                         partialSubmit="true"
+                                         immediate="true"/>                                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{catalogoPBean.irPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.catalogo.titulo']}" id="panelOpcionesLista">  
+                    <br/>
+                    <p:fieldset id="datos">
+                        <h:panelGrid columns="3">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.catalogo.tipo']}:"/> 
+                            <p:selectOneMenu id="catalogo_tipo"  
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 250px"                                             
+                                             value="#{catalogoPBean.catalogoPHelper.catalogo.tipoCatalogoId}"
+                                             required="#{true}">
+                                <f:selectItems value="#{catalogoPBean.catalogoPHelper.listaTipoCatalogo}"/> 
+                                <p:ajax listener="#{catalogoPBean.cargarTablaCatalogo()}" update="tablaCatalogo"/>
+                            </p:selectOneMenu>
+                            <p:message for="catalogo_tipo" showDetail="false" display="icon"/> 
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <br/>
+                    <p:fieldset id="catalogosAsignados" legend="#{msg['ec.gob.mrl.smp.administracion.catalogo.listaTitulo']}">
+                        <h:panelGrid columns="1" width="100%">
+                            <p:dataTable id="tablaCatalogo" 
+                                         value="#{catalogoPBean.catalogoPHelper.listaCatalogos}"
+                                         var="catalogo"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"                                     
+                                         style="overflow: auto">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="width: 100px;text-align: center">
+                                    <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                                     ajax="#{false}"
+                                                     action="#{catalogoPBean.iniciarEdicion}"
+                                                     title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                     immediate="true">
+                                        <f:setPropertyActionListener value="#{catalogo}" 
+                                                                     target="#{catalogoPBean.catalogoPHelper.catalogoEliminar}"/>
+                                    </p:commandButton>
+                                    <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                                     onclick="confirmEliminacion.show()"                                          
+                                                     title="Eliminar">
+                                        <f:setPropertyActionListener value="#{catalogo}" 
+                                                                     target="#{catalogoPBean.catalogoPHelper.catalogoEliminar}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="width: 20px;text-align: center">
+                                    <h:outputLabel value="#{rowIndex+1}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.catalogo.tipo']}">
+                                    <h:outputLabel value="#{catalogo.tipoCatalogo.nombre}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.catalogo.codigo']}"
+                                          sortBy="#{catalogo.codigo}"
+                                          filterStyle="width: 90px"
+                                          filterBy="#{catalogo.codigo}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{catalogo.codigo}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.catalogo.nombre']}"
+                                          sortBy="#{catalogo.nombre}"
+                                          filterStyle="width: 90px"
+                                          filterBy="#{catalogo.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{catalogo.nombre}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:fieldset>                                  
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaCatalogo"
+                                             actionListener="#{catalogoPBean.borrar()}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,245 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mq.proteus.anticipo.aprobacion.titulo']}">  
+                    <br/>
+                    <div>
+                        <p:commandButton id="aprobarBtn" 
+                                         action="#{anticipoAprobacionBean.validarCamposRequeridos}"
+                                         rendered="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.estado=='R'}"
+                                         disabled="#{anticipoAprobacionBean.anticipoAprobacionHelper.guardado}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{anticipoAprobacionBean.regresar}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{anticipoAprobacionBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:separator/>
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panelDatosServidor" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="4" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="anticipo_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{anticipoAprobacionBean.obtenerDescripcionTipoDocumento(
+                                                  anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidor.tipoIdentificacion)}"
+                                         style="width: 200px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="anticipo_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.tipoAnticipo.regimen.nombre}"
+                                         disabled="#{true}" style="width: 200px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="anticipo_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" style="width: 200px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="anticipo_servidorNombres"
+                                             styleClass="textoNemonico" 
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidor.apellidosNombres}"
+                                             disabled="#{true}" style="width: 200px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="anticipo_servidorFechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.fechaIngreso}"
+                                         disabled="#{true}" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <br/>  <p:separator/>
+
+                    <!-- datos del anticipo -->
+                    <p:panel id="panel_anticipo" 
+                             header="#{msg['ec.gob.mrl.smp.administracion.anticipo.datos']}">
+                        <h:panelGrid columns="6" >
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.fecha']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+
+                            <p:inputText id="anticipo_fecha"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.fechaSolicitud}"
+                                         style="width: 100px" disabled="#{true}" >
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.anticipo.ejercicioFiscal']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+                            <p:inputText id="anticipo_ejercicioFiscal"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.institucionEjercicioFiscal.ejercicioFiscal.nombre}"
+                                         style="width: 100px" disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.estado']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+                            <p:inputText id="anticipo_estado"
+                                         value="#{anticipoAprobacionBean.obtenerDescripcionEstadoAnticipo(anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.estado)}"
+                                         style="width: 100px" disabled="#{true}"/>                                
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.tipo']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+                            <p:inputTextarea id="anticipo_tipoAnticipo"
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.tipoAnticipo.nombre}"
+                                             disabled="#{true}"
+                                             style="width: 200px" />
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+                            <p:inputText id="anticipo_valor"
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.valor}"
+                                         styleClass="campoFloat"
+                                         disabled="#{true}"
+                                         style="width: 100px" />
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.anticipo.plazoMeses']}:"
+                                           styleClass="labelFormulario" style="text-align: right" />
+                            <p:outputPanel id="panel_plazo">
+                                <p:inputText id="anticipo__plazoMeses"
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.plazoMeses}"
+                                             styleClass="campoFloat"
+                                             disabled="#{true}"
+                                             style="width: 100px" />
+                            </p:outputPanel>
+                            <f:verbatim/>
+                        </h:panelGrid>
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.anticipo.garante']}" id="panel_garante"
+                                    rendered="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidorGarante!=null}">
+                            <h:panelGrid columns="6">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="anticipo_garanteTipoIdentificacion"
+                                             styleClass="textoNemonico"
+                                             disabled="#{true}"
+                                             value="#{anticipoAprobacionBean.obtenerDescripcionTipoDocumento(
+                                                      anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidorGarante.tipoIdentificacion)}"
+                                             style="width: 200px"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="anticipo_garanteNumeroIdentificacionn"
+                                             styleClass="textoNemonico"
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidorGarante.numeroIdentificacion}"
+                                             disabled="#{true}" style="width: 200px"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="anticipo_garanteNombres"
+                                                 styleClass="textoNemonico"
+                                                 value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.servidorGarante.apellidosNombres}"
+                                                 required="#{true}" disabled="#{true}"
+                                                 requiredMessage="El campo garante es requerido"
+                                                 style="width: 200px"/> 
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:separator/>
+                        <!-- Lista de detalles de la planificacion de pagos-->
+                        <p:panel header="PLAN DE PAGO">
+                            <p:dataTable id="tablaPlan" 
+                                         value="#{anticipoAprobacionBean.anticipoAprobacionHelper.listaAnticipoPlanPago}"
+                                         var="det" emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                         paginator="#{true}" rowKey="#{det.dividendo}"  
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex" 
+                                         sortBy="#{det.dividendo}"  sortOrder="ascending"
+                                         style="overflow: auto">      
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                    <h:outputText value="#{det.dividendo}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.anio']}" 
+                                          sortBy="#{det.anio}" style=" width: 80px">                               
+                                    <h:outputText value="#{det.anio}" />
+                                </p:column> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.mes']}" 
+                                          sortBy="#{det.mes}" style=" width: 100px;">                               
+                                    <h:outputText value="#{anticipoAprobacionBean.obtenerNombreMes(det.mes)}" />
+                                </p:column> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}" 
+                                          sortBy="#{det.monto}"  style="text-align: center; width: 100px">                               
+                                    <h:outputText value="#{det.monto}" style="text-align:right"/>
+                                </p:column>
+                                <p:columnGroup type="footer">  
+                                    <p:row>  
+                                        <p:column colspan="3" footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" style="text-align:right"/>  
+                                        <p:column footerText="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.valor}" style="text-align:right"/>  
+                                    </p:row>  
+                                </p:columnGroup>  
+                            </p:dataTable>
+                        </p:panel>
+                    </p:panel>
+                    <p:separator/>
+                    <p:panel id="panelAprobacionVacacion" header="#{msg['ec.gob.mq.proteus.anticipo.aprobacion.area']}" style="height: 180px"
+                             rendered="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.estado=='R'}">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="tipoSolicitud" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.anticipoVO.anticipo.estado}"
+                                             required="true"
+                                             requiredMessage="El campo estado es requerido">
+                                <f:selectItems value="#{anticipoAprobacionBean.anticipoAprobacionHelper.listaOpcionesEstado}"/> 
+                            </p:selectOneMenu>
+
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="observacion_lbl"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px" required="true"
+                                             maxlength="400"
+                                             requiredMessage="El campo observación es requerido"
+                                             value="#{anticipoAprobacionBean.anticipoAprobacionHelper.observacion}"/>   
+                        </h:panelGrid>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+
+            <!-- cONFIRMACIÓN de planificacion -->
+            <p:confirmDialog id="popOpAprobar" message="¿Está seguro de Aprobar/Negar la Solicitud de Anticipos?"
+                             header="CONFIRMACIÓN DE SOLICITUD DE ANTICIPO" 
+                             severity="alert" 
+                             widgetVar="confirmAprobar">  
+                <h:form id="repfrm">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpeReg" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update=":frmSolicitudVacacion"
+                                         ajax="false"
+                                         action="#{anticipoAprobacionBean.guardar}"
+                                         oncomplete="confirmAprobar.hide()"/>  
+                        <p:commandButton id="elimReprog" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmAprobar.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+        </ui:define>
+    </ui:composition>
+</html>

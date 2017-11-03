@@ -1,0 +1,423 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <p:outputPanel rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.institucionEjercicioFiscalAPlanificarVacaciones eq null
+                                       or !elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.periodoParaPlanificarVacacionesEstaActivo}">
+                <br/>
+                <br/>
+                <br/>
+                <p:outputLabel style="color: red;"
+                               rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.institucionEjercicioFiscalAPlanificarVacaciones eq null}"
+                               value="#{msg['ec.gob.mrl.smp.administracion.vacacion.periodoPlanificacionEjercicioNoConfigurado.mensaje']}"/>
+                <p:outputLabel style="color: red;"
+                               rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.institucionEjercicioFiscalAPlanificarVacaciones ne null 
+                                           and !elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.periodoParaPlanificarVacacionesEstaActivo}"
+                               value="#{msg['ec.gob.mrl.smp.administracion.vacacion.periodoPlanificacionFueraDeFecha.mensaje']}"/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </p:outputPanel>
+            <h:form id="frmPlanificacionVacacion" 
+                    rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.institucionEjercicioFiscalAPlanificarVacaciones ne null
+                                and elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.periodoParaPlanificarVacacionesEstaActivo}">                
+                <!--                                            <h:form id="frmPlanificacionVacacion"
+                                                                    rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.institucionEjercicioFiscalAPlanificarVacaciones ne null}">-->
+                <p:panel>
+                    <div>
+                        <p:commandButton id="guardarBtn" 
+                                         action="#{elaboracionPlanificacionVacacionesBean.guardar}"
+                                         disabled="#{!elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.botonGuardar}"
+                                         update="@form"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{elaboracionPlanificacionVacacionesBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                        <p:commandButton id="reporteBtn" onclick="dlgBusquedaPlanificacionesWV.show();"
+                                         value="VER PLANIFICACIONES" immediate="true"
+                                         title="VER PLANIFICACIONES"/>
+                    </div>
+                </p:panel>
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.planificacion.titulo']}"> 
+
+                    <!-- Informacion del usuario conectado-->
+                    <p:panel id="panelDatosServidor" 
+                             header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+
+                        <p:panelGrid id="busquedaForm" columns="2"
+                                     columnClasses="col35,col65">
+
+                            <p:panelGrid id="buscarPor" columns="2">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.genericos.etiquetas.buscarPor']}: "
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="comboBuscarPor"
+                                                 required="#{true}"
+                                                 styleClass="textoNemonico"
+                                                 value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.buscarServidorPor}">
+                                    <f:selectItems value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.opcionesBuscarServidorPor}"/>
+                                    <p:ajax update="@form"
+                                            listener="#{elaboracionPlanificacionVacacionesBean.iniciarNuevo()}"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="buscarIdentificacion" columns="5"
+                                         columnClasses="col15,col25,col15,col25"
+                                         rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.buscarServidorPor eq 'id'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.identificacion.tipo']}:"
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="planificacionVacacion_servidorTipoIdentificacion"
+                                                 styleClass="textoNemonico"
+                                                 value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion}"
+                                                 required="#{true}">
+                                    <f:selectItems value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.opcionesTipoIdentificacion}"/>
+                                    <p:ajax update="buscarIdentificacion dtServidor panelCalendario"
+                                            listener="#{elaboracionPlanificacionVacacionesBean.limpiarNroIdentificacion()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroCedula"
+                                             styleClass="campoNumerico" maxlength="10"
+                                             disabled="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion eq null}"
+                                             rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion eq null
+                                                         || elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion eq'C'}"
+                                             value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">
+                                    <f:validateRegex pattern="[0-9]{10}"/>
+                                </p:inputText>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroPasaporte"
+                                             styleClass="textoNemonico"
+                                             disabled="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion eq null}"
+                                             rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion ne null
+                                                         and elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.tipoIdentificacion ne 'C'}"
+                                             value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="busquedaForm" update="@form :frmResultados:tblResultados" 
+                                                 oncomplete="mostrarPanelCalendario();"
+                                                 action="#{elaboracionPlanificacionVacacionesBean.buscarServidorYPlanificacionVacaciones}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="busApellidosNombres" columns="5"
+                                         columnClasses="col60"
+                                         rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.buscarServidorPor eq 'an'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNombresApellidos"
+                                             styleClass="letrasEspacio"
+                                             value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.apellidosNombres}"
+                                             style="width: 300px; text-transform:uppercase;" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="busquedaForm" update="@form :frmResultados:tblResultados" 
+                                                 oncomplete="mostrarPanelCalendario();" 
+                                                 action="#{elaboracionPlanificacionVacacionesBean.buscarServidorYPlanificacionVacaciones}"/>
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:separator/>
+
+                        <p:panelGrid id="dtServidor" columns="4"
+                                     columnClasses="col20,col30,col20,col30">
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu styleClass="textoNemonico"
+                                             value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.planificacionVacacion.servidor.tipoIdentificacion}"
+                                             disabled="#{true}">
+                                <f:selectItems value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.opcionesTipoIdentificacion}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText styleClass="textoNemonico" disabled="#{true}"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.planificacionVacacion.servidor.numeroIdentificacion}"
+                                         >
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.planificacionVacacion.servidor.apellidosNombres}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="fechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.fechaIngreso}"
+                                         disabled="#{true}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText value=" #{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.
+                                                   planificacionVacacion.institucionEjercicioFiscal.ejercicioFiscal.nombre}"
+                                         disabled="true" styleClass="labelFormulario"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: " 
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="planificacionVacacion_saldoVacacionEfectivaDias"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.saldoVacacionTexto}"
+                                         disabled="#{true}" title="Saldo vaciones efectivas pendiente"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldoProporcional']}: " 
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="planificacionVacacion_saldoVacacionProporcionalDias"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.saldoVacacionProporcionalTexto}"
+                                         disabled="#{true}" title="Saldo vacaciones proporcionales pendiente"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.diasSeleccionados']}: " 
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="planificacionVacacion_nroDiasSeleccionados"
+                                         styleClass="textoNemonico"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.nroDiasSeleccionadosTexto}"
+                                         disabled="#{true}"/>
+                        </p:panelGrid>
+                        <br />
+
+                        <h:panelGrid id="panelCalendario" style="width: 100%; text-align: center;"
+                                     rendered="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.planificacionVacacion.servidor ne null}">
+                            <p:outputLabel value="Seleccione los días de vacaciones" style="font-weight: bold;"/>
+                            <h:panelGrid style="text-align: center; margin: auto">
+                                <div class="isa_warning">
+                                    <i class="fa fa-info-circle"></i>
+                                    #{msg['ec.gob.mrl.smp.administracion.vacacion.info.diasAdicionales']}
+                                </div>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" style="margin: auto">
+                                <h:outputLabel/>
+                                <div id="diasVacaciones" class="datesPicker"></div> 
+                                <h:outputLabel/>
+                            </h:panelGrid>
+                            <p:inputText id="seleccion" style="visibility: hidden" styleClass="stringDates"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionVacacionVO.planificacionVacacionDetalle.diasPlanificados}"/>
+                            <p:inputText style="visibility: hidden" styleClass="claseFechaInicioPF"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.fechaInicioEjercicioFiscal}"/>
+                            <p:inputText style="visibility: hidden" styleClass="claseFechaFinPF"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.fechaFinEjercicioFiscal}"/>
+                            <p:inputText style="visibility: hidden" styleClass="claseMaxDiasSeleccionables"
+                                         value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.maximoDiasSeleccionables}"/>
+                        </h:panelGrid>
+
+                    </p:panel>
+                </p:panel>
+
+                <p:remoteCommand name="asignarDiasVacaciones" process="@this" 
+                                 update="seleccion planificacionVacacion_nroDiasSeleccionados"
+                                 actionListener="#{elaboracionPlanificacionVacacionesBean.asignarDiasVacacionesServidor()}"/>
+
+                <script>
+                    $(function () {
+                        mostrarPanelCalendario();
+                    })
+
+                    function mostrarPanelCalendario() {
+                        if ($(".stringDates").val() !== undefined) {
+                            $(".datesPicker").multiDatesPicker({
+                                dateFormat: 'dd/mm/yy',
+                                numberOfMonths: [3, 4],
+                                maxPicks: $(".claseMaxDiasSeleccionables").val(),
+                                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sábado'],
+                                dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                                firstDay: 1,
+                                monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                                minDate: $(".claseFechaInicioPF").val(),
+                                maxDate: $(".claseFechaFinPF").val(),
+                                onSelect: function () {
+                                    asignarDiasVacaciones([
+                                        {
+                                            name: 'seleccionDias',
+                                            value: $('.datesPicker').val()
+                                        }
+                                    ]);
+                                }
+                            });
+
+                            if ($(".stringDates").val().length > 0) {
+                                var fechasSennaladas = $(".stringDates").val().split(',');
+                                if (fechasSennaladas.length > 0) {
+                                    $('.datesPicker').multiDatesPicker('resetDates');
+                                    $(".datesPicker").multiDatesPicker("addDates", fechasSennaladas);
+                                }
+                            }
+
+                        }
+                    }
+
+                </script>
+            </h:form>
+
+            <!-- resultados de busqueda por nombre -->
+            <p:dialog header="RESULTADO DE LA BÚSQUEDA"
+                      id="dlgResultados"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      widgetVar="dlgResultadosBusqueda">
+
+                <h:form id="frmResultados">  
+                    <p:panel id="panelResultados">
+                        <p:dataTable id="tblResultados" 
+                                     value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.listaDistributivosDetalles}"
+                                     var="distributivo" rowIndexVar="rowIndex"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     sortBy="#{distributivo.servidor.apellidosNombres}">
+
+                            <p:column style="text-align: center; width: 20px">
+                                <p:commandButton icon="ui-icon-play"
+                                                 update=":frmPlanificacionVacacion"
+                                                 title="Seleccionar"
+                                                 action="#{elaboracionPlanificacionVacacionesBean.seleccionarServidorBuscarPlanificacion}">
+                                    <f:setPropertyActionListener value="#{distributivo.servidor}" 
+                                                                 target="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.servidor}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}" style="float: right"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres"
+                                      sortBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{distributivo.servidor.apellidosNombres}" 
+                                              style="font-size: 10px; text-align: center"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: center"
+                                      sortBy="#{elaboracionPlanificacionVacacionesBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}">
+                                <h:outputText style="font-size: 10px;"
+                                              value="#{elaboracionPlanificacionVacacionesBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}" />
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align: center"
+                                      filterBy="#{distributivo.servidor.numeroIdentificacion}">
+                                <h:outputText value="#{distributivo.servidor.numeroIdentificacion}" 
+                                              style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br />
+                        <center>
+                            <p:commandButton id="btnCancelar" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgResultadosBusqueda.hide();"
+                                             style="margin: auto" />
+                        </center>
+                        <br />
+                    </p:panel>
+                </h:form>  
+            </p:dialog>
+            <p:dialog header="PLANIFICACIONES DE VACACIONES"
+                      id="dlgBusquedaPlanificaciones"
+                      modal="true" closable="false"
+                      width="600"
+                      widgetVar="dlgBusquedaPlanificacionesWV">
+                <h:form id="frm_reportePlanificaciones">
+                    <br/>
+                    <p:panel>
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <p:selectOneRadio id="filtro" value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.filtrarPorYear}" 
+                                              onchange="mostrarComboMeses()" layout="grid">
+                                <f:selectItem itemLabel="Filtrar por Año " itemValue="#{true}" />
+                                <f:selectItem itemLabel="Filtrar por Mes " itemValue="#{false}" />
+                            </p:selectOneRadio>
+
+
+                            <p:selectOneMenu id="mesId" disabled="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.filtrarPorYear}"
+                                             value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.mesSeleccionado}"
+                                             style="width: 200px;" 
+                                             filter="true" filterMatchMode="contains" >
+                                <f:selectItems id="itemsMeses" 
+                                               value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.opcionesMeses}"/>    
+                            </p:selectOneMenu> 
+
+                        </h:panelGrid>
+                        <p:remoteCommand name="mostrarComboMesesRC" actionListener="#{elaboracionPlanificacionVacacionesBean.mostrarComboMeses()}"/>
+                        
+                        <p:commandButton id="btnBuscar" style="margin-left: 5px;margin-bottom: 5px;"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" update="tblPlanificaciones"
+                                         action="#{elaboracionPlanificacionVacacionesBean.buscarSalidasVacaciones()}"
+                                         />
+                    </p:panel>
+                    <br/>
+                    <br/>    
+                    <p:panel id="panelPlanificacionesEncontradas">
+                        <p:dataTable id="tblPlanificaciones" 
+                                     value="#{elaboracionPlanificacionVacacionesBean.elaboracionPlanificacionVacacionesHelper.planificacionesEncontradasVO}"
+                                     var="planificacion" rowIndexVar="rowIndex"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     sortBy="#{planificacion.planificacionVacacion.servidor.apellidosNombres}">
+                            <p:column headerText="No" style="width: 10%">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres"
+                                      sortBy="#{planificacion.planificacionVacacion.servidor.apellidosNombres}"
+                                      filterBy="#{planificacion.planificacionVacacion.servidor.apellidosNombres}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{planificacion.planificacionVacacion.servidor.apellidosNombres}" 
+                                              style="font-size: 10px; text-align: center"/>
+                            </p:column>
+                            <p:column headerText="Fecha Inicio">
+                                <h:outputText value="#{planificacion.fechaInicioDeVacacion}" 
+                                              style="font-size: 10px; text-align: left"/>
+                            </p:column>
+                            <p:column headerText="Fecha Fin">
+                                <h:outputText value="#{planificacion.fechaFinDeVacacion}" 
+                                              style="font-size: 10px; text-align: left"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <br/>
+                    <p:commandButton id="btnCerrar" style="margin: auto;"
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}" update="frm_reportePlanificaciones"
+                                     action="#{elaboracionPlanificacionVacacionesBean.mostrarComboMeses()}" onclick="dlgBusquedaPlanificacionesWV.hide()"
+                                         />
+                </h:form>
+            </p:dialog>
+            <script>
+                function mostrarComboMeses() {
+                    mostrarComboMesesRC();
+                }
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

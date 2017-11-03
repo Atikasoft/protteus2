@@ -1,0 +1,287 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel id="pnlFiltros" header="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.titulo']}">
+                    <p:spacer height="10"/>
+                    <center>
+                        <p:panel header="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.msgFiltros']} " style="width: 370px;" >
+                            <p:panelGrid columns="2">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                               id="nombre_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="nombre"  
+                                              styleClass="textoNombre"
+                                              autocomplete="off"                                              
+                                              style="width: 200px" 
+                                              value="#{planificacionHorarioBean.planificacionHorarioHelper.nombreServidor}">     
+
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "                                                      
+                                               id="numeroDocumento_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"                                      
+                                              styleClass="textoNombre"
+                                              style="width: 200px" 
+                                              value="#{planificacionHorarioBean.planificacionHorarioHelper.numeroIdentificacion}">     
+
+                                </p:inputText>
+                                <br/>
+                                <center>
+                                    <p:commandButton id="buscar"  
+                                                     value="BUSCAR"                                                     
+                                                     action="#{planificacionHorarioBean.buscarServidor}"
+                                                     update="DetalleNovedad"/>                        
+                                </center>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+
+                    <p:panel id="DetalleNovedad" header="#{msg['ec.gob.mrl.smp.procesos.novedades.servidorPublico']}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{planificacionHorarioBean.planificacionHorarioHelper.listaServidores}"
+                                     var="servidor"
+                                     sortBy="#{servidor.apellidosNombres}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 150px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-document" rendered="#{servidor!=null}"
+                                                 action="#{planificacionHorarioBean.iniciarNuevo}"
+                                                 process="@this"
+                                                 update=":popOpNuevo" oncomplete="editDialog.show();" type="botton"
+                                                 title="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.botonNuevo']}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{planificacionHorarioBean.planificacionHorarioHelper.servidor}"/>
+                                </p:commandButton>                                 
+                                <p:commandButton id="botonVer" icon="ui-icon-search" rendered="#{servidor!=null}"
+                                                 action="#{planificacionHorarioBean.iniciarNuevo}"
+                                                 update=":popOpDetalles" oncomplete="detDialog.show();" type="botton"
+                                                 title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{planificacionHorarioBean.planificacionHorarioHelper.servidor}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                      style="width: 150px">                                                                 
+                                <h:outputText value="#{planificacionHorarioBean.obtenerDescripcionTipoDocumento(servidor.tipoIdentificacion)}"/>                                
+                            </p:column>                            >
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                      style="width: 150px">                                                                 
+                                <h:outputText value="#{servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                      sortBy="#{servidor.apellidosNombres}" style="width: 70px">                                                                 
+                                <h:outputText value="#{servidor.apellidosNombres}"/>                                
+                            </p:column>  
+
+
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+
+            </h:form>
+            <!-- Nuevo registro -->
+            <p:dialog id="popOpNuevo" rendered="#{planificacionHorarioBean.planificacionHorarioHelper.servidor!=null}"
+                      header="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.nuevo']} #{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.servidor.apellidosNombres}" 
+                      showEffect="fade" widgetVar="editDialog" modal="true">  
+                <h:form id="formEditar">
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <center>
+                            <h:panelGrid columns="2" id="tablaformulario">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="horario_servidorTipoIdentificacion"
+                                             styleClass="textoNemonico"
+                                             disabled="#{true}"
+                                             value="#{planificacionHorarioBean.obtenerDescripcionTipoDocumento(
+                                                      planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.servidor.tipoIdentificacion)}"
+                                             style="width: 200px"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="horario_servidorNumeroIdentificacionn"
+                                             styleClass="textoNemonico"
+                                             value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.servidor.numeroIdentificacion}"
+                                             disabled="#{true}" style="width: 200px"/>                           
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="horario_servidorNombres"
+                                                 styleClass="textoNemonico"
+                                                 value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.servidor.apellidosNombres}"
+                                                 disabled="#{true}" style="width: 200px"/>
+                            </h:panelGrid>
+                        </center>
+                    </p:panel>
+                    <br/>  <p:separator/>
+
+                    <p:outputPanel id="editPanel">  
+                        <h:panelGrid  columns="2">    
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.ejercicioFiscal']}: " />  
+                            <p:selectOneMenu id="ejercicioFiscal" 
+                                             value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.institucionEjercicioFiscal.id}"
+                                             required="#{true}"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             requiredMessage="El campo Ejercicio fiscal es requerido">
+                                <f:selectItems value="#{planificacionHorarioBean.planificacionHorarioHelper.listaOpcionEjercicioFiscal}"/> 
+                            </p:selectOneMenu> 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.mes']}: " />  
+                            <p:selectOneMenu id="horario_mes" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.mes}"
+                                             required="#{true}"
+                                             requiredMessage="El campo Mes Desde es requerido">
+                                <f:selectItems value="#{planificacionHorarioBean.planificacionHorarioHelper.listaOpcionMeses}"/> 
+                                <p:ajax event="change" listener="#{planificacionHorarioBean.buscarRegistroHorario}" process="@this,editPanel"                                          
+                                        update="editPanel,panelBotonGuardar"/>
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel id="hora_inicio"  value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaInicio']}" />  
+                            <p:calendar id="horaInicio"  minHour="1" 
+                                        maxHour="24" timeOnly="true"
+                                        required="false" showOn="button" 
+                                        value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.horaInicio}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                        requiredMessage="El campo hora de entrada es requerida">
+                                <p:ajax event="dateSelect" update="p_horaInicioAlmuerzo" />  
+                            </p:calendar>           
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaInicioAlmuerzo']}: " />  
+                            <p:outputPanel id="p_horaInicioAlmuerzo">
+                                <p:calendar id="horaInicioAlmuerzo"   minHour="1" 
+                                            maxHour="24" 
+                                            timeOnly="true"
+                                            required="false" showOn="button" 
+                                            value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.horaInicioAlmuerzo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de inicio de almuerzo es requerida">
+                                </p:calendar>        
+                            </p:outputPanel>
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaFinAlmuerzo']}: " />  
+                            <p:outputPanel id="p_horaFinAlmuerzo">
+                                <p:calendar id="horaFinAlmuerzo"   minHour="1" maxHour="24" timeOnly="true"
+                                            required="false" showOn="button" 
+                                            value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.horaFinAlmuerzo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de fin de almuerzo es requerida">
+                                </p:calendar>        
+                            </p:outputPanel>
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaFin']}: " />  
+                            <p:outputPanel id="p_horaFin">
+                                <p:calendar id="horaFin"   minHour="1" 
+                                            maxHour="24" timeOnly="true"
+                                            required="false" showOn="button" 
+                                            value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.horaFin}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            requiredMessage="El campo hora de salida es requerida">
+                                </p:calendar>        
+                            </p:outputPanel>
+                        </h:panelGrid> 
+                        <p:separator/> 
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:panelGrid columns="2">
+                                <p:commandButton id="btnAceptar"
+                                                 value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                 
+                                                 action="#{planificacionHorarioBean.guardar()}"/>     
+
+                                <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                                 onclick="editDialog.hide()" 
+                                                 type="button" 
+                                                 style="margin: auto"/>                         
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog>     
+            <!-- Lista de detalles de planificación de horarios-->
+
+            <p:dialog id="popOpDetalles" rendered="#{planificacionHorarioBean.planificacionHorarioHelper.servidor!=null}"
+                      header="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}: #{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.servidor.apellidosNombres}" 
+                      showEffect="fade" widgetVar="detDialog" modal="true"  resizable="false" >  
+                <h:form id="formDet">
+                    <p:panel id="panelDetalle" style="overflow: auto" header="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.detalles']}">
+                        <h:panelGrid  columns="3">    
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.planificacionHorario.ejercicioFiscal']}: " />  
+                            <p:selectOneMenu id="ejercicioFiscal1" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{planificacionHorarioBean.planificacionHorarioHelper.planificacionHorario.institucionEjercicioFiscal.id}"
+                                             required="#{true}"
+                                             requiredMessage="El campo Ejercicio fiscal es requerido">
+                                <f:selectItems value="#{planificacionHorarioBean.planificacionHorarioHelper.listaOpcionEjercicioFiscal}"/> 
+                            </p:selectOneMenu> 
+                            <p:commandButton icon="ui-icon-search"
+                                             action="#{planificacionHorarioBean.buscar}"
+                                             update="panelDetalles" 
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"/>     
+                        </h:panelGrid>
+                        <br/><p:separator/><br/>
+                        <p:outputPanel id="panelDetalles">
+                            <p:dataTable value="#{planificacionHorarioBean.planificacionHorarioHelper.listaPlanificacionHorarios}"
+                                         var="det"
+                                         style="overflow: auto"
+                                         id="tbldet"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rowIndexVar="rowIndex">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="width: 20px;text-align: center">
+                                    <h:outputText value="#{rowIndex+1}"/>
+                                </p:column>
+                                <p:column headerText="Mes">
+                                    <h:outputText value="#{planificacionHorarioBean.obtenerNombreMes(det.mes)}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaInicio']}">
+                                    <h:outputText value="#{det.horaInicio}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaInicioAlmuerzo']}">
+                                    <h:outputText value="#{det.horaInicioAlmuerzo}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaFinAlmuerzo']}">
+                                    <h:outputText value="#{det.horaFinAlmuerzo}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.planificacionHorario.horaFin']}">
+                                    <h:outputText value="#{det.horaFin}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                    </h:outputText>
+                                </p:column>             
+                            </p:dataTable>
+                        </p:outputPanel>
+                        <p:spacer height="10"/>
+                        <div style="text-align: center">
+
+                            <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="detDialog.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>    
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,275 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.formula.titulo']}"
+                                     controlador="#{formulaBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="3" id="tablaformulario_externa">
+                        <h:panelGrid columns="2" id="tablaformulario">
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.formula.codigo']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+
+                            <p:outputPanel>
+                                <h:outputLabel id="prefijo" value="F_"
+                                               style=" font-style: oblique;font-weight: bold;margin: auto auto auto 5px;    padding-top: 6px;    position: absolute;"
+                                               rendered="#{formulaBean.formulaHelper.esNuevo}"/>  
+                                <p:inputText id="formula_codigo"                                      
+                                             styleClass="textoNemonico"
+                                             style="#{formulaBean.formulaHelper.esNuevo?'padding-left: 18px;width: 197px;':''}"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codEspecial.max']}"                                     
+                                             value="#{formulaBean.formulaHelper.formula.codigo}"
+                                             required="true"
+                                             disabled="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                             requiredMessage="El campo código es requerido"/>
+                            </p:outputPanel>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.formula.nombre']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="formula_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{formulaBean.formulaHelper.formula.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>           
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.formula.descripcion']}:"
+                                           styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                            <p:inputTextarea id="formula_descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{formulaBean.formulaHelper.formula.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>    
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.variable.uso']}:"
+                                           styleClass="labelUso" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+
+
+                            <p:dataList value="#{formulaBean.formulaHelper.listaUsosFormula}" 
+                                        rendered="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                        var="var" itemType="square">  
+                                #{var.nombre}
+                            </p:dataList>     
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+                            <p:selectBooleanCheckbox value="#{formulaBean.formulaHelper.formula.vigente}" disabled="true"
+                                                     rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+                            <p:inputText id="formula_usuario_creo"
+                                         value="#{formulaBean.formulaHelper.formula.usuarioCreacion}"
+                                         disabled="true" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                         style="width: 200px"/>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+                            <p:inputText id="formula_fecha_creo"
+                                         value="#{formulaBean.formulaHelper.formula.fechaCreacion}"
+                                         rendered="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+                            <p:inputText id="formula_usuario_actua"
+                                         value="#{formulaBean.formulaHelper.formula.usuarioActualizacion}"
+                                         rendered="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(formulaBean.formulaHelper.esNuevo)}"/>
+                            <p:inputText id="formula_fecha_actua"
+                                         value="#{formulaBean.formulaHelper.formula.fechaActualizacion}"
+                                         rendered="#{!(formulaBean.formulaHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+
+
+
+                        </h:panelGrid>   
+                        <p:spacer width="10" height="10" />
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.formula.formula']}" id="formulaSet">
+                            <h:form id="formAniadir">
+                                <h:panelGrid columns="3" id="panelAniadir" >
+                                    <p:commandButton id="botonAniadir" icon="ui-icon-gear"
+                                                     action="#{formulaBean.cargarDatosVariables}"                                          
+                                                     update=":modalSimular"
+                                                     title="#{msg['ec.gob.mrl.smp.generico.boton.simular']}"/>
+                                    <p:spacer width="30" height="10" />
+
+                                    <p:commandButton id="botonValidar" icon="ui-icon-check"
+                                                     title="#{msg['ec.gob.mrl.smp.generico.boton.validar']}"
+                                                     oncomplete="validDialog.show()"                                                     
+                                                     update=":modalValidar"/>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" id="panelArmarFormula">
+                                    <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.formula.formula']}:"
+                                                    styleClass="labelFormulario" style="width: 100px; text-align: right" />
+
+                                    <p:inputTextarea id="formula_contenido"
+                                                     style="width: 400px;font-size:10px;"
+
+                                                     styleClass="textoDescripcion"
+                                                     maxlength="1000" 
+                                                     value="#{formulaBean.formulaHelper.formula.formula}"
+                                                     required="true" 
+                                                     requiredMessage="El campo fórmula es requerido">    
+                                        <f:ajax event="blur"/>
+                                    </p:inputTextarea>
+
+
+
+                                    <h:outputLabel  value="#{msg['ec.gob.mrl.smp.administracion.constante.constante']}s (Código):"
+                                                    styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                                    <p:selectOneMenu id="nombreConstante" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{formulaBean.formulaHelper.nombreConstante}">
+                                        <f:selectItems value="#{formulaBean.formulaHelper.opcionesConstantes}"/>    
+                                        <p:ajax event="change" listener="#{formulaBean.seleccionConstante}" 
+                                                update="formula_contenido,nombreConstante" partialSubmit="true"/>
+                                    </p:selectOneMenu> 
+
+                                    <h:outputLabel  value="#{msg['ec.gob.mrl.smp.administracion.variable.variable']}s (Código):"
+                                                    styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                                    <p:selectOneMenu id="nombreVariableP" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{formulaBean.formulaHelper.nombreVariableP}">
+                                        <f:selectItems value="#{formulaBean.formulaHelper.opcionesVariables}"/>    
+                                        <p:ajax event="change" listener="#{formulaBean.seleccionVariable}" 
+                                                update="formula_contenido,nombreVariableP"/>
+                                    </p:selectOneMenu> 
+
+
+                                    <h:outputLabel  value="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.datoAdicional']} (Código):"
+                                                    styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                                    <p:selectOneMenu id="nombreDatoAdicional" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{formulaBean.formulaHelper.nombreDatoAdicional}">
+                                        <f:selectItems value="#{formulaBean.formulaHelper.opcionesDatosAdicionales}"/>    
+                                        <p:ajax event="change" listener="#{formulaBean.seleccionDatoAdicional}" 
+                                                update="formula_contenido,nombreDatoAdicional"/>
+                                    </p:selectOneMenu> 
+
+
+                                    <h:outputLabel  value="#{msg['ec.gob.mrl.smp.administracion.formula.formula']}s (Código):"
+                                                    styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                                    <p:selectOneMenu id="nombreFormula" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{formulaBean.formulaHelper.nombreFormula}">
+                                        <f:selectItems value="#{formulaBean.formulaHelper.opcionesFomulas}"/>    
+                                        <p:ajax event="change" listener="#{formulaBean.seleccionFormula}" 
+                                                update="formula_contenido,nombreFormula"/>
+                                    </p:selectOneMenu> 
+
+
+                                </h:panelGrid>
+
+                            </h:form>
+                        </p:fieldset>
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+
+            <p:dialog id="modalValidar" 
+                      header="VALIDACIÓN DE FORMULA"
+                      showEffect="fade" 
+                      widgetVar="validDialog" 
+                      modal="true">  
+                <h:form id="formValidarCondicion">
+                    <p:outputPanel id="validPanel" 
+                                   style="width: 600px"> 
+                        <p:inputTextarea id="visorMsg" 
+                                         rows="10" 
+                                         cols="80" 
+                                         readonly="#{true}"
+                                         value="#{formulaBean.formulaHelper.formula.formula}" />  
+                        <br/><br/>
+                        <p:commandButton id="btnAceptar"
+                                         value="VALIDAR"                                        
+                                         action="#{formulaBean.validarFormula}"/> 
+                        <p:commandButton id="close" value="CERRAR"
+                                         onclick="validDialog.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                        <br/><br/>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="modalSimular" 
+                      header="SIMULACIÓN DE FORMULA" 
+                      showEffect="fade" 
+                      widgetVar="simularDialog" 
+                      modal="true">  
+                <h:form id="formSimularCondicion">
+                    <p:dataTable value="#{formulaBean.formulaHelper.listaDatosVariables}"
+                                 style="margin: auto;width: 600px;"
+                                 var="variable">
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="VARIABLE"/>
+                            </f:facet>
+                            <p:outputLabel value="#{variable.codigo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="VALOR"/>
+                            </f:facet>
+                            <p:panelGrid columns="2" styleClass="columnaTamAuto">
+                                <p:inputText id="variable_valor"
+                                             value="#{variable.valor}"
+                                             required="#{true}"
+                                             requiredMessage="El campo valor es requerido"/>                                   
+                            </p:panelGrid>
+                        </p:column>                            
+                    </p:dataTable>
+
+                    <p:outputPanel id="validPanel" 
+                                   style="width: 600px"> 
+                        <p:inputTextarea id="visorMsg" 
+                                         rows="10" 
+                                         cols="80" 
+                                         readonly="#{true}"
+                                         value="#{formulaBean.formulaHelper.formula.formula}" />  
+                        <br/><br/><br/>
+                        <p:outputLabel value="Resultado:"/>   
+                        <br/>
+                        <p:outputPanel id="panelResultado"> 
+
+                            <p:inputTextarea id="visorResultado"  
+                                             readonly="#{true}"
+                                             style="width:350px;"
+                                             value="#{formulaBean.formulaHelper.resultadoSimulacion}" /> 
+                        </p:outputPanel>
+                        <br/><br/>
+                        <div>
+                            <p:commandButton id="btnAceptar"
+                                             value="SIMULAR"                                        
+                                             action="#{formulaBean.simularFormula}"
+                                             update="panelResultado"/>    
+                            <p:commandButton id="close" value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                             onclick="simularDialog.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

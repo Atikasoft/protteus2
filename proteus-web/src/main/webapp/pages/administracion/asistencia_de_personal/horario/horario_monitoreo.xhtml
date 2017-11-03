@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">  
+            <style>
+                .tablaHorariosStyle thead {
+                    display: none;
+                }
+            </style>
+            <h:form id="frmHorarioMonitoreo">
+                <p:panel header="MONITOREO DE ASIGNACIÓN DE HORARIOS">
+                    <p:panelGrid columns="5">
+                        <p:outputLabel value="Tipo:"/>
+                        <p:selectOneMenu value="#{horarioMonitoreoBean.horarioMonitoreoHelper.opcionTipoServidorHorario}">
+                            <f:selectItems value="#{horarioMonitoreoBean.horarioMonitoreoHelper.opcionesTipoServidorHorario}"/>
+                            <p:ajax listener="#{horarioMonitoreoBean.contarServidores}" 
+                                    update="@form"/>
+                        </p:selectOneMenu>
+                        <!--
+                                                <p:commandButton value="Asignar Masivamente"
+                                                                 action="#{horarioMonitoreoBean.iniciarAsignacionDeHorario()}"
+                                                                 update=":frmAsignacionMasivaHorario">
+                                                    <f:setPropertyActionListener target="#{horarioMonitoreoBean.horarioMonitoreoHelper.asignacionMasivaActivada}" 
+                                                                                 value="#{true}"/>
+                                                </p:commandButton>-->
+
+                        <!--                        <h:commandLink  id="exp_xls" 
+                                                                title="Exportar Excel"
+                                                                rendered="#{not empty horarioMonitoreoBean.horarioMonitoreoHelper.listaPuestos}">
+                                                    <p:graphicImage value="/images/excel.png" 
+                                                                    alt="Exportar Excel" 
+                                                                    style="width: 25px; height: 25px" />
+                                                    <p:dataExporter type="xls" target="tablaServidores" 
+                                                                    fileName="#{horarioMonitoreoBean.horarioMonitoreoHelper.nombreArchivo}"
+                                                                    postProcessor="#{horarioMonitoreoBean.postProcessXLS}" >                                    
+                                                    </p:dataExporter>                                
+                                                </h:commandLink>-->
+                    </p:panelGrid>
+
+                    <p:separator/>
+
+                    <p:dataTable id="tblHorarioMonitoreo" 
+                                 value="#{horarioMonitoreoBean.horarioMonitoreoHelper.listaHorarioMonitoreoVO}"
+                                 var="hm"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+<!--                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 30px">
+                            <p:commandButton id="btnAsigHorario" 
+                                             icon="ui-icon-clock"
+                                             title="Asignar Horarios"
+                                             action="#{horarioMonitoreoBean.inciarAsignacionDeHorariosADesconcentrado}"
+                                             update=":frmSeleccionHorarios">
+                                <f:setPropertyActionListener value="#{desconcentrado}" 
+                                                             target="#{horarioMonitoreoBean.horarioMonitoreoHelper.desconcentrado}"/>
+                            </p:commandButton>
+                        </p:column>  -->
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+
+                        <p:column headerText="Unidad Desconcentrada" 
+                                  sortBy="#{hm.desconcentrado.nombre}"
+                                  filterBy="#{hm.desconcentrado.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80%">
+                            <h:outputText value="#{hm.desconcentrado.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Horarios Asignados">
+                            <p:dataTable id="tbl_horarios" 
+                                         styleClass="tablaHorariosStyle"
+                                         value="#{horarioMonitoreoBean.obtenerHorariosConfigurados(hm.desconcentrado.id)}"
+                                         var="horarioDesconcentrado"
+                                         emptyMessage="No se han asignado horarios">
+                                <p:column>
+                                    <p:commandLink value="#{horarioDesconcentrado.horario.nombre}" 
+                                                   action="#{horarioMonitoreoBean.mostrarDlgHorarioDetalles}"
+                                                   update=":frmLecturaHorarioDetalle"
+                                                   title="Ver detalle">
+                                        <f:setPropertyActionListener target="#{horarioMonitoreoBean.horarioMonitoreoHelper.horario}" 
+                                                                     value="#{horarioDesconcentrado.horario}"/>
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>  
+
+            <!-- DIALOGO QUE MUESTRA LOS DETALLES DE UN HORARIO SELECCIONAD-->
+            <p:dialog id="dlgLecturaHorarioDetalle" 
+                      widgetVar="dlgLecturaHorarioDetalleWV"
+                      closable="true"
+                      header="Detalle de Horario">
+                <p:outputPanel>
+                    <h:form id="frmLecturaHorarioDetalle">
+                        <p:dataTable value="#{horarioBean.nombresDias}"
+                                     var="dia" >
+                            <f:facet name="header">
+                                #{horarioDesconcentrado.horario.nombre}
+                            </f:facet>
+
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column rowspan="2" 
+                                              headerText="Días" />
+                                    <p:column colspan="5" 
+                                              headerText="Eventos" />
+                                </p:row>
+                                <p:row>
+                                    <p:column headerText="Entrada" />
+                                    <p:column headerText="Inicio Almuerzo" />
+                                    <p:column headerText="Fín Almuerzo" />
+                                    <p:column headerText="Salida" />
+                                    <p:column headerText="Total Horas" />
+                                </p:row>
+                            </p:columnGroup>
+
+                            <p:column>
+                                <h:outputText value="#{dia}" />
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntrada}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalidaAlmuerzo}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaEntradaAlmuerzo}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).horaSalida}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <h:outputText value="#{horarioBean.buscarHorarioDetallePorNombreDia(horarioDesconcentrado.horario.id, dia).totalHorasDiaria}" >
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:outputPanel>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

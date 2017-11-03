@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{relojBean}" 
+                                     extendido="false"
+                                     titulo="ADMINISTRACIÓN DE RELOJES">
+                <f:facet name="contenido">
+                    <p:panel>
+                        <h:panelGrid columns="2" 
+                                     id="tablaformulario">
+                            <h:outputLabel value="* Código:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="codigo"
+                                         styleClass="textoNemonico"
+                                         style="width: 150px;"
+					 maxlength="20"
+                                         required="true" 
+                                         onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                         requiredMessage="El campo 'Código' es requerido."
+                                         value="#{relojBean.relojHelper.reloj.codigo}"
+                                         disabled="#{!(relojBean.relojHelper.esNuevo)}"/>
+                            
+                            <h:outputLabel value="* Nombre:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="nombre"
+                                         style="width: 300px; text-transform: uppercase;"
+                                         maxlength="200"
+                                         required="true"
+                                         onblur="javascript:this.value = this.value.toUpperCase();"
+                                         requiredMessage="El campo 'Nombre' es requerido."
+                                         value="#{relojBean.relojHelper.reloj.nombre}"/>
+                            
+                            <h:outputLabel value="* Ip:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="ip"
+                                         style="width: 150px; text-transform: uppercase;"
+                                         maxlength="400"
+                                         required="true"
+                                         onblur="javascript:this.value = this.value.toUpperCase();"
+                                         requiredMessage="El campo 'Ip' es requerido."
+                                         value="#{relojBean.relojHelper.reloj.ip}">
+                                <f:validateRegex pattern="#{msg['ec.gob.mrl.smp.genericos.patron.ipv4']}"/>
+                            </p:inputText>
+                            
+                            <h:outputLabel value="* Modelo: "                                       
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu value="#{relojBean.relojHelper.modeloRelojSeleccionado}"
+                                             required="#{true}"
+                                             style="width: 307px;"
+                                             requiredMessage="El campo 'Modelo' es requerido.">
+                                <f:selectItems value="#{relojBean.relojHelper.listaModelosReloj}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        
+                    </p:panel>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

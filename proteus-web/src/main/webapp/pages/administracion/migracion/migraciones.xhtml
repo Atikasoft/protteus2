@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelBotones" header="Migraciones">                                         
+                    <br/>
+                    <h:panelGrid columns="3">                      
+                        <p:commandButton value="Migración Saldo de Vacaciones"
+                                         title="Migración de Saldo de Vacaciones"
+                                         action="#{migracionesBean.migracionSaldos()}"/>          
+                        <p:commandButton value="Migración Trayectoria Laboral de Vacaciones"
+                                         title="Migración de Trayectoria Laboral de Vacaciones"
+                                         action="#{migracionesBean.migracionTrayectoria()}"/>
+                        <p:commandButton value="SALIR" 
+                                         ajax="#{false}"
+                                         action="#{migracionesBean.salirPantallaPrincipal()}"/>
+                        
+                    </h:panelGrid>
+                    <br/>
+                      
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

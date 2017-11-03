@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <META HTTP-EQUIV='Pragma' CONTENT='no-cache'/>
+        <META http-equiv='Expires' content='-1'/>
+        <META http-equiv='Last-Modified' content='0'/>
+        <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+            function cerrar()
+            {
+                document.loginReturn.submit();
+            }
+        </SCRIPT>
+    </h:head>
+    <h:body onload="cerrar();">
+        <form name="loginReturn" method="get" action="login.jsf">
+        </form>
+    </h:body>
+</html>
+
+
+

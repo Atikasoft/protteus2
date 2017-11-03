@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <ui:composition >        
+        <div id="menu">
+            <div id="bloq-sup-infoUsario">
+                <div id="cornerLeft01">
+                </div>
+                <div id="cornerRight01">
+                </div>                
+                <table cellpadding="0" cellspacing="0" style="width: 98%">
+                    <tbody>
+                        <tr>
+                            <td>
+
+                                <h:form>
+                                    <h:panelGrid  columns="1"  rendered="#{inicioControlador.roles !=null }">
+                                        <h:panelGroup >
+                                            <p:menubar autoDisplay="true" model="#{inicioControlador.model}">
+                                            </p:menubar>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+
+                                </h:form>
+
+                            </td>
+                            <td style="border: 0px solid red; position: relative;top: 5px;width: 140px; vertical-align: top">                       
+                                <h:form>
+                                    <p:commandButton action="#{inicioControlador.cerrarSesion}"                                         
+                                                     ajax="false"    
+                                                     immediate="true"
+                                                     icon="ui-icon-power"
+                                                     style="                                   
+                                                     cursor: pointer;border: 1px solid white;
+                                                     position: relative;
+                                                     float: right; right: 0;" title="Cerrar Sesión">                           
+                                    </p:commandButton>                    
+                                </h:form>
+
+
+                                <h:form>
+                                    <p:commandButton action="#{inicioControlador.iniciarCambioContrasenna}"
+                                                     oncomplete="dlgCambioPass.show();"
+                                                     update=":frmCambioPass"
+                                                     process="@this" icon="ui-icon-person"
+                                                     rendered="#{!inicioControlador.obtenerUsuarioConectado().esUsuarioWS}"
+                                                     style="
+                                                     position: relative;
+                                                     cursor: pointer;                                       
+                                                     float: right;border: 1px solid white;
+                                                     margin-right: 2px;" title="Cambiar Clave">                           
+                                    </p:commandButton>
+                                </h:form>
+
+                                <p:button href="/pages/index.jsf" 
+                                          icon="ui-icon-home"
+                                          style="
+                                          position: relative;
+                                          cursor: pointer;
+                                          border: 1px solid white;
+                                          float: right;
+                                          margin-right: 2px; "                                  
+
+                                          title="Inicio"/>
+
+                                <h:form id="frmNotificaciones">
+                                    <p:commandButton id="btnNotificaciones" 
+                                                     action="#{inicioControlador.irANotificaciones}"
+                                                     ajax="#{false}"
+                                                     rendered="#{inicioControlador.datosNotificaciones['cantidad'] ne null 
+                                                                 and inicioControlador.datosNotificaciones['cantidad'] > 0}"
+                                                     value="#{inicioControlador.totalNotificacionesTexto(inicioControlador.datosNotificaciones['cantidad'])}"
+                                                     style="
+                                                     position: relative;
+                                                     cursor: pointer;
+                                                     border: 1px solid red;
+                                                     float: right;
+                                                     margin-right: 2px; 
+                                                     background: red;"                                
+                                                     title="#{inicioControlador.datosNotificaciones['mensaje']}"/>
+
+                                    <p:remoteCommand name="actualizarBtnNotificaciones"
+                                                     process="@this"
+                                                     global="#{false}"
+                                                     update="frmNotificaciones"
+                                                     actionListener="#{inicioControlador.contarNotificacionesNoLeidas()}"/>
+                                </h:form>               
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>                
+            </div>
+        </div>
+        <style>.columnaALaDerecha{text-align: right;}</style>
+        <p:dialog modal="true" resizable="false"  width="470" 
+                  draggable="true" header="Cambio de Clave"
+                  widgetVar="dlgCambioPass" closable="true">
+            <h:form id="frmCambioPass" style="border: none">
+                <center>                                
+                    <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                        <h:panelGrid  columns="3" id="frmCambioPassPanel" columnClasses="columnaALaDerecha,," >  
+                            <p:outputLabel value="Clave anterior:" for="oldPass" style="text-align: right"/>
+                            <p:password id="oldPass" required="true" style="width: 250px" value="#{inicioControlador.contrasennaAnterior}"/>
+                            <p:message for="oldPass" showDetail="false" />
+
+                            <p:outputLabel for="newPass1" value="Nueva clave" style="text-align: right"/>
+                            <p:password id="newPass1" required="true" promptLabel="Por favor entre su nueva clave" validatorMessage="La nueva clave y su confirmación no coinciden"
+                                        weakLabel="Débil" goodLabel="Aceptable" strongLabel="Fuerte"  match="newPass2"
+                                        feedback="true" style="width: 250px" value="#{inicioControlador.contrasennaNueva}"/>
+                            <p:message for="newPass1" showDetail="false"/>
+
+                            <p:outputLabel for="newPass2" value="Confirme la clave" style="text-align: right"/>
+                            <p:password id="newPass2" style="width: 250px"  required="true" promptLabel="Por favor repita su nueva clave"
+                                        weakLabel="Débil" goodLabel="Aceptable" strongLabel="Fuerte" feedback="true" value="#{inicioControlador.contrasennaNuevaConfirmacion}"/>
+                            <p:message for="newPass2" showDetail="false"/>
+                        </h:panelGrid>
+                        <p:separator />
+                        <p:commandButton id="btnAceptar" value="ACEPTAR" action="#{inicioControlador.cambiarContrasenna}"                                    
+                                         update="frmCambioPass" icon="ui-icon-check"                                   
+                                         style="margin-right: 2px"/>
+                        <p:commandButton id="btnCancelar" value="CANCELAR"
+                                         onclick="dlgCambioPass.hide();"
+                                         type="button" icon="ui-icon-close"
+                                         immediate="true"/>
+
+                    </p:panel>              
+                </center>
+            </h:form>
+        </p:dialog>
+        <script>
+            $(document).ready(function () {
+                setInterval(actualizarBtnNotificaciones, 60000);
+            })
+        </script>
+
+    </ui:composition>
+</html>

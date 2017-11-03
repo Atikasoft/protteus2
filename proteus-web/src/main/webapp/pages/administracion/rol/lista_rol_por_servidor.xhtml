@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel id="pnlFiltros" header="#{msg['ec.gob.mq.proteus.administracion.permisos.titulo']}">
+                    <p:spacer height="10"/>
+                    <center>
+                        <p:panel header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.filtro.busqueda.titulo']} " style="width: 370px;" >
+                            <p:panelGrid columns="2">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                               id="nombre_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="nombre"  
+                                              styleClass="textoNombre"
+                                              autocomplete="off"                                              
+                                              style="width: 200px" 
+                                              value="#{rolServidorBean.rolServidorHelper.nombreServidor}">     
+
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "                                                      
+                                               id="numeroDocumento_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"                                      
+                                              styleClass="textoNombre"
+                                              style="width: 200px" 
+                                              value="#{rolServidorBean.rolServidorHelper.numeroIdentificacion}">     
+
+                                </p:inputText>
+                                <br/>
+                                <center>
+                                    <p:commandButton id="buscar"  
+                                                     value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"                                                     
+                                                     title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"   
+                                                     action="#{rolServidorBean.buscar}"
+                                                     update="detalleDistributivo,tabla"/>                        
+                                </center>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+
+                    <p:panel id="detalleDistributivo" header="#{msg['ec.gob.mrl.smp.procesos.novedades.servidorPublico']}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{rolServidorBean.rolServidorHelper.listaServidores}"
+                                     var="det"
+                                     sortBy="#{det.servidor.apellidosNombres}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 50px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-note" rendered="#{det.servidor!=null}"
+                                                 action="#{rolServidorBean.iniciarNuevo}" >
+                                    <f:setPropertyActionListener value="#{det.servidor}" 
+                                                                 target="#{rolServidorBean.rolServidorHelper.servidor}"/>
+                                    <f:setPropertyActionListener value="#{det}" 
+                                                                 target="#{rolServidorBean.rolServidorHelper.distributivoDetalle}"/>
+                                </p:commandButton>                                                        
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 20px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                      style="width: 50px">                                                                 
+                                <h:outputText value="#{rolServidorBean.obtenerDescripcionTipoDocumento(det.servidor.tipoIdentificacion)}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                      style="width: 50px">                                                                 
+                                <h:outputText value="#{det.servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                      sortBy="#{det.servidor.apellidosNombres}" 
+                                      style="width: 200px">                                                                 
+                                <h:outputText value="#{det.servidor.apellidosNombres}"/>                                
+                            </p:column>                                          
+
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+
+            </h:form>          
+        </ui:define>
+    </ui:composition>
+</html>

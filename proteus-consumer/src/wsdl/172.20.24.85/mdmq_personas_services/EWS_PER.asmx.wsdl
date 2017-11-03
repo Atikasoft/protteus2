@@ -1,0 +1,1512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://mdmq.quito.gob.ec/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://mdmq.quito.gob.ec/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://mdmq.quito.gob.ec/">
+      <s:element name="fnOPERACIONPerNatural">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="oNat" type="tns:PER_NATURAL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_NATURAL">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ACCION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_PERSONA_ID" type="s:long" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_APELLIDOS" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_SEXO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_FCH_NACIMIENTO" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_PAIS_NAC" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_OCUPACION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_DISCAPACITADO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_JUBILADO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_FCH_FALLECIMIENTO" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_ESTADO_CIVIL" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_NIVEL_INSTRUCCION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_CREACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_TS_CREACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_MODIFICACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_TS_MODIFICACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_RUC" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="NA_UBICACION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_FLG_EMPLEADO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_DENOMINACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NUM_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_MAIL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NOMBRE390" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_FLG_EMPLEADO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ES_CONTRIBUYENTE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ES_CONTRIBUYENTE_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_JUBILADO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_OBSERVACIONES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_SEXO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_PAIS_NAC_PAIS" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_PAIS_NAC_NACIONALIDAD" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_OCUPACION_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_DISCAPACITADO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_ESTADO_CIVIL_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_NIVEL_INSTRUCCION_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_CREACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_CREACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_MODIFICACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NA_USR_MODIFICACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIPO_PERSONA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_PREFIJO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="CREADOR_ID" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PORCENTAJE_DISCAPACIDAD" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="NUMERO_CARNET" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RELACION_MATRIMONIAL" type="tns:PER_RELACION_PERSONA" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="EntidadGenerica">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ORIGINAL" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="VERSION_FILA" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="versionFila" type="s:base64Binary" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PER_RELACION_PERSONA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_RELACION_ID" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_FCH_INICIO" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_FCH_FIN" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="RP_USR_CREACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_TS_CREACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="RP_USR_MODIFICACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_TS_MODIFICACION" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_PERSONA_ORIGEN" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_PERSONA_DESTINO" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="RP_RELACION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="RP_ESTADO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PR_RELACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_DENOMINACION" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnOPERACIONPerNaturalResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnOPERACIONPerNaturalResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_LOGIN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_PASSWORD" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="lonPER_PERSONA_ID" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="clsMessage">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="intCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="strSource" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="intLine" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="strMessage" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnOPERACIONPerJuridica">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="oJud" type="tns:PER_JURIDICA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_JURIDICA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ACCION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_PERSONA_ID" type="s:long" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_NOM_LEGAL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_NOM_COMERCIAL" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_FCH_CONSTITUCION" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_PAIS_CONST" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_NUM_EMPLEADOS" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_NUM_REGISTRO" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_ESTADO" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_NUM_RESOLUCION" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_FCH_RESOLUCION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_NEGOCIO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_TIPO_EMPRESA" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_TIPO_JURIDICO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_CREACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_TS_CREACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_MODIFICACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_TS_MODIFICACION" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="JU_UBICACION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_PAIS_CONST_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_ESTADO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_TIPO_EMPRESA_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_TIPO_JURIDICO_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_CREACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_CREACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_MODIFICACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="JU_USR_MODIFICACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_DENOMINACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NUM_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_MAIL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NOMBRE390" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ES_CONTRIBUYENTE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ES_CONTRIBUYENTE_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_OBSERVACIONES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIPO_PERSONA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_PREFIJO" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnOPERACIONPerJuridicaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnOPERACIONPerJuridicaResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_LOGIN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_PASSWORD" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="lonPER_PERSONA_ID" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCIONEliminar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intDIRECCIONID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCIONEliminarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnDIRECCIONEliminarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_DIRECCION_REL">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_DIRECCION_ID" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_PERSONA_ID" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_TIPO_DIRECCION" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_UBICACION" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="DR_CA_HOJA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DR_CA_MANZANA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DR_CA_LOTE" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_CN_ZONA" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_CN_PARROQUIA" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_CN_BARRIO" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_CN_MANZANA" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="DR_NOTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DR_REFERENCIA" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="DR_NUM_PREDIO" type="s:int" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnDIRECCION_RELActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnDIRECCION_RELActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnDIRECCION_RELBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_DIRECCION_REL" type="tns:ArrayOfPER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_DIRECCION_REL">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_DIRECCION_REL" nillable="true" type="tns:PER_DIRECCION_REL" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnDIRECCION_RELInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnDIRECCION_RELInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="1" maxOccurs="1" name="longDireccionId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELConsultar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnDIRECCION_RELConsultarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnDIRECCION_RELConsultarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_DIRECCION_REL" type="tns:ArrayOfPER_DIRECCION_REL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnESTADO_CIVILBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_ESTADO_CIVIL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_ESTADO_CIVIL">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="EC_ESTADO_ID" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="EC_ESTADO" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnESTADO_CIVILBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnESTADO_CIVILBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_ESTADO_CIVIL" type="tns:ArrayOfPER_ESTADO_CIVIL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_ESTADO_CIVIL">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_ESTADO_CIVIL" nillable="true" type="tns:PER_ESTADO_CIVIL" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnJURIDICAActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_JURIDICA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnJURIDICAActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnJURIDICAActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnJURIDICABuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_JURIDICA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnJURIDICABuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnJURIDICABuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_JURIDICA" type="tns:ArrayOfPER_JURIDICA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_JURIDICA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_JURIDICA" nillable="true" type="tns:PER_JURIDICA" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnJURIDICAInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_JURIDICA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnJURIDICAInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnJURIDICAInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="1" maxOccurs="1" name="longPersonaId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnNATURALActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_NATURAL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnNATURALActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnNATURALActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnNATURALBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_NATURAL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnNATURALBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnNATURALBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_NATURAL" type="tns:ArrayOfPER_NATURAL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_NATURAL">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_NATURAL" nillable="true" type="tns:PER_NATURAL" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnNATURALInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_NATURAL" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnNATURALInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnNATURALInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="1" maxOccurs="1" name="longPersonaId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPERSONABuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_PERSONA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="PE_PERSONA_ID" type="s:long" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_DENOMINACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NUM_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_PERSONA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_MAIL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_CREACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PE_TS_CREACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_MODIFICACION" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PE_TS_MODIFICACION" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_OBSERVACIONES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_PREFIJO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_NOMBRE390" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ES_CONTRIBUYENTE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_PERSONA_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_CREACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_CREACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_MODIFICACION_NOMBRES" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_USR_MODIFICACION_US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_APR_NOMBRE" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnPERSONABuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnPERSONABuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_PERSONA" type="tns:ArrayOfPER_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_PERSONA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_PERSONA" nillable="true" type="tns:PER_PERSONA" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnPERSONAConsultar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPERSONAConsultarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnPERSONAConsultarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_PERSONA" type="tns:ArrayOfPER_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPER_PERSONA_DENOMINACION_FUN">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPER_PERSONA_DENOMINACION_FUNResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnPER_PERSONA_DENOMINACION_FUNResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_PERSONA" type="tns:ArrayOfPER_PERSONA" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDenominacion" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPERSONAEliminar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="lonPER_PERSONA_ID" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnPERSONAEliminarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnPERSONAEliminarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnRELACION_PERSONAActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_RELACION_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnRELACION_PERSONAActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnRELACION_PERSONAActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnRELACION_PERSONABuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_RELACION_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnRELACION_PERSONABuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnRELACION_PERSONABuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_RELACION_PERSONA" type="tns:ArrayOfPER_RELACION_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_RELACION_PERSONA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_RELACION_PERSONA" nillable="true" type="tns:PER_RELACION_PERSONA" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnRELACION_PERSONAInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_RELACION_PERSONA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnRELACION_PERSONAInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnRELACION_PERSONAInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="1" maxOccurs="1" name="longRelacionId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_TELEFONO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_TELEFONO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="PT_TELEFONO_ID" type="s:long" />
+              <s:element minOccurs="1" maxOccurs="1" name="PT_PERSONA" type="s:long" />
+              <s:element minOccurs="0" maxOccurs="1" name="PT_NUM_TELEFONO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PT_TIP_TELEFONO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PT_PROVEEDEOR" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnTELEFONOActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnTELEFONOActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_TELEFONO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnTELEFONOBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_PER_TELEFONO" type="tns:ArrayOfPER_TELEFONO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_TELEFONO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_TELEFONO" nillable="true" type="tns:PER_TELEFONO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnTELEFONOInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_TELEFONO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnTELEFONOInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="1" maxOccurs="1" name="longTelefonoId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOEliminar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_TELEFONO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTELEFONOEliminarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnTELEFONOEliminarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnTIPO_EMPRESABuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:PER_TIPO_EMPRESA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PER_TIPO_EMPRESA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="TE_TIPO_EMPRESA_ID" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="TE_TIPO_EMPRESA" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="TE_ESTADO" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnTIPO_EMPRESABuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnTIPO_EMPRESABuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstPER_TIPO_EMPRESA" type="tns:ArrayOfPER_TIPO_EMPRESA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPER_TIPO_EMPRESA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PER_TIPO_EMPRESA" nillable="true" type="tns:PER_TIPO_EMPRESA" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="fnOPERACIONPerNaturalSoapIn">
+    <wsdl:part name="parameters" element="tns:fnOPERACIONPerNatural" />
+  </wsdl:message>
+  <wsdl:message name="fnOPERACIONPerNaturalSoapOut">
+    <wsdl:part name="parameters" element="tns:fnOPERACIONPerNaturalResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnOPERACIONPerJuridicaSoapIn">
+    <wsdl:part name="parameters" element="tns:fnOPERACIONPerJuridica" />
+  </wsdl:message>
+  <wsdl:message name="fnOPERACIONPerJuridicaSoapOut">
+    <wsdl:part name="parameters" element="tns:fnOPERACIONPerJuridicaResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCIONEliminarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnDIRECCIONEliminar" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCIONEliminarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnDIRECCIONEliminarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELConsultarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELConsultar" />
+  </wsdl:message>
+  <wsdl:message name="fnDIRECCION_RELConsultarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnDIRECCION_RELConsultarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnESTADO_CIVILBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnESTADO_CIVILBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnESTADO_CIVILBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnESTADO_CIVILBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICAActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnJURIDICAActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICAActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnJURIDICAActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICABuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnJURIDICABuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICABuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnJURIDICABuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICAInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnJURIDICAInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnJURIDICAInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnJURIDICAInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnNATURALActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnNATURALActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnNATURALBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnNATURALBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnNATURALInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnNATURALInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnNATURALInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONABuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnPERSONABuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONABuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnPERSONABuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONAConsultarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnPERSONAConsultar" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONAConsultarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnPERSONAConsultarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnPER_PERSONA_DENOMINACION_FUNSoapIn">
+    <wsdl:part name="parameters" element="tns:fnPER_PERSONA_DENOMINACION_FUN" />
+  </wsdl:message>
+  <wsdl:message name="fnPER_PERSONA_DENOMINACION_FUNSoapOut">
+    <wsdl:part name="parameters" element="tns:fnPER_PERSONA_DENOMINACION_FUNResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONAEliminarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnPERSONAEliminar" />
+  </wsdl:message>
+  <wsdl:message name="fnPERSONAEliminarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnPERSONAEliminarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONAActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONAActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONAActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONAActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONABuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONABuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONABuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONABuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONAInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONAInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnRELACION_PERSONAInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnRELACION_PERSONAInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOEliminarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOEliminar" />
+  </wsdl:message>
+  <wsdl:message name="fnTELEFONOEliminarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnTELEFONOEliminarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnTIPO_EMPRESABuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnTIPO_EMPRESABuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnTIPO_EMPRESABuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnTIPO_EMPRESABuscarResponse" />
+  </wsdl:message>
+  <wsdl:portType name="EWS_PERSoap">
+    <wsdl:operation name="fnOPERACIONPerNatural">
+      <wsdl:input message="tns:fnOPERACIONPerNaturalSoapIn" />
+      <wsdl:output message="tns:fnOPERACIONPerNaturalSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnOPERACIONPerJuridica">
+      <wsdl:input message="tns:fnOPERACIONPerJuridicaSoapIn" />
+      <wsdl:output message="tns:fnOPERACIONPerJuridicaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCIONEliminar">
+      <wsdl:input message="tns:fnDIRECCIONEliminarSoapIn" />
+      <wsdl:output message="tns:fnDIRECCIONEliminarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELActualizar">
+      <wsdl:input message="tns:fnDIRECCION_RELActualizarSoapIn" />
+      <wsdl:output message="tns:fnDIRECCION_RELActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELBuscar">
+      <wsdl:input message="tns:fnDIRECCION_RELBuscarSoapIn" />
+      <wsdl:output message="tns:fnDIRECCION_RELBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELInsertar">
+      <wsdl:input message="tns:fnDIRECCION_RELInsertarSoapIn" />
+      <wsdl:output message="tns:fnDIRECCION_RELInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELConsultar">
+      <wsdl:input message="tns:fnDIRECCION_RELConsultarSoapIn" />
+      <wsdl:output message="tns:fnDIRECCION_RELConsultarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnESTADO_CIVILBuscar">
+      <wsdl:input message="tns:fnESTADO_CIVILBuscarSoapIn" />
+      <wsdl:output message="tns:fnESTADO_CIVILBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAActualizar">
+      <wsdl:input message="tns:fnJURIDICAActualizarSoapIn" />
+      <wsdl:output message="tns:fnJURIDICAActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICABuscar">
+      <wsdl:input message="tns:fnJURIDICABuscarSoapIn" />
+      <wsdl:output message="tns:fnJURIDICABuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAInsertar">
+      <wsdl:input message="tns:fnJURIDICAInsertarSoapIn" />
+      <wsdl:output message="tns:fnJURIDICAInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALActualizar">
+      <wsdl:input message="tns:fnNATURALActualizarSoapIn" />
+      <wsdl:output message="tns:fnNATURALActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALBuscar">
+      <wsdl:input message="tns:fnNATURALBuscarSoapIn" />
+      <wsdl:output message="tns:fnNATURALBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALInsertar">
+      <wsdl:input message="tns:fnNATURALInsertarSoapIn" />
+      <wsdl:output message="tns:fnNATURALInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONABuscar">
+      <wsdl:input message="tns:fnPERSONABuscarSoapIn" />
+      <wsdl:output message="tns:fnPERSONABuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAConsultar">
+      <wsdl:input message="tns:fnPERSONAConsultarSoapIn" />
+      <wsdl:output message="tns:fnPERSONAConsultarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnPER_PERSONA_DENOMINACION_FUN">
+      <wsdl:input message="tns:fnPER_PERSONA_DENOMINACION_FUNSoapIn" />
+      <wsdl:output message="tns:fnPER_PERSONA_DENOMINACION_FUNSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAEliminar">
+      <wsdl:input message="tns:fnPERSONAEliminarSoapIn" />
+      <wsdl:output message="tns:fnPERSONAEliminarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAActualizar">
+      <wsdl:input message="tns:fnRELACION_PERSONAActualizarSoapIn" />
+      <wsdl:output message="tns:fnRELACION_PERSONAActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONABuscar">
+      <wsdl:input message="tns:fnRELACION_PERSONABuscarSoapIn" />
+      <wsdl:output message="tns:fnRELACION_PERSONABuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAInsertar">
+      <wsdl:input message="tns:fnRELACION_PERSONAInsertarSoapIn" />
+      <wsdl:output message="tns:fnRELACION_PERSONAInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOActualizar">
+      <wsdl:input message="tns:fnTELEFONOActualizarSoapIn" />
+      <wsdl:output message="tns:fnTELEFONOActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOBuscar">
+      <wsdl:input message="tns:fnTELEFONOBuscarSoapIn" />
+      <wsdl:output message="tns:fnTELEFONOBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOInsertar">
+      <wsdl:input message="tns:fnTELEFONOInsertarSoapIn" />
+      <wsdl:output message="tns:fnTELEFONOInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOEliminar">
+      <wsdl:input message="tns:fnTELEFONOEliminarSoapIn" />
+      <wsdl:output message="tns:fnTELEFONOEliminarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnTIPO_EMPRESABuscar">
+      <wsdl:input message="tns:fnTIPO_EMPRESABuscarSoapIn" />
+      <wsdl:output message="tns:fnTIPO_EMPRESABuscarSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EWS_PERSoap" type="tns:EWS_PERSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="fnOPERACIONPerNatural">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnOPERACIONPerNatural" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnOPERACIONPerJuridica">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnOPERACIONPerJuridica" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCIONEliminar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCIONEliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELConsultar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELConsultar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnESTADO_CIVILBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnESTADO_CIVILBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICAActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICABuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICABuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICAInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONABuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONABuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAConsultar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONAConsultar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPER_PERSONA_DENOMINACION_FUN">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnPER_PERSONA_DENOMINACION_FUN" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAEliminar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONAEliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONAActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONABuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONABuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONAInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOEliminar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOEliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTIPO_EMPRESABuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnTIPO_EMPRESABuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EWS_PERSoap12" type="tns:EWS_PERSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="fnOPERACIONPerNatural">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnOPERACIONPerNatural" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnOPERACIONPerJuridica">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnOPERACIONPerJuridica" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCIONEliminar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCIONEliminar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnDIRECCION_RELConsultar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnDIRECCION_RELConsultar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnESTADO_CIVILBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnESTADO_CIVILBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICAActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICABuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICABuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnJURIDICAInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnJURIDICAInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnNATURALInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnNATURALInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONABuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONABuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAConsultar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONAConsultar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPER_PERSONA_DENOMINACION_FUN">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnPER_PERSONA_DENOMINACION_FUN" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnPERSONAEliminar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnPERSONAEliminar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONAActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONABuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONABuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnRELACION_PERSONAInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnRELACION_PERSONAInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTELEFONOEliminar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnTELEFONOEliminar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnTIPO_EMPRESABuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnTIPO_EMPRESABuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="EWS_PER">
+    <wsdl:port name="EWS_PERSoap" binding="tns:EWS_PERSoap">
+      <soap:address location="http://172.20.24.85/mdmq_personas_services/EWS_PER.asmx" />
+    </wsdl:port>
+    <wsdl:port name="EWS_PERSoap12" binding="tns:EWS_PERSoap12">
+      <soap12:address location="http://172.20.24.85/mdmq_personas_services/EWS_PER.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

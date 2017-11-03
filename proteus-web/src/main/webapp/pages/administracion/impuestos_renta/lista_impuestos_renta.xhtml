@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">
+                <style>
+                    .alineadoDerecho{
+                        text-align: right;
+                    }		
+                </style>
+                <smp:catalogo_lista controlador="#{impuestoRentaBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+
+                    <h:panelGrid columns="3" id="panelFiltros">
+                        <h:outputLabel value="* Ejercicio Fiscal: "
+                                       title="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.tooltip.ejercicioFiscal']}"
+                                       id="ejercicioFiscal_lbl" for="ejercicioFiscal"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="ejercicioFiscal"   
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true"
+                                         style="width: 200px"
+                                         requiredMessage="El campo Ejercicio Fiscal es requerido"
+                                         value="#{impuestoRentaBean.impuestoRentaHelper.ejercicioFiscalSeleccionado}" >
+                            <f:selectItems value="#{impuestoRentaBean.impuestoRentaHelper.ejerciciosFiscales}"/>                                                                                                
+                        </p:selectOneMenu>
+                        <p:message for="ejercicioFiscal" display="icon"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Buscar" action="#{impuestoRentaBean.buscar}" process="panelFiltros" update=":frmPrincipal"/>
+                    <p:separator/>
+                    <p:dataTable id="tablaClase"
+                                 value="#{impuestoRentaBean.impuestoRentaHelper.impuestosRenta}"
+                                 var="impuesto"
+                                 sortBy="#{impuesto.fraccionBasica}"
+                                 paginator="#{true}"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 60px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{impuestoRentaBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{impuesto}" 
+                                                             target="#{impuestoRentaBean.impuestoRentaHelper.impuestoRentaEditDelete}"/>   
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{impuesto}" 
+                                                             target="#{impuestoRentaBean.impuestoRentaHelper.impuestoRentaEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.tooltip.ejercicioFiscal']}" 
+                                  sortBy="#{impuesto.ejercicioFiscal.nombre}" styleClass="alineadoDerecho" style="width: 90px;text-align: center;">                                                                 
+                            <h:outputText value="#{impuesto.ejercicioFiscal.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.fraccionBasica']}" 
+                                  sortBy="#{impuesto.fraccionBasica}" styleClass="alineadoDerecho" style="width: 100px;">                                                                 
+                            <h:outputText value="#{impuesto.fraccionBasica}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.excesoHasta']}" 
+                                  sortBy="#{impuesto.excesoHasta}" style="width: 150px;" styleClass="alineadoDerecho" >                                                                 
+                            <h:outputText value="#{impuesto.excesoHasta}" rendered="#{impuesto.excesoHasta != null}"/>
+                            <h:outputText value="EN ADELANTE" rendered="#{impuesto.excesoHasta == null}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.impuestoALaFraccionBasica']}" 
+                                  sortBy="#{impuesto.porcentajeImpuestoSobreFraccionBasica}" style="width: 150px" styleClass="alineadoDerecho"  >                                                                 
+                            <h:outputText value="#{impuesto.porcentajeImpuestoSobreFraccionBasica}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.impuestoALaFraccionExcedente']}" 
+                                  sortBy="#{impuesto.porcentajeImpuestoFraccionExcedente}" style="width: 150px" styleClass="alineadoDerecho"  >                                                                 
+                            <h:outputText value="#{impuesto.porcentajeImpuestoFraccionExcedente}"/>                                
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaClase"
+                                             actionListener="#{impuestoRentaBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

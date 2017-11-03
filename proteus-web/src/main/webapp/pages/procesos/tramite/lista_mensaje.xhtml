@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel>
+                    <h:panelGrid columns="1" >
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{validarMensajeBean.iniciarEdicion()}"
+                                         ajax="#{false}"
+                                         style="text-align: left"
+                                         immediate="true"/>    
+                    </h:panelGrid> 
+                </p:panel>
+                <p:panel  header="#{msg['ec.gob.mrl.smp.tramite.tramiteMensaje']}"
+                          id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <div class="ui-messages ui-widget" id="fmrTramite:mensajessss">
+                        <div class="ui-messages-info ui-corner-all">
+                            <span class="ui-messages-info-icon"></span>
+                            <ul>
+                                <li>
+                                    <span class="ui-messages-info-summary">#{msg['ec.gob.mrl.smp.justificacionReglas.ayuda']}</span>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                    <p:dataTable id="tramite_mensaje"
+                                 value="#{validarMensajeBean.validarMensajeHelper.listaMensajes}"
+                                 var="mensaje"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{mensaje.mensaje}" sortOrder="ascending" style="overflow: auto">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.mensaje']}"
+                                  sortBy="#{mensaje.mensaje}"
+                                  >
+                            <h:outputText value="#{mensaje.mensaje}"
+                                          style="text-align: center ; width: 200px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.obligatorio']}"
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{verificarRequisitoBean.verificarObligatorio(mensaje.obligatorio)}"/>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.regla']}">
+                            <h:outputText value="#{mensaje.regla.nombre}"
+                                          style="text-align: left; width: 100px"/>
+                        </p:column>
+                        <p:column headerText="Justificación" style="text-align: center; width: 80px">
+                            <h:outputText value="JUSTIFICACIÓN NO DISPONIBLE"
+                                          rendered="#{!mensaje.tipoMovimientoRegla.justificable}"/>
+
+                            <h:outputText value="#{justificacionBean.verificarJustificado(mensaje.movimiento.id, mensaje.tipoMovimientoRegla.id)}"
+                                          rendered="#{mensaje.tipoMovimientoRegla.justificable}"
+                                          style="font-weight: bold"/>
+                            <p:spacer width="7"/>
+                            <p:commandButton id="botonJustificacion" 
+                                             icon="ui-icon-extlink"
+                                             ajax="false"
+                                             action="#{justificacionBean.iniciarJustificacion()}"
+                                             title="#{msg['ec.gob.mrl.smp.justificacionReglas.justificacion']}"
+                                             rendered="#{mensaje.tipoMovimientoRegla.justificable}">
+                                <f:setPropertyActionListener value="#{mensaje}" 
+                                                             target="#{justificacionBean.justificacionHelper.justificacionVO.reglaMensaje}"/>
+                            </p:commandButton>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaIndividual']}"
+                                  sortBy="#{mensaje.mensaje}"
+                                  style="text-align: center">
+                            <h:outputText value="#{mensaje.partidaIndividual}"
+                                          style="text-align: center ; width: 200px"/>
+                        </p:column>
+                
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>            
+        </ui:define>
+    </ui:composition>
+</html>

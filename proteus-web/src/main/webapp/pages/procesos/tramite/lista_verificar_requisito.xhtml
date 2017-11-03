@@ -1,0 +1,275 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmVerificarRequisito">
+                <p:panel>
+                    <h:panelGrid columns="6">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         ajax="#{false}"
+                                         action="#{verificarRequisitoBean.guardar}"
+                                         rendered="#{!verificarRequisitoBean.verificarRequisitoHelper.camposDesabilitados}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         action="#{verificarRequisitoBean.regresarPantallaTramite}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         action="#{verificarRequisitoBean.salirPantallaPrincipal}"/>
+                        <p:spacer style="width:10px"/>
+                        <p:selectBooleanCheckbox id="masivoCheckbox" 
+                                                 value="#{verificarRequisitoBean.verificarRequisitoHelper.registroMasivoRequisitos}"/>
+                        <p:outputLabel value="Registro Masivo de Requisitos" 
+                                       for="masivoCheckbox"/>
+                    </h:panelGrid> 
+                </p:panel>
+                <p:panel header="#{msg['ec.gob.mrl.smp.verificarRequisito.titulo']}" 
+                         id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">                    
+                    <p:dataTable id="tablaVerificarRequisitos"
+                                 value="#{verificarRequisitoBean.verificarRequisitoHelper.listaValidacionTipoMovimientoRequisitoVO}"
+                                 var="verificarRequisitos"
+                                 paginator="#{false}"
+                                 rowIndexVar="rowIndex"
+                                 scrollable="true" 
+                                 style="overflow: auto"
+                                 editable="true">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" width="10">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.requisito']}" width="350">
+                            <h:outputText value="#{verificarRequisitos.tipoMovimientoRequisito.requisito.nombre}" style="font-size:10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.obligatorio']}"  style="text-align: center" width="60">
+                            <h:outputText value="#{verificarRequisitoBean.verificarObligatorio(verificarRequisitos.tipoMovimientoRequisito.obligatorio)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.archivoObligatorio']}" style="text-align: center" width="60">
+                            <h:outputText value="#{verificarRequisitoBean.verificarObligatorio(verificarRequisitos.tipoMovimientoRequisito.subirArchivoObligatorio)}"/>
+                        </p:column>  
+                        <p:column headerText="Editar" width="35" 
+                                  rendered="#{!verificarRequisitoBean.verificarRequisitoHelper.camposDesabilitados}">
+                            <p:rowEditor id="editarLapiz">
+                                <p:tooltip for="editarLapiz" value="#{msg['ec.gob.mrl.smp.nueva_solicitud.editar']}" />
+                            </p:rowEditor>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.cumple']}" style="text-align: center" width="60">  
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <p:selectBooleanButton onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                           offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                           value="#{verificarRequisitos.validacion.cumple}"
+                                                           disabled="#{true}" />
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:selectBooleanButton onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                           offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                           value="#{verificarRequisitos.validacion.cumple}"
+                                                           disabled="#{false}"/>
+                                </f:facet>  
+                            </p:cellEditor>                              
+
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.numeroDocumento']}" width="80">
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{verificarRequisitos.validacion.numeroDocumento}"/>
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <h:inputText value="#{verificarRequisitos.validacion.numeroDocumento}" style="text-align: center;width: 80px"/>
+                                </f:facet>  
+                            </p:cellEditor>                            
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.fechaDocumento']}" style="text-align: center; width: 80px">
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{verificarRequisitos.validacion.fechaDocumento}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                    </h:outputText>
+                                </f:facet>  
+                                <f:facet name="input">                                 
+                                    <p:calendar id="validacion_fechaDocumento"                                               
+                                                value="#{verificarRequisitos.validacion.fechaDocumento}"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                                navigator="true"/>
+                                </f:facet>  
+                            </p:cellEditor>                              
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.observacion']}" style="text-align: center;width: 150px">
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{verificarRequisitos.validacion.observacion}"/>
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputTextarea id="validacion_observacion"                                                
+                                                     value="#{verificarRequisitos.validacion.observacion}"/>
+                                </f:facet>  
+                            </p:cellEditor> 
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.calificacion']}" style="text-align: center;width: 60px">
+                            <p:cellEditor>  
+                                <f:facet name="output"> 
+                                    <h:outputText value="#{verificarRequisitos.validacion.calificacion}"/>
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:spinner id="minmax"   
+                                               value="#{verificarRequisitos.validacion.calificacion}" min="0" max="100"
+                                               maxlength="3" 
+                                               styleClass="campoNumerico"
+                                               size="50"
+                                               autocomplete="false"                                                                                             
+                                               disabled="#{!verificarRequisitoBean.validarRequisitoTieneCalificacion(verificarRequisitos)}"/>                                    
+                                </f:facet>  
+                            </p:cellEditor> 
+                        </p:column>                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.archivo']}" style="text-align: center;width: 150px"> 
+                            <p:panel style="border: none; text-align: center; background: none">    
+                                <h:outputText value="Archivo: #{verificarRequisitos.archivo.nombre}" rendered="#{verificarRequisitos.archivo!=null}"
+                                              style="color: #003399"/>
+                                <p:spacer width="5px;"/>
+                                <p:commandLink id="downloadLink" value="#{verificarRequisitos.validacion.archivo.nombre}" ajax="false"                                                    
+                                               actionListener="#{verificarRequisitoBean.descargarArchivo(verificarRequisitos.validacion.archivo)}"
+                                               onclick="PrimeFaces.monitorDownload(start, stop)">                                        
+                                    <p:fileDownload value="#{verificarRequisitoBean.file}" /> 
+                                </p:commandLink>
+                                <p:commandLink id="downloadLink2" value="#{verificarRequisitos.archivo.nombre}" ajax="false"                                                    
+                                               actionListener="#{verificarRequisitoBean.descargarArchivo(verificarRequisitos.archivo)}"
+                                               rendered="#{verificarRequisitos.validacion.archivo==null}"
+                                               onclick="PrimeFaces.monitorDownload(start, stop)">                                        
+                                    <p:fileDownload value="#{verificarRequisitoBean.file}" /> 
+                                </p:commandLink>  
+                            </p:panel>
+                            <!-- archivos -->
+                            <p:commandButton id="botonCargarArchivoEditable" 
+                                             icon="ui-icon-arrowthickstop-1-n"
+                                             onclick="cargarArchivoPopUp.show()" 
+                                             rendered="#{verificarRequisitoBean.verificarRequisitoHelper.movimiento.tramite.codigoFase=='ELA'}"
+                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}">  
+                                <f:setPropertyActionListener value="#{verificarRequisitos}" 
+                                                             target="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO}"/>
+                            </p:commandButton>                            
+
+
+                            <p:commandButton id="botonEliminarArchivo" 
+                                             icon="ui-icon-trash"                                            
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="Eliminar Archivo"                                                     
+                                             disabled="#{verificarRequisitoBean.verificarRequisitoHelper.movimiento.tramite.codigoFase!='ELA' or
+                                                         verificarRequisitos.tipoMovimientoRequisito.subirArchivoObligatorio}"
+                                             rendered="#{verificarRequisitos.validacion.archivo.nombre!=null || verificarRequisitos.archivo.nombre!=null}">
+                                <f:setPropertyActionListener value="#{verificarRequisitos}" 
+                                                             target="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO}"/>
+                            </p:commandButton>
+
+
+                        </p:column>
+
+                        <p:column headerText="Opciones" style="text-align: center" width="50">                            
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <p:commandButton id="botonSustentoLegal" 
+                                                     icon="ui-icon-comment"   
+                                                     immediate="true"    
+                                                     process="@this"
+                                                     oncomplete="dlg2.show();"
+                                                     action="#{verificarRequisitoBean.verSustentoLegalv()}"
+                                                     title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}"
+                                                     update=":frmVerificarRequisito:sustento_legal_id">
+                                        <f:setPropertyActionListener value="#{verificarRequisitos}" 
+                                                                     target="#{verificarRequisitoBean.verificarRequisitoHelper.validacionTipoMovimientoRequisitoVO}"/>
+                                    </p:commandButton>   
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:commandButton id="botonSustentoLegalInput" 
+                                                     icon="ui-icon-comment"   
+                                                     process="@this"
+                                                     immediate="true"                                                                                     
+                                                     oncomplete="dlg2.show();"
+                                                     action="#{verificarRequisitoBean.verSustentoLegalv()}"
+                                                     title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}"
+                                                     update=":frmVerificarRequisito:sustento_legal_id"
+                                                     disabled="true">
+                                    </p:commandButton>   
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>                                                               
+                    </p:dataTable>
+
+                    <p:confirmDialog id="popOp" message="Esta seguro que desea eliminar el archivo?"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaVerificarRequisitos"
+                                             actionListener="#{verificarRequisitoBean.eliminarArchivo}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+
+                    <p:dialog  
+                        header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}" 
+                        widgetVar="dlg2"
+                        modal="true"
+                        draggable="false"
+                        id ="sustento_legal_id"
+                        resizable="false"
+                        visible="#{verificarRequisitoBean.verificarRequisitoHelper.abrirPopUpSustentoLegal}">  
+                        <p:panel id="pnlSustentoLegalCompleto">
+                            <p:inputTextarea value="#{verificarRequisitoBean.verificarRequisitoHelper.sustentoLegal}"
+                                             style="width: 500px;height: 250px;overflow: auto;"
+                                             disabled="true"/>
+                        </p:panel>
+                        <br/>
+                        <div style="text-align: center">
+                            <p:commandButton value="Cerrar"
+                                             type="button"
+                                             onclick="dlg2.hide()"
+                                             style="margin: auto"
+                                             />
+                        </div>
+                    </p:dialog>
+
+                </p:panel>
+            </h:form>
+
+            <p:dialog 
+                header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}" 
+                widgetVar="cargarArchivoPopUp"
+                modal="true"
+                draggable="false"
+                resizable="false">  
+                <h:form enctype="multipart/form-data">
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">       
+                        <p:fileUpload value="#{verificarRequisitoBean.verificarRequisitoHelper.archivoCargado}"                                         
+                                      mode="simple"                                      
+                                      allowTypes=".pdf"/>  
+                        <p:separator />
+                        <div style="text-align: center">
+                            <p:commandButton value="Subir archivo" ajax="false"  update="tablaVerificarRequisitos"
+                                             actionListener="#{verificarRequisitoBean.upload()}"/>  
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script> 
+
+        </ui:define>
+    </ui:composition>
+</html>

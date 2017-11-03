@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:busqueda="http://java.sun.com/jsf/composite/busqueda">
+    <composite:interface>
+        <composite:attribute name="controlador"
+                             required="true"                             
+                             type="ec.gob.mrl.movimientos.controlador.base.AdministracionControlador"/>
+        <composite:attribute name="titulo"
+                             required="true"/>
+        <composite:facet name="contenido" required="true"/>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:form id="#{msg['ec.gob.mrl.smp.genericos.formulario.id']}">           
+            <p:panel>
+
+                <h:panelGrid columns="4">
+                    <p:commandButton value="#{msg['message.btn.nuevo']}"
+                                     action="#{cc.attrs.controlador.iniciarNuevo}"/>
+                    <p:commandButton value="#{msg['message.btn.regresar']}"
+                                     action="#{cc.attrs.controlador.guardar}"/>
+                    <p:commandButton value="#{msg['message.btn.buscar']}"
+                                     action="#{cc.attrs.controlador.guardar}"/>
+                    <p:commandButton value="#{msg['message.btn.guardar']}"
+                                     action="#{cc.attrs.controlador.guardar}"
+                                     update="#{msg['ec.gob.mrl.smp.genericos.formulario.id']}"/>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="#{cc.attrs.titulo}">
+                <composite:renderFacet name="contenido"/>
+            </p:panel>
+        </h:form>
+    </composite:implementation>
+</html>

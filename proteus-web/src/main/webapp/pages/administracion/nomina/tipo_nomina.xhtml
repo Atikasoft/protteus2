@@ -1,0 +1,160 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.nomina.titulo']}"
+                                     controlador="#{tipoNominaBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+
+                    <h:panelGrid columns="2"  style="text-align:left" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.estadoPuesto.nemonico']}:"
+                                       styleClass="labelFormulario"/>
+
+                        <p:inputText id="clase_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}" 
+                                     required="true"
+                                     requiredMessage="El código es un campo requerido."
+                                     style="width: 200px"
+                                     disabled="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}" 
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.codigo}"
+                                     />                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="clase_nombre"
+                                     styleClass="textoNombre" 
+                                     style="width: 200px"
+                                     requiredMessage="El nombre es un campo requerido."
+                                     required="true"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.nombre}" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.desacripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="clase_descripcion"
+
+                                         style="width: 200px"
+                                         requiredMessage="La descripción es un campo requerido."
+                                         required="true"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.descripcion}" />
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.tipo']}:"
+                                       styleClass="labelFormulario"   rendered="#{false}"/>                                        
+                        <p:selectOneMenu id="tipo" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.tipo}"
+                                         required="#{true}"
+                                         rendered="#{false}"
+                                         requiredMessage="El campo Tipo es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{tipoNominaBean.tipoNominaHelper.listaTipo}"/> 
+                        </p:selectOneMenu> 
+
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.cobertura']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="cobertura" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.cobertura}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Cobertura es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{tipoNominaBean.tipoNominaHelper.listaCobertura}"/> 
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="regimenLaboralID" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.regimenLaboralId}">
+                            <f:selectItem itemLabel="NINGUNO"  /> 
+                            <f:selectItems value="#{tipoNominaBean.tipoNominaHelper.listaRegimenLaboral}"/> 
+                        </p:selectOneMenu>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.periodicidadOcurrencia']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="periodicidad" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.periodicidadOcurrencia}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Periodicidad Ocurrencia es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{tipoNominaBean.tipoNominaHelper.listaPeriodicidad}"/> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.numeroMaximoOcurrencia']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="clase_numero"
+                                     styleClass="campoNumerico" 
+                                     style="width: 200px"
+                                     requiredMessage="El Número Máximo Ocurrencia es un campo requerido."
+                                     required="true"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.numeroMaximoOcurrencia}" />
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.nomina.totalIngresoMaximo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="clase_totalingresomaximo"
+                                     styleClass="campoNumerico" 
+                                     style="width: 200px"                                                                         
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.totalIngresoMaximo}" />
+
+                        <h:outputLabel value="Valida Activo en Periodo:"
+                                       styleClass="labelFormulario" 
+                                       rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.validaActivoPeriodo}" 
+                                                 rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>                                                
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.vigente}" 
+                                                 disabled="true"
+                                                 rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>                                                
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:inputText id="clase_usuario_creo"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}" style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:inputText id="clase_fecha_creo"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.fechaCreacion}"
+                                     rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:inputText id="clase_usuario_actual"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.usuarioActualizacion}"
+                                     rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"/>
+                        <p:inputText id="clase_fecha_actual"
+                                     value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.fechaActualizacion}"
+                                     rendered="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

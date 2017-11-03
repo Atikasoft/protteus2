@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{campoAccesoBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.campoAcceso.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablacampoAcceso"
+                                 value="#{campoAccesoBean.campoAccesoHelper.listaCamposAcceso}"
+                                 var="campoAcceso"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{campoAcceso.nombre}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{campoAccesoBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{campoAcceso}" 
+                                                             target="#{campoAccesoBean.campoAccesoHelper.campoAccesoEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{campoAcceso}" 
+                                                             target="#{campoAccesoBean.campoAccesoHelper.campoAccesoEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                           <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.campoAcceso.nombre']}" 
+                                  sortBy="#{campoAcceso.nombre}" style="width: 400px" >                               
+                            <h:outputText value="#{campoAcceso.nombre}"/>                                
+                        </p:column>       
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.campoAcceso.descripcion']}" 
+                                  sortBy="#{campoAcceso.descripcion}" style="width: 400px">                               
+                            <h:outputText value="#{campoAcceso.descripcion}"/>                                
+                        </p:column>       
+                      
+                       
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.metadataTabla']}" 
+                                  sortBy="#{campoAcceso.metadataColumna.metadataTabla.nombre}" style="width: 80px">                               
+                            <h:outputText value="#{campoAcceso.metadataColumna.metadataTabla.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.metadataColumna']}" 
+                                  sortBy="#{campoAcceso.metadataColumna.nombre}" style="width: 80px">                               
+                            <h:outputText value="#{campoAcceso.metadataColumna.nombre}"/>                                
+                        </p:column>
+                       
+                          <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.campoAcceso.tipo']}" 
+                                  sortBy="#{campoAcceso.tipo}" style="width: 80px" >                               
+                            <h:outputText value="#{campoAccesoBean.obtenerDescripcionTipo(campoAcceso.tipo)}"/>                                
+                        </p:column> 
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{campoAcceso.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        
+                    </p:dataTable>
+                      <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablacampoAcceso"
+                                             actionListener="#{campoAccesoBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

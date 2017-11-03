@@ -1,0 +1,116 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{requisitoBean}" 
+                                     extendido="false"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.requisito.titulo']}">
+                <f:facet name="contenido">
+
+                    <h:panelGrid columns="2" style="text-align: left" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.requisito.nemonico']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="requisito_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     style="width: 200px"
+                                     requiredMessage="El nemónico es un campo requerido."
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                     value="#{requisitoBean.requisitoHelper.requisito.nemonico}"
+                                     required="true"
+                                     disabled="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.requisito.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="requisito_nombre" 
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         requiredMessage="El nombre es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{requisitoBean.requisitoHelper.requisito.nombre}"
+                                         required="true"/>                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.requisito.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="requisito_descripcion" 
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         requiredMessage="La descripción es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{requisitoBean.requisitoHelper.requisito.descripcion}"
+                                         required="true"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.requisito.sustentoLegal']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="requisito_sustentoLegal" 
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         requiredMessage="El sustento legal es un campo requerido."
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.sustentoLegal.max']}"
+                                         value="#{requisitoBean.requisitoHelper.requisito.sustentoLegal}"
+                                         required="true"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.requisito.grupo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="requisito_grupo"  
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         disabled="#{!(requisitoBean.requisitoHelper.esNuevo)}"                                          
+                                         value="#{requisitoBean.requisitoHelper.requisito.grupoId}"
+                                         required="true"
+                                         requiredMessage="Grupo es un campo requerido.">
+                            <f:selectItems value="#{requisitoBean.requisitoHelper.listaGrupo}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.requisito.tieneCalificacion']}:"
+                                       styleClass="labelFormulario"                                       />
+                        <p:selectBooleanCheckbox id="requisito_tieneCalificacion" 
+                                                 value="#{requisitoBean.requisitoHelper.requisito.tieneCalificacion}"/>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox id="requisito_vigente" 
+                                                 value="#{requisitoBean.requisitoHelper.requisito.vigente}"
+                                                 rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"
+                                                 requiredMessage="Tiene calificación es un campo requerido."/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <p:inputText id="requisito_fechaCreacion" 
+                                     disabled="#{true}"
+                                     style="width: 200px"
+                                     value="#{requisitoBean.requisitoHelper.requisito.fechaCreacion}"
+                                     rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"> 
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <p:inputText id="requisito_usuarioCreacion" 
+                                     disabled="#{true}"
+                                     style="width: 200px"
+                                     value="#{requisitoBean.requisitoHelper.requisito.usuarioCreacion}"
+                                     rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <p:inputText id="requisito_fechaActualizacion" 
+                                     disabled="#{true}"
+                                     style="width: 200px"
+                                     value="#{requisitoBean.requisitoHelper.requisito.fechaActualizacion}"
+                                     rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>
+                        <p:inputText id="requisito_usuarioActualizacion" 
+                                     disabled="#{true}"
+                                     style="width: 200px"
+                                     value="#{requisitoBean.requisitoHelper.requisito.usuarioActualizacion}"
+                                     rendered="#{!(requisitoBean.requisitoHelper.esNuevo)}"/>                        
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

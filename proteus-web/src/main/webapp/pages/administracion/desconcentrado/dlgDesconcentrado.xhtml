@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog modal="true"
+              closable="false"
+              resizable="false"
+              draggable="true"
+              width="635px"
+              widgetVar="dlgDesconcentrado">
+
+        <f:facet name="header">
+            <p:outputPanel autoUpdate="#{true}">
+                <h:outputText id="dlgDesconcentradoHeader" 
+                              value="#{desconcentradoBean.desconcentradoHelper.esNuevo 
+                                       ? msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo.nuevo'] 
+                                       : msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo.edicion']}"/>
+            </p:outputPanel>
+        </f:facet>
+        <style>
+            .ui-autocomplete input {
+                width: 400px;
+                text-transform: uppercase;
+            }
+            .ui-autocomplete-multiple ul {
+                width: 408px; 
+            }
+            .ui-autocomplete-input-token input {
+                text-transform: uppercase;
+            }
+        </style>
+        <h:form id="frmDesconcentrado">  
+            <h:panelGrid columns="2"  
+                         style="text-align: left;width: 100%">
+
+                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.desconcentrado.nombre']}:"
+                               styleClass="labelFormulario"/>
+                <p:inputTextarea id="desconcentradoNombre"
+                                 value="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado.nombre}"
+                                 maxlength="200"
+                                 required="true"
+                                 style="width: 400px; height: 30px; text-transform: uppercase;"
+                                 onblur="javascript:this.value = this.value.toUpperCase();"
+                                 requiredMessage="El campo #{msg['ec.gob.mrl.smp.administracion.desconcentrado.nombre']} es requerido."/>                        
+
+                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.desconcentrado.responsable']}:"
+                               styleClass="labelFormulario" />
+                <p:autoComplete id="servidorResponsable"
+                                required="#{true}"
+                                value="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado.servidorResponsable}"
+                                completeMethod="#{desconcentradoBean.buscarServidoresActivosEnPuestosOcupadosPorNombre}"  
+                                var="servidor" 
+                                itemValue="#{servidor}"
+                                itemLabel="#{desconcentradoBean.nombreIdentificacionString(servidor)}" 
+                                maxResults="10"
+                                minQueryLength="3"
+                                queryDelay="750"
+                                scrollHeight="100" 
+                                converter="servidorConverter" 
+                                requiredMessage="El campo #{msg['ec.gob.mrl.smp.administracion.desconcentrado.responsable']} es requerido." 
+                                forceSelection="#{true}"
+                                multiple="#{false}">
+                    <p:ajax event="itemSelect" 
+                            update="@this"
+                            listener="#{desconcentradoBean.verificarServidorResponsableNoEsteSeleccionado}"/>
+                </p:autoComplete>
+
+                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.apoyos']}:"
+                               styleClass="labelFormulario" />
+                <p:autoComplete id="servidoresApoyos"
+                                value="#{desconcentradoBean.desconcentradoHelper.listaServidoresApoyoSeleccionados}"
+                                completeMethod="#{desconcentradoBean.buscarServidoresActivosEnPuestosOcupadosPorNombre}"  
+                                var="servidor" 
+                                itemValue="#{servidor}"
+                                itemLabel="#{desconcentradoBean.nombreIdentificacionString(servidor)}"
+                                maxResults="10"
+                                minQueryLength="3"
+                                queryDelay="750"
+                                scrollHeight="100"
+                                converter="servidorConverter"
+                                multiple="#{true}">
+                    <p:ajax event="itemSelect" 
+                            update="@this"
+                            listener="#{desconcentradoBean.verificarServidorApoyoNoEsteSeleccionado}"/>
+                </p:autoComplete>
+
+            </h:panelGrid>
+
+            <p:separator/>
+
+            <center>
+                <p:commandButton id="btnGuardar" 
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                 action="#{desconcentradoBean.guardar()}"
+                                 style="margin: auto; margin-right: 5px" >
+                    <f:setPropertyActionListener target="#{desconcentradoBean.desconcentradoHelper.guardarSoloDatosGeneralesYApoyos}"
+                                                 value="#{true}"/>
+                </p:commandButton>
+                <p:outputLabel/>
+                <p:commandButton id="btnCancelar"
+                                 immediate="#{true}"
+                                 global="#{false}"   
+                                 update=":frmListaDesconcentrados"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                 action="#{desconcentradoBean.buscar()}"
+                                 oncomplete="dlgDesconcentrado.hide();"
+                                 style="margin: auto" />
+            </center>
+        </h:form>  
+    </p:dialog>
+
+</html>

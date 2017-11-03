@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelBotones" header="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.titulo']}">
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{tipoMovimientoReglaBean.guardar}"
+                                         update="panelBotones, panelCabezera, panelTablaRequisitos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{tipoMovimientoReglaBean.buscar}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{tipoMovimientoReglaBean.generarReporte}"/>
+                    </h:panelGrid>
+                </p:panel> 
+                <p:panel id="panelCabezera">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.grupo']}:"
+                                       style="text-align: left"/>
+                        <p:inputText id="tipoMovimientoRegla_grupo"                                                
+                                     value="#{tipoMovimientoReglaBean.tipoMovimientoReglaHelper.tipoMovimiento.clase.grupo.nombre}"
+                                     required="true"
+                                     disabled="true"
+                                     style="width: 300px" requiredMessage="El campo grupo es requerido"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.clase']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoRegla_clase"                                                
+                                         value="#{tipoMovimientoReglaBean.tipoMovimientoReglaHelper.tipoMovimiento.clase.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px" requiredMessage="El campo clase es requerido"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.tipoMovimiento']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoRegla_tipoMovimiento"                                                
+                                         value="#{tipoMovimientoReglaBean.tipoMovimientoReglaHelper.tipoMovimiento.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px" requiredMessage="El campo tipo de movimiento es requerido"/>                        
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="panelTablaRequisitos">
+                    <p:dataTable id="tablaTipoMovimientoReglas"
+                                 value="#{tipoMovimientoReglaBean.tipoMovimientoReglaHelper.listaTipoMovimientoReglaVO}"
+                                 var="tipoMovimientoReglas"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center;">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.validar']}" 
+                                  sortBy="#{tipoMovimientoReglas.seleccionar}"
+                                  style="text-align: center;">
+                            <p:selectBooleanCheckbox value="#{tipoMovimientoReglas.seleccionar}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.nombre']}"
+                                  filterBy="#{tipoMovimientoReglas.regla.nombre}"
+                                  filterMatchMode="contains" 
+                                  filterStyle="width: 90%" 
+                                  sortBy="#{tipoMovimientoRequisito.requisito.nombre}">
+                            <h:outputText value="#{tipoMovimientoReglas.regla.nombre}"/>
+                        </p:column>                                                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.obligatorio']}" style="text-align: center;">
+                            <p:selectBooleanButton value="#{tipoMovimientoReglas.obligatorio}" 
+                                                   onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                   offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.justificable']}" style="text-align: center;">
+                            <p:selectBooleanButton value="#{tipoMovimientoReglas.justificable}" 
+                                                   onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                   offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>    
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

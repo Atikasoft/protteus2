@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="#{msg['ec.gob.mrl.smp.genericos.control.formulario.id']}">
+                <smp:catalogo_lista controlador="#{parametroGlobalBean}" 
+                                    verImprimir="#{false}"
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.titulo']}"/>
+                <p:dataTable id="tablaParametrosGlobales"
+                             value="#{parametroGlobalBean.parametroGlobalHelper.listaParametroGlobal}"
+                             var="parametroGlobal"
+                             paginator="#{true}"                                     
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex"
+                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px;">
+                        <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                         ajax="#{false}"
+                                         action="#{parametroGlobalBean.iniciarEdicion}"
+                                         title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                            <f:setPropertyActionListener value="#{parametroGlobal}" 
+                                                         target="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobalEditDelete}"/>
+                        </p:commandButton>
+                        <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                         onclick="confirmEliminacion.show()"                                          
+                                         title="#{msg['message.btn.eliminar']}">
+                            <f:setPropertyActionListener value="#{parametroGlobal}" 
+                                                         target="#{parametroGlobalBean.parametroGlobalHelper.parametroGlobalEditDelete}"/>
+                        </p:commandButton>
+
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center;">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.nemonico']}" 
+                              sortBy="#{parametroGlobal.nemonico}">
+                        <h:outputText value="#{parametroGlobal.nemonico}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.nombre']}"
+                              sortBy="#{parametroGlobal.nombre}">
+                        <h:outputText value="#{parametroGlobal.nombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.descripcion']}"
+                              sortBy="#{parametroGlobal.descripcion}">
+                        <h:outputText value="#{parametroGlobal.descripcion}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.tipo']}"
+                              sortBy="#{parametroGlobal.tipoDato}">
+                        <h:outputText value="#{parametroGlobalBean.obtenerDescripcionTipoParametro(parametroGlobal.tipoDato)}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.parametroGlobal.valor']}">
+                        <h:outputText value="#{parametroGlobal.valorFecha}" 
+                                      rendered="#{parametroGlobal.tipoDato=='F'}"/>
+                        <h:outputText value="#{parametroGlobal.valorNumerico}" 
+                                      rendered="#{parametroGlobal.tipoDato=='N'}"/>
+                        <h:outputText value="#{parametroGlobal.valorTexto}"
+                                      style="width:200px;word-wrap: break-word;display:inherit;"
+                                      rendered="#{parametroGlobal.tipoDato=='T'}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center">
+                        <p:selectBooleanCheckbox value="#{parametroGlobal.vigente}" 
+                                                 disabled="#{true}" />
+
+                    </p:column>
+                    
+                </p:dataTable>
+
+                <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                 header="Eliminación" 
+                                 severity="alert" 
+                                 widgetVar="confirmEliminacion">  
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update="tablaParametrosGlobales"
+                                         actionListener="#{parametroGlobalBean.borrar}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </p:confirmDialog> 
+            </h:form>                    
+        </ui:define>
+    </ui:composition>
+</html>

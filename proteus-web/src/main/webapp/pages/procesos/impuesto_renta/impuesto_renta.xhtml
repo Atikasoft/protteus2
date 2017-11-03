@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmprincipal">
+                <p:panel header="Impuesto Renta" >
+
+                    <br/>
+                    <h:panelGrid columns="5">
+                        <p:outputLabel for="periodoFiscalBases" value="Ejercicio Fiscal: "/>
+                        <p:selectOneMenu id="periodoFiscalBases"  
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 180px;"
+                                         value="#{impuestoRentaFormularioBean.impuestoRentaFormularioHelper.periodoFiscalId}">
+                            <f:selectItems value="#{impuestoRentaFormularioBean.impuestoRentaFormularioHelper.listaPeriodoFiscal}"/>
+                        </p:selectOneMenu>
+			<p:spacer style="width:5px"/>
+                        <p:commandButton value="DESCARGAR FROMULARIO 107" 
+                                         title="DESCARGAR FROMULARIO 107"
+                                         action="#{impuestoRentaFormularioBean.descargarFormulario()}">
+                        </p:commandButton>
+                    </h:panelGrid>
+                    <br/>
+
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <composite:interface>
+        <composite:attribute name="controlador"
+                             required="true"                             
+                             type="ec.com.atikasoft.proteus.controlador.base.AtencionControlador"/>
+        <composite:attribute name="automatico"
+                             default="false"
+                             type="java.lang.Boolean"/>
+        <composite:attribute name="verTramite"
+                             default="true"
+                             type="java.lang.Boolean"/>
+        <composite:facet name="contenido" required="true"/>
+    </composite:interface>
+
+    <composite:implementation id="componeteContenedor">
+
+        <p:panel>
+            <h:panelGrid columns="2">
+                <p:commandButton value="REGRESAR"
+                                 ajax="false"
+                                 immediate="#{true}"
+                                 action="#{cc.attrs.controlador.cancelar}"/>
+                <p:commandButton value="SALIR"
+                                 ajax="#{false}"
+                                 immediate="#{true}"
+                                 action="#{cc.attrs.controlador.salirPantallaPrincipal}"/>                
+            </h:panelGrid>           
+        </p:panel>
+
+        <p:panel id="panelContenidoTramite">
+            <f:facet name="header" class="tituloTramite" id="tituloPanelContenidoTramite">
+
+                <h:outputLabel value="#{cc.attrs.controlador.atencionHelper.tarea.tituloFormulario}" style="float: left;"/>
+
+                <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.verHistorial']}" 
+                                 title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verHistorial']}"
+                                 actionListener="#{cc.attrs.controlador.verDetalleHistorico}"
+                                 immediate="#{true}"
+                                 oncomplete="popUpHistoricoTramite.show();"
+                                 update="contenidoPopUpHistoricoTramite"
+                                 style="float: right"/>
+                <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.verBitacora']}"
+                                 title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verBitacora']}"
+                                 actionListener="#{cc.attrs.controlador.verBitacora}"
+                                 immediate="#{true}"
+                                 oncomplete="popUpBitacoraTramite.show();"
+                                 update="contenidoPopUpBitacoraTramite"
+                                 style="float: right"/>
+
+                <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.revisarTramite']}" 
+                                 title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.revisarTramite']}"
+                                 style="float: right"
+                                 immediate="#{true}"
+                                 process="comentario"
+                                 rendered="#{cc.attrs.verTramite}"
+                                 actionListener="#{cc.attrs.controlador.verTramite}"
+                                 ajax="#{false}"/>
+            </f:facet>
+            <h:outputLabel value="#{cc.attrs.controlador.atencionHelper.titulo}" style="float: left; font-weight: bold;"/>
+            <br/><br/>
+            <composite:renderFacet name="contenido" id="panelContenidoTramiteContenido"/>
+            <f:facet name="footer">
+                <h:panelGroup>
+
+                    <h:panelGrid columns="2" rendered="#{!cc.attrs.automatico}" style="margin:auto">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.acciones']}: "
+                                       title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.acciones']}"/>
+                        <p:selectOneMenu id="opcionesAcciones"
+                                         value="#{cc.attrs.controlador.atencionHelper.transicionId}"
+                                         required="#{true}"
+                                         requiredMessage="La acción es un campo requerido.">
+                            <f:selectItems value="#{cc.attrs.controlador.atencionHelper.opciones}" />                                
+                        </p:selectOneMenu>
+                        
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" style="margin:auto; ">
+                        <p:commandButton value="CONTINUAR"
+                                         action="#{cc.attrs.controlador.verConfirmacion}"
+                                         update="panelContenidoTramite"/>
+                        <p:commandButton value="CANCELAR"
+                                         ajax="false"
+                                         immediate="#{true}"
+                                         action="#{cc.attrs.controlador.cancelar}"/>
+                    </h:panelGrid>
+                    <p:confirmDialog widgetVar="confirmacionAvanzar"
+                                     header="Atención del Trámite"
+                                     message="Esta seguro en continuar ?">
+                        <div style="text-align: center;margin-left: 7%;">
+                            <p:commandButton value="ACEPTAR"
+                                             action="#{cc.attrs.controlador.avanzarTramite}"
+                                             ajax="false"/>
+                            <p:commandButton value="CANCELAR"
+                                             type="button"
+                                             onclick="confirmacionAvanzar.hide()"/>
+                        </div>
+                    </p:confirmDialog>
+                </h:panelGroup>
+            </f:facet>
+        </p:panel>
+        <!-- PopUp de Historial del tramite -->
+        <p:dialog widgetVar="popUpHistoricoTramite"
+                  modal="true"
+                  resizable="false" 
+                  header="Histórico del Tramite">
+            <p:panel id="contenidoPopUpHistoricoTramite">
+                <p:dataTable value="#{cc.attrs.controlador.atencionHelper.listaDetalles}"
+                             var="detalle"
+                             style="width: 800px;"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>
+                    <p:column headerText="Fecha" >
+                        <h:outputText value="#{detalle.fechaCreacion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Identificación" >
+                        <h:outputText value="#{detalle.usuario}"/>
+                    </p:column>
+                    <p:column headerText="Nombre" >
+                        <h:outputText value="#{detalle.nombreUsuario}"/>
+                    </p:column>
+                    <p:column headerText="Comentario" >
+                        <h:outputText value="#{detalle.comentario}"/>
+                    </p:column>
+                    <p:column headerText="Estado" >
+                        <h:outputText value="#{detalle.estado.nombre}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </p:dialog>
+        <!-- PopUp de Bitacora del tramite -->
+        <p:dialog widgetVar="popUpBitacoraTramite"
+                  modal="true"
+                  resizable="false" 
+
+                  header="Bitácora del Trámite">
+            <p:panel id="contenidoPopUpBitacoraTramite" style="margin: none; border: none;height: 300px">
+                <h:panelGrid style="overflow: auto;">
+                    <p:fieldset legend="Elaboración">                    
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaElaboracion}"/>
+
+                            <h:outputLabel value="Nombre: "/>
+                            <p:inputText disabled="#{true}" 
+                                         style="width: 300px"
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreElaboracion}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoElaboracion}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaElaboracion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Revisión" rendered="false">
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaRevision}"/>
+                            <h:outputLabel value="Nombre: "/>
+
+                            <p:inputText disabled="#{true}" 
+                                         style="width: 300px"
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreRevision}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoRevision}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaRevision}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Validación" rendered="false">
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaValidacion}"/>
+                            <h:outputLabel value="Nombre: "/>
+
+                            <p:inputText disabled="#{true}"
+                                         style="width: 300px" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreValidacion}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoValidacion}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaValidacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Aprobación">
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaAprobacion}"/>
+                            <h:outputLabel value="Nombre: "/>
+
+                            <p:inputText disabled="#{true}" 
+                                         style="width: 300px"
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreAprobacion}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoAprobacion}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaAprobacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Legalización">
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaLegalizacion}"/>
+                            <h:outputLabel value="Nombre: "/>
+
+                            <p:inputText disabled="#{true}"
+                                         style="width: 300px" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreLegalizacion}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoLegalizacion}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaLegalizacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Eliminación">
+                        <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                            <h:outputLabel value="Cédula: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cedulaEliminacion}"/>
+                            <h:outputLabel value="Nombre: "/>
+
+                            <p:inputText disabled="#{true}" 
+                                         style="width: 300px"
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.nombreEliminacion}"/>
+
+                            <h:outputLabel value="Cargo: "/>
+                            <p:inputTextarea disabled="#{true}" 
+                                             style="width: 300px"
+                                             value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.cargoEliminacion}"/>
+
+                            <h:outputLabel value="Fecha: "/>
+                            <p:inputText disabled="#{true}" 
+                                         value="#{cc.attrs.controlador.atencionHelper.tramiteBitacora.fechaEliminacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:panelGrid>
+            </p:panel>
+        </p:dialog>
+    </composite:implementation>
+</html>

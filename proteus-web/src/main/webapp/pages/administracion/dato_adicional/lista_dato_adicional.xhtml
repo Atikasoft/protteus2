@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{datoAdicionalBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tabladatoAdicional"
+                                 value="#{datoAdicionalBean.datoAdicionalHelper.listaDatosAdicionales}"
+                                 var="datoAdicional"
+                                 filterEvent="enter"
+                                 scrollable="true"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{datoAdicional.codigo}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 60px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{datoAdicionalBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{datoAdicional}" 
+                                                             target="#{datoAdicionalBean.datoAdicionalHelper.datoAdicionalEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 30px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.codigo']}" 
+                                  sortBy="#{datoAdicional.codigo}" 
+                                  filterBy="#{datoAdicional.codigo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%" 
+                                  style="width: 100px">                                                                 
+                            <h:outputText value="#{datoAdicional.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.nombre']}" 
+                                  sortBy="#{datoAdicional.nombre}" style="width: 300px"
+                                  filterBy="#{datoAdicional.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%" >                               
+                            <h:outputText value="#{datoAdicional.nombre}"/>                                
+                        </p:column>                         
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.unidad']}" 
+                                  sortBy="#{datoAdicional.unidad}" 
+                                  style="width: 150px"
+                                  filterBy="#{datoAdicional.unidad}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 140px" >                               
+                            <h:outputText value="#{datoAdicional.unidad}"/>                                
+                        </p:column>                         
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.tipo']}" 
+                                  sortBy="#{datoAdicional.tipo}" style="width: 80px">                               
+                            <h:outputText value="#{datoAdicionalBean.obtenerDescripcionTipo(datoAdicional.tipo)}"/>                                
+                        </p:column> 
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.tipoDato']}" 
+                                  sortBy="#{datoAdicional.tipoDato}" style="width: 80px">                               
+                            <h:outputText value="#{datoAdicionalBean.obtenerDescripcionTipoDato(datoAdicional.tipoDato)}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.descentralizado']}" 
+                                  style="text-align: center;width: 80px;">                                
+                            <p:selectBooleanCheckbox value="#{datoAdicional.descentralizado}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.aceptaDuplicados']}" 
+                                  style="text-align: center;width: 80px;">                                
+                            <p:selectBooleanCheckbox value="#{datoAdicional.aceptaDuplicado}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

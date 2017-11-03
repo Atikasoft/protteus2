@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelBotones" 
+                       header="#{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuestoRegimenLaboral.titulo']}">
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{estadoAdministracionPuestoRegimenLaboralBean.guardar}"
+                                         update="panelBotones, panelCabezera, panelTablaEstados"/>
+                        <p:commandButton value="SALIR" 
+                                         immediate="#{true}"
+                                         action="#{estadoAdministracionPuestoRegimenLaboralBean.salirPantallaPrincipal()}" 
+                                         ajax="#{false}"/>
+                    </h:panelGrid>
+                </p:panel> 
+                <p:panel id="panelCabezera">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel 
+                            value="* #{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuestoRegimenLaboral.regimenLaboral']}: "
+                            style="text-align: left"/>
+                        <p:selectOneMenu value="#{estadoAdministracionPuestoRegimenLaboralBean.
+                                                  estadoAdministracionPuestoRegimenLaboralHelper.regimenSeleccionadoId}"
+                                         required="true">
+                            <f:selectItems 
+                                value="#{estadoAdministracionPuestoRegimenLaboralBean.
+                                         estadoAdministracionPuestoRegimenLaboralHelper.regimenesSelectItems}"/>
+                            <p:ajax update="@form"
+                                    listener="#{estadoAdministracionPuestoRegimenLaboralBean.buscar()}"/>
+                        </p:selectOneMenu>
+                        
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="panelTablaEstados">
+                    <p:dataTable id="tablaEstados"
+                                 value="#{estadoAdministracionPuestoRegimenLaboralBean.
+                                          estadoAdministracionPuestoRegimenLaboralHelper.listaEstadosRegimenesVO}"
+                                 var="estadoRegimen" 
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"  
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="Seleccionar" 
+                                  style="text-align: center;width: 20px">
+                            <p:selectBooleanCheckbox value="#{estadoRegimen.seleccionado}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuesto.nombre']}"
+                                  filterBy="#{estadoRegimen.estadoAdministracionPuesto.nombre}"
+                                  filterMatchMode="contains" 
+                                  filterStyle="width: 90%" 
+                                  sortBy="#{estadoRegimen.estadoAdministracionPuesto.nombre}">
+                            <h:outputText value="#{estadoRegimen.estadoAdministracionPuesto.nombre}"/>
+                        </p:column>
+                        
+                    </p:dataTable>
+                </p:panel>    
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

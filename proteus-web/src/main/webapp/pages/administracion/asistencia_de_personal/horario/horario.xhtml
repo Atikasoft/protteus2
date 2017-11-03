@@ -1,0 +1,182 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <style>
+                td > div {
+                    margin-right: 5px;
+                }
+                td > span {
+                    margin-right: 5px;
+                }
+                td > div > input {
+                    width: 60px;
+                    text-align: right;
+                }
+
+                td > span > input {
+                    width: 60px;
+                    text-align: right;
+                }
+                td > span > input.ui-spinner-input.ui-inputfield.ui-state-default.ui-corner-all {
+                    width: 45px;
+                    text-align: right;
+                }
+            </style>
+
+            <script>
+                function limpiarImputs(index) {
+                    var clase = ".panelDetalleForm_" + index;
+                    $(clase + " :input[type='text']").each(function () {
+                        $(this).val("");
+                        $(this).removeClass("ui-state-error");
+                    });
+                    $(clase + " span, div").each(function () {
+                        $(this).removeClass("ui-state-error");
+                    });
+                }
+            </script>
+
+            <smp:catalogo_formulario controlador="#{horarioBean}" 
+                                     extendido="false"
+                                     titulo="ADMINISTRACIÓN DE HORARIOS">
+                <f:facet name="contenido">
+                    <p:panel>
+                        <h:panelGrid columns="2" 
+                                     id="tablaformulario">
+                            <h:outputLabel value="* Nombre Horario:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="nombre"
+                                         style="width: 500px; text-transform: uppercase;"
+                                         maxlength="400"
+                                         required="#{true}"
+                                         onblur="javascript:this.value = this.value.toUpperCase();"
+                                         requiredMessage="El campo 'Nombre' es requerido."
+                                         value="#{horarioBean.horarioHelper.horario.nombre}"
+                                         disabled="#{!(horarioBean.horarioHelper.esNuevo)}"/>
+                        </h:panelGrid>
+
+                        <c:forEach var="hd"
+                                   varStatus = "i"
+                                   items="#{horarioBean.horarioHelper.listaHorarioDetalles}">
+                            <p:panel id="panelDetalle_#{i.index}"
+                                     header="#{horarioBean.nombresDias[i.index]}"
+                                     styleClass="panelDetalle">
+                                <h:panelGrid columns="8" 
+                                             id="panelDetalleForm_#{i.index}" 
+                                             class="panelDetalleForm_#{i.index}">
+                                    <h:outputLabel value="Día Laborable:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectBooleanCheckbox value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}">
+                                        <p:ajax update="panelDetalleForm_#{i.index}" 
+                                                oncomplete="limpiarImputs(#{i.index})"
+                                                listener="#{horarioBean.actualizarFormularioHorarioDetalle(horarioBean.horarioHelper.listaHorarioDetalles[i.index])}"/>
+                                    </p:selectBooleanCheckbox>
+
+                                    <h:outputLabel value="* Total de horas"
+                                                   styleClass="labelFormulario"/>
+                                    <p:spinner id="total_horas_#{i.index}" 
+                                               max="8"
+                                               min="1"
+                                               requiredMessage="El campo 'Total de Horas' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                               value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].totalHorasDiaria}"
+                                               disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                               required="#{true}">
+                                        <f:validateLongRange minimum="1" maximum="8"/>
+                                    </p:spinner>
+
+                                    <h:outputLabel value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable
+                                                            ? '* Hora Entrada:' : 'Hora Entrada:'}"
+                                                   styleClass="labelFormulario"/>
+                                    <p:calendar id="hora_entrada_#{i.index}" 
+                                                value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaEntrada}" 
+                                                pattern="HH:mm" 
+                                                timeOnly="#{true}"  
+                                                style="width: 50px"
+                                                disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                                requiredMessage="El campo 'Hora Entrada' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                                required="#{true}"/>
+
+                                    <h:outputLabel value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable
+                                                            ? '* Hora Salida:' : 'Hora Salida:'}"
+                                                   styleClass="labelFormulario"/>
+                                    <p:calendar id="hora_salida_#{i.index}" 
+                                                value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaSalida}" 
+                                                disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                                pattern="HH:mm" 
+                                                timeOnly="#{true}"  
+                                                style="width: 50px"
+                                                requiredMessage="El campo 'Hora Salida' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                                required="#{true}"/>
+
+                                    <h:outputLabel value="Hora Inicio Período Almuerzo:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:calendar id="hora_almuerzo_salida_#{i.index}" 
+                                                disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                                value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaSalidaAlmuerzo}" 
+                                                pattern="HH:mm" 
+                                                timeOnly="#{true}"  
+                                                required="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaEntradaAlmuerzo ne null}"
+                                                requiredMessage="El campo 'Hora Inicio Período Almuerzo' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                                style="width: 50px">
+                                        <p:ajax update="hora_almuerzo_entrada_#{i.index} lblDuracionAlmuerzo_#{i.index} duracion_almuerzo_#{i.index}"/>
+                                    </p:calendar>
+
+                                    <h:outputLabel value="Hora Fín Período Almuerzo:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:calendar id="hora_almuerzo_entrada_#{i.index}" 
+                                                value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaEntradaAlmuerzo}" 
+                                                pattern="HH:mm" 
+                                                timeOnly="#{true}"  
+                                                style="width: 50px"
+                                                requiredMessage="El campo 'Hora Fín Período Almuerzo' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                                required="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaSalidaAlmuerzo ne null}"
+                                                disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}">
+                                        <p:ajax update="hora_almuerzo_salida_#{i.index} lblDuracionAlmuerzo_#{i.index} duracion_almuerzo_#{i.index}"/>
+                                    </p:calendar>
+
+                                    <h:outputLabel value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable and 
+                                                            (horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaSalidaAlmuerzo ne null 
+                                                            or horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaEntradaAlmuerzo ne null)
+                                                            ? '* Duración Período Almuerzo' : 'Duración Período Almuerzo'}"
+                                                   styleClass="labelFormulario"
+                                                   id="lblDuracionAlmuerzo_#{i.index}"/>
+                                    <p:spinner id="duracion_almuerzo_#{i.index}" 
+                                               max="60"
+                                               min="1"
+                                               value="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].tiempoAlmuerzoPermitido}"
+                                               disabled="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                               requiredMessage="El campo 'Duración Período Almuerzo' del día #{horarioBean.nombresDias[i.index]} es requerido."
+                                               required="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable and 
+                                                           (horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaSalidaAlmuerzo ne null 
+                                                           or horarioBean.horarioHelper.listaHorarioDetalles[i.index].horaEntradaAlmuerzo ne null)}">
+                                        <f:validateLongRange minimum="1" maximum="60"/>
+                                    </p:spinner>
+
+                                    <p:outputLabel />
+
+                                    <p:commandButton  
+                                        style="width: 70px;" 
+                                        value="Extender"
+                                        rendered="#{horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"
+                                        actionListener="#{horarioBean.propagarConfiguracionHorario(i.index)}"
+                                        process="panelDetalleForm_#{i.index}"
+                                        update="@(.panelDetalle)"
+                                        title="Extender configuración a los demás días"/>
+                                    <p:outputLabel rendered="#{not horarioBean.horarioHelper.listaHorarioDetalles[i.index].laborable}"/>
+
+                                </h:panelGrid>
+                            </p:panel>
+                        </c:forEach>
+                    </p:panel>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

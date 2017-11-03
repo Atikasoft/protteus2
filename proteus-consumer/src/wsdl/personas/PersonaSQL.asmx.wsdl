@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://mdmq.quito.gob.ec/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://mdmq.quito.gob.ec/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://mdmq.quito.gob.ec/">
+      <s:element name="fn_consulta_buscarPersonaDS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cedulaRuc" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fn_consulta_buscarPersonaDSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fn_consulta_buscarPersonaDSResult" type="s:int"/>
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="perPersona" type="tns:clsPerPersonaCompleta"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="clsPerPersonaCompleta">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="PE_PERSONA_ID" type="s:long"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_DENOMINACION" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_NOMBRES" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_APELLIDOS" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_RAZON_SOCIAL" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_NUM_IDENTIFICACION" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_IDENTIFICACION" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_TIP_PERSONA" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_MAIL" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_TRAN" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_DESC" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="PE_FECHA_NACIMIENTO" nillable="true" type="s:dateTime"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PE_ESTADO_CIVIL" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Cabecera" type="tns:Cabecera"/>
+      <s:complexType name="Cabecera">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string"/>
+        </s:sequence>
+        <s:anyAttribute/>
+      </s:complexType>
+      <s:element name="fn_consulta_buscarPersonaCompleto">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificacion" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="strTipoIdentificacion" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fn_consulta_buscarPersonaCompletoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fn_consulta_buscarPersonaCompletoResult" type="s:int"/>
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="perPersona" type="tns:clsPerPersonaCompleta"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fn_consulta_telefonos_direcciones">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intPersonaID" type="s:long"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fn_consulta_telefonos_direccionesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fn_consulta_telefonos_direccionesResult" type="s:int"/>
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="lstPerTelefono" type="tns:ArrayOfClsPerTelefono"/>
+            <s:element minOccurs="0" maxOccurs="1" name="lstPerDireccion" type="tns:ArrayOfClsPerDireccion"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfClsPerTelefono">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="clsPerTelefono" nillable="true" type="tns:clsPerTelefono"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="clsPerTelefono">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="PT_NUM_TELEFONO" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PT_TIP_TELEFONO" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PT_PROVEEDOR" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfClsPerDireccion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="clsPerDireccion" nillable="true" type="tns:clsPerDireccion"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="clsPerDireccion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="DR_CALLE_PRINCIPAL" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="DR_NUMERO" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="DR_INTERSECCION" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="DR_REFERENCIA" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="fn_consulta_buscarPersonaDSSoapIn">
+    <wsdl:part name="parameters" element="tns:fn_consulta_buscarPersonaDS"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_buscarPersonaDSSoapOut">
+    <wsdl:part name="parameters" element="tns:fn_consulta_buscarPersonaDSResponse"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_buscarPersonaDSCabecera">
+    <wsdl:part name="Cabecera" element="tns:Cabecera"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_buscarPersonaCompletoSoapIn">
+    <wsdl:part name="parameters" element="tns:fn_consulta_buscarPersonaCompleto"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_buscarPersonaCompletoSoapOut">
+    <wsdl:part name="parameters" element="tns:fn_consulta_buscarPersonaCompletoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_buscarPersonaCompletoCabecera">
+    <wsdl:part name="Cabecera" element="tns:Cabecera"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_telefonos_direccionesSoapIn">
+    <wsdl:part name="parameters" element="tns:fn_consulta_telefonos_direcciones"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_telefonos_direccionesSoapOut">
+    <wsdl:part name="parameters" element="tns:fn_consulta_telefonos_direccionesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="fn_consulta_telefonos_direccionesCabecera">
+    <wsdl:part name="Cabecera" element="tns:Cabecera"/>
+  </wsdl:message>
+  <wsdl:portType name="ServicePersonasSoap">
+    <wsdl:operation name="fn_consulta_buscarPersonaDS">
+      <wsdl:input message="tns:fn_consulta_buscarPersonaDSSoapIn"/>
+      <wsdl:output message="tns:fn_consulta_buscarPersonaDSSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_buscarPersonaCompleto">
+      <wsdl:input message="tns:fn_consulta_buscarPersonaCompletoSoapIn"/>
+      <wsdl:output message="tns:fn_consulta_buscarPersonaCompletoSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_telefonos_direcciones">
+      <wsdl:input message="tns:fn_consulta_telefonos_direccionesSoapIn"/>
+      <wsdl:output message="tns:fn_consulta_telefonos_direccionesSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServicePersonasSoap" type="tns:ServicePersonasSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="fn_consulta_buscarPersonaDS">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_buscarPersonaDS" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="tns:fn_consulta_buscarPersonaDSCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_buscarPersonaCompleto">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_buscarPersonaCompleto" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="tns:fn_consulta_buscarPersonaCompletoCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_telefonos_direcciones">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_telefonos_direcciones" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="tns:fn_consulta_telefonos_direccionesCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServicePersonasSoap12" type="tns:ServicePersonasSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="fn_consulta_buscarPersonaDS">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_buscarPersonaDS" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+        <soap12:header message="tns:fn_consulta_buscarPersonaDSCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_buscarPersonaCompleto">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_buscarPersonaCompleto" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+        <soap12:header message="tns:fn_consulta_buscarPersonaCompletoCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fn_consulta_telefonos_direcciones">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fn_consulta_telefonos_direcciones" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+        <soap12:header message="tns:fn_consulta_telefonos_direccionesCabecera" part="Cabecera" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServicePersonas">
+    <wsdl:port name="ServicePersonasSoap" binding="tns:ServicePersonasSoap">
+      <soap:address location="http://172.22.8.108/MDMQ_WS_PERSONAS2012/Presentacion/PersonaSQL.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServicePersonasSoap12" binding="tns:ServicePersonasSoap12">
+      <soap12:address location="http://172.22.8.108/MDMQ_WS_PERSONAS2012/Presentacion/PersonaSQL.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

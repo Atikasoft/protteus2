@@ -1,0 +1,337 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+
+    <p:dialog modal="true"     
+              resizable="false"
+              width="1000"  
+              appendToBody="#{true}"
+              draggable="true"   
+              header="#{msg['ec.gob.mrl.smp.administracion.puestos.btn.cargaMasiva']}" 
+              widgetVar="cargaMasivaPuestosDlg" closable="false">
+
+        <h:form id="cargaMasivaPuestosFrm">
+            <p:panel style="border-style: none" id="cargaMasivaPuestosPanel1">
+                <h:panelGrid>
+                    <h:outputText value="Estructura esperada en el CSV:" />
+                    <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.unidadOrganizacional']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.modalidadlaboral']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.unidadPresupuestaria']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.denominacionPuesto']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.fechaCreacion']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.grupoOcupacional']}; #{msg['ec.gob.mrl.smp.administracion.puestos.masivo.ubicacionGeografica']}" style="font-weight: bold !important;"/>
+                </h:panelGrid>
+                <p:panelGrid columns="2" id="cargaMasivaPuestosPanel2">
+                    <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.archivoPuestos']}"/>
+                    <h:panelGrid columns="2" id="cargaMasivaPuestosPanel3">                                
+                        <p:fileUpload
+                            id="archivoPuestosCSV"
+                            mode="advanced"
+                            showButtons="false"                       
+                            process="@this"   
+                            widgetVar="archivo_puestos_CSV"
+                            allowTypes="/(\.|\/)(csv)$/"
+                            label="Seleccione...."
+                            sizeLimit="2097152"
+                            style="width: 250px;"
+                            fileUploadListener="#{distributivoBean.cargarArchivo}"
+                            oncomplete="clearInvalidFileMsg(archivo_puestos_CSV)"
+                            invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                            invalidFileMessage="El archivo debe ser csv "
+                            requiredMessage="Debe cargar un archivo"
+                            auto="true" update="botonesRealizarCargaMasiva resultadosCargaMasiva :frmErroresCargaMasivaPuestos :frmRegistrosCargaMasivaPuestos">
+                        </p:fileUpload>
+                    </h:panelGrid>
+                </p:panelGrid>
+
+                <p:panel style="border-style: none" id="resultadosCargaMasiva" >
+
+                    <h:panelGrid id="resultadosCargaMasivaPanel1" columns="8" rendered="#{not (distributivoBean.distributivoHelper.nombreArchivoCSV eq null)}">
+                        <p:outputLabel value="Archivo Cargado: " />
+                        <h:outputText id="filename" value="#{distributivoBean.distributivoHelper.nombreArchivoCSV}" style="font-weight: bold !important"/>
+                        <p:spacer style="width: 5px;"/>
+                        <h:outputText value="Total de Registros Cargados:"/>
+                        <p:commandLink value="#{distributivoBean.distributivoHelper.totalRegistrosCargadosCSV}"
+                                       onclick="registrosCargaMasivaPuestosDlg.show();"
+                                       rendered="#{distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0}"
+                                       process="@this" immediate="true"
+                                       id="btnVerRegistrosCargaMasiva"
+                                       update=":frmRegistrosCargaMasivaPuestos"
+                                       style="font-weight: bold !important; color: green !important;"
+                                       >
+                        </p:commandLink>
+                        <h:outputText value="#{distributivoBean.distributivoHelper.totalRegistrosCargadosCSV}"
+                                      rendered="#{not (distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0)}"
+                                      style="font-weight: bold !important; color: green !important;"
+                                      />
+                        <p:spacer style="width: 5px;"/>
+                        <h:outputText value="Total de Registros Fallidos:"/>
+                        <p:commandLink value="#{distributivoBean.distributivoHelper.totalRegistrosFallidosCSV}"
+                                       onclick="erroresCargaMasivaPuestosDlg.show();"
+                                       rendered="#{not (distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0)}"
+                                       process="@this" immediate="true"
+                                       update=":frmErroresCargaMasivaPuestos"
+                                       id="btnVerErroresCargaMasiva"
+                                       style="font-weight: bold !important; color: red !important;"
+                                       >
+                        </p:commandLink>
+                        <h:outputText value="#{distributivoBean.distributivoHelper.totalRegistrosFallidosCSV}"
+                                      rendered="#{distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0}"
+                                      style="font-weight: bold !important; color: red !important;"
+                                      />
+                    </h:panelGrid>
+
+
+                    <p:dataTable var="resumenRegistroCargados" 
+                                 rendered="#{not (distributivoBean.distributivoHelper.nombreArchivoCSV eq null) and (distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0)}"
+                                 style="overflow: auto !important"
+                                 value="#{distributivoBean.distributivoHelper.listaPuestoPorUnidadesCSV}" 
+                                 >
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column headerText="Modalidades Laborales" style="min-width: 200px !important;" rowspan="2">
+                                </p:column>
+                                <p:column headerText="Unidades Organizacionales" colspan="#{distributivoBean.distributivoHelper.totalUnidadesOrganizacionalesCargadasCSV}">
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <c:forEach var="uo" items="#{distributivoBean.distributivoHelper.listaUnidadesOrganizacionalesCargadasCSV}">
+                                    <p:column headerText="#{uo.unidadOrganizacional.nombre}" style="min-width: 200px !important; text-align: center"/>
+                                </c:forEach>
+                            </p:row>
+                        </p:columnGroup>
+
+                        <p:column>
+                            <h:outputText value="#{resumenRegistroCargados.modalidadLaboral.nombre}" />
+                        </p:column>
+
+                        <p:columns value="#{distributivoBean.distributivoHelper.listaUnidadesOrganizacionalesCargadasCSV}" 
+                                   var="uo" style="text-align: center">
+                            <h:outputText value="#{resumenRegistroCargados.valorEnUnidad(uo.unidadOrganizacional.id)}" />
+                        </p:columns>
+
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column footerText="Totales" />
+                                <c:forEach var="uo" items="#{distributivoBean.distributivoHelper.listaUnidadesOrganizacionalesCargadasCSV}">
+                                    <p:column footerText="#{uo.total}" style="text-align: center"/>
+                                </c:forEach>
+                            </p:row>
+                        </p:columnGroup>
+
+                    </p:dataTable>
+
+                </p:panel>
+
+            </p:panel>
+            <br/>
+            <center>
+                <h:panelGrid style="margin: auto" id="botonesRealizarCargaMasiva" columns="3">
+                    <p:commandButton id="btnAceptarRealizarCargaMasiva"
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                     style="margin: auto"
+                                     disabled="#{not (distributivoBean.distributivoHelper.totalRegistrosFallidosCSV eq 0) or (distributivoBean.distributivoHelper.totalRegistrosCargadosCSV eq 0)}"
+                                     onclick="confirmacionCargaMasivaPuestosDlg.show()"
+                                     update="@this"/>
+                    <p:spacer style="width: 5px"/>
+                    <p:commandButton id="btnCancelarRealizarCargaMasiva" immediate="true" update="@form"
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                     onclick="cargaMasivaPuestosDlg.hide()"
+                                     style="margin: auto"/>
+                </h:panelGrid>
+            </center>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog modal="true"     
+              resizable="false"
+              width="1100"  
+              id="registrosCargaMasivaPuestosDlgDlg"
+              appendToBody="#{true}"
+              draggable="true"   
+              header="Registros cargados del Archivo de Puestos" 
+              widgetVar="registrosCargaMasivaPuestosDlg" closable="false">
+
+        <h:form id="frmRegistrosCargaMasivaPuestos">
+            <p:panel style="border-style: none" id="frmRegistrosCargaMasivaPuestosPanel1">
+                <p:dataTable id="listaRegistrosCargaMasivaPuestos" 
+                             value="#{distributivoBean.distributivoHelper.listaPuestosCargadosCSV}"
+                             var="distributivoDetalle" scrollable="true"
+                             paginator="#{true}" filterEvent="enter"
+                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">                            
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="text-align: center; width: 50px">
+                        <h:outputText value="#{rowIndex+1}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.unidadOrganizacional']}" style="width: 250px">                               
+                        <h:outputText value="#{distributivoDetalle.distributivo.unidadOrganizacional.nombre}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.modalidadlaboral']}" style="width: 250px">                               
+                        <h:outputText value="#{distributivoDetalle.distributivo.modalidadLaboral.nombre}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.unidadPresupuestaria']}" style="width: 250px">                               
+                        <h:outputText value="#{distributivoDetalle.unidadPresupuestaria.nombre}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.denominacionPuesto']}" style="width: 250px">                               
+                        <h:outputText  value="#{distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}  / #{distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre} / #{distributivoDetalle.escalaOcupacional.nombre}"/>   
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.fechaCreacion']}" style="width: 80px; text-align: center">   
+                        <h:outputText value="#{distributivoDetalle.fechaInicio}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}" />
+                        </h:outputText>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.grupoOcupacional']}" style="width: 250px">                               
+                        <h:outputText value="#{distributivoDetalle.denominacionPuesto.nombre}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.ubicacionGeografica']}" style="width: 250px">                               
+                        <h:outputText value="#{distributivoDetalle.ubicacionGeografica.nombreCompleto}"/>                                
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <br/>
+
+            <center>
+                <p:commandButton immediate="true" update="@form"
+                                 id="btnOcultarRegistrosCargaMasiva"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                 onclick="registrosCargaMasivaPuestosDlg.hide()"
+                                 style="margin: auto"/>
+            </center>
+        </h:form>
+    </p:dialog>
+
+
+    <p:dialog modal="true"     
+              resizable="false"
+              width="850"  
+              appendToBody="#{true}"
+              draggable="true"
+              id="erroresCargaMasivaPuestosDlgDlg"
+              header="Errores durante la cargar del Archivo de Puestos" 
+              widgetVar="erroresCargaMasivaPuestosDlg" closable="false">
+
+        <h:form id="frmErroresCargaMasivaPuestos">
+            <p:panel style="border-style: none" id="frmErroresCargaMasivaPuestosPanel1">
+                <p:dataTable id="listaErroresCargaMasivaPuestos"
+                             value="#{distributivoBean.distributivoHelper.errores}"
+                             var="error" 
+                             paginator="#{true}" filterEvent="enter"
+                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">                            
+                    <p:column headerText="Descripcion del Error" 
+                              >                               
+                        <h:outputText value="#{error}"/>                                
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <center>
+                <p:commandButton id="btnOcultarErroresCargaMasiva" immediate="true" update="@form"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                 onclick="erroresCargaMasivaPuestosDlg.hide()"
+                                 style="margin: auto"/>
+            </center>
+        </h:form>
+    </p:dialog>
+
+
+    <p:dialog modal="true"     
+              resizable="false"
+              width="450"  
+              id="confirmacionCargaMasivaPuestosDlgDlg"
+              appendToBody="#{true}"
+              draggable="true"   
+              header="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.confirmacion.titulo']}" 
+              widgetVar="confirmacionCargaMasivaPuestosDlg" closable="false">
+
+        <h:form id="frmConfirmacionCargaMasivaPuestos">
+            <p:panel style="border-style: none" id="frmConfirmacionCargaMasivaPuestosPanel1">
+                <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.confirmacion.mensaje']}" />
+            </p:panel>
+            <center>
+                <p:commandButton update="@form" process="@this"
+                                 id="btnAceptarConfirmacionCargaMasiva"
+                                 action="#{distributivoBean.generarPuestos}"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                 style="margin: auto"/>
+                <p:spacer style="width: 5px"/>
+                <p:commandButton id="btnCancelarConfirmacionCargaMasiva"
+                                 immediate="true" process="@this"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                 onclick="confirmacionCargaMasivaPuestosDlg.hide()"
+                                 style="margin: auto"/>
+            </center>
+        </h:form>
+    </p:dialog>
+
+
+    <p:dialog modal="true"     
+              resizable="false"
+              width="550"  
+              id="registrosCargaMasivaPuestosHistoricoDlg"
+              appendToBody="#{true}"
+              draggable="true"   
+              header="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.historico.title']}" 
+              widgetVar="registrosCargaMasivaPuestosHistoricoDlgWV" closable="false">
+
+        <h:form id="registrosCargaMasivaPuestosHistoricoDlgFrm">
+            <p:panel style="border-style: none" id="registrosCargaMasivaPuestosHistoricoDlgFrmMainPanel">
+                <p:dataTable id="listaRegistrosCargaMasivaPuestos" 
+                             value="#{distributivoBean.distributivoHelper.listaCargasMasivasPuestos}"
+                             var="carga" scrollable="true"
+                             paginator="#{true}" filterEvent="enter"
+                             emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">                            
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="text-align: center; width: 50px">
+                        <h:outputText value="#{rowIndex+1}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.historico.fecha']}" style="text-align: center">                               
+                        <h:outputText value="#{carga.fechaCreacion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}" />
+                        </h:outputText>   
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.masivo.historico.total']}" style="width: 100px; text-align: center">                               
+                        <h:outputText value="#{carga.totalPuestosGenerados}"/>                                
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="width: 150px">                               
+                        <p:commandButton value="GENERAR EXCEL" 
+                                         title="GENERAR EXCEL DE CARGA MASIVA"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                         ajax="false">
+                            <f:setPropertyActionListener value="#{carga}" 
+                                                         target="#{distributivoBean.distributivoHelper.cargaMasivaPuesto}" />
+                            <p:fileDownload value="#{distributivoBean.generarExcelCargaMasivaPuestos()}" />    
+                        </p:commandButton>                          
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <br/>
+
+            <center>
+                <p:commandButton immediate="true" update="@form"
+                                 id="btnOcultarRegistrosCargaMasivaPuestosHistoricoDlg"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                 onclick="registrosCargaMasivaPuestosHistoricoDlgWV.hide()"
+                                 style="margin: auto"/>
+            </center>
+        </h:form>
+    </p:dialog>
+
+</html>

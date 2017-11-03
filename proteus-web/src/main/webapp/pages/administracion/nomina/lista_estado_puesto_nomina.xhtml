@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel>
+                    <h:panelGrid columns="2">                    
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{tipoNominaBean.asignarEstadoPuesto()}"
+                                         ajax="#{false}"
+                                         />                                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{tipoNominaBean.buscar()}"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:fieldset legend="Información Nómina">
+                        <h:panelGrid columns="2"  style="text-align:left" id="tablaformulario">
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.estadoPuesto.nemonico']}:"
+                                           styleClass="labelFormulario"/>
+
+                            <p:inputText id="clase_nemonico"                                      
+                                         styleClass="textoNemonico"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}" 
+                                         required="true"
+                                         requiredMessage="El código es un campo requerido."
+                                         style="width: 200px"
+                                         disabled="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}" 
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.codigo}"
+                                         />                        
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.nomina.nombre']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="clase_nombre"
+                                         styleClass="textoNombre" 
+                                         style="width: 200px"
+                                         disabled="#{!(tipoNominaBean.tipoNominaHelper.esNuevo)}" 
+                                         requiredMessage="El nombre es un campo requerido."
+                                         required="true"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                         value="#{tipoNominaBean.tipoNominaHelper.tipoNomina.nombre}" />
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Lista Estados Puestos">
+                        <p:dataTable id="tablaClase"
+                                     value="#{tipoNominaBean.tipoNominaHelper.listaEstadoPuestos}"
+                                     var="puesto"
+                                     sortBy="#{puesto.nombre}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">     
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['message.btn.seleccionar']}" 
+                                      style="width: 50px; text-align: center">                               
+                                <p:selectBooleanCheckbox value="#{puesto.seleccionado}" />                               
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.codigo']}" 
+                                      sortBy="#{puesto.codigo}" style="width: 70px">                                                                 
+                                <h:outputText value="#{puesto.codigo}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.nombre']}" 
+                                      sortBy="#{puesto.nombre}" style="width: 150px">                                                                 
+                                <h:outputText value="#{puesto.nombre}"/>                                
+                            </p:column>                           
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoPuesto.ocupado']}" 
+                                      style="text-align: center; width: 70px">
+                                <p:selectBooleanCheckbox value="#{puesto.ocupado}"
+                                                         disabled="#{true}"/>
+                            </p:column>                                                 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoPuesto.puedeOcuparse']}" 
+                                      style="text-align: center; width: 70px">
+                                <p:selectBooleanCheckbox value="#{puesto.puedeOcuparse}"
+                                                         disabled="#{true}"/>
+                            </p:column>                        
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoPuesto.usaNomina']}" 
+                                      style="text-align: center; width: 70px">
+                                <p:selectBooleanCheckbox value="#{puesto.usaNomina}"
+                                                         disabled="#{true}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" 
+                                      style="text-align: center; width: 70px"
+                                      >                                
+                                <p:selectBooleanCheckbox value="#{puesto.vigente}" 
+                                                         disabled="#{true}"/>                                   
+                            </p:column>                        
+                        </p:dataTable>
+                    </p:fieldset>     
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{rolBean}" 
+                                    titulo="#{msg['ec.gob.mq.proteus.rol.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablarol"
+                                 value="#{rolBean.rolHelper.listaRols}"
+                                 var="rol" emptyMessage="#{msg['message.listaVacia']}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{rol.codigo}"  sortOrder="ascending"
+                                 style="overflow: auto">        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{rolBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{rol}" 
+                                                             target="#{rolBean.rolHelper.rolEditDelete}"/>
+                            </p:commandButton>
+                                <p:commandButton id="botonAsignarMenus" icon="ui-icon-suitcase"
+                                             ajax="#{false}"
+                                             action="#{menuRolBean.irAsignacionMenus}"
+                                             title="#{msg['ec.gob.mq.proteus.rol.asignarMenu']}">
+                                <f:setPropertyActionListener value="#{rol}" 
+                                                             target="#{menuRolBean.menuRolHelper.menuRol.rol}"/>                                 
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{rol}" 
+                                                             target="#{rolBean.rolHelper.rolEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.rol.codigo']}" 
+                                  sortBy="#{rol.codigo}" style="width: 50px">                                                                 
+                            <h:outputText value="#{rol.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.rol.nombre']}" 
+                                  sortBy="#{rol.nombre}" style="width: 200px" filterBy="#{rol.nombre}"
+                                      filterMatchMode="contains">                               
+                            <h:outputText value="#{rol.nombre}"/>                                
+                        </p:column>       
+                        <p:column headerText="#{msg['ec.gob.mq.proteus.rol.descripcion']}" 
+                                  sortBy="#{rol.descripcion}" style="width: 200px">                               
+                            <h:outputText value="#{rol.descripcion}"/>                                
+                        </p:column>       
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 70px">                                
+                            <p:selectBooleanCheckbox value="#{rol.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablarol"
+                                             actionListener="#{rolBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

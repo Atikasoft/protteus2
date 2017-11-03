@@ -1,0 +1,2 @@
+ALTER TABLE sch_proteus.desconcentrados_unidades_organizacionales DROP CONSTRAINT desconcentrado_unidad_organizacional_uk
+;

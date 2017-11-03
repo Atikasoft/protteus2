@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form >      
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.nomina.titulo']}" id="panelOpcionesLista">                              
+                    <h:panelGrid columns="1" width="100%">
+                        <p:dataTable id="tablaCatalogo" 
+                                     value="#{periodoNominaBean.periodoNominaHelper.listaPeriodoNominas}"
+                                     var="periodo"                                          
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex"                                     
+                                     style="overflow: auto">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="width: 20px;text-align: center">
+                                <h:outputLabel value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.numero']}"
+                                      style="text-align: center; width: 50px"
+                                      sortBy="#{periodo.numero}">
+                                <h:outputLabel value="#{periodo.numero}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.nombre']}"
+                                      style="width: 100px"
+                                      sortBy="#{periodo.nombre}">
+                                <h:outputLabel value="#{periodo.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.fechaInicio']}"
+                                      style="text-align: center; width: 100px">
+                                <h:outputLabel value="#{periodo.fechaInicio}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.fechaFin']}"
+                                      style="text-align: center; width: 100px">
+                                <h:outputLabel value="#{periodo.fechaFinal}"  >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}"
+                                      style="text-align: center;width: 100px ">
+                                <p:selectBooleanCheckbox value="#{periodo.vigente}" 
+                                                         disabled="#{true}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

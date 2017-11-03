@@ -1,0 +1,234 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog modal="true"
+              closable="false"
+              resizable="false"
+              draggable="true"
+              width="650px"  
+              widgetVar="dlgNotificacion">
+
+        <f:facet name="header">
+            <p:outputPanel autoUpdate="#{true}">
+                <h:outputText id="dlgNotificacionHeader" 
+                              value="#{notificacionBean.notificacionHelper.esNuevo 
+                                       ? 'Crear notificación' 
+                                       : 'Notificación'}"/>
+            </p:outputPanel>
+        </f:facet>
+        <style>
+            .ui-autocomplete input {
+                width: 525px;
+                text-transform: uppercase;
+            }
+            .ui-autocomplete-multiple ul {
+                width: 533px; 
+            }
+            .ui-autocomplete-input-token input {
+                text-transform: uppercase;
+            }
+        </style>
+        <h:form id="frmNotificacion">  
+            <h:panelGrid columns="2"  
+                         style="text-align: left;width: 100%">
+
+                <h:outputLabel value="* Fecha:"
+                               rendered="#{!notificacionBean.notificacionHelper.esNuevo}"
+                               styleClass="labelFormulario"/>
+                <p:inputText id="fecha"
+                             rendered="#{!notificacionBean.notificacionHelper.esNuevo}"
+                             value="#{notificacionBean.notificacionHelper.notificacion.fechaEnvio}"
+                             disabled="true"
+                             style="width: 115px;">
+                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                </p:inputText>   
+
+                <h:outputLabel value="* De:"
+                               rendered="#{!notificacionBean.notificacionHelper.esNuevo 
+                                           and notificacionBean.notificacionHelper.mostrarRecibidas}"
+                               styleClass="labelFormulario"/>
+                <p:inputText id="remitente"
+                             rendered="#{!notificacionBean.notificacionHelper.esNuevo 
+                                         and notificacionBean.notificacionHelper.mostrarRecibidas}"
+                             value="#{notificacionBean.notificacionHelper.notificacion.remitente.apellidosNombres}"
+                             disabled="true"
+                             style="width: 525px;">
+                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                </p:inputText> 
+
+                <h:outputLabel value="* Enviar a:"
+                               rendered="#{notificacionBean.notificacionHelper.esNuevo}"
+                               styleClass="labelFormulario"/>
+                <p:selectOneMenu id="enviarAOp"
+                                 required="#{true}"
+                                 requiredMessage="El campo 'Enviar a' es obligatorio"
+                                 rendered="#{notificacionBean.notificacionHelper.esNuevo}"
+                                 value="#{notificacionBean.notificacionHelper.opcionTipoRemitenteSeleccionada}">
+                    <f:selectItems value="#{notificacionBean.notificacionHelper.listaOpcionesTipoRemitente}"/>
+                    <p:ajax update="@form"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="* Para:"
+                               rendered ="#{notificacionBean.notificacionHelper.opcionTipoRemitenteSeleccionada ne null 
+                                            and !notificacionBean.notificacionHelper.mostrarOpcionTodos
+                                            and !notificacionBean.notificacionHelper.mostrarOpcionesUnidadesRRHH
+                                            and notificacionBean.notificacionHelper.esNuevo 
+                                            and notificacionBean.notificacionHelper.mostrarDestinatarios}"
+                               styleClass="labelFormulario" />
+                <p:autoComplete id="destinatariosEspecificos"
+                                required="#{true}"
+                                requiredMessage="El campo 'Para' es obligatorio"
+                                rendered ="#{notificacionBean.notificacionHelper.mostrarOpcionesServidoresEspecificos 
+                                             and notificacionBean.notificacionHelper.esNuevo 
+                                             and notificacionBean.notificacionHelper.mostrarDestinatarios}"
+                                disabled="#{!notificacionBean.notificacionHelper.esNuevo}"
+                                value="#{notificacionBean.notificacionHelper.listaDestinatarios}"
+                                completeMethod="#{notificacionBean.buscarServidoresActivosEnPuestosOcupadosPorNombre}"  
+                                var="servidor" 
+                                itemValue="#{servidor}"
+                                itemLabel="#{notificacionBean.nombreIdentificacionString(servidor)}"
+                                maxResults="10"
+                                minQueryLength="3"
+                                queryDelay="750"
+                                scrollHeight="100"
+                                converter="servidorConverter"
+                                multiple="#{true}">
+                    <p:ajax event="itemSelect" 
+                            update="@this"
+                            listener="#{notificacionBean.verificarDestinatarioNoEsteSeleccionado}"/>
+                </p:autoComplete>
+
+                <p:autoComplete id="unidadDesconcentradaOp"
+                                required="#{true}"
+                                requiredMessage="El campo 'Para' es obligatorio"
+                                value="#{notificacionBean.notificacionHelper.unidadesDesconcetradasSeleccionadas}"
+                                rendered ="#{notificacionBean.notificacionHelper.mostrarOpcionesUnidadesDesconcentradas 
+                                             and notificacionBean.notificacionHelper.esNuevo 
+                                             and notificacionBean.notificacionHelper.mostrarDestinatarios}"
+                                completeMethod="#{notificacionBean.buscarUnidadesDesconcentradasPorNombre}"  
+                                var="unidadDesconcentrada" 
+                                itemValue="#{unidadDesconcentrada}"
+                                itemLabel="#{unidadDesconcentrada.nombre}"
+                                maxResults="10"
+                                minQueryLength="3"
+                                queryDelay="750"
+                                scrollHeight="100"
+                                converter="desconcentradoConverter"
+                                multiple="#{true}">
+                    <p:ajax event="itemSelect" 
+                            update="@this"
+                            listener="#{notificacionBean.verificarUnidadDesconcetradaNoEsteSeleccionada}"/>
+                </p:autoComplete>
+
+                <h:outputLabel value="* Asunto:"
+                               styleClass="labelFormulario"/>
+                <p:inputTextarea id="asunto"
+                                 value="#{notificacionBean.notificacionHelper.notificacion.asunto}"
+                                 disabled="#{!notificacionBean.notificacionHelper.esNuevo}"
+                                 maxlength="100"
+                                 required="true"
+                                 style="width: 525px; height: 30px; text-transform: uppercase;"
+                                 onblur="javascript:this.value = this.value.toUpperCase();"
+                                 requiredMessage="El campo 'Asunto' es requerido."/>  
+
+                <h:outputLabel value="* Mensaje:"
+                               styleClass="labelFormulario"/>
+                <p:inputTextarea id="mensaje"
+                                 disabled="#{!notificacionBean.notificacionHelper.esNuevo}"
+                                 value="#{notificacionBean.notificacionHelper.notificacion.mensaje}"
+                                 maxlength="2000"
+                                 required="true"
+                                 style="width: 525px; height: 150px; text-transform: uppercase;"
+                                 onblur="javascript:this.value = this.value.toUpperCase();"
+                                 requiredMessage="El campo 'Mensaje' es requerido."/> 
+
+                <h:outputLabel value="* Destinatarios:"
+                               styleClass="labelFormulario"
+                               rendered="#{!notificacionBean.notificacionHelper.esNuevo 
+                                           and !notificacionBean.notificacionHelper.mostrarRecibidas
+                                           and notificacionBean.notificacionHelper.notificacion.enviadaATodos}"/>
+                <p:outputLabel value="Todos los Servidores"
+                               rendered="#{!notificacionBean.notificacionHelper.esNuevo 
+                                           and !notificacionBean.notificacionHelper.mostrarRecibidas
+                                           and notificacionBean.notificacionHelper.notificacion.enviadaATodos}"/> 
+
+            </h:panelGrid>
+            <br />
+            <p:dataTable id="tblDestinatarios"
+                         widgetVar="tblDestinatariosWV"
+                         rendered="#{!notificacionBean.notificacionHelper.esNuevo 
+                                     and !notificacionBean.notificacionHelper.mostrarRecibidas
+                                     and !notificacionBean.notificacionHelper.notificacion.enviadaATodos}"
+                         value="#{notificacionBean.notificacionHelper.notificacion.destinatarios}"
+                         var="destinatario"
+                         paginator="#{true}" 
+                         paginatorPosition="bottom"
+                         style="font-size: 10px;"
+                         rows="5" 
+                         rowIndexVar="rowIndex"
+                         emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}">   
+
+                <f:facet name="header">
+                    <p:outputLabel value="Destinatarios" style="text-align: center;"/>
+                </f:facet>
+
+                <p:column headerText="No" 
+                          style="text-align: center; width: 15px;">
+                    <h:outputText value="#{rowIndex + 1}"/>                                
+                </p:column>
+
+                <p:column headerText="Apellidos y Nombres" 
+                          style="width: 200px;"
+                          sortBy="#{destinatario.destinatario.apellidosNombres}"
+                          filterBy="#{destinatario.destinatario.apellidosNombres}"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{destinatario.destinatario.apellidosNombres}"/>                      
+                </p:column>
+
+                <p:column headerText="Estado" 
+                          style="width: 25px; text-align: center"
+                          sortBy="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatario.estado)}"
+                          filterBy="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatario.estado)}"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{notificacionBean.obtenerDescripcionEstadoNotificacion(destinatario.estado)}"/>                      
+                </p:column>
+
+                <p:column headerText="Fecha Lectura"
+                          style="width: 115px; text-align: center">
+                    <h:outputText id="fechaLectura"
+                                  value="#{destinatario.fechaLectura}">
+                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+
+            <p:separator/>
+
+            <center>
+                <p:commandButton id="btnEnviar" 
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}"
+                                 rendered="#{notificacionBean.notificacionHelper.esNuevo}"
+                                 action="#{notificacionBean.enviarNotificacion()}"
+                                 update=":frmListaNotificaciones"
+                                 style="margin: auto; margin-right: 5px" />
+                <p:outputLabel/>
+                <p:commandButton id="btnCancelar"
+                                 type="button"   
+                                 rendered="#{notificacionBean.notificacionHelper.esNuevo}"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                 onclick="dlgNotificacion.hide();"
+                                 style="margin: auto" />
+
+                <p:commandButton id="btnCerrar"
+                                 type="button"
+                                 value="  #{msg['ec.gob.mrl.smp.generico.boton.cerrar']}  "
+                                 rendered="#{!notificacionBean.notificacionHelper.esNuevo}"
+                                 onclick="dlgNotificacion.hide();"
+                                 style="margin: auto" />
+            </center>
+        </h:form>  
+    </p:dialog>
+
+</html>

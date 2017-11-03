@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="5">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"                                         
+                                         ajax="#{false}"
+                                         action="#{delegacionAprobacionBean.guardar}">                            
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"  
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{delegacionAprobacionBean.regresarDelegacion()}"/>                                         
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{delegacionAprobacionBean.salirPantallaPrincipal}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <p:separator/>
+                <p:panel id="datosTipoMovimiento" header="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.datos']}">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.grupo']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{delegacionAprobacionBean.delegacionAprobacionHelper.tipoMovimientoDelegadoVO.tipoMovimiento.clase.grupo.nombre}"
+                                      styleClass="lblText" style="width: 800px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.clase']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{delegacionAprobacionBean.delegacionAprobacionHelper.tipoMovimientoDelegadoVO.tipoMovimiento.clase.nombre}"
+                                      styleClass="lblText" style="width: 800px"/>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}:" styleClass="labelFormulario" />
+                        <h:outputText  value="#{delegacionAprobacionBean.delegacionAprobacionHelper.tipoMovimientoDelegadoVO.tipoMovimiento.nombre}"
+                                          styleClass="lblText" style="width: 800px" />                        
+                    </h:panelGrid>                    
+                </p:panel>
+                <p:separator/>                
+                <div class="ui-messages ui-widget" id="fmrReasignacion:mensajessss" style="text-align: left">
+                        <div class="ui-messages-info ui-corner-all">
+                            <span class="ui-messages-info-icon"></span>
+                            <ul>
+                                <li>
+                                    <span class="ui-messages-info-summary">Seleccione los servidores de la siguiente lista</span>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                <p:separator/>
+                <p:dataTable id="tablaServidores"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             value="#{delegacionAprobacionBean.delegacionAprobacionHelper.listaUsuariosRolVO}"
+                             var="servidores"
+                             rowIndexVar="rowIndex"
+                             style="overflow: auto"
+                             filterEvent="enter"
+                             selection="#{delegacionAprobacionBean.delegacionAprobacionHelper.selectedUsuarioRolVO}">
+                    <f:facet name="header">  
+                        #{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.tituloTabla']}  
+                    </f:facet>                                 
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="text-align: center; width: 50px">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>                                        
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.servidor']}"
+                              sortBy="#{servidores.usuarioRol.usuario.nombre}"
+                              filterBy="#{servidores.usuarioRol.usuario.nombre}"
+                              filterMatchMode="contains" filterStyle="width: 200px">
+                        <h:outputText value="#{servidores.usuarioRol.usuario.nombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.maximaAutoridad']}" style="text-align: center">
+                        <h:outputText value="#{servidores.maximaAutoridad}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.institucion.estado']}" style="text-align: center">
+                        <h:outputText value="#{servidores.usuarioRol.usuario.servidor.estadoServidor.nombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.aprobador']}" style="text-align: center">
+                        <h:selectBooleanCheckbox value="#{servidores.aprobado}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>          
+        </ui:define>
+    </ui:composition>
+</html>

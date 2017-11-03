@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://172.22.8.147/MDMQ_Seguridades_Services/EWS_SEG.asmx?wsdl" uri="wsdl/172.22.8.147/MDMQ_Seguridades_Services/EWS_SEG.asmx.wsdl"/>
+    <system systemId="http://172.22.4.102/mdmq_personas_services/EWS_PER.asmx" uri="wsdl/172.22.4.102/mdmq_personas_services/EWS_PER.asmx"/>
+    <system systemId="http://172.22.4.102/mdmq_personas_services/EWS_PER.asmx?wsdl" uri="wsdl/172.22.4.102/mdmq_personas_services/EWS_PER.asmx.wsdl"/>
+    <system systemId="http://172.20.24.85/mdmq_personas_services/EWS_PER.asmx?WSDL" uri="wsdl/172.20.24.85/mdmq_personas_services/EWS_PER.asmx.wsdl"/>
+</catalog>

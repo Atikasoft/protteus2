@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="formPrincipal">
+                <p:panel header="PORTAL DE SERVICIOS">
+                    <div style="overflow: auto">
+                        <p:dataGrid var="portal" value="#{inicioPortalBean.portalRrhhHelper.listaPortalRhhs}" columns="3"  
+                                    rows="12" paginator="false" >  
+                            <center>
+                                <br/>
+                                <p:panel header="#{portal.nombre}" style="text-align:center; width: 290px">  
+                                    <h:panelGrid columns="1" style="text-align:center; width:80%">  
+                                        <br/>
+                                        <p:graphicImage value="/images/#{portal.nombreImagen}.png" style="width: 80px"/>   
+                                        <h:outputText value="#{portal.nombre}" style="color: green"/>  
+                                        <br/>
+
+                                        <p:commandButton value="Ingresar"  
+                                                         title="#{portal.nombre}"
+                                                         ajax="false"
+                                                         action="#{inicioPortalBean.ponerUrl(portal.url)}"/>
+                                    </h:panelGrid>  
+                                </p:panel>  
+                            </center>
+                        </p:dataGrid>     
+                    </div>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.titulo']}"
+                                     controlador="#{datoAdicionalBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.codigo']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel>
+                            <h:outputLabel id="prefijo" value="D_"
+                                           style=" font-style: oblique;font-weight: bold;margin: auto auto auto 5px;    padding-top: 6px;    position: absolute;"
+                                           rendered="#{datoAdicionalBean.datoAdicionalHelper.esNuevo}"/>  
+                            <p:inputText id="datoAdicional_nemonico"                                      
+                                         styleClass="textoNemonico"
+                                         style="#{datoAdicionalBean.datoAdicionalHelper.esNuevo?'padding-left: 18px;width: 197px;':''}"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codEspecial.max']}"                                     
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.codigo}"
+                                         required="true"
+                                         disabled="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"
+                                         requiredMessage="El campo código es requerido"/>
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="datoAdicional_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>           
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="datoAdicional_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"/>    
+                        <h:outputLabel value="* Explicación:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="datoAdicional_explicacion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.explicacion}"
+                                         required="true"
+                                         requiredMessage="El campo explicación es requerido"/>    
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.unidad']}:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputText id="datoAdicional_unidad"
+                                     styleClass="textoNombre"
+                                     style="width: 200px"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.unidad}"
+                                     required="true"
+                                     requiredMessage="El campo unidad es requerido"/>    
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.tipo']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="tipo" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipo}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Tipo es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{datoAdicionalBean.datoAdicionalHelper.tipo}"/> 
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.tipoDato']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="datoAdicional_tipo_dato" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato}"
+                                         required="#{true}"
+                                         requiredMessage="El campo tipo dato es requerido">
+                            <f:selectItem itemLabel="Seleccione..." /> 
+                            <p:ajax event="change" update="tablaformulario"/>
+                            <f:selectItems value="#{datoAdicionalBean.datoAdicionalHelper.tipoDato}"/>                            
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel id="datoAdicional_valorMinimoNumerico_label"
+                                       value="Mínimo Numérico:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'N'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputText id="datoAdicional_valorMinimoNumerico"
+                                     styleClass="campoFloat"
+                                     rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'N'}"
+                                     style="width: 200px"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMinimoNumerico}"/>    
+
+                        <h:outputLabel id="datoAdicional_valorMaximoNumerico_label"
+                                       value="Máximo Numérico:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'N'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputText id="datoAdicional_valorMaximoNumerico"
+                                     styleClass="campoFloat"
+                                     rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'N'}"
+                                     style="width: 200px"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMaximoNumerico}"/>    
+
+
+                        <h:outputLabel id="datoAdicional_valorMinimoTexto_label"
+                                       value="Mínimo Texto:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'T'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputText id="datoAdicional_valorMinimoTexto"
+                                     style="width: 200px"
+                                     rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'T'}"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMinimoTexto}"/>    
+                        <h:outputLabel id="datoAdicional_valorMaximoTexto_label"
+                                       value="Máximo Texto:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'T'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:inputText id="datoAdicional_valorMaximoTexto"
+                                     style="width: 200px"
+                                     rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'T'}"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMaximoTexto}"/>    
+
+                        <h:outputLabel id="datoAdicional_valorMinimoFecha_label"
+                                       value="Mínima Fecha:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'F'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:calendar id="datoAdicional_valorMinimoFecha"
+                                    showOn="button"    
+                                    rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'F'}"
+                                    navigator="true"  
+                                    size="10"
+                                    value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMinimoFecha}">                                                                  
+                        </p:calendar>
+                        <h:outputLabel id="datoAdicional_valorMaximoFecha_label"
+                                       value="Máxima Fecha:"
+                                       rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'F'}"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:calendar id="datoAdicional_valorMaximoFecha"
+                                    showOn="button"                                        
+                                    navigator="true"  
+                                    rendered="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.tipoDato eq 'F'}"
+                                    size="10"
+                                    value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.valorMaximoFecha}">                                                                  
+                        </p:calendar>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.descentralizado']}:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:selectBooleanCheckbox 
+                            id="descentralizadoId"
+                            value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.descentralizado}"/>      
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.datoAdicional.aceptaDuplicados']}:"
+                                       styleClass="labelFormulario" 
+                                       style="width: 100px; text-align: right"/>
+                        <p:selectBooleanCheckbox 
+                            id="duplicado_unidad"
+                            value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.aceptaDuplicado}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.vigente}" 
+                                                 rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>
+                        <p:inputText id="datoAdicional_usuario_creo"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>
+                        <p:inputText id="datoAdicional_fecha_creo"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.fechaCreacion}"
+                                     rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>
+                        <p:inputText id="datoAdicional_usuario_actua"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.usuarioActualizacion}"
+                                     rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"/>
+                        <p:inputText id="datoAdicional_fecha_actua"
+                                     value="#{datoAdicionalBean.datoAdicionalHelper.datoAdicional.fechaActualizacion}"
+                                     rendered="#{!(datoAdicionalBean.datoAdicionalHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

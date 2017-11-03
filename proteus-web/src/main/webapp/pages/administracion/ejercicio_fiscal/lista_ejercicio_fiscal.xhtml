@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel  header="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.titulo']}"
+                          id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaEjercicioFiscal"
+                                 value="#{ejercicioFiscalBean.ejercicioFiscalHelper.listaEjercicioFiscal}"
+                                 var="ejercicioFiscal"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{ejercicioFiscal.nombre}" sortOrder="ascending">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{ejercicioFiscalBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']} Fracción Básica">
+                                <f:setPropertyActionListener value="#{ejercicioFiscal}" 
+                                                             target="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscalEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.nombre']}"
+                                  style="text-align: left; width: 200px"
+                                  sortBy="#{ejercicioFiscal.nombre}">
+                            <h:outputText value="#{ejercicioFiscal.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaInicio']}" 
+                                  style="text-align: center; width: 100px">
+                            <h:outputText value="#{ejercicioFiscal.fechaInicio}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaFin']}" 
+                                  style="text-align: center; width: 100px">
+
+                            <h:outputText value="#{ejercicioFiscal.fechaFin}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.fraccionBasica']}" 
+                                  style="text-align: center; width: 100px">
+                            <h:outputText value="#{ejercicioFiscal.fraccionBasica}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.esElProximo']}" 
+                                  style="text-align: center;width: 100px ">
+                            <p:selectBooleanCheckbox value="#{ejercicioFiscal.esProximoEjercicio}" 
+                                                     disabled="#{true}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.impuestoRentaCompletado']}" 
+                                  style="text-align: center;width: 100px ">
+                            <p:selectBooleanCheckbox value="#{ejercicioFiscal.impuestoRentaCompletado}" 
+                                                     disabled="#{true}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.fechaEntregaFormulario']}" 
+                                  style="text-align: center;width: 100px ">
+                            <h:outputText value="#{ejercicioFiscal.fechaEntregaFormulario107}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.rucContador']}" 
+                                  style="text-align: center;width: 100px ">
+                            <h:outputText value="#{ejercicioFiscal.rucContador}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" 
+                                  style="text-align: center;width: 80px ">
+                            <p:selectBooleanCheckbox value="#{ejercicioFiscal.vigente}" 
+                                                     disabled="#{true}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

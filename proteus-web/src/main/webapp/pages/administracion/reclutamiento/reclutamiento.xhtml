@@ -1,0 +1,988 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel >
+                    <h:panelGrid columns="1">                                           
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"                                       
+                                         action="#{reclutamientoBean.regresarLista()}"/>      
+
+                    </h:panelGrid>
+                </p:panel >
+                <!-- PANEL PARA LA BUSQUEDA DE PUESTOS -->
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.reclutamiento.busquedaPuestos']}" id="panelBusqueda">
+                    <h:panelGrid columns="2" 
+                                 rendered="false">
+
+                        <h:outputLabel value="* Unidad Organizacional: "
+                                       rendered="false"
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                            <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                             style="font-size: 10px"
+                                             rows="3"
+                                             cols="60"
+                                             disabled="#{true}"
+                                             value="#{reclutamientoBean.reclutamientoHelper.unidadAdministrativaNombre}"/>
+                            <p:commandButton icon="ui-icon-search" 
+                                             immediate="true"
+                                             oncomplete="unidadAdministrativa.show()"/>
+                            <p:commandButton icon="ui-icon-trash"
+                                             immediate="true"
+                                             update="parametrosBusqueda_unidadAdministrativa">
+                                <f:setPropertyActionListener target="#{reclutamientoBean.reclutamientoHelper.unidadAdministrativaNombre}"                                                             
+                                                             value="#{null}" />
+                                <f:setPropertyActionListener target="#{reclutamientoBean.reclutamientoHelper.unidadAdministrativaId}"                                                             
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.fichaIngreso.modalidadLaboral.nombre']}: "
+                                       id="modalidadLaboral"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="modalidad"   
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 420px"                                         
+                                         value="#{reclutamientoBean.reclutamientoHelper.modalidadLaboralId}">
+                            <f:selectItems value="#{reclutamientoBean.reclutamientoHelper.listaModalidadLaboral}"/> 
+                            <f:ajax event="change" execute="@this"/>
+                        </p:selectOneMenu>
+
+
+
+                    </h:panelGrid>   
+                    <h:panelGrid columns="3" >
+                        <h:outputLabel value="Código Puesto: "
+                                       styleClass="labelFormulario"/>
+                        <p:inputText value="#{reclutamientoBean.reclutamientoHelper.busquedaPuestoVO.codigoPuesto}"/>
+
+                        <p:commandButton value="BUSCAR PUESTO"                                      
+                                         action="#{reclutamientoBean.buscarPuestoIndividual()}"
+                                         update=":frmDatos"/>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+            </h:form>
+            <h:form id="frmDatos">
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.reclutamiento.titulo']}">
+                    <br/>                   
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                     action="#{reclutamientoBean.guardar}"
+                                     update="frmDatos"/>
+                    <br/>
+                    <br/>
+                    <p:fieldset id="areaServidor" legend="#{msg['ec.gob.mrl.smp.administracion.reclutamiento.titulo']}">  
+                        <h:panelGrid columns="1">                                                   
+                            <h:panelGrid columns="4" id="tablaformularioss">  
+
+                                <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.fichaIngreso.regimenLaboral.nombre']}: "
+                                               id="regimen_laboral"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea id="regimen"   
+                                                 style="width: 200px"
+                                                 disabled="true"                                                 
+                                                 value="#{reclutamientoBean.reclutamientoHelper.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}">                                    
+                                </p:inputTextarea>
+
+                                <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.fichaIngreso.nivelOcupacional.nombre']}: "
+                                               id="nivelocupacional"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea id="nevelocupacional" 
+                                                 style="width: 200px"
+                                                 disabled="true"                                                 
+                                                 value="#{reclutamientoBean.reclutamientoHelper.distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre} ">                                   
+                                </p:inputTextarea>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.fichaIngreso.escalaOcupacional.nombre']}: "
+                                               id="escala_ocupacional"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea id="escala" 
+                                                 style="width: 200px"
+                                                 disabled="true"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.distributivoDetalle.escalaOcupacional.nombre} / #{reclutamientoBean.reclutamientoHelper.distributivoDetalle.escalaOcupacional.grado} / #{reclutamientoBean.reclutamientoHelper.distributivoDetalle.escalaOcupacional.rmu}">                                                                                                                                   
+                                </p:inputTextarea>
+
+                                <h:outputLabel value="Código Puesto:  "
+                                               styleClass="labelFormulario" style="text-align: right"
+                                               />
+                                <p:inputText id="codigo_puesto"
+                                             styleClass="textoNombre"
+                                             disabled="true"
+                                             style="width: 200px"
+                                             value="#{reclutamientoBean.reclutamientoHelper.distributivoDetalle.codigoPuesto}"/> 
+
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.tipoIdentificacion']}: "
+                                               id="tipoCuenta_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoIdentificacion"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo tipo identificación es requerido"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.tipoIdentificacion}">
+                                    <f:selectItems value="#{reclutamientoBean.reclutamientoHelper.tipoDocumento}"/>
+                                    <p:ajax event="change" 
+                                            listener="#{reclutamientoBean.buscarServidor()}" 
+                                            update="areaServidor"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.numeroIdentificacion']}:  "
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right"                                               />
+                                <p:inputText id="numeroIdent"
+                                             styleClass="texNombre"
+                                             style="width: 200px"
+                                             maxlength="10"
+                                             rendered="#{reclutamientoBean.reclutamientoHelper.reclutamiento.tipoIdentificacion eq 'C'
+                                                         or reclutamientoBean.reclutamientoHelper.reclutamiento.tipoIdentificacion eq null}"
+                                             disabled="#{reclutamientoBean.reclutamientoHelper.reclutamiento.tipoIdentificacion eq null}"
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.numeroIdentificacion}"
+                                             required="true"
+                                             requiredMessage="El campo número identificacion es requerido">
+                                    <f:validateRegex pattern="\d{10}"/>
+                                    <p:ajax event="blur" 
+                                            listener="#{reclutamientoBean.buscarServidor()}" 
+                                            update="areaServidor areaDomicilio"/>
+                                </p:inputText>
+                                <p:inputText id="numeroPasaporte"
+                                             styleClass="texNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             rendered="#{reclutamientoBean.reclutamientoHelper.reclutamiento.tipoIdentificacion eq 'P'}"
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.numeroIdentificacion}"
+                                             required="true"
+                                             requiredMessage="El campo número identificacion es requerido">
+                                    <p:ajax event="blur" 
+                                            listener="#{reclutamientoBean.buscarServidor()}" 
+                                            update="areaServidor"/>
+                                </p:inputText>
+                                <h:outputLabel value="* Apellidos:  "
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="apellido_paterno"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 maxlength="100"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.apellidosPaterno}"
+                                                 required="true"
+                                                 disabled="#{!reclutamientoBean.reclutamientoHelper.registroManualNombres}"
+                                                 requiredMessage="El campo apellido paterno es requerido"/>  
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.apellidosMaterno']}:  "
+                                               rendered="false"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="apellido_materno"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 maxlength="100"
+                                                 rendered="false"
+                                                 disabled="#{!reclutamientoBean.reclutamientoHelper.registroManualNombres}"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.apellidosMaterno}"
+                                                 required="true"
+                                                 requiredMessage="El campo apellido materno es requerido"/>  
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.nombres']}:  "
+                                               styleClass="labelFormulario" style="text-align: right"
+                                               />
+                                <p:inputTextarea id="nombre"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 maxlength="100"
+                                                 disabled="#{!reclutamientoBean.reclutamientoHelper.registroManualNombres}"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.nombres}"
+                                                 required="true"
+                                                 requiredMessage="El campo nombre es requerido"/> 
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.genero']}:"
+                                               styleClass="labelFormulario"/>                                            
+                                <p:selectOneMenu id="generoc" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"                                                
+                                                 requiredMessage="El campo género es requerido"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.catalogoGeneroId}">
+                                    <f:selectItems value="#{reclutamientoBean.reclutamientoHelper.listaGenero}"/>                                                                                                
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.nacionalidad']}:"
+                                               styleClass="labelFormulario"/>                                            
+                                <p:selectOneMenu id="nacionalidad" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"                                                
+                                                 requiredMessage="El campo nacionalidad es requerido"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.catalogoNacionalidadId}">
+                                    <f:selectItems value="#{reclutamientoBean.reclutamientoHelper.listaNacionalidad}"/>                                                                                                
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.telefono']}:  "
+                                               styleClass="labelFormulario" style="text-align: right"
+                                               />
+                                <p:inputText id="apellidos"
+                                             styleClass="texNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.telefono}"
+                                             required="true"
+                                             requiredMessage="El campo teléfono es requerido"/> 
+                                <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.celular']}:"
+                                               styleClass="labelFormulario"/>                            
+                                <p:inputText id="banco_codigo"
+                                             styleClass="textoNemonico"                                         
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.celular}"                                        
+                                             style="width: 200px"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.mail']}: "
+                                               id="mail_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="mail"                                                                                                                        
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.mail}"                                        
+                                             required="true" style="width: 200px"
+                                             validator="validadorMail"
+                                             requiredMessage="El campo mail es requerido"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.reclutamiento.numeroHoras']}:"
+                                               id="entrada_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:calendar id="horaEntrada"                                                                                                                               
+                                            value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.horaEntrada}"                                            
+                                            style="width: 200px"    
+                                            minHour="1"
+                                            maxHour="24"
+                                            required="true" 
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            timeOnly="true"  
+                                            showOn="button"
+                                            requiredMessage="El campo número de horas es requerido"> 
+                                    <p:tooltip for="horaEntrada" value="Formato de hora HH:mm"></p:tooltip>
+                                </p:calendar>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.reclutamiento.tiempoJornadaDiaria']}: "
+                                               id="duracionJornada"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="jornada"                                         
+                                             styleClass="campoNumerico"                                         
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.jornada}"                                        
+                                             required="true" style="width: 80px"
+                                             requiredMessage="El campo jornada es requerido">
+                                    <f:validateLength maximum="8" minimum="0"/>
+                                </p:inputText>
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.personaDiscapacidad']}: "
+                                               id="porcentajeDiscapacidad_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectBooleanCheckbox id="porcentajeDiscapacidad"                                         
+                                                         styleClass="textoNemonico"                                            
+                                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.personaConDiscapacidad}"                                        
+                                                         style="width: 200px" onchange="true">
+                                    <p:ajax update="panelcarnet, panelcarnetlbl"  /> 
+                                </p:selectBooleanCheckbox>
+
+                                <p:outputPanel id="panelcarnetlbl">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.numeroCarnet']}: "
+                                                   id="carnet_conadis_lbl"
+                                                   rendered="#{reclutamientoBean.reclutamientoHelper.reclutamiento.personaConDiscapacidad}"                                               
+                                                   styleClass="labelFormulario"/>
+                                </p:outputPanel>
+                                <p:outputPanel id="panelcarnet">
+                                    <p:inputText id="carnet_conadis"                                         
+                                                 styleClass="textoNemonico"
+                                                 rendered="#{reclutamientoBean.reclutamientoHelper.reclutamiento.personaConDiscapacidad}" 
+                                                 maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                                 value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.numeroCarnetConadis}"                                        
+                                                 required="true" style="width: 200px"
+                                                 requiredMessage="El campo número carnet es requerido"/>
+                                </p:outputPanel>
+
+                            </h:panelGrid >
+                            <h:panelGrid columns="1"
+                                         style="margin: auto">
+                                <h:outputLabel value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.apellidosNombres}"
+                                               style="font-size: 16px;font-weight: bold"/>
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                    </p:fieldset> 
+
+
+
+                    <p:fieldset id="areaDomicilio" legend="Cuadro de Dirección Domiciliaria" toggleable="true" toggleSpeed="500">  
+                        <p:ajax event="toggle"    />  
+                        <h:panelGrid columns="4" > 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.barrioDomicilio']}: "
+                                           id="barrioDomicilio_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="barrioDomicilio"                                                                                  
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.callePrincipal}"                                        
+                                             required="true" style="width: 350px"
+                                             requiredMessage="El campo barrio domicilio es requerido"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.calleDomicilio']}: "
+                                           id="calleDomicilio_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="calleDomicilio"                                                                                     
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.calleSecundaria}"                                        
+                                             required="true" style="width: 350px"
+                                             requiredMessage="El campo calle domicilio es requerido"/>  
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.refrerenciaDomicilio']}: "
+                                           id="referenciaDomicilio_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="referenciaDomicilio"                                                                                  
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.referenciaDomicilio}"                                        
+                                             required="true" style="width: 350px"
+                                             requiredMessage="El campo referencia domicilio es requerido"/>     
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.numeroDomicilio']}: "
+                                           id="numeroDomicilio_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="numeroDomicilio"                                                                                     
+                                             value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.numeroDomicilio}"                                        
+                                             required="true" style="width: 350px"
+                                             requiredMessage="El campo número domicilio es requerido"/>     
+                        </h:panelGrid>  
+                    </p:fieldset> 
+                    <br/>
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value=" #{msg['ec.gob.mq.prometeo.administracion.criteriTecnico']}:  "
+                                       styleClass="labelFormulario" />
+                        <p:inputTextarea id="criterioTecnico"                        
+                                         style="width: 400px"                                         
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.criterioTecnico}"/> 
+
+                        <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.recomendaciones']}:  "
+                                       styleClass="labelFormulario" />
+                        <p:inputTextarea id="recomendaciones"
+                                         style="width: 400px"                                         
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.recomendaciones}"/> 
+                    </h:panelGrid>
+                    <br/>
+
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.ElaboradoPor']}: "
+                                       id="elaboradopor"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="elaborado"                                        
+                                         styleClass="textoNombre"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.elaboradoPor}"                                        
+                                         required="true" style="width: 250px"
+                                         requiredMessage="El campo elaborado por es requerido"/>     
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.cargo']}: "
+                                       id="cargo"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="cargotxt"                                       
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.cargoElaboradoPor}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo elaborado por es requerido"/> 
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.aprobadoPor']}: "
+                                       id="aprobado"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="aprobadotxt"                                     
+                                         styleClass="textoNombre"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.aprobadoPor}"                                        
+                                         required="true" style="width: 250px"
+                                         requiredMessage="El campo aprobado por es requerido"/> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.cargo']}: "
+                                       id="cargolbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="cargotxt2"                                         
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.cargoAprobadoPor}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo cargo es requerido"/> 
+                    </h:panelGrid>
+
+
+
+
+
+                    <!-- reclutamiento instruccion. -->
+                    <br/>
+                    <p:panelGrid columns="1">
+                        <p:commandButton 
+                            value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                            action="#{reclutamientoBean.guardar}"
+                            update="frmDatos"/>
+
+                    </p:panelGrid>
+                    <p:panel header="Detalles" rendered="#{reclutamientoBean.reclutamientoHelper.presentarArea}" id="panelInstruccion">
+                        <p:tabView id="VistaInstruccion">
+                            <p:tab title="Instrucción" id="tabInstruccion">
+                                <h:panelGrid columns="1" style="width: 900px">
+                                    <p:commandButton value="Ingresar Instrucción" 
+                                                     action="#{reclutamientoBean.presentarDialog()}"
+                                                     update=":frmreclutamientoInstruccion"/>
+                                    <p:dataTable value="#{reclutamientoBean.reclutamientoHelper.listaReclutamientoInstruccion}"
+                                                 var="instruccion"                                             
+                                                 paginator="#{true}"
+                                                 emptyMessage="#{msg['message.listaVacia']}"
+                                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                                 rowIndexVar="rowIndex"
+                                                 id="ingresoInstruccion">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="Nivel" filterMatchMode="contains">
+
+                                            <h:outputText value="#{instruccion.catalogoNivelInstruccion.nombre}"/> 
+                                        </p:column>
+                                        <p:column headerText="Nombre" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.nombreInstitucion}"/> 
+                                        </p:column> 
+                                        <p:column headerText="Especialización" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.especializacion}"/> 
+                                        </p:column> 
+                                        <p:column headerText="Título" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.tituloObtenido}"/> 
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 150px">
+                                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"                                                            
+                                                             action="#{reclutamientoBean.iniciarEdicionListas()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmreclutamientoInstruccion">
+                                                <f:setPropertyActionListener value="#{instruccion}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacion.show()"                                          
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{instruccion}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+                            </p:tab>
+
+
+
+                            <!-- reclutamiento trayectoria laboral. -->
+
+                            <p:tab title="Trayectoria Laboral" id="tabTrayectoria">
+                                <h:panelGrid columns="1" style="width: 900px">
+                                    <p:commandButton style="text-align: center" 
+                                                     value="Ingresar Trayectoria Laboral"
+                                                     action="#{reclutamientoBean.presentarDialogTrayectoria()}"
+                                                     update=":frmreclutamientoTrayectotia"/>                                
+                                    <p:dataTable value="#{reclutamientoBean.reclutamientoHelper.listaReclutamientoTrayectoriaLaborales}"
+                                                 var="trayectotia"
+                                                 paginator="#{true}"
+                                                 rows="10"                                        
+                                                 emptyMessage="#{msg['message.listaVacia']}"
+                                                 rowIndexVar="rowIndex"
+                                                 id="IngresoTrayectoria"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="Fecha Inicio" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.fechaInicio}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                            </h:outputText>
+                                        </p:column> 
+                                        <p:column headerText="Fecha Fin" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.fechaFin}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Meses/Años" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.mesTrayectoria} / #{trayectotia.anios}"/>
+                                        </p:column> 
+                                        <p:column headerText="Organización/Empresa" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.organizacionEmpresa}"/>
+                                        </p:column> 
+                                        <p:column headerText="Denominacion Puesto" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.denominacionPuesto}"/>
+                                        </p:column> 
+                                        <p:column headerText="Responsabilidades" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.responsabilidades}"/>
+                                        </p:column>
+                                        <p:column headerText="Razón Salida" filterMatchMode="contains">
+                                            <h:outputText value="#{trayectotia.razonSalida}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 150px">
+                                            <p:commandButton id="botonEdicioTrayectotia" icon="ui-icon-pencil"                                                            
+                                                             action="#{reclutamientoBean.iniciarEdicionListasTrayectoria()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmreclutamientoTrayectotia">
+                                                <f:setPropertyActionListener value="#{trayectotia}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboralEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminart" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminaciont.show()"                                          
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{trayectotia}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboralEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Capacitación" id="tabCapacitacion">
+                                <h:panelGrid columns="1" style="width: 900px">
+                                    <p:commandButton value="Ingresar Capacitación"
+                                                     action="#{reclutamientoBean.presentarDialogCapacitacion()}"/>
+                                    <p:dataTable value="#{reclutamientoBean.reclutamientoHelper.listaReclutamientoCapacitacion}"
+                                                 var="capacitacion"
+                                                 paginator="#{true}"
+                                                 rows="10"                                                 
+                                                 emptyMessage="#{msg['message.listaVacia']}"
+                                                 rowIndexVar="rowIndex"
+                                                 id="InstruccionCapacitacion"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="Nombre Evento" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.nombreEvento}"/>
+                                        </p:column> 
+                                        <p:column headerText="Nombre Institución" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.nombreInstitucion}"/>
+                                        </p:column> 
+                                        <p:column headerText="Tipo Diploma" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.tipoDiploma}"/>
+                                        </p:column>
+                                        <p:column headerText="Duración en Horas" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.duracionHoras}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 150px">
+                                            <p:commandButton id="botonEdicioCapacitacion" icon="ui-icon-pencil"                                                            
+                                                             action="#{reclutamientoBean.iniciarEdicionListasCapacitacion()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmreclutamientoCapacitacion">
+                                                <f:setPropertyActionListener value="#{capacitacion}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarc" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionc.show()"                                          
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{capacitacion}" 
+                                                                             target="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>
+                        </p:tabView>
+
+
+                    </p:panel>
+
+                    <p:panel>
+                        <h:panelGrid columns="2" id="tablaformulario">                  
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.vigente}" 
+                                                     disabled="true"/>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_usuario_creo"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.usuarioCreacion}"
+                                         disabled="true"  style="width: 200px"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="banco_fecha_creo"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.fechaCreacion}"                                         
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                        
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_usuario_actual"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.usuarioActualizacion}"                                         
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_fecha_actual"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamiento.fechaActualizacion}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid> 
+                    </p:panel>   
+
+                    <!-- eliminar Instrucciones. -->
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update=":frmDatos:VistaInstruccion:tabInstruccion, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                             actionListener="#{reclutamientoBean.borrarInstruccion()}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+                    <!-- eliminar capacitaciones. -->
+                    <p:confirmDialog id="popup" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionc">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update=":frmDatos:VistaInstruccion:tabCapacitacion, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                             actionListener="#{reclutamientoBean.borrarCapacitacion()}"
+                                             oncomplete="confirmEliminacionc.hide()"  />  
+                            <p:commandButton id="eliminar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionc.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+
+                    <!-- eliminar trayectorias. -->
+
+                    <p:confirmDialog id="confirm" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminaciont">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarTra" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update=":frmDatos:VistaInstruccion:tabTrayectoria, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                             actionListener="#{reclutamientoBean.borrarTrayectoria()}"
+                                             oncomplete="confirmEliminaciont.hide()"  />  
+                            <p:commandButton id="elimtra" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminaciont.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>   
+
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{reclutamientoBean.reclutamientoHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmDatos:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{reclutamientoBean.reclutamientoHelper.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{reclutamientoBean.reclutamientoHelper.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp PARA SABER LOS PUESTOS. -->
+
+            <p:dialog 
+                widgetVar="puestosDialog"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}" 
+                style="overflow: auto"
+                height="450"               
+                width="1000"
+                header="Detalle de Puestos"
+                closable="false">
+                <h:form id="frmpuestos">
+                    <center>
+                        <h:panelGrid columns="1">
+                            <p:dataTable value="#{reclutamientoBean.reclutamientoHelper.listaDistributivoDetalles}"
+                                         var="puestos"
+                                         paginator="#{true}"
+                                         selection="#{reclutamientoBean.reclutamientoHelper.distributivoDetalle}" 
+                                         selectionMode="single"
+                                         rows="5"
+                                         rowKey="#{puestos.id}"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rowIndexVar="rowIndex"                                 
+                                         id="unidadAdministrativa"
+                                         filterEvent="enter">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                    <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Denominación Puesto" filterMatchMode="contains" filterBy="#{puestos.denominacionPuesto.nombre}" filterStyle="width:300px">
+                                    <h:outputText value="#{puestos.denominacionPuesto.nombre}" style="font-size: 10px"/>
+                                </p:column>                            
+                                <p:column headerText="Fecha Inicio" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.fechaInicio}" style="font-size: 10px">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Escala Remunerativa" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.escalaOcupacional.nombre}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Regimen Laboral" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Nivel Ocupacional" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.escalaOcupacional.nivelOcupacional.nombre}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Modalidad Laboral" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.distributivo.modalidadLaboral.nombre}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Código Puesto" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.codigoPuesto}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Partida Individual" filterMatchMode="contains" filterBy="#{puestos.partidaIndividual}" >
+                                    <h:outputText value="#{puestos.partidaIndividual}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Sueldo" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.rmu}" style="font-size: 10px"/>
+                                </p:column>
+                                <p:column headerText="Sueldo Sobrevalorado" filterMatchMode="contains" >
+                                    <h:outputText value="#{puestos.rmuSobrevalorado}" style="font-size: 10px"/>
+                                </p:column>                                                     
+                            </p:dataTable>                           
+                        </h:panelGrid>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         ajax="false"
+                                         update=":frmDatos:areaServidor"
+                                         onclick="puestosDialog.hide()"  style="font-size: 10px">                                   
+                        </p:commandButton>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp reclutamiento instruccion. -->
+            <p:dialog 
+                widgetVar="reclutamientoInstruccion"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="150"
+                width="450"
+                header="Instrucción">
+                <h:form id="frmreclutamientoInstruccion">
+
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoInstruccion.nivel']}: "
+                                       id="nivelInstruccion_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="nivelInstruccion"  
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccion.nivelInstruccionId}"                                        
+                                         required="true" style="width: 250px"
+                                         requiredMessage="El campo nivel instrucción es requerido">     
+                            <f:selectItems value="#{reclutamientoBean.reclutamientoHelper.listaNivelInstruccion}"/> 
+                        </p:selectOneMenu>
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoInstruccion.nombreInstitucion']}: "
+                                       id="nombreInslbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="nombreInstitucion"
+                                     styleClass="textoNombre"                                         
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccion.nombreInstitucion}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo nombre institución es requerido"/> 
+
+                        <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.reclutamientoInstruccion.especializacion']}: "
+                                       id="especializacion_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="especializacion"                                     
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccion.especializacion}"                                        
+                                     style="width: 250px"/> 
+
+                        <h:outputLabel value="#{msg['ec.gob.mq.prometeo.administracion.reclutamientoInstruccion.tituloObtenido']}: "
+                                       id="titulo_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="titulo"                                                                            
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoInstruccion.tituloObtenido}"                                        
+                                     style="width: 250px"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{reclutamientoBean.guardarReclutamientoInstruccion()}"
+                                         update=":frmDatos:VistaInstruccion:tabInstruccion, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                         oncomplete="reclutamientoInstruccion.hide()">
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+            <!-- PopUp reclutamiento Capacitacion. -->
+            <p:dialog 
+                widgetVar="reclutamientoCapacitacion"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="150"
+                width="450"
+                header="Capacitación">
+                <h:form id="frmreclutamientoCapacitacion">
+
+                    <h:panelGrid columns="2">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoCapacitacion.nombreEvento']}: "
+                                       id="nombreEvento_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="nombreEvento"                                                                            
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacion.nombreEvento}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo nombre evento es requerido"/> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoCapacitacion.nombreInstitucion']}: "
+                                       id="nombreInstituciones_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="nombreInstituciones"                                                                         
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacion.nombreInstitucion}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo nombre institución es requerido"/> 
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoCapacitacion.tipodiploma']}: "
+                                       id="tipoDiploma_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="tipoDiploma"                                                                        
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacion.tipoDiploma}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo tipo diploma es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoCapacitacion.duracionHoras']}: "
+                                       id="duracionHoras_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="duracionHoras"
+                                     styleClass="campoNumerico"                                         
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoCapacitacion.duracionHoras}"                                        
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo duración horas es requerido"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{reclutamientoBean.guardarReclutamientoCapacitacion()}"
+                                         update=":frmDatos:VistaInstruccion:tabCapacitacion, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                         oncomplete="reclutamientoCapacitacion.hide()">
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+            <!-- PopUp reclutamiento Trayectoria laboral. -->
+            <p:dialog 
+                widgetVar="reclutamientoTrayectoria"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="300"
+                width="480"
+                header="Trayectoria Laboral">
+                <h:form id="frmreclutamientoTrayectotia">
+
+                    <h:panelGrid columns="2">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.fechaInicio']}: "
+                                       id="fechaInicio_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="fechaInicio"  
+                                    navigator="true" 
+                                    required="true"                                    
+                                    showOn="button"
+                                    disabledWeekends="false"
+                                    value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.fechaInicio}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="El campo fecha inicio es requerido">
+                            <p:ajax event="dateSelect" listener="#{reclutamientoBean.calcularNumeroDias()}"
+                                    />                            
+                        </p:calendar>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.fechaFinal']}: "
+                                       id="fechaFin_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="fechaFin"  
+                                    navigator="true" 
+                                    required="true"                                    
+                                    disabledWeekends="false"
+                                    showOn="button"
+                                    value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.fechaFin}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="El campo fecha fin es requerido">                                
+                            <p:ajax event="dateSelect" listener="#{reclutamientoBean.calcularNumeroDias()}" 
+                                    />  
+                        </p:calendar>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.organizacionEmpresa']}: "
+                                       id="organizacionEmpresa_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="organizacionEmpresa"                                                                              
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.organizacionEmpresa}"
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo organización empresa  es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.denominacionPuesto']}: "
+                                       id="denominacionPuesto_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="denominacionPuesto"                                                                              
+                                     value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.denominacionPuesto}"
+                                     required="true" style="width: 250px"
+                                     requiredMessage="El campo denominación del puesto es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.responsabilidades']}: "
+                                       id="responsabilidades_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="responsabilidades"                                                                              
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.responsabilidades}"
+                                         required="true" style="width: 250px"
+                                         requiredMessage="El campo responsabilidades es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mq.prometeo.administracion.reclutamientoTrayectoriaLaboral.razonesSalida']}: "
+                                       id="razonSalida_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="razonSalida"                                                                              
+                                         value="#{reclutamientoBean.reclutamientoHelper.reclutamientoTrayectoriaLaboral.razonSalida}"
+                                         required="true" style="width: 250px"
+                                         requiredMessage="El campo razon de salida es requerido"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{reclutamientoBean.guardarReclutamientoTrayectoria()}"
+                                         update=":frmDatos:VistaInstruccion:tabTrayectoria, :frmDatos:panelInstruccion,:frmDatos:VistaInstruccion"
+                                         oncomplete="reclutamientoTrayectoria.hide()">
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

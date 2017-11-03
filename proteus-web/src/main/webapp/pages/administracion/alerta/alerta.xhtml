@@ -1,0 +1,134 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.alerta.titulo']}"
+                                     controlador="#{alertaBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.alerta.nemonico']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="alerta_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     style="width: 200px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"                                     
+                                     value="#{alertaBean.alertaHelper.alerta.nemonico}"
+                                     required="true"
+                                     disabled="#{!(alertaBean.alertaHelper.esNuevo)}"
+                                     requiredMessage="El campo nemónico es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.alerta.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="alerta_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{alertaBean.alertaHelper.alerta.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>                      
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.alerta.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="alerta_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{alertaBean.alertaHelper.alerta.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"/>                       
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.alerta.tipoperiodo']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="alerta_tipo_periodo" 
+                                         value="#{alertaBean.alertaHelper.alerta.tipoPeriodo}"
+                                         required="#{true}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         requiredMessage="El campo tipo periodo es requerido">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                            <f:selectItems value="#{alertaBean.alertaHelper.tipoPeriodo}"/>                            
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.alerta.valorperiodo']}1:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="alerta_valor_periodo"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{alertaBean.alertaHelper.alerta.valorPeriodo}"
+                                     required="true" style="width: 90px"
+                                     requiredMessage="El campo valor periodo es requerido">
+                            <f:validateLongRange minimum="1"/>
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.alerta.valorperiodo']}2:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="alerta_valor_periodo2"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{alertaBean.alertaHelper.alerta.valorPeriodo2}"
+                                     style="width: 90px">                            
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.alerta.valorperiodo']}3:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="alerta_valor_periodo3"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{alertaBean.alertaHelper.alerta.valorPeriodo3}"
+                                     style="width: 90px">                            
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.alerta.valorperiodo']}4:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="alerta_valor_periodo4"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{alertaBean.alertaHelper.alerta.valorPeriodo4}"
+                                     style="width: 90px">                            
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.alerta.valorperiodo']}5:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="alerta_valor_periodo5"
+                                     styleClass="campoNumerico"
+                                     maxlength="4"
+                                     value="#{alertaBean.alertaHelper.alerta.valorPeriodo5}"
+                                     style="width: 90px">                            
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{alertaBean.alertaHelper.alerta.vigente}" 
+                                                 rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>                        
+                        <p:separator rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:separator rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:inputText id="alerta_usuario_creo"
+                                     value="#{alertaBean.alertaHelper.alerta.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:inputText id="alerta_fecha_creo"
+                                     value="#{alertaBean.alertaHelper.alerta.fechaCreacion}"
+                                     rendered="#{!(alertaBean.alertaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:inputText id="alerta_usuario_actua"
+                                     value="#{alertaBean.alertaHelper.alerta.usuarioActualizacion}"
+                                     rendered="#{!(alertaBean.alertaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(alertaBean.alertaHelper.esNuevo)}"/>
+                        <p:inputText id="alerta_fecha_actua"
+                                     value="#{alertaBean.alertaHelper.alerta.fechaActualizacion}"
+                                     rendered="#{!(alertaBean.alertaHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

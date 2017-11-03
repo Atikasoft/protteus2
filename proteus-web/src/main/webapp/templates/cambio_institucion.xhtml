@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:form id="frmTodo">
+        <p:outputPanel rendered="true">
+            <p:outputPanel id="outputPanelCambioInstitucion">
+                <p:panelGrid columns="2">
+                    <h:outputLabel id="header-nombre" value="NOMBRE: " />                        
+                    <h:outputLabel id="header-nombre-usuario" value="#{inicioControlador.usuarioRol.usuario.nombre}"/>
+                    <p:commandLink value="INSTITUCIÓN"
+                                   onclick="dlg.show();"
+                                   rendered="#{inicioControlador.apareceInstiucion}"
+                                   >
+                    </p:commandLink>
+                    <h:outputText value="INSTITUCIÓN:"
+                                   rendered="#{!inicioControlador.apareceInstiucion}"
+                                   />
+                    <h:outputText value="#{inicioControlador.institucion.nombre}">
+                    </h:outputText>
+                </p:panelGrid>
+            </p:outputPanel>
+            <p:dialog  widgetVar="dlg" header="Listado Instituciones"
+                      width="800"  height="400"
+                      resizable="false"  modal="true">
+                <p:panelGrid columns="2" id="dlgInstitucion">
+                    <h:outputText value="Nombre:"/>
+                    <p:inputText value="#{institucionControlador.nombre}"/>
+                    <h:outputText value="Código:"/>
+                    <p:inputText value="#{institucionControlador.codigo}"/>
+                    <h:outputText value="Incluir Desconcentradas:"/>
+                    <p:selectBooleanCheckbox value="#{institucionControlador.desconcentrado}"/>   
+                    <p:commandButton value="Buscar" action="#{institucionControlador.buscar()}" update="frmTodo:tblDatos,txtTotal"/>
+                </p:panelGrid>
+
+                <p:dataTable id="tblDatos" value="#{institucionControlador.listaInstituciones}" var="instituciones"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="Código">
+                        <h:outputText value="#{instituciones.codigoCatastro}"/>                        
+                    </p:column>
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{instituciones.nombre}"/>                        
+                    </p:column>
+                    <p:column headerText="Siglas">
+                        <h:outputText value="#{instituciones.siglas}"/>                        
+                    </p:column>
+                    <p:column headerText="Seleccionar">
+                        <p:commandLink value="Seleccionar" 
+                                       action="#{institucionControlador.cargarInstitucion(instituciones)}"
+                                       oncomplete="dlg.hide();" update=":#{p:component('outputPanelCambioInstitucion')}"
+                                       />
+                    </p:column>
+                </p:dataTable>
+                <h:outputText id="txtTotal" value="Total Instituciones: #{institucionControlador.numeroInstitucion}"/>
+                <p:ajax event="close" update="dlgInstitucion, tblDatos" listener="#{institucionControlador.nuevo}"/>  
+            </p:dialog>
+        </p:outputPanel>
+    </h:form>
+</html>

@@ -1,0 +1,262 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.nomina.resultados.titulo']} #{nominaBean.nominaHelper.nomina.descripcion}
+                         TIPO: #{nominaBean.nominaHelper.nomina.tipoNomina.nombre}" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" ajax="false"
+                                         action="#{confidencialPagoBean.buscar}" 
+                                         update="tblListaNominas"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         immediate="true"                                          
+                                         action="#{confidencialPagoBean.regresarNomina()}"                                          
+                                         ajax="false"/>                     
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:separator/>
+                <p:panel style="overflow: auto">
+                    <p:dataTable value="#{confidencialPagoBean.confidencialPagoHelper.listaResultadoNominaVO}"
+                                 var="nomina"
+                                 id="tblListaNominas"
+                                 paginator="#{true}" scrollable="true"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 20px;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                            <f:facet name="footer" >
+                                <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" style="text-align: right"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"  width="50">
+                            <p:commandButton   action="#{confidencialPagoBean.buscarDetalles}" 
+                                               update=":popDetalles,:fmrdet" 
+                                               icon="ui-icon-note"
+                                               title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}">
+                                <f:setPropertyActionListener value="#{nomina.numeroIdentificacion}" 
+                                                             target="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.numeroIdentificacion}"/>
+                                <f:setPropertyActionListener value="#{nomina.nombreServidor}" 
+                                                             target="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.nombreServidor}"/>
+                                <f:setPropertyActionListener value="#{nomina.liquidoAPagar}" 
+                                                             target="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalLiquidoPagarServidor}"/>
+                                <f:setPropertyActionListener value="#{null}" 
+                                                             target="#{confidencialPagoBean.confidencialPagoHelper.nominaDetalle}"/>
+                            </p:commandButton>
+                            <f:facet name="footer">
+                                <h:outputText/>
+                            </f:facet>
+                        </p:column>
+
+                        <p:column headerText="Identificación" width="70">
+                            <h:outputText value="#{nomina.numeroIdentificacion}"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalServidores}" style="text-align:right"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Nombres" width="300">
+                            <h:outputText value="#{nomina.nombreServidor}"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalServidores}" style="text-align:right"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.modalidadLaboral']}" width="150">
+                            <h:outputText value="#{nomina.nombreModalidadLaboral}"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalServidores}" style="text-align:right"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.ingresos']}" width="60">
+                            <h:outputText value="#{nomina.ingresos}" style="font-size: 10px;"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalIngresos}" style="text-align: right"/>
+                            </f:facet>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.descuentos']}" width="60">
+                            <h:outputText value="#{nomina.descuentos}" style="font-size: 10px;"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalDescuentos}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.liquidoPagar']}" width="60">
+                            <h:outputText value="#{nomina.liquidoAPagar}" style="font-size: 10px;"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalLiquidoAPagar}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.aportePatronal']}" width="60">
+                            <h:outputText value="#{nomina.aportePatronal}" style="font-size: 10px;"/>
+                            <f:facet name="footer">
+                                <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalAportePatronal}"/>
+                            </f:facet>
+                        </p:column>
+
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <!-- pop Up detalles -->
+            <p:dialog modal="true"  id="popDetalles"
+                      header="#{msg['ec.gob.mrl.smp.administracion.nomina.detalle.titulo']}: #{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.nombreServidor}"
+                      resizable="false" 
+                      draggable="true"
+                      width="65%"
+                      height="550px"
+                      showEffect="fade" 
+                      widgetVar="dlgDetalleNomina">
+                <h:form id="fmrdet">
+                    <p:fieldset>
+                        
+                        
+                        <p:panelGrid columns="10">
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.ingresos']}:" style="font-size: 10px;font-weight: bold;"/>
+                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalIngresosServidor}" style="text-align: right">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.descuentos']}:" style="font-size: 10px;font-weight: bold;"/>
+                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalDescuentosServidor}" style="text-align: right">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.aportePatronal']}:" style="font-size: 10px;font-weight: bold;"/>
+                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalAportePatronalServidor}" style="text-align: right">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+                            <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']} #{msg['ec.gob.mrl.smp.administracion.nomina.liquidoPagar']}:" style="font-size: 10px;font-weight: bold;"/>
+                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalLiquidoPagarServidor}" 
+                                          style="text-align: right;font-weight: bold;">
+                                <f:convertNumber pattern="###,##0.00" />
+                            </h:outputText>
+
+                            <p:commandButton id="cerrarResultadosBtn" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgDetalleNomina.hide()" 
+                                             type="button"
+                                             style="margin: auto"/> 
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <p:separator/> 
+
+                    <p:panel id="panelDetalles" 
+                             style="overflow: auto" 
+                             header="#{msg['ec.gob.mrl.smp.administracion.rubro.detalles']}">
+                        <p:dataTable value="#{confidencialPagoBean.confidencialPagoHelper.listaDetallesIngresos}"
+                                     var="det"
+                                     style="width:100%;overflow: auto"
+                                     id="tblIngresos"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.ingresos.titulo']}</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="width: 10%;text-align: center">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                      style="font-size: 10px;width: 70%">
+                                <h:outputText value="#{det.nombreRubroIngreso}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                      style="text-align: right;width: 20%">
+                                <h:outputText value="#{det.valorDescontadoRubroIngreso}" title="#{det.valores}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="2" footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                              style="text-align:right"/>  
+                                    <p:column style="text-align:right">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalIngresosServidor}">
+                                                <f:convertNumber pattern="###,###.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                        <p:dataTable value="#{confidencialPagoBean.confidencialPagoHelper.listaDetallesDescuentos}"
+                                     var="det" style="width:100%;overflow: auto"
+                                     id="tblDescuentoss"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.descuentos.titulo']}</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="width: 10%;text-align: center">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                      style="font-size: 10px;width: 70%">
+                                <h:outputText value="#{det.nombreRubroDescuentos}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                      style="text-align: right;width: 20%">
+                                <h:outputText value="#{det.valorDescontadoRubroDescuentos}" title="#{det.valores}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="2" footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                              style="text-align:right"/>  
+                                    <p:column style="text-align:right">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalDescuentosServidor}">
+                                                <f:convertNumber pattern="###,###.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                        <p:dataTable value="#{confidencialPagoBean.confidencialPagoHelper.listaDetallesAportes}"
+                                     var="det"
+                                     style="width:100%;overflow: auto;"
+                                     id="tblAportes"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <f:facet name="header">#{msg['ec.gob.mrl.smp.administracion.nomina.aportesPatronales.titulo']}</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="width: 10%;text-align: center">
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}" 
+                                      style="font-size: 10px;width: 70%">
+                                <h:outputText value="#{det.nombreRubroAportes}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.valores']}" 
+                                      style="text-align: right;width: 20%">
+                                <h:outputText value="#{det.valorDescontadoRubroAportes}" title="#{det.valores}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                </h:outputText>
+                            </p:column>
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="2" footerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.total']}" 
+                                              style="text-align:right"/>  
+                                    <p:column style="text-align:right">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{confidencialPagoBean.confidencialPagoHelper.resultadoNominaVO.totalAportePatronalServidor}">
+                                                <f:convertNumber pattern="###,###.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                    </p:panel>
+                    <p:separator/>
+
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

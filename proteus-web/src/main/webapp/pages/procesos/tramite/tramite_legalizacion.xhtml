@@ -1,0 +1,459 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmTramiteLegalizacion">
+                <style>
+                    .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                        width: 70px;
+                    }
+                </style>
+                <smp:contenedor controlador="#{tramiteLegalizacionBean}"   verTramite="#{false}" id="contenedor_id">
+                    <f:facet name="contenido" id="contenidoTramiteLegalizacion">
+                        <p:separator />
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.tipoGestion']}:"
+                                           styleClass="labelFormulario"/>  
+                            <p:selectOneMenu id="tramite_tipoGestion"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"
+                                             disabled="true"                                         
+                                             value="#{tramiteBean.tramiteHelper.tramite.tipoGestion}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaTipoGestion}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.grupo']}:"
+                                           styleClass="labelFormulario"/>
+
+                            <p:selectOneMenu id="tramite_grupo" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"
+                                             disabled="true"
+                                             value="#{tramiteBean.tramiteHelper.grupoId}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaGrupo}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.clase']}:"
+                                           styleClass="labelFormulario"/>
+
+                            <p:selectOneMenu id="tramite_clase" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"
+                                             disabled="#{true}"
+                                             value="#{tramiteBean.tramiteHelper.claseId}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaClase}"/>
+
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tramite_tipoMovimieto"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"
+                                             disabled="#{true}"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.id}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaTipoMovimiento}"/>
+
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.sustentoLega']}:"
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+
+                                <p:inputTextarea id="tramite_sustentoLega" 
+                                                 style="width: 500px"
+                                                 disabled="#{true}"
+                                                 value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.sustentoLegal}"/>
+                                <p:commandButton icon="ui-icon-search"
+                                                 oncomplete="sustentoLegalCompleto.show();"
+                                                 update=":frmSustentoLegal:pnlSustentoLegalCompleto"/>
+                            </h:panelGrid>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.descripcion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="tramite_descripcion"
+                                             disabled="#{true}"
+                                             value="#{tramiteBean.tramiteHelper.tramite.descripcion}"
+                                             style="width: 800px"/>
+
+                        </h:panelGrid>
+                        <br/>
+                        <div style="text-align: left;">
+                            <p:commandButton value="Generar No. Registro Masivo"
+                                             rendered="#{tramiteBean.tramiteHelper.listaMovimientos.size()>10}"
+                                             action="#{tramiteBean.generarNumeroRegistroMasivo()}"
+                                             ajax="false"
+                                             process="@this"
+                                             immediate="true"/>
+                            <p:commandButton onclick="dlgErroresValidacionMovimientos.show()"
+                                             value="Ver Detalles Errores"
+                                             rendered="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.listaNovedades.size()>0}"
+                                             update=":frmErroresValidacionMovimientos:tblErroresValidacionMovimientos"
+                                             immediate="true"/>
+                        </div>
+                        <br/>
+                        <p:dataTable id="busquedaPuestoHelper_listaPuestos" 
+                                     value="#{tramiteBean.tramiteHelper.listaMovimientos}"
+                                     var="movimiento"
+                                     rows="10"
+                                     paginator="true"
+                                     scrollable="true" 
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" width="10">
+                                <h:outputText value="#{rowIndex+1}" style="font-size: 10px;"/>
+                            </p:column>   
+                            <p:column headerText="N° Doc.Hab."  width="80">
+                                <p:panel style="text-align: center;border: none; width: 80px">
+                                    <h:outputText value="#{movimiento.numeroDocumentoHabilitante}" style="font-size: 10px"/>                     
+                                    <p:commandButton icon="ui-icon-pencil" 
+                                                     title="INGRESAR" 
+                                                     action="#{tramiteLegalizacionBean.iniciarEdicionMovimiento}"
+                                                     oncomplete="popUpNumeroDocHab.show()"                                                     
+                                                     update=":frmmPopUpNumeroDocHab:panelPopUpNumeroDocHab"
+                                                     partialSubmit="true"
+                                                     process="@this"                                                    
+                                                     rendered="#{movimiento.numeroRegistro==null and movimiento.numeroDocumentoHabilitante==null}">
+                                        <f:setPropertyActionListener value="#{movimiento}"
+                                                                     target="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento}"/>
+                                    </p:commandButton>
+                                </p:panel>
+                            </p:column>
+                            <p:column headerText="Imprimir"  width="50" style="text-align: center">
+                                <p:commandButton id="botonAccionPersonal" icon="ui-icon-print"
+                                                 process="@this"
+                                                 partialSubmit="true"
+                                                 immediate="#{true}"
+                                                 action="#{tramiteBean.generarReporte()}"
+                                                 title="Imprimir Documento Habilitante">                            
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="N° Registro"  width="70">
+                                <p:panel id="numeroRegistro" 
+                                         style="text-align: center;border: none; width: 80px">
+                                    <h:outputText value="#{movimiento.numeroRegistro}" style="font-size: 10px;"/>                                
+                                    <p:commandButton icon="ui-icon-gear" 
+                                                     title="GENERAR" 
+                                                     style="float: left"
+                                                     disabled="#{(tramiteLegalizacionBean.tramiteLegalizacionHelper.esAccionPersonal and movimiento.numeroDocumentoHabilitante==null) or (tramiteLegalizacionBean.tramiteLegalizacionHelper.esMemorando and movimiento.numeroMemo==null)}"
+                                                     rendered="#{movimiento.numeroRegistro==null}"
+                                                     action="#{tramiteLegalizacionBean.generarNumeroRegistro()}"                                                     
+                                                     partialSubmit="true"
+                                                     update="busquedaPuestoHelper_listaPuestos"
+                                                     process="@this">
+                                        <f:setPropertyActionListener value="#{movimiento}"
+                                                                     target="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento}"/>
+                                    </p:commandButton>
+                                </p:panel>
+
+                            </p:column>
+                            <p:column headerText="Fecha Registro" id="fechaRegistro"  width="60">
+                                <h:outputText value="#{movimiento.fechaRegistro}" style="font-size: 10px;" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>                        
+                            </p:column>
+                            <p:column headerText="Archivo"  width="100">
+                                <h:outputText value="#{movimiento.archivo.nombre}" style="font-size: 10px;"/>
+                                <p:commandButton style="float: left"
+                                                 immediate="true"
+                                                 partialSubmit="true"
+                                                 process="@this"
+                                                 oncomplete="dlgCargaDocHab.show()"
+                                                 icon="ui-icon-folder-open">
+                                    <f:setPropertyActionListener value="#{movimiento}"
+                                                                 target="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento}"/>
+                                    <f:setPropertyActionListener value="#{null}"
+                                                                 target="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.archivo}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.regeAPartirDe']}"  width="130">
+                                <h:outputText value="#{movimiento.rigeApartirDe}" 
+                                              rendered="#{movimiento.numeroRegistro!=null}" style="font-size: 10px;">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                                <p:calendar id="movimientoRigeApartirDe" 
+                                            value="#{movimiento.rigeApartirDe}" 
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <p:commandButton icon="ui-icon-disk" 
+                                                 title="GUARDAR" 
+                                                 oncomplete="confGeneracionNumero.show();"
+                                                 process="@this, movimientoRigeApartirDe">
+                                    <f:setPropertyActionListener value="#{movimiento}"
+                                                                 target="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento}"/>
+                                </p:commandButton>
+                            </p:column>                           
+                            <p:column headerText="Identificación"  width="100">
+                                <h:outputText value="#{movimiento.numeroIdentificacion}" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Nombres"  width="300">
+                                <h:outputText  value="#{movimiento.apellidosNombres}" style="font-size: 10px;"/>                                 
+                            </p:column>                
+                            <p:column headerText="Modalidad Laboral"  width="300">
+                                <h:outputText  value="#{movimiento.distributivoDetalle.distributivo.modalidadLaboral.nombre}" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Escala Remunerativa"  width="300">
+                                <h:outputText  value="#{movimiento.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{movimiento.distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre} / #{movimiento.distributivoDetalle.escalaOcupacional.nombre}" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaIndividual']}"  width="100">
+                                <h:outputText value="#{movimiento.distributivoDetalle.partidaIndividual}" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Sueldo" width="60">
+                                <h:outputText value="#{movimiento.rmu}" style="font-size: 10px;"/>
+                            </p:column>
+
+                            <p:column headerText="Opciones" width="70">
+                                <p:commandButton id="botonAgregarServidor" 
+                                                 icon="ui-icon-pencil"
+                                                 partialSubmit="true"
+                                                 immediate="#{true}"
+                                                 action="#{tramiteBean.iniciarAgregacion()}"
+                                                 process="@this"
+                                                 ajax="#{false}"
+                                                 title="Ver Datos">
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                                </p:commandButton>                                    
+                                <p:commandButton id="botonDetalleHorarios"
+                                                 partialSubmit="true"
+                                                 immediate="#{true}"
+                                                 process="@this"
+                                                 action="#{tramiteBean.generarReporteDetalleHorarios()}"                                             
+                                                 rendered="#{movimiento.tramite.tipoMovimiento.horario=='S' and tramiteBean.tramiteHelper.controlNavegacion!='edt'}"                                                                                        
+                                                 icon="ui-icon-calendar"
+                                                 title="Detalle de Horarios"> 
+                                    <f:setPropertyActionListener value="#{movimiento}"
+                                                                 target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                                </p:commandButton>                                    
+                                <p:commandButton id="botonEliminarMovimiento" icon="ui-icon-trash"                                             
+                                                 oncomplete="confElimMov.show()"     
+                                                 process="@this"
+                                                 update=":frmEiminacionMovimento"
+                                                 rendered="#{movimiento.numeroRegistro==null}"
+                                                 title="Eliminar Movimiento">     
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                                    <f:setPropertyActionListener value="#{null}" 
+                                                                 target="#{tramiteBean.tramiteHelper.movimiento.justificacion}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:separator />
+                        <h:panelGrid style="margin: auto;" columns="2">
+                            <h:outputLabel value="* Comentarios: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.comentario']}"/>
+                            <p:inputTextarea id="comentario"
+                                             maxlength="400"
+                                             style="width: 500px" 
+                                             required="#{true}"
+                                             requiredMessage="El comentario es un campo requerido."
+                                             value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.comentario}"/>
+
+                        </h:panelGrid>
+                    </f:facet>
+                </smp:contenedor>
+
+            </h:form>
+            <p:confirmDialog  message="Desea eliminar el movimiento?"                             
+                              header="Eliminación de movimiento"
+                              severity="alert"
+                              widgetVar="confElimMov">   
+                <h:form id="frmEiminacionMovimento">                    
+                    <h:panelGrid columns="2" style="text-align: center">
+                        <h:outputLabel value="* Justificación:"/>
+                        <p:inputTextarea id="justificacionEliminacion"   
+                                         style="width: 400px"
+                                         autoResize="false"
+                                         value="#{tramiteBean.tramiteHelper.movimiento.justificacion}"
+                                         required="#{tramiteBean.tramiteHelper.controlNavegacion=='vr' or tramiteBean.tramiteHelper.controlNavegacion=='vre'}"
+                                         requiredMessage="La justificación es un campo requerido."
+                                         maxlength="1000"/>
+
+                    </h:panelGrid>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update=":frmEiminacionMovimento"                                         
+                                         actionListener="#{tramiteBean.eliminarMovimiento()}" /> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confElimMov.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+            <!-- PopUp de numero de accion de personal -->
+            <p:dialog header="Número Acción de Personal"
+                      modal="true"
+                      draggable="false"
+                      resizable="false"
+                      widgetVar="popUpNumeroDocHab"
+                      >
+                <h:form id="frmmPopUpNumeroDocHab">
+                    <p:panel style="text-align: center" id="panelPopUpNumeroDocHab">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="N° Doc.Hab:"/>
+                            <p:inputText id="numeroDocumentoHabilitante" 
+                                         value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento.numeroDocumentoHabilitante}"
+                                         required="#{true}"
+                                         requiredMessage="El N° Doc.Hab es un campo requerido."
+                                         maxlength="10"
+                                         autocomplete="off"
+                                         styleClass="campoNumerico"/>
+
+                        </h:panelGrid>
+                        <p:separator/>
+                        <div style="text-align: center">
+                            <p:commandButton value="GUARDAR"
+                                             action="#{tramiteLegalizacionBean.guardarDocumentoHabilitante}"                                             
+                                             update="frmmPopUpNumeroDocHab,:frmTramiteLegalizacion:contenedor_id:busquedaPuestoHelper_listaPuestos"/>
+                            <p:commandButton value="CANCELAR"
+                                             onclick="popUpNumeroDocHab.hide();"/>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <!-- Confirmacion de numero documento duplicado -->
+            <p:dialog 
+                widgetVar="dlgCofirmacionNumeroDocumentoDuplicado"
+                modal="true"
+                header="Número Acción de Personal"
+                draggable="false"
+                resizable="false">
+                <h:form id="frmCofirmacionNumeroDocumentoDuplicado">
+                    <h:outputLabel value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.mensajes}" escape="false"/>
+                    <br/>
+                    <p:commandButton value="CONTINUAR" 
+                                     action="#{tramiteLegalizacionBean.procesarGuardarMovimientoBitacora}"
+                                     update=":frmTramiteLegalizacion:contenedor_id:busquedaPuestoHelper_listaPuestos"/>
+                </h:form>
+            </p:dialog>
+            <!-- Confirmacion de generacion de numero de registro -->
+            <p:dialog 
+                widgetVar="confGeneracionNumero"
+                modal="true"
+                header="Guardar Número Registro"
+                resizable="false"
+                draggable="false">
+                <h:form>
+                    <div style="margin: auto; text-align: center;">
+                        <h:outputLabel value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.esAccionPersonal?'Una vez generado el Número de Registro no podrá realizar ninguna modificación del Número de Acción de Personal y de la fecha “Rige a Partir de”':'b) Una vez generado el Número de Registro no podrá realizar ninguna modificación en el campo “Rige a Partir de”'}"/>
+                        <br/>
+                        <p:commandButton id="confirm" 
+                                         value="ACEPTAR" 
+                                         actionListener="#{tramiteLegalizacionBean.guardarEdicionMovimiento}"
+                                         update=":frmTramiteLegalizacion:contenedor_id:busquedaPuestoHelper_listaPuestos" 
+                                         oncomplete="confGeneracionNumero.hide()"/>  
+                        <p:commandButton value="CANCELAR" 
+                                         onclick="confGeneracionNumero.hide()" 
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp NUmero de memorandom -->
+            <p:dialog header="Número Memorándum"
+                      modal="true"
+                      draggable="false"
+                      resizable="false"
+                      widgetVar="popUpNumeroMemorandum"
+                      >
+                <h:form id="frmPopUpNumeroMemorandum">
+                    <p:panel style="text-align: center" id="panelNumeroMemorandum">
+                        <h:panelGrid columns="2">
+                            <p:inputText id="numeroMemorandum" 
+                                         value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.movimiento.numeroMemo}"
+                                         required="#{true}"
+                                         requiredMessage="El número memorándum es un campo requerido."
+                                         maxlength="30"
+                                         autocomplete="off"
+                                         styleClass="textoNemonico"/>
+                            <p:message for="numeroMemorandum" display="icon"/>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <div style="text-align: center">
+                            <p:commandButton value="GUARDAR"
+                                             action="#{tramiteLegalizacionBean.guardarNumeroMemorandum}"
+                                             update="frmPopUpNumeroMemorandum,:frmTramiteLegalizacion:contenedor_id:busquedaPuestoHelper_listaPuestos"/>
+                            <p:commandButton value="CANCELAR"
+                                             onclick="popUpNumeroMemorandum.hide();"/>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <p:dialog header="CARGA DEL DOCUMENTO HABILITANTE "
+                      modal="true"
+                      resizable="false"
+                      draggable="false"
+                      widgetVar="dlgCargaDocHab"
+                      >
+
+                <h:form enctype="multipart/form-data">  
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">          
+                        <p:fileUpload value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.archivo}" 
+                                      mode="simple"                                      
+                                      allowTypes="*.pdf"/>  
+                        <p:separator />
+                        <div style="text-align: center">
+                            <p:commandButton value="Subir archivo" ajax="false"  
+                                             actionListener="#{tramiteLegalizacionBean.subirArchivo}"/>  
+                        </div>
+                    </p:panel>
+                </h:form>  
+
+            </p:dialog>
+
+            <p:dialog 
+                widgetVar="dlgErroresValidacionMovimientos"
+                modal="true"
+                resizable="false"
+                draggable="false"
+                header="NOVEDADES EN LA VALIDACIÒN DE MOVIMIENTOS">
+                <h:form id="frmErroresValidacionMovimientos">
+                    <p:dataTable id="tblErroresValidacionMovimientos"
+                                 value="#{tramiteLegalizacionBean.tramiteLegalizacionHelper.listaNovedades}"
+                                 var="novedad"
+                                 rows="10"
+                                 paginator="#{true}"
+                                 style="overflow: auto;"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center">
+                            <h:outputText value="#{novedad[0]}"/>
+                        </p:column> 
+                        <p:column headerText="Numero Documento Habilitante"  style="text-align: center">
+                            <img src="#{request.contextPath}/images/#{novedad[1]==1?'error.png':'ok.png'}" />                            
+                        </p:column>
+
+                        <p:column headerText="Numero Registro"  style="text-align: center">
+                            <img src="#{request.contextPath}/images/#{novedad[2]==1?'error.png':'ok.png'}" />                            
+                        </p:column>
+                        <p:column headerText="Archivo"  style="text-align: center">
+                            <img src="#{request.contextPath}/images/#{novedad[3]==1?'error.png':'ok.png'}" />                            
+                        </p:column>
+                        <p:column headerText="Fecha Rige"  style="text-align: center">
+                            <img src="#{request.contextPath}/images/#{novedad[4]==1?'error.png':'ok.png'}" />                            
+                        </p:column>
+
+                    </p:dataTable>               
+                </h:form>
+            </p:dialog>
+            <!-- Sustento legal. -->
+            <p:dialog header="Sustento Legal"
+                      widgetVar="sustentoLegalCompleto"
+                      >
+                <h:form id="frmSustentoLegal">
+                    <p:panel id="pnlSustentoLegalCompleto">
+                        <p:inputTextarea style="width: 500px;height: 500px;overflow: auto;"
+                                         disabled="#{true}"                                         
+                                         value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.sustentoLegal}"/>
+                    </p:panel>    
+                </h:form>
+            </p:dialog>
+        </ui:define>
+
+    </ui:composition>
+</html>

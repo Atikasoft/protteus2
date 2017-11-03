@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.administracion.anticipo.solicitud.titulo']}">
+                    <br/>
+                    <div>
+                        <p:commandButton id="nuevoBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{anticipoBean.irNuevo}"
+                                         title="#{msg['message.btn.nuevo']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{anticipoBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:spacer/>
+                    <p:spacer/>
+
+                    <p:dataTable id="tablaanticipo"
+                                 value="#{anticipoBean.anticipoHelper.listaAnticipos}"
+                                 var="det"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 sortBy="#{det.fechaSolicitud}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.fecha']}" 
+                                  sortBy="#{det.fechaSolicitud}" style="width: 100px" >                               
+                            <h:outputText value="#{det.fechaSolicitud}" >
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.ejercicioFiscal']}" >                                
+                            <h:outputText value="#{det.institucionEjercicioFiscal.ejercicioFiscal.nombre}"/>                      
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.valor']}" >                                
+                            <h:outputText value="#{det.valor}"/>                      
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.plazoMeses']}" 
+                                  sortBy="#{det.plazoMeses}" style="width: 70px" >                               
+                            <h:outputText value="#{det.plazoMeses}" />
+                        </p:column> 
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoInicio']}" 
+                                  sortBy="#{det.periodoInicio}" style="width: 80px" >                               
+                            <h:outputText value="#{det.periodoInicio}"/>   
+                        </p:column> 
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.periodoFin']} "
+                                  sortBy="#{det.periodoFin}" style="width: 80px">                                
+                            <h:outputText value="#{det.periodoFin}"/>                      
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.estado']}" 
+                                  sortBy="#{det.estado}" style="width: 150px" >                               
+                            <h:outputText value="#{anticipoBean.obtenerDescripcionEstadoAnticipo(det.estado)}" />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                                              
+                            <p:commandButton id="botonVer" icon="ui-icon-search"
+                                             ajax="#{false}" immediate="true"
+                                             action="#{anticipoBean.iniciarEdicion}"
+                                             title="#{msg['message.btn.ver']}">
+                                <f:setPropertyActionListener value="#{det}" 
+                                                             target="#{anticipoBean.anticipoHelper.anticipoEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+                   
+                </p:panel>
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

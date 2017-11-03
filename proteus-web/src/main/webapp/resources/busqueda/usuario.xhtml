@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:busqueda="http://java.sun.com/jsf/composite/busqueda">
+    <composite:interface>
+        <composite:attribute name="usuario"
+                             required="true"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Usuario">
+        </composite:attribute>
+
+        <composite:attribute name="idComponenteParaActualizar"
+                             required="true"
+                             type="java.lang.String">
+        </composite:attribute>
+
+        <composite:attribute name="agregarMetodoDespuesSet"
+                             required="false"
+                             default="false"
+                             type="boolean">
+        </composite:attribute>
+
+        <composite:attribute name="metodoDespuesSet"
+                             method-signature="void accion()" 
+                             shortDescription="Metodo que va ser llamado despues de seleccionar un usuario"
+                             required="false">
+        </composite:attribute>
+
+        <composite:attribute name="usuarioCriterioInicial"
+                             required="false"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Usuario">
+        </composite:attribute>
+
+        <composite:attribute name="institucionCriterioInicial"
+                             required="false"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Institucion">
+        </composite:attribute>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <p:commandButton style="background: #528BB7;color: #FFFFFF;"  value="#{messages['mensaje.general.boton.buscar']}"
+                         action="#{busquedaUsuarioBean.inicializarUsuarioBusquedaGeneral}"
+                         update="outputPanelMensajesBusquedaUsuario,outputPanelBuscadorUsuario"
+                         oncomplete="widgetVarDialogBusquedaUsuario.show()">
+            <f:setPropertyActionListener value="#{cc.attrs.usuarioCriterioInicial}"
+                                         target="#{busquedaUsuarioBean.busquedaUsuarioBB.usuarioCriterioInicial}">
+            </f:setPropertyActionListener>
+        </p:commandButton>
+
+        <p:outputPanel>
+            <p:dialog id="dialogBusquedaUsuario"
+                      widgetVar="widgetVarDialogBusquedaUsuario"
+                      height="400"
+                      width="768"
+                      header="#{messages['recursos.busqueda.usuario.titulo.popup']}"
+                      modal="true"
+                      position="center"
+                      dynamic="true"
+                      draggable="false"
+                      resizable="false"
+                      style="overflow: auto;">
+
+                <p:outputPanel id="outputPanelMensajesBusquedaUsuario">
+                    <h:outputText rendered="#{busquedaUsuarioBean.busquedaUsuarioBB.dummyVar}"></h:outputText>
+                    <p:message for="dialogBusquedaUsuario"></p:message>
+                </p:outputPanel>
+
+                <p:outputPanel id="outputPanelBuscadorUsuario">
+                    <p:outputPanel rendered="#{busquedaUsuarioBean.busquedaUsuarioBB.mostrarPanelBusquedaUsuarios}">
+
+                        <center>
+                            <p:panel id="panelBuscadorUsuarioFiltros"
+                                     header="#{messages['recursos.busqueda.usuario.titulo.panel.filtros']}">
+                                <p:panelGrid columns="2">
+                                    <h:outputLabel for="busquedaUsuario_cedula"
+                                                   value="#{messages['recursos.busqueda.usuario.etiqueta.numeroDocumento']}" />
+                                    <p:inputText id="busquedaUsuario_cedula"
+                                                 value="#{busquedaUsuarioBean.busquedaUsuarioBB.usuarioCriterioDeBusqueda.cedula}" />
+
+
+                                    <h:outputLabel for="busquedaUsuario_institucion"
+                                                   value="#{messages['recursos.busqueda.usuario.etiqueta.institucion']}" />
+                                    <p:inputText id="busquedaUsuario_institucion"
+                                                 value="#{busquedaUsuarioBean.busquedaUsuarioBB.usuarioCriterioDeBusqueda.institucion.nombre}"/>
+                                </p:panelGrid>
+                                <p:outputPanel>
+                                    <p:commandButton style="background: #528BB7;color: #FFFFFF;"  actionListener="#{busquedaUsuarioBean.buscarUsuariosPorCriterio}"
+                                                     value="#{messages['mensaje.general.boton.buscar']}"
+                                                     update="outputPanelMensajesBusquedaUsuario,outputPanelBuscadorListaUsuarios">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </p:panel>
+                        </center>
+
+                        <p:outputPanel id="outputPanelBuscadorListaUsuarios">
+                            <p:panel header="#{messages['recursos.busqueda.usuario.titulo.panel.listaUsuarios']}"
+                                     rendered="#{busquedaUsuarioBean.busquedaUsuarioBB.mostrarPanelListaDeResultados}">
+                                <p:dataTable id="dataTableBusquedaUsuarios"
+                                             value="#{busquedaUsuarioBean.busquedaUsuarioBB.listaDeUsuarios}"
+                                             var="usuario"
+                                             emptyMessage=""
+                                             paginator="true"
+                                             rows="#{busquedaUsuarioBean.busquedaUsuarioBB.numeroDeFilas}"
+                                             paginatorPosition="bottom">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['recursos.busqueda.usuario.tabla.columna.numeroDocumento']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{usuario.cedula}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.nombre']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{usuario.nombre}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.tipoUsuario']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{usuario.tipoUsuario.nombre}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.institucion']}" />
+                                        </f:facet>
+                                        <h:outputText value="#{usuario.institucion.nombre}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages['mensaje.general.columna.opciones']}" />
+                                        </f:facet>
+                                        <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                       action="#{cc.attrs.metodoDespuesSet}"
+                                                       rendered="#{cc.attrs.agregarMetodoDespuesSet}"
+                                                       oncomplete="widgetVarDialogBusquedaUsuario.hide()"
+                                                       update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                            <f:setPropertyActionListener target="#{cc.attrs.usuario}"
+                                                                         value="#{usuario}">
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                       rendered="#{!cc.attrs.agregarMetodoDespuesSet}"
+                                                       oncomplete="widgetVarDialogBusquedaUsuario.hide()"
+                                                       update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                            <f:setPropertyActionListener target="#{cc.attrs.usuario}"
+                                                                         value="#{usuario}">
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                    </p:column>                                        
+                                </p:dataTable>
+                            </p:panel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </p:dialog>
+        </p:outputPanel>
+    </composite:implementation>
+</html>

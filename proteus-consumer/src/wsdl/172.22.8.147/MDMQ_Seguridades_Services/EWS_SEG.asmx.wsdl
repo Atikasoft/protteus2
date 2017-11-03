@@ -1,0 +1,1221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://mdmq.quito.gob.ec/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://mdmq.quito.gob.ec/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://mdmq.quito.gob.ec/">
+      <s:element name="SEG_EMPRESA_Consultar">
+        <s:complexType />
+      </s:element>
+      <s:element name="SEG_EMPRESA_ConsultarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SEG_EMPRESA_ConsultarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_EMPRESA" type="tns:ArrayOfSEG_EMPRESA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="clsMessage">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="intCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="strSource" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="intLine" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="strMessage" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfSEG_EMPRESA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_EMPRESA" nillable="true" type="tns:SEG_EMPRESA" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SEG_EMPRESA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_CODIGO_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_RUC" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_DIRECCION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_TELEFONO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_FAX" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_EMAIL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_TIPO_IDENTIF" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_IDENTIF_REP" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_RUC_CONTADOR" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_NOMBRE_CONTADOR" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_NOMBRE_GERENTE" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="EntidadGenerica">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ORIGINAL" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="VERSION_FILA" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="versionFila" type="s:base64Binary" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SEG_OFICINA_Consultar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresa" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SEG_OFICINA_ConsultarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SEG_OFICINA_ConsultarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_OFICINA" type="tns:ArrayOfSEG_OFICINA" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_OFICINA">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_OFICINA" nillable="true" type="tns:SEG_OFICINA" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SEG_OFICINA">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="OF_OFICINA_ID" type="s:short" />
+              <s:element minOccurs="0" maxOccurs="1" name="OF_NOMBRE" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ConsultarMenu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresa" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ConsultarMenuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ConsultarMenuResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_RECURSO" type="tns:ArrayOfSEG_RECURSO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_RECURSO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_RECURSO" nillable="true" type="tns:SEG_RECURSO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SEG_RECURSO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="RE_CODIGO_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_APLICACION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_RAIZ" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_TIPO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_DESCRIPCION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_TEXTO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_AYUDA" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="RE_SECUENCIAL" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="RE_ID_URL" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="AP_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="AP_DESCRIPCION" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="SEG_DET_CATALOGO_Buscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuery" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_DET_CATALOGO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SEG_DET_CATALOGO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="DC_CATALOGO_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DC_VALOR_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DC_DESCRIPCION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DC_ESTADO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="DC_FECHA_ESTADO" type="s:dateTime" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="SEG_DET_CATALOGO_BuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SEG_DET_CATALOGO_BuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_DET_CATALOGO" type="tns:ArrayOfSEG_DET_CATALOGO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_DET_CATALOGO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_DET_CATALOGO" nillable="true" type="tns:SEG_DET_CATALOGO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SEG_DET_CATALOGOS_Listado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strCATALOGO_NOMBRE" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SEG_DET_CATALOGOS_ListadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SEG_DET_CATALOGOS_ListadoResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_DET_CATALOGO" type="tns:ArrayOfSEG_DET_CATALOGO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLogin">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresa" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intOficina" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTerminal" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnLoginResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLoginNC">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresa" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intOficina" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTerminal" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLoginNCResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnLoginNCResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLogout">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnLogoutResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnLogoutResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnCambiarClave">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPswActual" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPswNueva" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnCambiarClaveResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnCambiarClaveResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMensaje" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnSEG_AUTORIZA">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentificador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLOGIN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strAPLICACION" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEMPRESA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strOFICINA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTERMINAL" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnSEG_AUTORIZAResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnSEG_AUTORIZAResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLOGIN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strAPLICACION" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEMPRESA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strOFICINA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTERMINAL" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuerry" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SEG_USUARIO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="INDICE" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_LOGIN_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_CLAVE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_APELLIDO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_ESTADO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="US_FECHA_ESTADO" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="US_PERSONA" type="s:long" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_ESTADO_ADM" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnUSUARIOBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnUSUARIOBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_USUARIO" type="tns:ArrayOfSEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_USUARIO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_USUARIO" nillable="true" type="tns:SEG_USUARIO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="fnUSUARIOInsertar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOInsertarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnUSUARIOInsertarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOActualizar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOActualizarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnUSUARIOActualizarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOConsultar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuerry" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOConsultarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnUSUARIOConsultarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_USUARIO" type="tns:ArrayOfSEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOBuscarIdentifier">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnUSUARIOBuscarIdentifierResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnUSUARIOBuscarIdentifierResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_USUARIO" type="tns:ArrayOfSEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPOUSUARIOListado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresa" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strGrupo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPOUSUARIOListadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPOUSUARIOListadoResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_USUARIO" type="tns:ArrayOfSEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPOBuscarUsuarioLogin">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="o" type="tns:SEG_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPOBuscarUsuarioLoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPOBuscarUsuarioLoginResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_GRUPO" type="tns:ArrayOfSEG_GRUPO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_GRUPO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_GRUPO" nillable="true" type="tns:SEG_GRUPO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SEG_GRUPO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="GR_EMPRESA_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_CODIGO_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_DESCRIPCION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_ESTADO" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnGRUPOBuscarUsuarioLoginOficinaEmpresa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strOficinaId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmpresaID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPOBuscarUsuarioLoginOficinaEmpresaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPOBuscarUsuarioLoginOficinaEmpresaResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_GRUPO" type="tns:ArrayOfSEG_GRUPO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPO_USUARIOBuscar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strIndice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuerry" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intModo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intFilas" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEMPRESA_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strGRUPO_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLOGIN_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strCLAVE" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strNOMBRE" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strAPELLIDO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strESTADO" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="dtmFECHA_ESTADO" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="lonPERSONA" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPO_USUARIOBuscarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPO_USUARIOBuscarResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="lstSEG_GRUPO_USUARIO" type="tns:ArrayOfSEG_GRUPO_USUARIO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSEG_GRUPO_USUARIO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SEG_GRUPO_USUARIO" nillable="true" type="tns:SEG_GRUPO_USUARIO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SEG_GRUPO_USUARIO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntidadGenerica">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="GU_EMPRESA_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GU_GRUPO_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GU_LOGIN_ID" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_DESCRIPCION" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="GR_ESTADO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="EM_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_NOMBRE" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_APELLIDO" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="US_ESTADO" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="US_FECHA_ESTADO" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="US_PERSONA" type="s:long" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="fnGRUPO_USUARIOAdd">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEMPRESA_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strGRUPO_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLOGIN_ID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPO_USUARIOAddResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPO_USUARIOAddResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPO_OFICINAAdd">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEMPRESA_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strGRUPO_ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strLOGIN_ID" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intUS_OFICINA_ID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strESTADO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnGRUPO_OFICINAAddResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnGRUPO_OFICINAAddResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnInsertar_UsuarioPAM">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strIdentifier" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="oUSU" type="tns:SEG_USUARIO" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_LOGIN" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="fnInsertar_UsuarioPAMResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fnInsertar_UsuarioPAMResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="msg" type="tns:clsMessage" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUS_PASSWORD" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SEG_EMPRESA_ConsultarSoapIn">
+    <wsdl:part name="parameters" element="tns:SEG_EMPRESA_Consultar" />
+  </wsdl:message>
+  <wsdl:message name="SEG_EMPRESA_ConsultarSoapOut">
+    <wsdl:part name="parameters" element="tns:SEG_EMPRESA_ConsultarResponse" />
+  </wsdl:message>
+  <wsdl:message name="SEG_OFICINA_ConsultarSoapIn">
+    <wsdl:part name="parameters" element="tns:SEG_OFICINA_Consultar" />
+  </wsdl:message>
+  <wsdl:message name="SEG_OFICINA_ConsultarSoapOut">
+    <wsdl:part name="parameters" element="tns:SEG_OFICINA_ConsultarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarMenuSoapIn">
+    <wsdl:part name="parameters" element="tns:ConsultarMenu" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarMenuSoapOut">
+    <wsdl:part name="parameters" element="tns:ConsultarMenuResponse" />
+  </wsdl:message>
+  <wsdl:message name="SEG_DET_CATALOGO_BuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:SEG_DET_CATALOGO_Buscar" />
+  </wsdl:message>
+  <wsdl:message name="SEG_DET_CATALOGO_BuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:SEG_DET_CATALOGO_BuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="SEG_DET_CATALOGOS_ListadoSoapIn">
+    <wsdl:part name="parameters" element="tns:SEG_DET_CATALOGOS_Listado" />
+  </wsdl:message>
+  <wsdl:message name="SEG_DET_CATALOGOS_ListadoSoapOut">
+    <wsdl:part name="parameters" element="tns:SEG_DET_CATALOGOS_ListadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnLoginSoapIn">
+    <wsdl:part name="parameters" element="tns:fnLogin" />
+  </wsdl:message>
+  <wsdl:message name="fnLoginSoapOut">
+    <wsdl:part name="parameters" element="tns:fnLoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnLoginNCSoapIn">
+    <wsdl:part name="parameters" element="tns:fnLoginNC" />
+  </wsdl:message>
+  <wsdl:message name="fnLoginNCSoapOut">
+    <wsdl:part name="parameters" element="tns:fnLoginNCResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnLogoutSoapIn">
+    <wsdl:part name="parameters" element="tns:fnLogout" />
+  </wsdl:message>
+  <wsdl:message name="fnLogoutSoapOut">
+    <wsdl:part name="parameters" element="tns:fnLogoutResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnCambiarClaveSoapIn">
+    <wsdl:part name="parameters" element="tns:fnCambiarClave" />
+  </wsdl:message>
+  <wsdl:message name="fnCambiarClaveSoapOut">
+    <wsdl:part name="parameters" element="tns:fnCambiarClaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnSEG_AUTORIZASoapIn">
+    <wsdl:part name="parameters" element="tns:fnSEG_AUTORIZA" />
+  </wsdl:message>
+  <wsdl:message name="fnSEG_AUTORIZASoapOut">
+    <wsdl:part name="parameters" element="tns:fnSEG_AUTORIZAResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOInsertarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOInsertar" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOInsertarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOInsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOActualizarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOActualizar" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOActualizarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOConsultarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOConsultar" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOConsultarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOConsultarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOBuscarIdentifierSoapIn">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOBuscarIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="fnUSUARIOBuscarIdentifierSoapOut">
+    <wsdl:part name="parameters" element="tns:fnUSUARIOBuscarIdentifierResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOUSUARIOListadoSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPOUSUARIOListado" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOUSUARIOListadoSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPOUSUARIOListadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOBuscarUsuarioLoginSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPOBuscarUsuarioLogin" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOBuscarUsuarioLoginSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPOBuscarUsuarioLoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOBuscarUsuarioLoginOficinaEmpresaSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPOBuscarUsuarioLoginOficinaEmpresa" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPOBuscarUsuarioLoginOficinaEmpresaSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPOBuscarUsuarioLoginOficinaEmpresaResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_USUARIOBuscarSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_USUARIOBuscar" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_USUARIOBuscarSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_USUARIOBuscarResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_USUARIOAddSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_USUARIOAdd" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_USUARIOAddSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_USUARIOAddResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_OFICINAAddSoapIn">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_OFICINAAdd" />
+  </wsdl:message>
+  <wsdl:message name="fnGRUPO_OFICINAAddSoapOut">
+    <wsdl:part name="parameters" element="tns:fnGRUPO_OFICINAAddResponse" />
+  </wsdl:message>
+  <wsdl:message name="fnInsertar_UsuarioPAMSoapIn">
+    <wsdl:part name="parameters" element="tns:fnInsertar_UsuarioPAM" />
+  </wsdl:message>
+  <wsdl:message name="fnInsertar_UsuarioPAMSoapOut">
+    <wsdl:part name="parameters" element="tns:fnInsertar_UsuarioPAMResponse" />
+  </wsdl:message>
+  <wsdl:portType name="EWS_SEGSoap">
+    <wsdl:operation name="SEG_EMPRESA_Consultar">
+      <wsdl:input message="tns:SEG_EMPRESA_ConsultarSoapIn" />
+      <wsdl:output message="tns:SEG_EMPRESA_ConsultarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SEG_OFICINA_Consultar">
+      <wsdl:input message="tns:SEG_OFICINA_ConsultarSoapIn" />
+      <wsdl:output message="tns:SEG_OFICINA_ConsultarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarMenu">
+      <wsdl:input message="tns:ConsultarMenuSoapIn" />
+      <wsdl:output message="tns:ConsultarMenuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGO_Buscar">
+      <wsdl:input message="tns:SEG_DET_CATALOGO_BuscarSoapIn" />
+      <wsdl:output message="tns:SEG_DET_CATALOGO_BuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGOS_Listado">
+      <wsdl:input message="tns:SEG_DET_CATALOGOS_ListadoSoapIn" />
+      <wsdl:output message="tns:SEG_DET_CATALOGOS_ListadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnLogin">
+      <wsdl:input message="tns:fnLoginSoapIn" />
+      <wsdl:output message="tns:fnLoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnLoginNC">
+      <wsdl:input message="tns:fnLoginNCSoapIn" />
+      <wsdl:output message="tns:fnLoginNCSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnLogout">
+      <wsdl:input message="tns:fnLogoutSoapIn" />
+      <wsdl:output message="tns:fnLogoutSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnCambiarClave">
+      <wsdl:input message="tns:fnCambiarClaveSoapIn" />
+      <wsdl:output message="tns:fnCambiarClaveSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnSEG_AUTORIZA">
+      <wsdl:input message="tns:fnSEG_AUTORIZASoapIn" />
+      <wsdl:output message="tns:fnSEG_AUTORIZASoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscar">
+      <wsdl:input message="tns:fnUSUARIOBuscarSoapIn" />
+      <wsdl:output message="tns:fnUSUARIOBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOInsertar">
+      <wsdl:input message="tns:fnUSUARIOInsertarSoapIn" />
+      <wsdl:output message="tns:fnUSUARIOInsertarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOActualizar">
+      <wsdl:input message="tns:fnUSUARIOActualizarSoapIn" />
+      <wsdl:output message="tns:fnUSUARIOActualizarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOConsultar">
+      <wsdl:input message="tns:fnUSUARIOConsultarSoapIn" />
+      <wsdl:output message="tns:fnUSUARIOConsultarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscarIdentifier">
+      <wsdl:input message="tns:fnUSUARIOBuscarIdentifierSoapIn" />
+      <wsdl:output message="tns:fnUSUARIOBuscarIdentifierSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOUSUARIOListado">
+      <wsdl:input message="tns:fnGRUPOUSUARIOListadoSoapIn" />
+      <wsdl:output message="tns:fnGRUPOUSUARIOListadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLogin">
+      <wsdl:input message="tns:fnGRUPOBuscarUsuarioLoginSoapIn" />
+      <wsdl:output message="tns:fnGRUPOBuscarUsuarioLoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLoginOficinaEmpresa">
+      <wsdl:input message="tns:fnGRUPOBuscarUsuarioLoginOficinaEmpresaSoapIn" />
+      <wsdl:output message="tns:fnGRUPOBuscarUsuarioLoginOficinaEmpresaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOBuscar">
+      <wsdl:input message="tns:fnGRUPO_USUARIOBuscarSoapIn" />
+      <wsdl:output message="tns:fnGRUPO_USUARIOBuscarSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOAdd">
+      <wsdl:input message="tns:fnGRUPO_USUARIOAddSoapIn" />
+      <wsdl:output message="tns:fnGRUPO_USUARIOAddSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_OFICINAAdd">
+      <wsdl:input message="tns:fnGRUPO_OFICINAAddSoapIn" />
+      <wsdl:output message="tns:fnGRUPO_OFICINAAddSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="fnInsertar_UsuarioPAM">
+      <wsdl:input message="tns:fnInsertar_UsuarioPAMSoapIn" />
+      <wsdl:output message="tns:fnInsertar_UsuarioPAMSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EWS_SEGSoap" type="tns:EWS_SEGSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SEG_EMPRESA_Consultar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/SEG_EMPRESA_Consultar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_OFICINA_Consultar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/SEG_OFICINA_Consultar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarMenu">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/ConsultarMenu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGO_Buscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/SEG_DET_CATALOGO_Buscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGOS_Listado">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/SEG_DET_CATALOGOS_Listado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLogin">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnLogin" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLoginNC">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnLoginNC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLogout">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnLogout" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnCambiarClave">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnCambiarClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnSEG_AUTORIZA">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnSEG_AUTORIZA" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOInsertar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOInsertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOActualizar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOActualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOConsultar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOConsultar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscarIdentifier">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOBuscarIdentifier" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOUSUARIOListado">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOUSUARIOListado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLogin">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOBuscarUsuarioLogin" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLoginOficinaEmpresa">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOBuscarUsuarioLoginOficinaEmpresa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOBuscar">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_USUARIOBuscar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOAdd">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_USUARIOAdd" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_OFICINAAdd">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_OFICINAAdd" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnInsertar_UsuarioPAM">
+      <soap:operation soapAction="http://mdmq.quito.gob.ec/fnInsertar_UsuarioPAM" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EWS_SEGSoap12" type="tns:EWS_SEGSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SEG_EMPRESA_Consultar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/SEG_EMPRESA_Consultar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_OFICINA_Consultar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/SEG_OFICINA_Consultar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarMenu">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/ConsultarMenu" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGO_Buscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/SEG_DET_CATALOGO_Buscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SEG_DET_CATALOGOS_Listado">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/SEG_DET_CATALOGOS_Listado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLogin">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnLogin" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLoginNC">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnLoginNC" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnLogout">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnLogout" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnCambiarClave">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnCambiarClave" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnSEG_AUTORIZA">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnSEG_AUTORIZA" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOInsertar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOInsertar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOActualizar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOActualizar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOConsultar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOConsultar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnUSUARIOBuscarIdentifier">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnUSUARIOBuscarIdentifier" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOUSUARIOListado">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOUSUARIOListado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLogin">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOBuscarUsuarioLogin" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPOBuscarUsuarioLoginOficinaEmpresa">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPOBuscarUsuarioLoginOficinaEmpresa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOBuscar">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_USUARIOBuscar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_USUARIOAdd">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_USUARIOAdd" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnGRUPO_OFICINAAdd">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnGRUPO_OFICINAAdd" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fnInsertar_UsuarioPAM">
+      <soap12:operation soapAction="http://mdmq.quito.gob.ec/fnInsertar_UsuarioPAM" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="EWS_SEG">
+    <wsdl:port name="EWS_SEGSoap" binding="tns:EWS_SEGSoap">
+      <soap:address location="http://172.22.8.147/MDMQ_Seguridades_Services/EWS_SEG.asmx" />
+    </wsdl:port>
+    <wsdl:port name="EWS_SEGSoap12" binding="tns:EWS_SEGSoap12">
+      <soap12:address location="http://172.22.8.147/MDMQ_Seguridades_Services/EWS_SEG.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

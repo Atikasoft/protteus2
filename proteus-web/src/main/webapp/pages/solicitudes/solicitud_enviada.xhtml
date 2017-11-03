@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="5">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"                                                                                  
+                                         action="#{registroSolicitudBean.generarReporte()}">                            
+                        </p:commandButton>
+                                                                 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{registroSolicitudBean.salirPantallaPrincipal}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <div class="ui-messages ui-widget" id="erroresdiv" style="text-align: center">
+                    <div class="ui-messages-info ui-corner-all">
+                        <span class="ui-messages-info-icon"></span>
+                        <ul>
+                            <li>
+                                <span class="ui-messages-info-summary">
+                                    <h:panelGrid columns="1" style="text-align: center; width: 900px">
+                                        <h:outputText value="SOLICITUD DE #{registroSolicitudBean.registroSolicitudHelper.tramiteCreado.tipoMovimiento.nombre} FUE ENVIADA CORRECTAMENTE"
+                                                      styleClass="lblText" style="width: 300px"/>
+                                        <h:outputText value="SOLICITUD No #{registroSolicitudBean.registroSolicitudHelper.tramiteCreado.numericoTramite}"
+                                                      styleClass="lblText" style="width: 300px"/>
+                                        <p:separator/>
+                                        <h:outputText value="Recuerde imprimir su solicitud para que pueda tener un respaldo."
+                                                      styleClass="lblText" style="width: 300px"/>
+                                    </h:panelGrid>
+                                </span>
+                            </li>                                
+                        </ul>
+                    </div>
+                </div>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

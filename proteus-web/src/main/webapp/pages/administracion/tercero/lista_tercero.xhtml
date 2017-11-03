@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+                 <h:form id="frmPrincipal">
+                <p:panel>
+                       <h:panelGrid columns="2">
+                           <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"   
+                                         process="@this"     ajax="false"
+                                         action="#{terceroBean.iniciarNuevo}">
+                        </p:commandButton>
+                    </h:panelGrid>
+                    </p:panel>              
+                     <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                              header="#{msg['ec.gob.mrl.smp.administracion.terceros.titulo']}">   
+                    <p:dataTable id="tablatercero"
+                                 value="#{terceroBean.terceroHelper.listaTerceros}"
+                                 var="tercero"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 filterEvent="enter"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 sortBy="#{tercero.fechaCreacion}"  sortOrder="descending"
+                                 style="overflow: auto">      
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{terceroBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{tercero}" 
+                                                             target="#{terceroBean.terceroHelper.terceroEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{tercero}" 
+                                                             target="#{terceroBean.terceroHelper.terceroEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.fechaCreacion']}" 
+                                  sortBy="#{tercero.fechaCreacion}" style="width: 80px">                                                                 
+                            <h:outputText value="#{tercero.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.tipoIdentificacion']}" 
+                                  sortBy="#{tercero.tipoIdentificacion}" style="width: 70px">                                                                 
+                            <h:outputText value="#{terceroBean.obtenerDescripcionTipoDocumento(tercero.tipoIdentificacion)}"/>                                
+                        </p:column>
+                          <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.numeroIdentificacion']}" 
+                                    sortBy="#{tercero.numeroIdentificacion}" style="width: 80px"
+                                    filterBy="#{tercero.numeroIdentificacion}" filterMatchMode="contains">                                                                 
+                            <h:outputText value="#{tercero.numeroIdentificacion}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.nombres']}" 
+                                  sortBy="#{tercero.nombres}" style="width: 400px"
+                                  filterBy="#{tercero.nombres}" filterMatchMode="contains">                               
+                            <h:outputText value="#{tercero.nombres}"/>                                
+                        </p:column>      
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.valor']}" 
+                                  sortBy="#{tercero.valor}" style="width: 50px">                               
+                            <h:outputText value="#{tercero.valor}"/>                                
+                        </p:column>       
+                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.terceros.estado']}" 
+                                  sortBy="#{tercero.estado}" style="width: 70px">                                  
+                             <h:outputText value="#{terceroBean.obtenerDescripcionActivoInactivo(tercero.estado)}"/>                                
+                        </p:column> 
+                       
+                        
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablatercero"
+                                             actionListener="#{terceroBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

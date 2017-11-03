@@ -1,0 +1,164 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmUnidadAprobacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.titulo']}">
+                    <br/>
+                    <div>
+                        <p:commandButton id="nuevoBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{unidadAprobacionBean.iniciarNuevo}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}">
+                        </p:commandButton>
+                        <p:commandButton id="listarBtn" 
+                                         update=":modalSinAprobador"
+                                         value="#{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.unidadAprobacionSinAprobador1']}"
+                                         actionListener="#{unidadAprobacionBean.obtenerUnidadesOrganizacionalesSinAprobador}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.unidadAprobacionSinAprobador']}">
+                        </p:commandButton>
+                    </div>
+                    <br/><br/>
+
+                    <p:dataTable id="tablaunidadAprobacion"
+                                 value="#{unidadAprobacionBean.unidadAprobacionHelper.listaUnidadAprobacion}"
+                                 var="unidadAprobacion"
+                                 paginator="#{true}"
+                                 filterEvent="enter"
+                                  emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{unidadAprobacion.unidadOrganizacional.nombre}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{unidadAprobacion}" 
+                                                             target="#{unidadAprobacionBean.unidadAprobacionHelper.unidadAprobacionEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" 
+                                  sortBy="#{unidadAprobacion.unidadOrganizacional.nombre}" filterMatchMode="contains"
+                                  filterBy="#{unidadAprobacion.unidadOrganizacional.nombre}" style="width: 400px">                               
+                            <h:outputText value="#{unidadAprobacion.unidadOrganizacional.nombre}"/>                                
+                        </p:column>   
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.unidadAprobacion']}" 
+                                  sortBy="#{unidadAprobacion.unidadOrganizacionalAprobador.nombre}" style="width: 400px"
+                                  filterBy="#{unidadAprobacion.unidadOrganizacionalAprobador.nombre}" filterMatchMode="contains">                               
+                            <h:outputText value="#{unidadAprobacion.unidadOrganizacionalAprobador.nombre}"/>                                
+                        </p:column>       
+
+                        
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaunidadAprobacion"
+                                             actionListener="#{unidadAprobacionBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+
+            <!-- POPUP PARA AGREGAR UN NUEVO REGISTRO-->
+            <p:dialog id="modalNuevo" closable="true"
+                      header="Nueva Unidad de Aprobación" resizable="false" draggable="true"
+                      showEffect="fade" widgetVar="editDialog" modal="true">  
+                <h:form id="formEditarUAprobacion">
+                    <p:outputPanel id="editPanel">  
+                        <h:panelGrid  columns="2">  
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.unidadAprobacion']}:"
+                                           styleClass="labelFormulario" />
+                            <p:selectOneMenu id="unidadPadre" 
+                                             value="#{unidadAprobacionBean.unidadAprobacionHelper.unidadAprobacion.idUnidadOrganizacionalAprobador}"
+                                             required="#{true}" 
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             requiredMessage="El campo Unidad Organizacional Aprobadora es requerido">
+                                <f:selectItems value="#{unidadAprobacionBean.unidadAprobacionHelper.opcionesUnidadOrganizacional}"/> 
+                            </p:selectOneMenu>
+
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}:"
+                                           styleClass="labelFormulario" />
+                            <p:selectOneMenu id="unidadHija" 
+                                             value="#{unidadAprobacionBean.unidadAprobacionHelper.unidadAprobacion.idUnidadOrganizacional}"
+                                             required="#{true}"
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             requiredMessage="El campo Unidad Organizacional es requerido">
+                                <f:selectItems value="#{unidadAprobacionBean.unidadAprobacionHelper.opcionesUnidadOrganizacional}"/> 
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:spacer height="10px"/>
+                        <p:separator/>
+                        <center>                            
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"   
+                                             update=":frmUnidadAprobacion:tablaunidadAprobacion,formEditarUAprobacion"
+                                             action="#{unidadAprobacionBean.guardar}"/>                  
+
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="editDialog.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>                   
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog>
+
+            <!-- POPUP PARA MOSTRAR TABLA DE UNIDADES SIN APROBADOR-->
+            <p:dialog id="modalSinAprobador" 
+                      header="#{msg['ec.gob.mrl.smp.administracion.unidadAprobacion.unidadAprobacionSinAprobador']}"
+                      showEffect="fade" widgetVar="listarDialog" modal="true">  
+                <h:form id="formUNsinAprobador">
+                    <p:outputPanel id="editPanel">  
+                        <p:dataTable id="tablaunidad"
+                                     value="#{unidadAprobacionBean.unidadAprobacionHelper.listaUnidadesOrganizacionalesSinAprobador}"
+                                     var="unidad"
+                                     filterEvent="enter"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex"
+                                     sortBy="#{unidad.nombre}"  sortOrder="ascending"
+                                      emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     style="overflow: auto">                            
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" 
+                                      sortBy="#{unidad.nombre}" filterMatchMode="contains"
+                                      filterBy="#{unidad.nombre}" style="width: 400px">                               
+                                <h:outputText value="#{unidad.nombre}"/>                                
+                            </p:column>       
+                        </p:dataTable>
+                            <br/>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"   
+                                         onclick="listarDialog.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>     
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

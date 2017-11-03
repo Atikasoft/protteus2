@@ -1,0 +1,226 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="listaVacSolForm">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.titulos']}">
+                    <br/>
+                    <div>
+                        <p:commandButton id="nuevoBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{vacacionSolicitudBean.irNuevo}"
+                                         title="#{msg['message.btn.nuevo']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{vacacionSolicitudBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:separator/>
+                    <p:dataTable id="tablavacacionSolicitud"
+                                 value="#{vacacionSolicitudBean.vacacionSolicitudHelper.listaVacacionSolicitudes}"
+                                 var="vacacionSolicitud"
+                                 paginator="#{true}"
+                                 filterEvent="enter"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{vacacionSolicitud.id}"  
+                                 sortOrder="descending"
+                                 style="width: 100%; overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 10%">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-search"
+                                             ajax="#{false}"
+                                             action="#{vacacionSolicitudBean.iniciarEdicion}"
+                                             title="#{msg['message.btn.ver']}">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonVerFechas" icon="ui-icon-calendar"
+                                             update=":verFechasSeleccionadasForm"
+                                             rendered="#{vacacionSolicitud.tipoPeriodo eq 'D' }"
+                                             oncomplete="verFechasSeleccionadasWV.show(); verDiasVacacionNoPlanificadaDiaDias();"   
+                                             title="Ver fechas seleccionadas">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonVerHoras" icon="ui-icon-calendar"
+                                             update=":verHorasSeleccionadasForm"
+                                             rendered="#{vacacionSolicitud.tipoPeriodo eq 'H' }"
+                                             oncomplete="verHorasSeleccionadasWV.show();"   
+                                             title="Ver fecha y horas seleccionadas">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 5%">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="Fecha" 
+                                  sortBy="#{vacacionSolicitud.fechaCreacion}" 
+                                  style="width: 5%;text-align: center" >  
+                            <h:outputText value="#{vacacionSolicitud.fechaCreacion}">                                                                
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>      
+                        </p:column>     
+
+                        <p:column headerText="Número" 
+                                  filterBy="#{vacacionSolicitud.id}" 
+                                  filterMatchMode="contains"
+                                  sortBy="#{vacacionSolicitud.id}" 
+                                  style="width: 5%;text-align: center" >                               
+                            <h:outputText value="#{vacacionSolicitud.id}"/>                                
+                        </p:column>     
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}" 
+                                  sortBy="#{vacacionSolicitud.tipo}" 
+                                  style="width: 20%" 
+                                  filterBy="#{vacacionSolicitudBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"
+                                  filterMatchMode="contains">                               
+                            <h:outputText value="#{vacacionSolicitudBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"/>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}"
+                                  filterBy="#{vacacionSolicitudBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"
+                                  filterMatchMode="contains" 
+                                  sortBy="#{vacacionSolicitud.estado}" 
+                                  style="width: 10%">                               
+                            <h:outputText value="#{vacacionSolicitudBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"/>                                
+                        </p:column> 
+
+                        <p:column headerText="Duración"  
+                                  style="width: 20%; text-align: center" >                               
+                            <h:outputText value="#{vacacionSolicitud.cantidadSolicitadaTexto} "/>   
+                        </p:column> 
+
+                        <p:column headerText="Observación"  
+                                  style="width: 30%; text-align: left" >                               
+                            <h:outputText value="#{vacacionSolicitud.motivo} "/>   
+                        </p:column> 
+
+
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablavacacionSolicitud"
+                                             actionListener="#{vacacionSolicitudBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+                </p:panel>
+            </h:form>
+
+
+            <p:dialog header="Fechas Seleccionadas" width="1100" modal="#{true}" appendToBody="#{true}" 
+                      widgetVar="verFechasSeleccionadasWV" resizable="#{false}">
+                <h:form id="verFechasSeleccionadasForm">
+                    <h:panelGrid id="panelVerVacacionNoPlanificadaDia" style="margin:auto; overflow: auto" 
+                                 rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.tipoPeriodo eq 'D'}">
+                        <div id="verVacacionNoPlanificadaDiaCalenar" class="datesPicker"></div> 
+                        <p:inputText id="verVacacionNoPlanificadaDiaCalenarSeleccion" style="width: 95%; visibility: hidden" styleClass="stringDates"
+                                     value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.diasPlanificados}"/>
+
+                        <script>
+                            $('#verVacacionNoPlanificadaDiaCalenar').multiDatesPicker({
+                                dateFormat: 'dd/mm/yy',
+                                numberOfMonths: [2, 6],
+                                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sábado'],
+                                dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                                monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                                onSelect: function () {
+                                    verDiasVacacionNoPlanificadaDiaDias();
+                                }
+                            });
+                            function verDiasVacacionNoPlanificadaDiaDias() {
+                                try {
+                                    var fechas = $("INPUT[id$='verVacacionNoPlanificadaDiaCalenarSeleccion']").val();
+                                    $('#verVacacionNoPlanificadaDiaCalenar').multiDatesPicker("resetDates");
+                                    if (fechas.length > 0) {
+                                        fechas = fechas.split(',');
+                                        $('#verVacacionNoPlanificadaDiaCalenar').multiDatesPicker("addDates", fechas);
+                                    }
+                                } catch (e) {
+
+                                }
+                            }
+                        </script>
+                        <style>
+                            div.ui-datepicker-inline.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all.ui-datepicker-multi-6.ui-datepicker-multi{
+                                width: auto !important;
+                            }
+                        </style>
+                    </h:panelGrid>
+                    <br/>
+                    <center>
+                        <p:commandButton value="Cerrar" 
+                                         onclick="verFechasSeleccionadasWV.hide();" 
+                                         process="@this" immediate="#{true}"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog header="Fecha y Horas Seleccionadas" width="300" modal="#{true}" appendToBody="#{true}" 
+                      widgetVar="verHorasSeleccionadasWV" resizable="#{false}">
+                <h:form id="verHorasSeleccionadasForm">
+                    <h:panelGrid id="panelVerVacacionNoPlanificadaHora" columns="3"
+                                 rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.tipoPeriodo eq 'H' }">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDia']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:calendar required="true" pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}" 
+                                    showOn="button"
+                                    disabled="#{true}"
+                                    value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.fecha}">
+                        </p:calendar>
+                        <p:spacer/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDiaHoraSalida']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:calendar required="true" timeOnly="true"
+                                    disabled="#{true}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}" showOn="button"
+                                    value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.horaInicio}" >
+                        </p:calendar>
+                        <p:spacer/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDiaHoraEntrada']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:calendar required="true" timeOnly="true" 
+                                    disabled="#{true}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}" showOn="button"
+                                    value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitudEditDelete.horaFin}" >
+                        </p:calendar>
+                        <p:spacer/>
+                    </h:panelGrid>
+                    <br/>
+                    <center>
+                        <p:commandButton value="Cerrar" 
+                                         onclick="verHorasSeleccionadasWV.hide();" 
+                                         process="@this" immediate="#{true}"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

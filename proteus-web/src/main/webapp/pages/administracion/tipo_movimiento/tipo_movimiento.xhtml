@@ -1,0 +1,1528 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{tipoMovimientoBean}" 
+                                     extendido="true"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.titulo']}">
+                <f:facet name="contenido">
+                    <p:panel>
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.datosTipoMovimiento']}" 
+                                    id ="fieldsetId"
+                                    styleClass="areasTipoMovimiento">
+                            <h:panelGrid columns="2">
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.publicado']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectBooleanCheckbox id="tipoMovimiento_publicadoo"                                                
+                                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.publicado}"/>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.nemonico']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="tipoMovimiento_nemonico"                                                
+                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.nemonico}"
+                                             required="true"
+                                             styleClass="textoNemonico"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                             disabled="#{!tipoMovimientoBean.tipoMovimientoHelper.esNuevo}"
+                                             requiredMessage="El campo nemónico del área datos tipo de movimiento es requerido"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.nombre']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="tipoMovimiento_nombre"                                               
+                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.nombre}"
+                                             required="true"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                             requiredMessage="El campo nombre del área datos tipo de movimiento es requerido"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.descripcion']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:inputTextarea id="tipoMovimiento_descripcion"                                                 
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.descripcion}"
+                                                 required="true"
+                                                 styleClass="textoDescripcion"
+                                                 maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                                 requiredMessage="El campo descripción del área datos tipo de movimiento es requerido"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.sustentoLegal']}:"
+                                               styleClass="labelFormulario"/>                                
+                                <p:inputTextarea id="tipoMovimiento_sustentoLegal"                                                
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.sustentoLegal}"
+                                                 required="true"
+                                                 styleClass="textoDescripcion"
+                                                 maxlength="1000"
+                                                 requiredMessage="El campo sustento legal del área datos tipo de movimiento es requerido"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.modalidadLaboralCore']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_modalidadLaboralCore"  
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.modalidadLaboralCore}"
+                                                 style="width: 250px"
+                                                 requiredMessage="El campo modalidad del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaModalidadLaboral}"/>
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.nivelOcupacionalCore']}:"
+                                               styleClass="labelFormulario"
+                                               rendered="false"/>
+                                <p:selectOneMenu id="tipoMovimiento_nivelOcupacionalCore"  
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.nivelOcupacionalCore}"
+                                                 style="width: 250px"
+                                                 rendered="false">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaNivelOcupacional}"/>
+                                </p:selectOneMenu>
+
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.grupo']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_grupo"   
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.clase.grupoId}"
+                                                 required="true"
+                                                 style="width: 250px"
+                                                 disabled="#{!tipoMovimientoBean.tipoMovimientoHelper.esNuevo}"
+                                                 requiredMessage="El campo grupo del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaGrupo}"/>
+                                    <p:ajax update="tipoMovimiento_clase, fieldsetId,areas"
+                                            partialSubmit="true"
+                                            process="@this, tipoMovimiento_nemonico, tipoMovimiento_nombre, 
+                                            tipoMovimiento_descripcion, tipoMovimiento_sustentoLegal, 
+                                            tipoMovimiento_modalidadLaboralCore, tipoMovimiento_nivelOcupacionalCore"
+                                            listener="#{tipoMovimientoBean.llenarComboClase}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.clase']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_clase"  
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.claseId}"
+                                                 required="true"
+                                                 style="width: 250px"
+                                                 disabled="#{!tipoMovimientoBean.tipoMovimientoHelper.esNuevo}"
+                                                 requiredMessage="El campo clase del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaClase}"/>
+                                </p:selectOneMenu>                                  
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.documentoHabilitante']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_documentoHabilitante" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.documentoHabilitanteId}"
+                                                 required="true"
+                                                 style="width: 250px"
+                                                 requiredMessage="El campo documento habilitante del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaDocumentoHabilitante}"/>
+                                </p:selectOneMenu>                                  
+
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.flujo']}:"                                             
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_flujo"   
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoFlujo}"
+                                                 style="width: 250px"
+                                                 required="true"
+                                                 requiredMessage="El campo flujo del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaFlujo}"/>
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.periodoTiempoMaximo']}:"                                             
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_periodoTiempoMaximo"   
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.periodoTiempoMaximo}"
+                                                 style="width: 250px"                                                 
+                                                 valueChangeListener="#{tipoMovimientoBean.tiempoMaximoListener}"
+                                                 immediate="true"
+                                                 requiredMessage="El campo periodo tiempo máximo del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaPeriodoTiempoMaximo}"/>
+                                    <p:ajax process="@this" update="tipoMovimiento_tiempoMaximo"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tiempoMaximo']}:"                                             
+                                               styleClass="labelFormulario"
+                                               />
+                                <p:inputText id="tipoMovimiento_tiempoMaximo" 
+                                             styleClass="campoNumerico"
+                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tiempoMaximo}"
+                                             style="width: 250px"
+                                             maxlength="3"
+                                             disabled="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.periodoTiempoMaximo==null}"
+                                             required="#{tipoMovimientoBean.tipoMovimientoHelper.deshabilitarCampoTiempoMaximo}"
+                                             requiredMessage="El campo tiempo máximo del área datos tipo de movimiento requerido">                                    
+                                </p:inputText>                                    
+
+                                <h:outputLabel value="*#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.controlFechaPresentaDocumento']}:"                                             
+                                               styleClass="labelFormulario"
+                                               title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tooltip.controlFechaPresentaDocumento']}"/>
+                                <p:selectOneMenu id="tipoMovimiento_controlFechaPresentaDocumento" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.controlFechaPresentaDocumento}"
+                                                 style="width: 250px"
+                                                 required="true"
+                                                 requiredMessage="El campo control fecha presenta documento del área datos tipo de movimiento es requerido">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaSiNo}"/>                                    
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.cargaDocumentoHabilitanteObligatorio']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectBooleanCheckbox id="tipoMovimiento_cargaDocumentoHabilitanteObligatorio"                                                
+                                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.cargarDocumentoHabilitanteObligatorio}"/>
+
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoGestionDesconcentrado']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectBooleanCheckbox id="tipoMovimiento_tipoGestionDesconcentrado"                                                
+                                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoGestionDesconcentrado}"
+                                                         requiredMessage="El campo gestión desconcentrada del área datos tipo de movimiento es requerido"/>
+
+
+                                <h:outputLabel value="Tipo de Rotación:" 
+                                               rendered="#{tipoMovimientoBean.esGrupoDeRotacion()}"
+                                               styleClass="labelFormulario"/>
+
+                                <p:selectOneMenu id="tipo_rotacion" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoRotacion}" 
+                                                 rendered="#{tipoMovimientoBean.esGrupoDeRotacion()}"
+                                                 >
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaTipoRotaciones}"/>
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="Tipo de movimiento que finalizara:"  
+                                               rendered="#{tipoMovimientoBean.esGrupoDeIngresos() and false }"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoMovimiento_tipomovimiento_final" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 rendered="#{tipoMovimientoBean.esGrupoDeIngresos()  and false }"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoMovimientoFinalizacionId}"
+                                                 style="width: 250px">
+                                    <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaTiposMovimientoFinalizacion}"/>                                    
+                                </p:selectOneMenu>
+                            </h:panelGrid> 
+                        </p:fieldset>
+                        <p:panel id="areas" style="border: none; margin: 0px; padding: 0px" >
+                            <p:fieldset legend="Área Estado del Puesto (Situación Actual)" 
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaEstadoPuesto}">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaEstadoPuestoListener}" update="panelAreaEstadoPuesto"/>                            
+                                <h:panelGrid id="panelAreaEstadoPuesto" columns="4">
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.estadoPuestoInicial']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPuestoInicial" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPuestoInicialCore}"
+                                                     requiredMessage="El campo estado inicial puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPuesto}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.estadoPuestoFinal']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPuestoFinal" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPuestoFinalCore}"
+                                                     requiredMessage="El campo estado final puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPuesto}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>   
+
+                            <p:fieldset legend="Área Estado del Puesto (Situación Propuesta)" 
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos() || tipoMovimientoBean.esGrupoDeRotacion() || tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaEstadoPuestoPropuesto}">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaEstadoPuestoPropuestoListener}" update="panelAreaEstadoPuestoPropuesto"/>
+                                <h:panelGrid id="panelAreaEstadoPuestoPropuesto" columns="6">
+                                    <h:outputLabel value="Estado Inicial del Puesto:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPuestoInicialPropuesto"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPuestoInicialPropuestaCore}"
+                                                     requiredMessage="El campo estado propuesto del puesto inicial es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPuesto}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Estado Final del Puesto:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPuestoFinalPropuesto"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPuestoFinalPropuestaCore}"
+                                                     requiredMessage="El campo estado propuesto del puesto final es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPuesto}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Área Estado del Servidor" 
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaEstadoPersonal}">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaEstadoPersonalListener}" update="panelAreaEstadoPersonal"/>
+                                <h:panelGrid id="panelAreaEstadoPersonal" columns="6">
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.estadoPersonalInicial']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPersonalInicial" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPersonalInicialCore}"
+                                                     requiredMessage="El campo estado inicial servidor/a es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPersonal}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.estadoPersonalFinal']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_estadoPersonalFinal"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.estadoPersonalFinalCore}"
+                                                     requiredMessage="El campo estado final servidor/a es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaEstadoPersonal}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Área Periodo de Vigencia del Movimiento de Personal"
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaRigeAPartirDe}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaRigeAPartirDeListener}" update="panelAreaPeriodoVigencia"/>
+                                <h:panelGrid id="panelAreaPeriodoVigencia" columns="6" cellspacing="2" cellpadding="1">
+                                    <h:outputLabel value="* Rige a Partir De:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_rige_a_partir_de" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaRigeAPartirDe}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRigeAPartirDe}"
+                                                     requiredMessage="El campo rige a partir de, del área periodo de vigencia del movimiento de personal es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Hasta:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fecha_hasta"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaHasta}"
+                                                     requiredMessage="El campo hasta, del área periodo de vigencia del movimiento de personal  es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Ingresa con Hora y Minutos:"
+                                                   styleClass="labelFormulario"
+                                                   title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.ingresoHoraMinuto.titulo']}"/>
+                                    <p:selectOneMenu id="tipoMovimiento_ingresaHoraMinuto"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.ingresaHoraMinuto}"
+                                                     requiredMessage="El campo ingresa con hora y minutos, del área periodo de vigencia del movimiento de personal  es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaIngresaHoraMinuto}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>                  
+
+                            <p:fieldset id="areaPuesto"
+                                        legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaPuesto']}"
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaPuesto}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaPuestoListener}" update="panelAreaPuesto"/>
+                                <h:panelGrid id="panelAreaPuesto" columns="6" cellspacing="5" cellpadding="1">
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.regimenLaboral']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_regimenLaboral" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.regimenLaboral}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo régimen laboral del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.modalidadLaboralCore']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_modalidadLaboral" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.modalidadLaboral}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo modalidad laboral del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.puestoInstitucional']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_puestoInstitucional" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.puestoInstitucional}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo cargo es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.unidadAdministrativa']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_unidadAdministrativa" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.unidadOrganizacional}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo unidad organizacional del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.ubicacionGeografica']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_ubicacionGeografica"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.ubicacionGeografica}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo ubicación geográfica del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.partidaIndividual']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_partidaIndividual"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.partidaIndividual}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo partida individual del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rmu']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_rmu"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.rmu}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo sueldo del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rmuSobrevalorado']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_rmuSobrevalorado"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.rmuSobrevalorado}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo sueldo sobrevalorada del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.sueldoBasico']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_sueldoBasico"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.sueldoBasico}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo sueldo básico del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* Código Puesto:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_codigoPuesto"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.codigoPuesto}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo código del puesto del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* Certificación Presupuestaria:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_certificacionPresupuestaria"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.certificacionPresupuestaria}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuesto}"
+                                                     requiredMessage="El campo certificación presupuestaria del área puesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.ingresoConReclutamiento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectBooleanCheckbox id="tipoMovimiento_ingresoConReclutamiento" 
+                                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.ingresoPorReclutamiento}" />
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaServidor']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaServidor}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaServidorListener}" update="panelAreaServidor"/>
+                                <h:panelGrid id="panelAreaServidor" columns="6" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoDocumento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoDocumento" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoDocumento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaServidor}"
+                                                     requiredMessage="El campo tipo de documento del área servidor es requerido"
+                                                     style="width: 120px">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>                                    
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.numeroDocumento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_numeroDocumento" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.numeroDocumento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaServidor}"
+                                                     requiredMessage="El campo número de documento del área servidor es requerido"
+                                                     style="width: 120px">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.apellidosNombres']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_apellidosNombres" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.apellidoNombre}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaServidor}"
+                                                     requiredMessage="El campo apellidos y nombres del área servidor es requerido"
+                                                     style="width: 120px">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaIngresoInstitucion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaIngresoInstitucion" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaIngresoInstitucion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaServidor}"
+                                                     requiredMessage="El campo fecha de ingreso a la institución del área servidor es requerido"
+                                                     style="width: 120px">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu> 
+
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaIngresoSectorPublico']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaIngresoSectorPublico"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaIngresoSectorPublico}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaServidor}"
+                                                     requiredMessage="El campo fecha de ingreso al sector público del área servidor es requerido"
+                                                     style="width: 120px">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu> 
+
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaPeriodoFijo']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaPeriodoFijo}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaPeriodoFijoListener}" update="panelAreaPeriodoFijo"/>
+                                <h:panelGrid id="panelAreaPeriodoFijo" columns="2" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoDesignacion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoDesignacion" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoDesignacion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPeriodoFijo}"
+                                                     requiredMessage="El campo tipo de designación del área periodo fijo es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>                                    
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaInformacionSalida']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeSalidas()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaInformacionSalida}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaInformaionSalidaListener}" update="panelAreaInformacionSalida"/>
+                                <h:panelGrid id="panelAreaInformacionSalida" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaEfectivaSalida']}:"
+                                                   styleClass="labelFormulario"
+                                                   rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaEfectivaSalida" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaEfectivaSalida}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaInformacionSalida}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaPresentaRenunciaVoluntaria']}:"
+                                                   styleClass="labelFormulario"
+                                                   rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaPresentaRenunciaVoluntaria"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaPresentaRenunciaVoluntaria}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaInformacionSalida}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.motivoSalida']}:"
+                                                   rendered="false"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_motivoSalida"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     rendered="false"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.motivoSalida}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaInformacionSalida}">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>                                    
+
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaPresentaRenuncia']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaPresentaRenuncia" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaPresentaRenuncia}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaInformacionSalida}"
+                                                     requiredMessage="El campo fecha presenta renuncia del área de información de salida es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>                                    
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaAceptacionRenuncia']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaAceptacionRenuncia"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaAceptacionRenuncia}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaInformacionSalida}"
+                                                     requiredMessage="El campo fecha aceptación renuncia del área de información de salida es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>   
+
+                                    <h:outputLabel value=" Salida con Liquidación: "
+                                                   id="salidaConLiquidacion_lbl" styleClass="labelFormulario"
+                                                   title="Indica si la Salida genera liquidación de haberes."/>
+                                    <p:selectBooleanCheckbox id="tipoMovimiento_salidaConLiquidacion" 
+                                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.conLiquidacion}" />
+                                </h:panelGrid>
+                            </p:fieldset>
+
+
+                            <p:fieldset legend="Información Terminación de Contrato" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeSalidas()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaTerminacionContrato}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaTerminacionContratoListener}" update="panelAreaTerminacionContrato"/>
+                                <h:panelGrid id="panelAreaTerminacionContrato" columns="4" cellspacing="5" cellpadding="1">
+
+                                    <h:outputLabel value="* Número del Contrato Anterior:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_numeroContratoAnterior" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.numeroContratoAnterior}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTerminacionContrato}"
+                                                     requiredMessage="El campo número del contrato anterior del área de información de salida es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>   
+
+                                    <h:outputLabel value="* Fecha de Inicio del Contrato Anterior:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaInicioContratoAnterior"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaInicioContratoAnterior}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTerminacionContrato}"
+                                                     requiredMessage="El campo fecha de inicio del contrato anterior del área de información de salida es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>   
+
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+
+
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaFallecimiento']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeSalidas()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaFallecimiento}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaFallecimientoListener}" update="panelAreaFallecimiento"/>
+                                <h:panelGrid id="panelAreaFallecimiento" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaFallecimiento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaFallecimiento"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaFallecimiento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaFallecimiento}"
+                                                     requiredMessage="El campo fecha de fallecimiento renuncia del área fallecimiento es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.casoFallecimiento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_casoFallecimiento" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.casoFallecimiento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaFallecimiento}"
+                                                     requiredMessage="El campo caso de fallecimiento renuncia del área fallecimiento es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaContratoCT']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaContratoCT}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaContratoCTListener}" update="panelAreaContratoCT"/>
+                                <h:panelGrid id="panelAreaContratoCT" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tiempoJornadaDiaria']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tiempoJornadaDiaria"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tiempoJornadaDiaria}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoCT}"
+                                                     requiredMessage="El campo tiempo jornada diaria del área contrato CT es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoTemporada']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoTemporada" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoTemporada}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoCT}"
+                                                     requiredMessage="El campo tipo de temporada del área contrato CT es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaContratoLOSEP']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaContratoLosep}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaContratoLosepListener}" update="panelAreaContratoLosep"/>
+                                <h:panelGrid id="panelAreaContratoLosep" columns="8" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.antecedentesContrato']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_antecedentesContrato" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.antecedentesContrato}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoLOSEP}"
+                                                     requiredMessage="El campo antecedentes del área de contratos LOSEP es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.actividadesContrato']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_actividadesContrato"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.actividadesContrato}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoLOSEP}"
+                                                     requiredMessage="El campo actividades del área de contratos LOSEP es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.siglasTituloAcademico']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_siglasTituloAcademico" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.siglasTituloAcademico}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoLOSEP}"
+                                                     requiredMessage="El campo siglas de título académico del área de contratos LOSEP es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.renovacion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_renovacion"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.renovacion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaContratoLOSEP}"
+                                                     requiredMessage="El campo renovación del área de contratos LOSEP es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaDiscapacidad']}"
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaDiscapacidad}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaDiscapacidadListener}" update="panelAreaDiscapacidad"/>
+                                <h:panelGrid id="panelAreaDiscapacidad" columns="2" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* Discapacidad/Enfermedad Catastrófica:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_discapacidad" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.discapacidad}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaDiscapacidad}"
+                                                     requiredMessage="El campo discapacidad/enfermedad catastrófica es requerido">
+
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.claseDiscapacidad']}:"
+                                                   styleClass="labelFormulario"
+                                                   rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_claseDiscapacidad"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.claseDiscapacidad}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaDiscapacidad}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoDiscapacidad']}:"
+                                                   styleClass="labelFormulario"
+                                                   rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoDiscapacidad" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoDiscapacidad}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaDiscapacidad}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+
+
+
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.porcentajeDiscapacidad']}:"
+                                                   styleClass="labelFormulario" rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_porcentajeDiscapacidad"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.porcentajeDiscapacidad}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaDiscapacidad}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.numeroConadis']}:"
+                                                   styleClass="labelFormulario"
+                                                   rendered="false"/>
+                                    <p:selectOneMenu id="tipoMovimiento_numeroConadis"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.numeroConadis}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaDiscapacidad}"
+                                                     rendered="false">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"
+                                                       rendered="false"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset> 
+
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaAccionPersonal']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaAccionPersonal}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaAccionPersonalListener}" update="panelAreaAccionPersonal"/>
+                                <h:panelGrid id="panelAreaAccionPersonal" columns="8" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* Explicación:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_accion_personal_explicacion"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.apExplicacion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo explicación de la acción de personal es requerido.">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* Documento Previo:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_accion_personal_documento_previo" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.apDocumentoPrevio}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo documento previo de la acción de personal es requerido.">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* Número de Documento :"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_accion_personal_numero_documento" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.apNumeroDocumento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo número de documento de la acción de personal es requerido.">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="* Fecha de Documento :"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_accion_personal_fecha_documento"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.apFechaDocumento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo fecha de documento de la acción de personal es requerido.">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.situacionActual']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_situacionActual"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.situacionActual}"
+                                                     requiredMessage="El campo situación actual del área acción de personal es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionAccionPersonal}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.situacionPropuesta']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_situacionPropuesta"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.situacionPropuesta}"
+                                                     requiredMessage="El campo situación propuesta del área acción de personal es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionAccionPersonal}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.reemplazo']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_reemplazo"    
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.reemplazo}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo remplazo del área acción de personal es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionAccionPersonal}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.posesionCargo']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_posesionCargo"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.posesionCargo}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaAccionPersonal}"
+                                                     requiredMessage="El campo posesión cargo del área acción de personal es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionAccionPersonal}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Explicación:" styleClass="labelFormulario"/>
+                                    <p:inputTextarea id="tipoMovimiento_explicacion"                                                
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.explicacion}"
+                                                     styleClass="textoDescripcion"
+                                                     style="width: 800px;"
+                                                     maxlength="3000"
+                                                     requiredMessage="El explicación del área datos tipo de movimiento es requerido"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaMemorando']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo() || 
+                                                    tipoMovimientoBean.esGrupoDeRegimenDisciplinario()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaMemorando}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaMemorandoListener}" update="panelAreaMemorando"/>
+                                <h:panelGrid id="panelAreaMemorando" columns="6" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.numeroMemorando']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_numeroMemorando"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.numeroMemorando}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaMemorando}"
+                                                     requiredMessage="El campo número de memorando del área memorando es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.asuntoMemorando']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_asuntoMemorando"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.asuntoMemorando}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaMemorando}"
+                                                     requiredMessage="El campo asunto de memorando del área memorando es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.contenidoMemorando']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_contenidoMemorando"    
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.contenidoMemorando}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaMemorando}"
+                                                     requiredMessage="El campo contenido de memorando del área memorando es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Área de Adendum" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeRotacion()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaAdendum}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaAdendumListener}" update="panelAreaAdendum"/>
+                                <h:panelGrid id="panelAreaAdendum" columns="6" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* Antecedentes:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_antecedentes"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.antecedentes}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaMemorando}"
+                                                     requiredMessage="El campo antecedentes del área adendum es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaRegimenDisciplinario']}" 
+                                        styleClass="areasTipoMovimiento"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeRegimenDisciplinario()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaRegimenDisciplinario}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaRegimenDisciplinarioListener}" update="panelAreaRegimenDisciplinario"/>
+                                <h:panelGrid id="panelAreaRegimenDisciplinario" columns="6" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rd.falta']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_rd_falta"                                                
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.rdfalta}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRegimenDisciplinario}"
+                                                     requiredMessage="El campo falta del área régimen disciplinario es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rd.descripcion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_rd_descripcion"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.rdDescripcion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRegimenDisciplinario}"
+                                                     requiredMessage="El campo descripción del área régimen disciplinario es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+
+                                    <h:outputLabel value="* Valor de Multa:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_valor_multa"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.valorMulta}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRegimenDisciplinario}"
+                                                     requiredMessage="El campo valor de multa del área régimen disciplinario es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>                        
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaLicenciasMaternidadPaternidad']}" 
+                                        styleClass="areasLicenciasMaternidadPaternidad"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaLicenciasMaternidadPaternidad}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaLicenciasMaternidadPaternidadListener}" update="panelAreaLicenciasMaternidadPaternidad"/>
+                                <h:panelGrid id="panelAreaLicenciasMaternidadPaternidad" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tipoNacimiento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoNacimiento"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoNacimiento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaLicenciasMaternidadPaternidad}"
+                                                     requiredMessage="El campo tipo de nacimiento del área licencias maternidad/paternidad es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel/>
+                                    <h:outputLabel/>
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.diasAdicionalesMadreNacimientoMultiple']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputText id="tipoMovimiento_diasAdicionalesMadreNacimientoMultiple"
+                                                 styleClass="campoNumerico"
+                                                 maxlength="3"
+                                                 style="width: 105px"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.diasAdicionalesMadreNacimientoMultiple}"
+                                                 requiredMessage="El campo días adicionales para la madre por nacimiento múltiple del área licencias maternidad/paternidad es requerido">
+                                    </p:inputText>                                    
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.diasAdicionalesPadreNacimientoMultipleCesarea']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputText id="tipoMovimiento_diasAdicionalesPadreNacimientoMultipleCesarea"
+                                                 styleClass="campoNumerico"
+                                                 maxlength="3"
+                                                 style="width: 105px"
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.diasAdicionalesPadreNacimientoMultiple}"
+                                                 requiredMessage="El campo días adicionales para el padre por nacimiento múltiple del área licencias maternidad/paternidad es requerido">
+                                    </p:inputText>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaConfiguracionLicenciasPermisos']}" 
+                                        styleClass="areaConfiguracionLicenciasPermisos"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaConfiguracionLicenciasPermisos}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaConfiguracionLicenciasPermisosListener}" update="panelAreaConfiguracionLicenciasPermisos"/>
+                                <h:panelGrid id="panelAreaConfiguracionLicenciasPermisos" columns="6" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.horario']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_horario"    
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.horario}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaConfiguracionLicenciasPermisos}"
+                                                     requiredMessage="El campo horario del área configuración licencias/permisos es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaHorario}"/>
+                                        <p:ajax listener="#{tipoMovimientoBean.validarCampoTotalHorasSemana(tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.horario)}" update="tipoMovimiento_totalHorasSemana"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.totalHorasSemana']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputText id="tipoMovimiento_totalHorasSemana"                                                
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.totalHorasSemana}"
+                                                 required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaConfiguracionLicenciasPermisos}"
+                                                 styleClass="campoNumerico"
+                                                 maxlength="3"
+                                                 style="width: 100px"
+                                                 requiredMessage="El campo total horas semana del área configuración licencias/permisos es requerido">
+                                    </p:inputText>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.periodoControl']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_periodoControl"
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.periodoControl}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaConfiguracionLicenciasPermisos}"
+                                                     requiredMessage="El campo periodo para control del área configuración licencias/permisos es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaPeriodoControl}"/>
+                                        <p:ajax listener="#{tipoMovimientoBean.validarCampoValorPeriodoHorasControl(tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.periodoControl)}" update="tipoMovimiento_valorPeriodoControl"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.valorPeriodoControl']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputText id="tipoMovimiento_valorPeriodoControl"                                                
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.valorPeriodoControl}"
+                                                 required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaConfiguracionLicenciasPermisos}"
+                                                 styleClass="campoNumerico"
+                                                 maxlength="3"
+                                                 style="width: 100px"
+                                                 requiredMessage="El campo valor periodo en horas para control del área configuración licencias/permisos es requerido">
+                                    </p:inputText>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.horarioDevengar']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_horarioDevengar"
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.horarioDevengar}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaConfiguracionLicenciasPermisos}"
+                                                     requiredMessage="El campo horario a devengar del área configuración licencias/permisos es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaSiNo}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaLicencias']}" 
+                                        styleClass="areaLicencias"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaLicencias}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaLicenciasListener}" update="panelAreaLicencias"/>
+                                <h:panelGrid id="panelAreaLicencias" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaOcurrioHecho']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaOcurrioHecho"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaOcurrioHecho}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaLicencias}"
+                                                     requiredMessage="El campo fecha ocurrió hecho del área licencias es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaPresentaDocumento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_fechaPresentaDocumento"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaPresentaDocumento}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaLicencias}"
+                                                     requiredMessage="El campo fecha presenta documento del área licencias es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaTiempoPorDevengar']}" 
+                                        styleClass="areaTiempoPorDevengar"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaTiempoPorDevengar}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaTiempoPorDevengarListener}" update="panelAreaTiempoPorDevengar"/>
+                                <h:panelGrid id="panelAreaTiempoPorDevengar" columns="7" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.devengar']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:spacer height="7" width="105"/>
+                                    <p:selectOneMenu id="tipoMovimiento_devengar"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.devengar}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTiempoPorDevengar}"
+                                                     requiredMessage="El campo devengar del área tiempo por devengar es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionNoObligatorio}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.periodoDevengar']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_periodoDevengar" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.periodoDevengar}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTiempoPorDevengar}"
+                                                     requiredMessage="El campo periodo del área tiempo por devengar es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.valorDevengar']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_valorDevengar" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.valorDevengar}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTiempoPorDevengar}"
+                                                     requiredMessage="El campo valor del área tiempo por devengar es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                                <h:panelGrid id="panelAreaTiempoPorDevengar2" columns="2" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.considereCalculo']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputTextarea id="tipoMovimiento_considereCalculo"
+                                                     style="width: 600px;height: 120px"
+                                                     maxlength="2000"
+                                                     autoResize="false"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.considereCalculo}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTiempoPorDevengar}"
+                                                     requiredMessage="El campo considere para el cálculo del área tiempo por devengar es requerido"/>                                
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.observacionDevengar']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_observacionDevengar" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.observacionDevengar}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaTiempoPorDevengar}"
+                                                     requiredMessage="El campo observación del área tiempo por devengar es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaRepresentacionAsociacionLaboral']}" 
+                                        styleClass="areaRepresentacionAsociacionLaboral"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaRepresentacionAsociacionLaboral}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaRepresentacionAsociacionLaboralListener}" update="panelAreaRepresentacionAsociacionLaboral"/>
+                                <h:panelGrid id="panelAreaRepresentacionAsociacionLaboral" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.numeroHorasMensuales']}:"
+                                                   styleClass="labelFormulario"
+                                                   title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.numeroHorasMensuales.tooltip']}"/>                                
+                                    <p:selectOneMenu id="tipoMovimiento_numeroHorasMensuales" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.numeroHorasMensuales}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRepresentacionAsociacionLaboral}"
+                                                     requiredMessage="El campo número de horas mensuales del área representación de asociación laboral es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>                                                              
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.maximoNumeroHorasMensuales']}:"
+                                                   styleClass="labelFormulario"/>                                
+                                    <p:inputText id="tipoMovimiento_maximoNumeroHorasMensuales"                                                
+                                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.maximoNumeroHorasMensuales}"
+                                                 required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaRepresentacionAsociacionLaboral}"
+                                                 styleClass="campoNumerico"
+                                                 maxlength="3"
+                                                 style="width: 100px"
+                                                 requiredMessage="El campo máximo de horas mensuales del área representación de asociación laboral es requerido"/>                                                                                                                                             
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaPermisoMatriculaHijos']}" 
+                                        styleClass="areaPermisoMatriculaHijos"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaPermisoMatriculaHijos}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaPermisoMatriculaHijosListener}" update="panelAreaPermisoMatriculaHijos"/>
+                                <h:panelGrid id="panelAreaPermisoMatriculaHijos" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.nombreHijo']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_nombreHijo"   
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.nombreHijo}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPermisoMatriculaHijos}"
+                                                     requiredMessage="El campo nombre hijo(a) del área permiso matrícula hijos(as) es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>             
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.nivelEstudio']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_nivelEstudio" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.nivelEstudio}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPermisoMatriculaHijos}"
+                                                     requiredMessage="El campo nivel de estudios del área permiso matrícula hijos(as) es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>             
+
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+
+
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.panel.titulo.areaComisionServicioInstitucionRequiriente']}" 
+                                        styleClass="areaComisionServicioInstitucionRequiriente"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeAbsentismo()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaComisionServicioInstitucionRequiriente}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaComisionServicioInstitucionRequirienteListener}" update="panelAreaComisionServicioInstitucionRequiriente"/>
+                                <h:panelGrid id="panelAreaComisionServicioInstitucionRequiriente" columns="6" cellspacing="5" cellpadding="1">
+
+
+                                    <h:outputLabel value="* Tipo de Movimiento:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_tipoComisionServicio"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.tipoComisionServicio}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaComisionServicioInstitucionRequiriente}"
+                                                     requiredMessage="El campo tipo de comisión del área comisión de servicio requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>             
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.institucion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_institucion"  
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.institucion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaComisionServicioInstitucionRequiriente}"
+                                                     requiredMessage="El campo institución del área comisión de servicio - institución requiriente es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>             
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.unidadAdministrativaInstitucion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_unidadAdministrativaInstitucion" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.unidadAdministrativaInstitucion}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaComisionServicioInstitucionRequiriente}"
+                                                     requiredMessage="El campo unidad administrativa del área comisión de servicio - institución requiriente es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu>       
+
+                                    <h:outputLabel value="Renovación de Comisión de Servicio?: "
+                                                   id="tipoMovimiento_renovacionComisionServicio_lbl" 
+                                                   styleClass="labelFormulario"
+                                                   title="Indica si la Salida genera liquidación de haberes."/>
+                                    <p:selectBooleanCheckbox id="tipoMovimiento_renovacionComisionServicio" 
+                                                             value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.renovacionComisionServicio}" />
+
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Puesto Propuesto" 
+                                        styleClass="areaPuestoDestino"
+                                        rendered="#{tipoMovimientoBean.esGrupoDeIngresos() 
+                                                    || tipoMovimientoBean.esGrupoDeRotacion()}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaPuestoDestino}"
+                                        style="width: 900px">
+
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaPuestoDestinoListener}" update="panelAreaPuestoDestino"/>
+                                <h:panelGrid id="panelAreaPuestoDestino" columns="2" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* Código del Puesto:"
+                                                   styleClass="labelFormulario"/>                                
+                                    <p:selectOneMenu id="tipoMovimiento_puesto_destino_partida_individual" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.partidaIndividualPuestDest}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaPuestoDestino}"
+                                                     requiredMessage="El campo código del puesto en el área puesto propuesto es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracion}"/>
+                                    </p:selectOneMenu> 
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Información del Movimiento para Reintegro" 
+                                        styleClass="areaInformacionMovimientoReintegro"                                        
+                                        toggleable="true"
+                                        rendered="false"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaInformacionMovimientoReintegro}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaInformacionMovimientoReintegroListener}"/>                                
+                            </p:fieldset>
+
+                            <p:fieldset legend="Área Finalización de Movimientos" 
+                                        styleClass="areaFinalizacion"
+                                        rendered="#{false}"
+                                        toggleable="true"
+                                        collapsed="#{!tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.areaFinalizacion}"
+                                        style="width: 900px">
+                                <p:ajax event="toggle" listener="#{tipoMovimientoBean.areaFinalizacionListener}" update="panelAreaFinalizacion"/>
+                                <h:panelGrid id="panelAreaFinalizacion" columns="4" cellspacing="5" cellpadding="1">
+                                    <h:outputLabel value="* Movimiento Inicial:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoMovimiento_movimiento_inicial" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.afTipoMovimientoInicial}"
+                                                     required="#{tipoMovimientoBean.tipoMovimientoHelper.requeridoAreaFinalizacion}"
+                                                     requiredMessage="El campo  'movimiento inicial' del área de finalización es requerido">
+                                        <f:selectItems value="#{tipoMovimientoBean.tipoMovimientoHelper.listaCamposConfiguracionObligatorio}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </p:panel>
+
+
+                        <h:panelGrid columns="2" rendered="#{!tipoMovimientoBean.tipoMovimientoHelper.esNuevo}">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox id="tipoMovimiento_vigente"                                                
+                                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.vigente}"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           title="Este campo sirve para especificar la denominación de puesto al que se lo traspasará"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="tipoMovimiento_fechaCreacion" 
+                                         disabled="#{true}"
+                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="tipoMovimiento_usuarioCreacion" 
+                                         disabled="#{true}"
+                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.usuarioCreacion}"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="tipoMovimiento_fechaActualizacion" 
+                                         disabled="#{true}"
+                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.fechaActualizacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="tipoMovimiento_usuarioActualizacion" 
+                                         disabled="#{true}"
+                                         value="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimiento.usuarioActualizacion}"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

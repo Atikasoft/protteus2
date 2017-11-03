@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <smp:catalogo_lista controlador="#{tipoNominaBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.nomina.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+
+                    <p:dataTable id="tablaClase"
+                                 value="#{tipoNominaBean.tipoNominaHelper.listaNominas}"
+                                 var="tipo"
+                                 sortBy="#{tipo.nombre}"
+                                 paginator="#{true}"
+                                 scrollable="true"
+                                 style="overflow: auto"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: left; width: 120px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{tipoNominaBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{tipo}" 
+                                                             target="#{tipoNominaBean.tipoNominaHelper.tipoNominaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botondetallePuesto" icon="ui-icon-note"
+                                             ajax="#{false}"
+                                             action="#{tipoNominaBean.iniciarEstadoPuesto}"
+                                             title="VER ESTADOS DE PUESTO">
+                                <f:setPropertyActionListener value="#{tipo}" 
+                                                             target="#{tipoNominaBean.tipoNominaHelper.tipoNominaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botondetallePersonal" icon="ui-icon-note"
+                                             ajax="#{false}"
+                                             action="#{tipoNominaBean.iniciarEstadoPersonal}"
+                                             title="VER ESTADOS DE PERSONAL">
+                                <f:setPropertyActionListener value="#{tipo}" 
+                                                             target="#{tipoNominaBean.tipoNominaHelper.tipoNominaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{tipo}" 
+                                                             target="#{tipoNominaBean.tipoNominaHelper.tipoNominaEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.codigo']}" 
+                                  sortBy="#{tipo.codigo}" style="width: 70px">                                                                 
+                            <h:outputText value="#{tipo.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.nombre']}" 
+                                  sortBy="#{tipo.nombre}" style="width: 150px">                                                                 
+                            <h:outputText value="#{tipo.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.desacripcion']}" 
+                                  style="width: 150px">                                                                 
+                            <h:outputText value="#{tipo.descripcion}"/>                                
+                        </p:column>
+                      <!--  <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.tipo']}" 
+                                  sortBy="#{tipo.tipo}" style="width: 100px">                                                                 
+                            <h:outputText value="#{tipoNominaBean.obtenerDescripcionTipoNomina(tipo.tipo)}"/>                                
+                        </p:column>-->
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.cobertura']}" 
+                                  style="width: 100px">                                                                 
+                            <h:outputText value="#{tipoNominaBean.obtenerDescripcionCoberturaNomina(tipo.cobertura)}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.periodicidadOcurrencia']}" 
+                                  style="width: 100px">                                                                 
+                            <h:outputText value="#{tipoNominaBean.obtenerDescripcionPeriodicidadNomina(tipo.periodicidadOcurrencia)}"/>                                
+                        </p:column>                                               
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.numeroMaximoOcurrencia']}" 
+                                  style="width: 100px; text-align: center">                                                                 
+                            <h:outputText value="#{tipo.numeroMaximoOcurrencia}"/>                                
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.nomina.totalIngresoMaximo']}" 
+                                  style="width: 100px; text-align: center">                                                                 
+                            <h:outputText value="#{tipo.totalIngresoMaximo}"/>                                
+                        </p:column>                     
+
+                        <p:column headerText="Valida Activo en Periodo" 
+                                  style="text-align: center; width: 70px">                                
+                            <p:selectBooleanCheckbox value="#{tipo.validaActivoPeriodo}" 
+                                                     disabled="#{true}"/>                                   
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaClase"
+                                             actionListener="#{tipoNominaBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>   
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.titulo']}">
+                    <p:dataTable id="tablametadataTabla"
+                                 value="#{metadataTablaBean.metadataTablaHelper.listaMetadataTabla}"
+                                 var="metadataTabla"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{metadataTabla.nombre}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonVer" icon="ui-icon-search"
+                                             ajax="#{false}"
+                                             action="#{metadataTablaBean.irFormulario}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.ver']}">
+                                <f:setPropertyActionListener value="#{metadataTabla}" 
+                                                             target="#{metadataTablaBean.metadataTablaHelper.metadataTabla}"/>
+                            </p:commandButton>
+                          <p:commandButton id="botonRegresar" icon="ui-icon-note"
+                                             ajax="#{false}"
+                                             action="#{metadataTablaBean.irListaMetadataColumnas}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.verDetalle']}">
+                                <f:setPropertyActionListener value="#{metadataTabla}" 
+                                                             target="#{metadataColumnaBean.metadataTablaHelper.metadataTabla}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.nombre']}" 
+                                  sortBy="#{metadataTabla.nombre}" style="width: 400px" filterBy="#{metadataTabla.nombre}" filterMatchMode="contains">                               
+                            <h:outputText value="#{metadataTabla.nombre}"/>                                
+                        </p:column>          
+                          <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataTabla.tabla']}" 
+                                  sortBy="#{metadataTabla.tabla}" style="width: 400px" filterBy="#{metadataTabla.tabla}" filterMatchMode="contains">                               
+                            <h:outputText value="#{metadataTabla.tabla}"/>                                
+                        </p:column>        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{metadataTabla.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

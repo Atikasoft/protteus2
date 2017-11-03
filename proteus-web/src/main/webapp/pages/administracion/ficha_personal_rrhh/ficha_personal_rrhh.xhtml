@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel >
+                    <h:panelGrid columns="2">                                 
+                        <p:commandButton value="SALIR"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{fichaRrhhBean.buscar()}"/>
+                    </h:panelGrid>
+                </p:panel >
+
+                <p:panel id="pnlFiltros" header="Actualización Ficha de Personal">
+                    <center>
+                        <p:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                           id="nombre_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="nombre"  
+                                          styleClass="textoNombre"
+                                          autocomplete="off"                                              
+                                          style="width: 200px" 
+                                          value="#{fichaRrhhBean.fichaRrhhHelper.nombreServidor}">     
+
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "                                                      
+                                           id="numeroDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="numeroDocumento"  
+                                          autocomplete="off"                                      
+                                          styleClass="textoNombre"
+                                          style="width: 200px" 
+                                          value="#{fichaRrhhBean.fichaRrhhHelper.numeroIdentificacion}">     
+
+                            </p:inputText>
+                            <br/>
+                            <center>
+                                <p:commandButton id="buscar"  
+                                                 value="BUSCAR"                                                     
+                                                 action="#{fichaRrhhBean.buscarServidorPorNombre()}"
+                                                 update="tabla"/>                        
+                            </center>
+                        </p:panelGrid>
+                    </center>
+
+                    <p:panel id="DetalleNovedad" header="#{msg['ec.gob.mrl.smp.procesos.novedades.servidorPublico']}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{fichaRrhhBean.fichaRrhhHelper.listaServidores}"
+                                     var="servidor"
+                                     editable="true"     
+                                     editMode="cell"
+                                     sortBy="#{servidor.apellidosNombres}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                            <p:ajax event="cellEdit" />
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 40px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                                 ajax="#{false}"
+                                                 action="#{fichaRrhhBean.iniciarEdicion}"
+                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{portalRrhhBean.portalRrhhHelper.servidor}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                      style="width: 100px; text-align: center">                                                                 
+                                <h:outputText value="#{fichaRrhhBean.obtenerDescripcionTipo(servidor.tipoIdentificacion)}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                      style="width: 100px; text-align: center">                                                                 
+                                <h:outputText value="#{servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                      sortBy="#{servidor.apellidosNombres}">                                                                 
+                                <h:outputText value="#{servidor.apellidosNombres}"/>                                
+                            </p:column>                                          
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" 
+                                      style="text-align: center; width: 40px">                                                                                                            
+                                <p:selectBooleanCheckbox value="#{servidor.vigente}" disabled="#{true}"/>                                                                                                         
+                            </p:column>
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

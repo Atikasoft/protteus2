@@ -1,0 +1,559 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script>
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelTotal" header="Búsqueda de Puesto para el Tipo de Movimiento: #{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.nombre}">                                         
+                    <h:panelGrid columns="5">
+                        <p:commandButton value="GUARDAR" 
+                                         action="#{busquedaPuestoBean.guardarPuestos()}"/>
+                        <p:commandButton value="BUSCAR" action="#{busquedaPuestoBean.buscarPuestos()}"                                         
+                                         update="busquedaPuestoHelper_listaPuestos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.etiqueta.generarArchivo']}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.generarArchivo']}"
+                                         action="#{busquedaPuestoBean.generarArchivo()}"                                         
+                                         update=":frmGuardarArchivoGenerado"
+                                         rendered="#{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='x' or busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='x'}"/>
+
+                        <p:commandButton value="REGRESAR" 
+                                         ajax="#{false}"
+                                         immediate="true"
+                                         action="#{busquedaPuestoBean.cancelarBusqueda()}"/>
+                        <p:commandButton value="SALIR" 
+                                         ajax="#{false}"
+                                         action="#{busquedaPuestoBean.salirPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                    <p:confirmDialog id="confirmDialog" message="#{msg['ec.gob.mrl.smp.pantalla5.edicionTramite.mensaje.archivoMasivo.grabar']}"  
+                                     header="Confirmar Guardar" severity="alert" widgetVar="confirmation">  
+                        <div style="text-align: center">
+                            <span>
+                                <p:commandButton id="confirm" value="Si" 
+                                                 oncomplete="confirmation.hide()"
+                                                 ajax="#{false}"
+                                                 action="#{busquedaPuestoBean.siContinuar()}"/>                        
+                                <p:commandButton id="decline" value="No"
+                                                 oncomplete="confirmation.hide()"
+                                                 ajax="#{false}"
+                                                 action="#{busquedaPuestoBean.noContinuar()}" />
+                            </span>
+                        </div>
+                    </p:confirmDialog>
+                    <p:separator />
+                    <p:accordionPanel  activeIndex="#{busquedaPuestoBean.busquedaPuestoHelper.activo}" widgetVar="accordionPanel">
+                        <p:tab title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.rotulo']}"  >
+
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="Regimen Laboral: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"   
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.clase.regimenLaboral!=null}"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.regimenLaboralId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaRegimenLaboral}"/>
+                                    <p:ajax update="nivel_ocupacional_id, escala_ocupacional_id"  
+                                            listener="#{busquedaPuestoBean.buscarNivelOcupacionalYEstadosAdmPuestoRegLaboral}" />
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Escala Remunerativa: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 id="nivel_ocupacional_id"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.nivelOcupacionalId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaNivelOcupacional}"/>
+                                    <p:ajax update="escala_ocupacional_id"  
+                                            listener="#{busquedaPuestoBean.buscarEscalaOcupacional()}" />
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Denominación del Puesto: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"  
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 id="escala_ocupacional_id"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.escalaOcupacionalId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaEscalaOcupacional}"/>
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="Modalidad Laboral: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.modalidadLaboralCore!=null}"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.modalidadLaboralId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaModalidadLaboral}"/>
+                                </p:selectOneMenu>
+
+
+
+                                <h:outputLabel value="Cargo: "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.denominacionPuestoId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaDenominacionPuesto}"/>
+                                </p:selectOneMenu>
+
+
+
+
+                                <h:outputLabel value="Partida Presupuestaria Individual: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.partidaIndividual}"/>
+
+                                <h:outputLabel value="Unidad Organizacional: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0" id="unidadAdminstrativaId">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="font-size: 10px"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="true"
+                                                     value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.unidadAdministrativaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     rendered="true"
+                                                     update=":frmUnidadAdministrativa:unidadAdministrativa"       
+                                                     disabled="#{!busquedaPuestoBean.busquedaPuestoHelper.seleccionarUnidadOrganizacional}"
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     disabled="#{!busquedaPuestoBean.busquedaPuestoHelper.seleccionarUnidadOrganizacional}"
+                                                     update="parametrosBusqueda_unidadAdministrativa">
+                                        <f:setPropertyActionListener target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.unidadAdministrativaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.unidadAdministrativaId}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+                                <h:outputLabel value="Ubicación Geográfica: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="parametrosBusqueda_parroquia"
+                                                     style="font-size: 10px;"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="#{true}"
+                                                     value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.ubicacionGeograficaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     action="#{busquedaPuestoBean.iniciarUbicacionGeografica()}"  
+                                                     update=":fmrPpUbiGeo:contenidoUbiGeo"                                              
+                                                     oncomplete="ubcgo.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"  update="parametrosBusqueda_parroquia">
+                                        <f:setPropertyActionListener target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.ubicacionGeograficaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.ubicacionGeograficaId}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+                                <h:outputLabel value="Fecha Inicio:"
+                                               styleClass="labelFormulario"/>   
+                                <p:calendar  id="fechaVigenciaDesde"
+                                             showOn="button"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.fechaInicio}"/>
+                                <h:outputLabel value="Fecha Final:"
+                                               styleClass="labelFormulario"/>    
+                                <p:calendar  id="fechaVigenciaHasta"
+                                             showOn="button"
+                                             navigator="true"
+                                             pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.fechaFin}"/>
+
+
+                                <h:outputLabel value="Sueldo"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 200px;"
+                                             converterMessage="El campo Sueldo, debe ser un número decimal válido"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.rmu}"/>
+
+                                <h:outputLabel value="Sueldo Sobrevalorado: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 200px;"
+                                             onkeypress="return pulsar(event);"
+                                             converterMessage="El campo Sueldo Sobrevalorado, debe ser un número decimal válido"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.rmuSobrevalorado}"/>
+
+
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.tipoIdentificacion']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.tipoDocumentoServidor}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaTipoDocumento}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Número Identificación:"
+                                               styleClass="labelFormulario"/>                  
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.numeroDocumentoServidor}"/>                  
+
+                                <h:outputLabel value="Apellidos y Nombres: " 
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.nombreServidor}"/>
+
+                                <h:outputLabel value="Sueldo Básico: " 
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             converterMessage="El campo Sueldo Básico, debe ser un número decimal válido"                                             
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.sueldoBasico}"/>
+                                <h:outputLabel value="Código Puesto: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             converterMessage="El campo Código Puesto, debe ser un número decimal válido" 
+                                             onkeypress="return pulsar(event);"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.codigoPuesto}"/>
+
+                                <h:outputLabel  value="Estado del Puesto: "
+                                                styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.estadoPuestoInicialCore!=null}"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.estadoPuestoId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaEstadoPuesto}"/>
+                                </p:selectOneMenu>
+
+
+
+                                <h:outputLabel value="Estado del Servidor "
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 disabled="#{busquedaPuestoBean.tramiteHelper.tramite.tipoMovimiento.estadoPersonalInicialCore!=null}"
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.estadoServidorId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaEstadoPersonal}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:tab> 
+                    </p:accordionPanel>  
+                </p:panel>
+                <p:dataTable id="busquedaPuestoHelper_listaPuestos" 
+                             value="#{busquedaPuestoBean.busquedaPuestoHelper.listaPuestos}"
+                             var="puesto"
+                             rows="10"
+                             scrollable="true"
+                             style="overflow: auto"
+                             paginator="#{true}"
+                             rowIndexVar="rowIndex">
+                    <f:facet name="header">#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.seleccionar']}</f:facet>
+                    <p:column headerText="" style="text-align: center;width: 18px">
+                        <p:selectBooleanCheckbox value="#{puesto.selecto}" />
+                    </p:column>
+                    <p:column headerText="No" style="text-align: center;width: 20px;">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column headerText="Tipo" style="text-align: center;width: 18px;">
+                        <h:outputText value="#{puesto.servidor.tipoIdentificacion}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Identificación" 
+                              rendered="#{!busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.renovacionComisionServicio}"
+                              sortBy="#{puesto.servidor.numeroIdentificacion}" 
+                              filterBy="#{puesto.servidor.numeroIdentificacion}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 70px;">
+                        <h:outputText value="#{puesto.servidor.numeroIdentificacion}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Apellidos y Nombres"
+                              rendered="#{!busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.renovacionComisionServicio}"
+                              sortBy="#{puesto.servidor.apellidosNombres}" 
+                              filterBy="#{puesto.servidor.apellidosNombres}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 200px;">
+                        <h:outputText value="#{puesto.servidor.apellidosNombres}" style="font-size: 10px;"/>
+                    </p:column>                
+
+                    <p:column headerText="Identificación" 
+                              sortBy="#{puesto.servidorComisionServicio.numeroIdentificacion}" 
+                              rendered="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.renovacionComisionServicio}"
+                              filterBy="#{puesto.servidorComisionServicio.numeroIdentificacion}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 70px;">
+                        <h:outputText value="#{puesto.servidorComisionServicio.numeroIdentificacion}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Apellidos y Nombres"
+                              rendered="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.renovacionComisionServicio}"
+                              sortBy="#{puesto.servidorComisionServicio.apellidosNombres}" 
+                              filterBy="#{puesto.servidorComisionServicio.apellidosNombres}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 200px;">
+                        <h:outputText value="#{puesto.servidorComisionServicio.apellidosNombres}" style="font-size: 10px;"/>
+                    </p:column>                
+
+                    <p:column headerText="Modalidad Laboral" 
+                              sortBy="#{puesto.distributivo.modalidadLaboral.nombre}" 
+                              filterBy="#{puesto.distributivo.modalidadLaboral.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 200px;">
+                        <h:outputText value=" #{puesto.distributivo.modalidadLaboral.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Unidad Organizacional" 
+                              sortBy="#{puesto.distributivo.unidadOrganizacional.nombre}" 
+                              filterBy="#{puesto.distributivo.unidadOrganizacional.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 300px;">
+                        <h:outputText value="#{puesto.distributivo.unidadOrganizacional.unidadOrganizacional.nombre} / #{puesto.distributivo.unidadOrganizacional.nombre}" style="font-size: 9px;"/>
+                    </p:column>
+                    <p:column headerText="Regimen Laboral" 
+                              sortBy="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{puesto.escalaOcupacional.nivelOcupacional.nombre} / #{puesto.escalaOcupacional.nombre}" 
+                              filterBy="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{puesto.escalaOcupacional.nivelOcupacional.nombre} / #{puesto.escalaOcupacional.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 300px;">
+                        <h:outputText value="#{puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{puesto.escalaOcupacional.nivelOcupacional.nombre} / #{puesto.escalaOcupacional.nombre}" style="font-size: 9px;"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaIndividual']}" 
+                              sortBy="#{puesto.partidaIndividual}" 
+                              filterBy="#{puesto.partidaIndividual}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 50px;">
+                        <h:outputText value="#{puesto.partidaIndividual}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Código Puesto" 
+                              sortBy="#{puesto.codigoPuesto}" 
+                              filterBy="#{puesto.codigoPuesto}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="text-align: center;width: 40px;">
+                        <h:outputText value="#{puesto.codigoPuesto}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Grado" 
+                              sortBy="#{puesto.escalaOcupacional.grado}" 
+                              filterBy="#{puesto.escalaOcupacional.grado}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 60px;">
+                        <h:outputText value="#{puesto.escalaOcupacional.grado}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Cargo" 
+                              sortBy="#{puesto.denominacionPuesto.nombre}" 
+                              filterBy="#{puesto.denominacionPuesto.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 200px;">
+                        <h:outputText value="#{puesto.denominacionPuesto.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Estado" 
+                              sortBy="#{puesto.estadoPuesto.nombre}" 
+                              filterBy="#{puesto.estadoPuesto.nombre}" 
+                              filterStyle="width: 90%"
+                              filterMatchMode="contains"
+                              style="width: 200px;">
+                        <h:outputText value="#{puesto.estadoPuesto.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{busquedaPuestoBean.busquedaPuestoHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmPrincipal:j_idt42:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp de Ubicación Geográfica. -->
+            <p:dialog 
+                widgetVar="ubcgo"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                header="Ubicación Geográfica">
+                <h:form id="fmrPpUbiGeo">
+                    <p:panel id="contenidoUbiGeo">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Pais: "
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu id="geograficaVO_paisId"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 200px" 
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.paisId}"
+                                                 required="#{true}"
+                                                 requiredMessage="El país es un campo requerido.">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaPais}"/>
+                                    <p:ajax update="geograficaVO_provinciaId"  
+                                            listener="#{busquedaPuestoBean.buscarProvincias()}" />
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Provincia: "
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu style="width: 200px" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 id="geograficaVO_provinciaId"                                                  
+                                                 value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.provinciaId}">
+                                    <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaProvincia}"/>
+                                    <p:ajax update="geograficaVO_cantonId"  
+                                            listener="#{busquedaPuestoBean.buscarCantones}" />
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <h:outputLabel value="Cantón: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" id="geograficaVO_cantonId" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.cantonId}">
+                                <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaCanton}"/>
+                                <p:ajax update="geograficaVO_parroquiaId"  
+                                        listener="#{busquedaPuestoBean.buscarParroquias()}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Parroquia: "
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu style="width: 200px" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             id="geograficaVO_parroquiaId"                                              
+                                             value="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.parroquiaId}">
+                                <f:selectItems value="#{busquedaPuestoBean.busquedaPuestoHelper.listaParroquia}"/>
+
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <div style=" margin: auto;text-align: center;width: 90%;">
+                            <p:commandButton value="Aceptar"
+                                             update="contenidoUbiGeo, :frmPrincipal:j_idt42:parametrosBusqueda_parroquia"
+                                             action="#{busquedaPuestoBean.procesarUbicacionGeografica()}"/>
+                            <p:commandButton value="Cancelar" 
+                                             immediate="true"
+                                             oncomplete="ubcgo.hide()" 
+                                             update=":frmPrincipal:j_idt42:parametrosBusqueda_parroquia">
+                                <f:setPropertyActionListener target="#{busquedaPuestoBean.busquedaPuestoHelper.busquedaPuestoVO.ubicacionGeograficaNombre}" 
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <!-- Panel de informacion de duplicados -->
+            <p:dialog widgetVar="pnlMensajeValidacion" 
+                      modal="true"
+                      header="VALIDACIÓN AL SELECCIONAR PUESTOS"
+                      resizable="false"
+                      id="idpnlMensajeValidacion"
+                      draggable="false"
+                      >
+                <h:form id="frmMensajeValidacion">
+                    <br/>
+                    <br/>      
+                    #{busquedaPuestoBean.busquedaPuestoHelper.mensajeValidaciones}
+                    <br/>
+                    <br/>
+                    <p:commandButton value="ACEPTAR" onclick="pnlMensajeValidacion.hide()"/>
+                </h:form>
+
+            </p:dialog>
+            <!-- Panel de informacion de agregados con -->
+            <p:dialog widgetVar="pnlMensajeExito"
+                      header="BUSQUEDA DE PUESTOS"
+                      modal="true"
+                      resizable="false"
+                      draggable="false"
+                      >
+                <h:form id="frmMensajeExito">
+                    Puesto(s) Agregado(s) Correctamente.
+                    <br/>                    
+                    <br/>                    
+                    <p:commandButton ajax="false" value="ACEPTAR"
+                                     action="#{busquedaPuestoBean.cancelarBusqueda()}"/>
+                    <br/>                    
+                    <br/>  
+                </h:form>
+
+            </p:dialog>
+            <p:dialog widgetVar="dlgArchivoGenerado"
+                      id="iddlgArchivoGenerado"
+                      modal="true"
+                      header="ARCHIVO PARA REGISTRO MASIVO DE PUESTOS GENERADO"
+                      draggable="false"
+                      resizable="false">
+                <h:form id="frmGuardarArchivoGenerado">
+                    <h:outputLabel value="Para guardar su archivo de clik en el siguiente link"/>
+                    <br/>
+                    <p:commandButton  value="Guardar - #{busquedaPuestoBean.busquedaPuestoHelper.nombreArchivo}"
+                                      ajax="false"
+                                      immediate="true"                                      
+                                      icon="ui-icon-arrowthichk-s"    
+                                      onclick="dlgArchivoGenerado.hide();">  
+                        <p:fileDownload value="#{busquedaPuestoBean.busquedaPuestoHelper.archivoDescarga}" />  
+                    </p:commandButton> 
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.titulo']}"
+                                     controlador="#{modalidadLaboralBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="3">
+                        <p:panel id="controlesGenerales">
+                            <h:panelGrid columns="2" id="tablaformulario">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.codigo']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputText id="modalidadLaboral_codigo"                                      
+                                             styleClass="textoNemonico"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.codigo}"
+                                             required="true"
+                                             disabled="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"
+                                             requiredMessage="El campo código es requerido"/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.nombre']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="modalidadLaboral_nombre"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 maxlength="100"
+                                                 value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.nombre}"
+                                                 required="true"
+                                                 requiredMessage="El campo nombre es requerido"/>      
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.descripcion']}:"
+                                               styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                                <p:inputTextarea id="modalidadLaboral_descripcion"
+                                                 styleClass="textoDescripcion"
+                                                 style="width: 200px"
+                                                 maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                                 value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.descripcion}"
+                                                 required="true"
+                                                 requiredMessage="El campo descripción es requerido"/>                       
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.modalidad']}:"
+                                               styleClass="labelFormulario" />
+
+                                <p:selectOneMenu id="tipo_modalidad" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.modalidad}"
+                                                 required="#{true}"
+                                                 requiredMessage="El campo Tipo Modalidad es requerido">
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                    <f:selectItems value="#{modalidadLaboralBean.modalidadLaboralHelper.tipoModalidad}"/>                            
+                                </p:selectOneMenu> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.estabilidadLaboral']}:"
+                                               styleClass="labelFormulario" />
+                                <p:selectBooleanCheckbox value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.estabilidadLaboral}" /> 
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.aplicaAportePatronal']}:"
+                                               rendered="false"
+                                               styleClass="labelFormulario" />
+                                <p:selectBooleanCheckbox value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.aplicaAportePatronal}" 
+                                                         rendered="false"/> 
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.aplicaAporteIndividual']}:"
+                                               styleClass="labelFormulario" 
+                                               rendered="false"/>
+                                <p:selectBooleanCheckbox value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.aplicaAporteIndividual}" 
+                                                         rendered="false"/> 
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                               styleClass="labelFormulario" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"/>
+                                <p:selectBooleanCheckbox value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.vigente}" 
+                                                         rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}" 
+                                                         disabled="true"/>                        
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                               styleClass="labelFormulario" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"/>
+                                <p:inputText id="modalidadLaboral_usuario_creo"
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.usuarioCreacion}"
+                                             disabled="true" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"
+                                             style="width: 200px"/>
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                               styleClass="labelFormulario" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"/>
+                                <p:inputText id="modalidadLaboral_fecha_creo"
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.fechaCreacion}"
+                                             rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"
+                                             disabled="true" style="width: 200px">
+
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                </p:inputText>      
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                               styleClass="labelFormulario" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"/>
+                                <p:inputText id="modalidadLaboral_usuario_actua"
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.usuarioActualizacion}"
+                                             rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"
+                                             disabled="true" style="width: 200px">
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                               styleClass="labelFormulario" rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"/>
+                                <p:inputText id="modalidadLaboral_fecha_actua"
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.modalidadLaboral.fechaActualizacion}"
+                                             rendered="#{!(modalidadLaboralBean.modalidadLaboralHelper.esNuevo)}"
+                                             disabled="true" style="width: 200px">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                </p:inputText>
+                            </h:panelGrid>        
+                        </p:panel>
+                        <p:spacer width="100" height="10" />
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.nivelOcupacional']}">
+                            <p:panel style="padding-right: 5px"> 
+                                <p:dataTable id="tablaNivelOcupacional" 
+                                             value="#{modalidadLaboralBean.modalidadLaboralHelper.nivelesOcupacionales}"
+                                             var="nivel"  
+                                             rowIndexVar="rowIndex" 
+                                             sortBy="#{nivel.regimenLaboral.nombre}"  sortOrder="ascending"
+                                             scrollHeight="250"
+                                             style="overflow: auto">    
+                                    <p:column headerText="#{msg['message.btn.seleccionar']}"  style="width: 100px; text-align: center">                               
+                                        <p:selectBooleanCheckbox value="#{nivel.seleccionado}"/>                               
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.regimenLaboral']}" 
+                                              sortBy="#{nivel.regimenLaboral.nombre}" style="width: 300px">                               
+                                        <h:outputText value="#{nivel.regimenLaboral.nombre}"/>                                
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.nivelOcupacional']}" 
+                                              sortBy="#{nivel.nombre}" style="width: 300px">                               
+                                        <h:outputText value="#{nivel.nombre}"/>                                
+                                    </p:column>    
+
+                                </p:dataTable> 
+                            </p:panel>
+                        </p:fieldset>
+
+
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>  
+        </ui:define>
+    </ui:composition>
+</html>

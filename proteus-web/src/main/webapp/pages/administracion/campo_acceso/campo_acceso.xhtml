@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.campoAcceso.titulo']}"
+                                     controlador="#{campoAccesoBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.campoAcceso.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="campoAcceso_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>           
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.campoAcceso.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="campoAcceso_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.descripcion}"
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"/>    
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataTabla.metadataTabla']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="metadataTabla" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{campoAccesoBean.campoAccesoHelper.metadataTablaAux.id}"
+                                         required="#{true}"
+                                         requiredMessage="El campo metadata tabla es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{campoAccesoBean.campoAccesoHelper.metadataTabla}"/> 
+                            <p:ajax event="change" update="panel_metadataColumna" 
+                                    listener="#{campoAccesoBean.iniciarComboMetadataColumna}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataColumna.metadataColumna']}:"
+                                       styleClass="labelFormulario" />
+                        <p:outputPanel id="panel_metadataColumna">
+
+                            <p:selectOneMenu id="metadataColumna" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.metadataColumnaId}"
+                                             required="#{true}"
+                                             requiredMessage="El campo metadata columna es requerido">
+                                <f:selectItem itemLabel="Seleccione..."  /> 
+                                <f:selectItems value="#{campoAccesoBean.campoAccesoHelper.metadataColumna}"/> 
+                            </p:selectOneMenu> 
+                        </p:outputPanel>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.campoAcceso.tipo']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectOneMenu id="tipo" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.tipo}"
+                                         required="#{true}"
+                                         requiredMessage="El campo tipo es requerido">
+                            <f:selectItem itemLabel="Seleccione..."  /> 
+                            <f:selectItems value="#{campoAccesoBean.campoAccesoHelper.tipo}"/> 
+                        </p:selectOneMenu> 
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.vigente}" 
+                                                 disabled="true"
+                                                 rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>
+                        <p:inputText id="campoAcceso_usuario_creo"
+                                     value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>
+                        <p:inputText id="campoAcceso_fecha_creo"
+                                     value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.fechaCreacion}"
+                                     rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>
+                        <p:inputText id="campoAcceso_usuario_actua"
+                                     value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.usuarioActualizacion}"
+                                     rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"/>
+                        <p:inputText id="campoAcceso_fecha_actua"
+                                     value="#{campoAccesoBean.campoAccesoHelper.campoAcceso.fechaActualizacion}"
+                                     rendered="#{!(campoAccesoBean.campoAccesoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

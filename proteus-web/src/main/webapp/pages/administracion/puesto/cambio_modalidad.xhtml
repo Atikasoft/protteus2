@@ -1,0 +1,218 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelTotal" header="Cambio de modalidad laboral">
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="5">                     
+                            <p:commandButton value="SALIR"
+                                             ajax="#{false}"
+                                             action="#{cambioModalidadBean.salirPantallaPrincipal()}"/>
+                        </h:panelGrid> 
+                        <p:spacer/>
+                    </h:panelGrid> 
+                    <p:separator />
+
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value="Código Puesto: "
+                                       styleClass="labelFormulario" style="width: 150px;"/>
+                        <p:inputText style="width: 200px;"
+                                     value="#{cambioModalidadBean.busquedaPuestoHelper.busquedaPuestoVO.codigoPuesto}"/>
+                        <p:commandButton value="BUSCAR" action="#{cambioModalidadBean.buscarPuestos()}"                                       
+                                         update=":frmPrincipal:frmDatosPuesto:totalPanel"/>
+                        <p:commandButton value="Cambio masivo" 
+                                         onclick="dlgCambioMasivo.show()"/>
+                    </h:panelGrid>
+                </p:panel> 
+                <h:form id="frmDatosPuesto">
+                    <p:panel id="totalPanel">
+                        <h:panelGrid columns="5">
+
+                            <h:outputLabel value="Regimen laboral:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="regimen"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px" disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"/>
+                            <p:spacer style="width: 20px;"/>
+
+                            <h:outputLabel value="Nivel ocupacional:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="nivel"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px"   disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.escalaOcupacional.nivelOcupacional.nombre}"/>
+
+
+                            <h:outputLabel value="Escala ocupacional:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="escala"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px" disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.escalaOcupacional.nombre}"/>
+                            <p:spacer style="width: 20px;"/>
+
+                            <h:outputLabel value="Sueldo:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="rmu"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px" disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.rmu}"/>
+
+
+                            <h:outputLabel value="Sueldo Escala:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="rmuEscala"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px" disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.rmuEscala}"/>
+                            <p:spacer style="width: 20px;"/>
+
+                            <h:outputLabel value="Sueldo Sobrevalorado:"                                       
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="rmuSobrevalorado"                                      
+                                         styleClass="campoAlfaNumerico"
+                                         style="width: 200px" disabled="true"
+                                         value="#{cambioModalidadBean.busquedaPuestoHelper.puesto.rmuSobrevalorado}"/>
+
+                        </h:panelGrid>
+                        <p:spacer/>
+                        <p:panel id="modalidadPanel">
+                            <h:panelGrid columns="3" >
+                                <h:outputLabel value="Modalidad laboral:"                                       
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="modalidadLaboral" 
+                                                 value="#{cambioModalidadBean.busquedaPuestoHelper.busquedaPuestoVO.modalidadLaboralId}"
+                                                 style="width: 200px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains" disabled="#{cambioModalidadBean.busquedaPuestoHelper.puesto.codigoPuesto eq null}">
+                                    <f:selectItems id="itemsModalidad" 
+                                                   value="#{cambioModalidadBean.busquedaPuestoHelper.listaModalidadLaboral}"/>    
+                                </p:selectOneMenu> 
+                                <p:commandButton value="GUARDAR" onclick="confirmCambio.show()"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panel>
+                    <p:confirmDialog id="popOp" message="¿Está seguro de continuar con la acción seleccionada?"
+                                     header="Confirmación" 
+                                     severity="alert" 
+                                     widgetVar="confirmCambio">
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             actionListener="#{cambioModalidadBean.guardarPuesto()}"
+                                             oncomplete="confirmCambio.hide()"  update=":frmPrincipal:frmDatosPuesto:totalPanel"/>  
+                            <p:commandButton id="camb" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmCambio.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </h:form>
+            </h:form>
+
+            <!-- Dialogo para subida de archivo masivo -->
+            <p:dialog modal="true"     
+                      resizable="false"
+                      width="600"  
+                      height="150"
+                      draggable="true"   
+                      header="Archivos para cambio masivo" 
+                      widgetVar="dlgCambioMasivo" closable="false">
+
+                <h:form id="frmCambioMasivo">
+                    <p:panel style="border-style: none">
+                        <p:panelGrid columns="2">
+
+                            <p:outputLabel value="Cambio de modalidad (Archivo .csv):"/>
+                            <h:panelGrid columns="2">                                
+                                <p:fileUpload
+                                    id="archivoCSV"
+                                    mode="advanced"
+                                    showButtons="false"                       
+                                    process="@this"   
+                                    widgetVar="fileuplaod_CSV"
+                                    allowTypes="/(\.|\/)(csv)$/"
+                                    label="Seleccione...."
+                                    sizeLimit="2097152"
+                                    style="width: 250px;"
+                                    fileUploadListener="#{cambioModalidadBean.cargarArchivo}"
+                                    oncomplete="clearInvalidFileMsg(fileuplaod_CSV)"
+                                    invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                    invalidFileMessage="El archivo debe ser csv "
+                                    requiredMessage="Debe cargar un archivo"
+                                    auto="true" update=":frmCambioMasivo:btnAceptar,:frmCambioMasivo:filename,:frmErrores:panelErrores">
+                                </p:fileUpload>
+                                <p:commandLink id="downloadLink" 
+                                               value="Descargar Formato Requerido" 
+                                               title="Formato requerido para el archivo de cambio masivo de modalidad."                                           
+                                               ajax="false"        
+                                               style="color: blue"
+                                               onclick="PrimeFaces.monitorDownload(start, stop)">                                        
+                                    <p:fileDownload value="#{cambioModalidadBean.formatoArchivo}" />
+                                </p:commandLink>
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Archivo cargado: " />
+                            <h:outputText id="filename" value="#{cambioModalidadBean.busquedaPuestoHelper.nombreArchivoCSV}"/>
+
+
+                        </p:panelGrid>
+
+                    </p:panel>
+
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         actionListener="#{cambioModalidadBean.procesarArchivo()}"
+                                         style="margin: auto" disabled="#{not cambioModalidadBean.busquedaPuestoHelper.archivoSinError}"
+                                         update="@this"/>
+                        <p:spacer style="width: 5px"/>
+                        <p:commandButton id="btnCancelar" immediate="true" update="@form"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{cambioModalidadBean.cancelar}" onclick="dlgCambioMasivo.hide()"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- problemas al subir archivo masivo -->
+            <p:dialog header="ERRORES AL CARGAR ARCHIVO PARA CAMBIO MASIVO DE MODALIDAD "
+                      modal="true"
+                      resizable="false"
+                      draggable="false"
+                      widgetVar="dlgCargaArchivoMasivoErrores">
+
+                <h:form id="frmErrores">  
+                    <p:panel id="panelErrores" rendered="#{not cambioModalidadBean.busquedaPuestoHelper.archivoSinError}">
+                        <p:dataTable id="archivo_errores" 
+                                     value="#{cambioModalidadBean.busquedaPuestoHelper.erroresEnArchivo}"
+                                     var="error"
+                                     rows="10"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>   
+                            <p:column headerText="Error" style="text-align: left">
+                                <h:outputText value="#{error}" style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <center>
+                            <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgCargaArchivoMasivoErrores.hide()"
+                                             style="margin: auto" >
+                            </p:commandButton>
+                        </center>
+                    </p:panel>
+                </h:form>  
+
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

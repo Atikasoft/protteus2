@@ -1,0 +1,503 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="5">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}"                                         
+
+                                         onclick="confirmation.show()" type="button">                            
+                        </p:commandButton>                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{registroSolicitudBean.salirPantallaPrincipal()}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <p:confirmDialog id="confirmDialog" message="Esta seguro de enviar la solicitud?"  
+                                 header="Enviando Solicitud" severity="alert" widgetVar="confirmation">  
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirm" value="Si" 
+                                             update="errores, tablaErrores" 
+                                             oncomplete="confirmation.hide()"
+                                             ajax="#{false}"
+                                             action="#{registroSolicitudBean.guardar}"/>                        
+                            <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+                        </span>
+                    </div>
+                </p:confirmDialog>
+                <p:separator/>
+                <p:panel id="pasos" header="Pasos">
+                    <h:panelGrid columns="2">
+                        <p:panel id="datosGenerales" style="width: 470px">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="1.Datos Generales:" styleClass="labelFormulario"/>
+                                <h:outputLabel styleClass="ui-message-info">Ingrese la Información correspondiente a la solicitud 
+                                    que se encuentra realizando, escogiendo el tipo de solicitud</h:outputLabel>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel id="detallesSolicitud" style="width: 470px">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="2.Detalles Solicitud:" styleClass="labelFormulario"/>
+                                <h:outputLabel styleClass="ui-message-info">Ingrese la información específica correspondiente al 
+                                    tipo de solicitud que se encuentra realizando</h:outputLabel>
+                            </h:panelGrid>
+                        </p:panel>                        
+                    </h:panelGrid>                    
+                </p:panel>
+                <p:outputPanel id="errores" 
+                               rendered="#{registroSolicitudBean.registroSolicitudHelper.mostrarTablaErrores}">
+                    <div class="ui-messages ui-widget" id="erroresdiv" style="text-align: left">
+                        <div class="ui-messages-error ui-corner-all">
+                            <span class="ui-messages-error-icon"></span>OBSERVACIONES EN SOLICITUD<br/>
+                            <ul>
+                                <li>
+                                    <span class="ui-messages-error-summary">
+                                        <p:dataTable id="tablaErrores"
+                                                     value="#{registroSolicitudBean.registroSolicitudHelper.listaErroresVO}"
+                                                     var="listaErrores"
+                                                     paginator="#{true}"                                                     
+                                                     rowIndexVar="rowIndex"
+                                                     style="overflow: auto"
+                                                     rows="5">
+                                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                                <h:outputText value="#{rowIndex+1}"/>
+                                            </p:column>
+                                            <p:column headerText="SECCIÓN">
+                                                <h:outputText value="#{listaErrores.seccion}"/>
+                                            </p:column>
+                                            <p:column headerText="CAMPO">
+                                                <a href="#{listaErrores.referencia}">
+                                                    <h:outputText value="#{listaErrores.campo}"/>
+                                                </a>
+                                            </p:column>
+                                            <p:column headerText="OBSERVACIÓN">
+                                                <h:outputText value="#{listaErrores.mensajeError}"/>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </span>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:panel id="datos_generales" header="1.Datos Generales:" style="text-align: left">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel  value="* Solicitud por: "
+                                        styleClass="labelFormulario"/>
+
+                        <p:selectOneRadio  id="tipo_solicitud_radio"                                    
+                                           required="#{true}"
+                                           value="#{registroSolicitudBean.registroSolicitudHelper.tipoSolicitudSeleccionado}"
+                                           requiredMessage="El campo solicitud por es requerido">
+                            <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.tipoSolicitud}"/>                            
+                            <p:ajax listener="#{registroSolicitudBean.llenarComboTipoMovimiento()}" 
+                                    update="errores, consulta_tipoMovimieto,tablaVerificarRequisitos, detallePanel, detalles_solicitud, 
+                                    areaDevengar, areaMaternidad, areaRepresentacionAsociacion, horasMensuales, areaPermisoMatriculaHijos, horarios"/>
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="* Tipo: "
+                                       styleClass="labelFormulario"/>                                
+                        <p:selectOneMenu id="consulta_tipoMovimieto"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 600px"                                             
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimientoId}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Tipo es requerido">                                      
+                            <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.listaTipoMovimiento}"/>                             
+                            <p:ajax listener="#{registroSolicitudBean.cargarListaRequisitosPorTipoMovimiento()}"
+                                    update="errores, detalles_solicitud, tablaVerificarRequisitos, detallePanel, 
+                                    areaDevengar, areaMaternidad, areaRepresentacionAsociacion,horasMensuales, areaPermisoMatriculaHijos, horarios"/>
+                        </p:selectOneMenu>
+
+                    </h:panelGrid><br/>
+                    <p:fieldset id="requisitos" legend="Requisitos: " >
+                        <div style="width: 940px">
+                            <p:dataTable id="tablaVerificarRequisitos"
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.listaValidacionTipoMovimientoRequisitoVO}"
+                                         var="verificarRequisitos"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"
+                                         style="overflow: auto"
+                                         editable="true">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                    <h:outputText value="#{rowIndex+1}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.requisito']}">
+                                    <h:outputText value="#{verificarRequisitos.tipoMovimientoRequisito.requisito.nombre}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.obligatorio']}" style="text-align: center; width: 50px">
+                                    <h:outputText value="#{registroSolicitudBean.verificarObligatorio(verificarRequisitos.tipoMovimientoRequisito.obligatorio)}"/>
+                                </p:column>                                                                                
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.numeroDocumento']}">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{verificarRequisitos.validacion.numeroDocumento}"/>
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText value="#{verificarRequisitos.validacion.numeroDocumento}" style="width: 100px"/>
+                                        </f:facet>  
+                                    </p:cellEditor>                            
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.fechaDocumento']}" style="text-align: center; width: 50px">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{verificarRequisitos.validacion.fechaDocumento}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                            </h:outputText>
+                                        </f:facet>  
+                                        <f:facet name="input">                                 
+                                            <p:calendar id="validacion_fechaDocumento"                                               
+                                                        value="#{verificarRequisitos.validacion.fechaDocumento}"                                                        
+                                                        navigator="true"                                                        
+                                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>                              
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.observacion']}">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{verificarRequisitos.validacion.observacion}"/>
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputTextarea id="validacion_observacion"                                                
+                                                             value="#{verificarRequisitos.validacion.observacion}"/>
+                                        </f:facet>  
+                                    </p:cellEditor> 
+                                </p:column>
+                                <p:column headerText="Editar" style="text-align: center; width: 60px">
+                                    <p:rowEditor id="editarLapiz">
+                                        <p:tooltip for="editarLapiz" value="#{msg['ec.gob.mrl.smp.nueva_solicitud.editar']}" />
+                                    </p:rowEditor>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.verificarRequisito.archivo']}" style="text-align: center;width: 100px" >
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <p:panel style="border: none; text-align: center; background: none">                                        
+                                                <h:outputText id="nombreArchivo" value="#{verificarRequisitos.archivo.nombre}"/>
+                                            </p:panel>
+
+                                            <p:commandButton id="botonCargarArchivoEditable"                                                              
+                                                             icon="ui-icon-arrowthickstop-1-n"                                                             
+                                                             onclick="cargarArchivoPopUp.show()"                                                             
+                                                             process="@this"   
+                                                             partialSubmit="true"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}">  
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}"
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>                                                
+                                            </p:commandButton>
+
+                                            <p:commandButton id="botonEliminarArchivo"                                                              
+                                                             icon="ui-icon-trash"                                                             
+                                                             onclick="confirmationElimiinarArchivo.show()"                                                             
+                                                             process="@this"   
+                                                             partialSubmit="true"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.eliminarArchivo']}">  
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}"
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>                                                
+                                            </p:commandButton>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:panel style="border: none; text-align: center; background: none">                                        
+                                                <h:outputText id="nombreArchivo2" value="#{verificarRequisitos.archivo.nombre}"/>
+                                            </p:panel>
+
+                                            <p:commandButton id="botonCargarArchivoEditable2"                                                              
+                                                             icon="ui-icon-arrowthickstop-1-n"                                                             
+                                                             onclick="cargarArchivoPopUp.show()"                                                             
+                                                             process="@this"   
+                                                             partialSubmit="true"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}"
+                                                             disabled="true">  
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}"
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>                                                
+                                            </p:commandButton>
+
+                                            <p:commandButton id="botonEliminarArchivo2"                                                              
+                                                             icon="ui-icon-trash"                                                             
+                                                             onclick="confirmationElimiinarArchivo.show()"                                                             
+                                                             process="@this"   
+                                                             partialSubmit="true"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.eliminarArchivo']}"
+                                                             disabled="true">  
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}"
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>                                                
+                                            </p:commandButton>
+                                        </f:facet>                                            
+                                    </p:cellEditor>    
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.nueva_solicitud.sustento_legal']}" style="text-align: center; width: 50px">                                                               
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <p:commandButton id="botonSustentoLegal" 
+                                                             icon="ui-icon-comment"  
+                                                             ajax="#{false}"
+                                                             immediate="#{true}"
+                                                             update="modalDialogSustentoLegal"
+                                                             action="#{registroSolicitudBean.verSustentoLegal}"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}">
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}" 
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>
+                                            </p:commandButton>                            
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:commandButton id="botonSustentoLegal2" 
+                                                             icon="ui-icon-comment"  
+                                                             ajax="#{false}"
+                                                             immediate="#{true}"
+                                                             update="modalDialogSustentoLegal"
+                                                             action="#{registroSolicitudBean.verSustentoLegal}"
+                                                             title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}"
+                                                             disabled="true">
+                                                <f:setPropertyActionListener value="#{verificarRequisitos}" 
+                                                                             target="#{registroSolicitudBean.registroSolicitudHelper.validacionTipoMovimientoRequisitoVO}"/>
+                                            </p:commandButton>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>                                                               
+                            </p:dataTable>                        
+                        </div>                       
+                    </p:fieldset>       
+
+                </p:panel>
+
+                <p:panel id="detalles_solicitud" header="2.Detalles solicitud:" style="text-align: left">
+                    <h:panelGrid columns="6">
+                        <h:outputLabel value="* Fecha del Hecho: "
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="fecha_hecho"                                                
+                                    value="#{registroSolicitudBean.registroSolicitudHelper.licencia.fechaOcurrioHecho}"                                    
+                                    showOn="button"
+                                    navigator="true"
+                                    required="true"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="El campo fecha del hecho es requerido"/>
+                        <h:outputLabel value="* Fecha de Inicio: "
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="fecha_inicio"                                                
+                                    value="#{registroSolicitudBean.registroSolicitudHelper.licencia.movimiento.rigeApartirDe}"                                    
+                                    showOn="button"
+                                    navigator="true"
+                                    required="true"
+                                    requiredMessage="El campo de fecha de inicio es requerido"
+                                    pattern="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.ingresaHoraMinuto=='S'?'dd/MM/yyyy HH:mm':'dd/MM/yyyy'}"/>
+
+                        <h:outputLabel value="* Fecha de Finalización: "
+                                       styleClass="labelFormulario"/>                        
+                        <p:calendar id="fecha_fin"                                                
+                                    value="#{registroSolicitudBean.registroSolicitudHelper.licencia.movimiento.fechaHasta}"                                    
+                                    showOn="button"
+                                    navigator="true"
+                                    required="true"
+                                    pattern="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.ingresaHoraMinuto=='S'?'dd/MM/yyyy HH:mm':'dd/MM/yyyy'}"
+                                    requiredMessage="El campo fecha de finalización es requerido "/>
+
+
+                    </h:panelGrid>
+
+                    <p:fieldset legend="Maternidad / Paternidad" id="areaMaternidad"  
+                                rendered="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.areaLicenciasMaternidadPaternidad}">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="* Tipo Nacimiento: "
+                                           styleClass="labelFormulario"/>                                
+                            <p:selectOneMenu id="consulta_tipoNacimiento"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 100px"                                             
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.licencia.tipoNacimiento}"                                         
+                                             required="true"
+                                             requiredMessage="El campo tipo de nacimiento es requerido">                                      
+                                <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.listaTipoNacimiento}"/>
+                            </p:selectOneMenu>  
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <br/>
+                    <p:fieldset legend="Tiempo por Devengar" id="areaDevengar"  
+                                rendered="#{registroSolicitudBean.registroSolicitudHelper.areaDevengar}">
+                        <h:panelGrid columns="6" id="grid1" >                        
+                            <h:outputLabel value="* Devengar: " styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="devengarCombo"     
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.devengar}"
+                                             required="true" requiredMessage="El campo devengar es requerido">                                      
+                                <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.listaDevengar}"/>
+                                <p:ajax update="periodoCombo, valorPeriodo, observacion"
+                                        listener="#{registroSolicitudBean.habilitarDevengar()}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Periodo: " styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="periodoCombo"        
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.licencia.devengarPeriodo}"
+                                             required="true" disabled="#{!registroSolicitudBean.registroSolicitudHelper.devengar}"
+                                             requiredMessage="El campo periodo es requerido">                                      
+                                <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.listaPeridoDevengar}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Valor Periodo: " styleClass="labelFormulario"/>
+                            <p:inputText id="valorPeriodo"                                      
+                                         required="true"                                     
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.licencia.devengarValor}"
+                                         styleClass="campoNumerico"
+                                         maxlength="4"
+                                         disabled="#{!registroSolicitudBean.registroSolicitudHelper.devengar}"
+                                         requiredMessage="El campo valor es requerido"/>
+
+                        </h:panelGrid>
+                        <p:separator />                    
+                        <h:panelGrid columns="6" id="grid2" >
+                            <h:outputLabel value="Considere para el Cálculo: " styleClass="labelFormulario"/>
+                            <p:inputTextarea id="considere"  required="true"
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.considereCalculo}"
+                                             maxlength="400"
+                                             style="width: 350px" disabled="#{true}" autoResize="#{false}"
+                                             requiredMessage="El campo considere para el cálculo es requerido"/>
+
+                            <h:outputLabel value="Observación: " styleClass="labelFormulario"/>
+                            <p:inputTextarea id="observacion"  required="#{registroSolicitudBean.registroSolicitudHelper.obligatorio}"
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.licencia.devengarObservacion}"
+                                             maxlength="400"
+                                             style="width: 350px"
+                                             disabled="#{registroSolicitudBean.registroSolicitudHelper.lectura}"
+                                             autoResize="#{false}"
+                                             requiredMessage="El campo observación es requerido"/>                            
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Representación de una Asociación Laboral" id="areaRepresentacionAsociacion"  
+                                rendered="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.areaRepresentacionAsociacionLaboral}">
+                        <h:panelGrid id="panelAsociacionLaboral" columns="3">        
+                            <h:outputLabel id="etqHorasMensuales" value="*Horas Mensuales: " styleClass="labelFormulario"
+                                           title="#{msg['ec.gob.mrl.smp.nueva_solicitud.horas_mensuales']}"/>                            
+                            <p:inputText id="horasMensuales"                                      
+                                         required="true"                                     
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.licencia.horasMensualesRepresentacionLaboral}"
+                                         styleClass="campoNumerico" requiredMessage="El campo horas mensuales es requerido"/>                                
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="Permiso Matrícula Hijos" id="areaPermisoMatriculaHijos"  
+                                rendered="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento.areaPermisoMatriculaHijos}">                        
+                        <h:panelGrid id="panelPermisoMatriculaHijos" columns="2">
+                            <h:outputLabel value="Nombre Hijo(a): " styleClass="labelFormulario"/>
+                            <p:inputText id="nombreHijo"
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.licencia.matriculaNombreHijo}"
+                                         required="#{registroSolicitudBean.setearObligatorio(registroSolicitudHelper.tipoMovimiento.nombreHijo)}"
+                                         disabled="#{registroSolicitudBean.setearLectura(registroSolicitudHelper.tipoMovimiento.nombreHijo)}"
+                                         maxlength="40"
+                                         style="width: 400px"
+                                         requiredMessage="El campo nombre hijo(a) es requerido"/>                        
+                            <h:outputLabel id="etiqetaNivelEstudio" value="Nivel de Estudios: " styleClass="labelFormulario"/>                            
+                            <p:selectOneRadio  id="nivelEstudio"                                                                                   
+                                               required="#{registroSolicitudBean.setearObligatorio(registroSolicitudHelper.tipoMovimiento.nivelEstudio)}"
+                                               requiredMessage="El campo nivel de estudios es requerido"
+                                               disabled="#{registroSolicitudBean.setearLectura(registroSolicitudHelper.tipoMovimiento.nivelEstudio)}"
+                                               value="#{registroSolicitudBean.registroSolicitudHelper.licencia.matriculaNivelEstudio}">
+                                <f:selectItems value="#{registroSolicitudBean.registroSolicitudHelper.nivelEstudio}"/>                                                        
+                            </p:selectOneRadio>
+
+                            <h:outputLabel id="etiqetaNumeroHoras" value="Número de Horas: " styleClass="labelFormulario"/>                            
+                            <p:inputText id="numeroHoras"
+                                         value="#{registroSolicitudBean.registroSolicitudHelper.numerohorasMatriculasHijo}"
+                                         disabled="#{true}" maxlength="1" style="width: 30px"/>                                                            
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset id="detallePanel">
+                        <h:panelGrid id="panelDetalle" columns="2">
+                            <h:outputLabel value="*Detalle Solicitud: " styleClass="labelFormulario"/>
+                            <p:inputTextarea id="detalle"  required="true"
+                                             value="#{registroSolicitudBean.registroSolicitudHelper.detalle}"
+                                             maxlength="400"
+                                             style="width: 800px"
+                                             autoResize="#{false}" requiredMessage="El campo detalle solicitud es requerido"/>                            
+                        </h:panelGrid>
+                        <p:separator rendered="#{registroSolicitudBean.registroSolicitudHelper.horario}"/>
+                        <p:commandButton id="horarios" 
+                                         value="#{msg['ec.gob.mrl.smp.nuevaSolicitud.etiqueta.horario']}"                                     
+                                         process="@this"
+                                         partialSubmit="true"
+                                         update=":frmHorario"
+                                         action="#{licenciaHorarioBean.controlHorarioSolicitud}"
+                                         rendered="#{registroSolicitudBean.registroSolicitudHelper.horario}"
+                                         title="#{msg['ec.gob.mrl.smp.nuevaSolicitud.tooltip.horario']}">
+                            <f:setPropertyActionListener value="NS" 
+                                                         target="#{licenciaHorarioHelper.tipoPantalla}"/>
+                            <f:setPropertyActionListener value="#{registroSolicitudBean.registroSolicitudHelper.tipoMovimiento}" 
+                                                         target="#{licenciaHorarioHelper.tipoMovimiento}"/>
+                        </p:commandButton>                        
+                    </p:fieldset>
+
+                </p:panel>
+                <p:dialog  
+                    header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.sustentoLegal']}" 
+                    widgetVar="dlg2"
+                    modal="true"
+                    draggable="false"
+                    resizable="false"
+                    visible="#{registroSolicitudBean.registroSolicitudHelper.abrirPopUpSustentoLegal}"> 
+                    <h:panelGrid columns="1" id="modalDialogSustentoLegal">
+                        <p:inputTextarea value="#{registroSolicitudBean.registroSolicitudHelper.sustentoLegal}"
+                                         style="width: 250px;height: 250px;"
+                                         disabled="true"/>
+                    </h:panelGrid>
+                </p:dialog>                               
+                <p:confirmDialog id="eliminArchivoConfirm" message="Esta seguro de eliminar el archivo?"  
+                                 header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.eliminarArchivo']}"
+                                 severity="alert" widgetVar="confirmationElimiinarArchivo" closable="false">                    
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirmEliminar" value="Si" 
+                                             update="tablaVerificarRequisitos" 
+                                             oncomplete="confirmationElimiinarArchivo.hide()"
+                                             ajax="#{false}"
+                                             immediate="true"
+                                             process="@this"
+                                             partialSubmit="true"
+                                             action="#{registroSolicitudBean.eliminarArchivo()}"/>                        
+                            <p:commandButton id="deshacer" value="No" onclick="confirmationElimiinarArchivo.hide()" type="button" />
+                        </span>
+                    </div>
+                </p:confirmDialog>
+            </h:form>     
+            <p:dialog 
+                header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}" 
+                widgetVar="cargarArchivoPopUp"
+                modal="true"
+                draggable="false"
+                resizable="false"> 
+                <h:form enctype="multipart/form-data">                    
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">                        
+                        <p:fileUpload value="#{registroSolicitudBean.registroSolicitudHelper.archivo}" 
+                                      mode="simple"                                      
+                                      allowTypes="*.pdf"/>  
+                        <p:separator />
+                        <div style="text-align: center">
+                            <p:commandButton value="Subir archivo" ajax="false"  update="tablaVerificarRequisitos"
+                                             actionListener="#{registroSolicitudBean.subirArchivo()}"/>  
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script> 
+            <ui:include src="../procesos/horario.xhtml" id=""/>
+        </ui:define>
+
+    </ui:composition>
+</html>

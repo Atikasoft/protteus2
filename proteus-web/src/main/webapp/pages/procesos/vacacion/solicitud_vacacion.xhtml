@@ -1,0 +1,547 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.titulo']}">  
+                    <br/>
+                    <div>
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:commandButton id="guardarBtn" 
+                                             ajax="#{false}" onclick="confirmation.show()"
+                                             update="confirmDialog" 
+                                             type="button"
+                                             rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                             disabled="#{!vacacionSolicitudBean.vacacionSolicitudHelper.enviarSolicitud}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}"/>
+                            <p:commandButton id="revertirBtn" 
+                                             ajax="#{false}" onclick="confirmRevertir.show()"
+                                             update=":confirmRevertirForm" type="button"
+                                             rendered="false"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.revertir']}"
+                                             title="#{msg['message.btn.revertir']}"/>
+                        </p:outputPanel>
+
+                        <p:commandButton id="imprimirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         ajax="false" 
+                                         rendered="#{!vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                         actionListener="#{vacacionSolicitudBean.imprimirSolicitudVacacion}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)">
+                            <p:fileDownload value="#{vacacionSolicitudBean.pdf}" />
+                        </p:commandButton>
+
+
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{vacacionSolicitudBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{vacacionSolicitudBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:separator/>
+
+
+                    <!-- Informacion del usuario conectado-->
+                    <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="4" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacionSolicitud_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{vacacionSolicitudBean.obtenerDescripcionTipoDocumento(
+                                                  vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.servidorInstitucion.servidor.tipoIdentificacion)}"
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="vacacionSolicitud_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" 
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacionSolicitud_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}"
+                                         disabled="#{true}" 
+                                         style="width: 300px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+                            <p:inputText id="vacacionSolicitud_regimen"
+                                         styleClass="textoNemonico"
+                                         rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral!=null}"
+                                         value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral.nombre}"
+                                         disabled="#{true}" 
+                                         style="width: 300px"/>
+                            <h:outputLabel value=" #{msg['message.distributivo.SinConfiguracionRegimen']} " 
+                                           style="color: #D20005 "
+                                           styleClass="labelFormulario" 
+                                           rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral==null}"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="vacacionSolicitud_servidorFechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.servidorInstitucion.servidor.fechaIngresoInstitucion}"
+                                         disabled="#{true}" 
+                                         style="width: 300px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: "
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+                            <h:outputLabel value=" #{vacacionSolicitudBean.vacacionSolicitudHelper.cadenaSaldo}"
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacion.saldoProporcional']}: "
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+                            <h:outputLabel value=" #{vacacionSolicitudBean.vacacionSolicitudHelper.cadenaSaldoProporcional}"
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <br/>  
+                    <p:separator/>
+                    <!-- Elegir el tipo de solicitud-->
+                    <p:panel id="panelTipoVacacion">                        
+                        <h:panelGrid columns="5">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="tipoSolicitud" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipo}"
+                                             required="#{true}"
+                                             disabled="#{!(vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo) or vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral==null}"
+                                             requiredMessage="El campo tipo de solicitud es requerido">
+                                <f:selectItems value="#{vacacionSolicitudBean.vacacionSolicitudHelper.listaOpcionesTipoVacacion}"/> 
+                                <p:ajax event="change" 
+                                        listener="#{vacacionSolicitudBean.esTipoVacacionSeleccionada}"
+                                        update="panelSolicitudVacacionNoPlanificada,panelBotonGuardar,panelSolicitudVacacionPlanificadas"/>
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <h:panelGrid>
+                        <div class="isa_warning">
+                            <i class="fa fa-info-circle"></i>
+                            #{msg['ec.gob.mrl.smp.administracion.vacacion.info.diasAdicionales']}
+                        </div>
+                    </h:panelGrid>
+
+                    <!-- vacaciones planificadas -->
+                    <p:outputPanel id="panelSolicitudVacacionPlanificadas">
+                        <p:panel  
+                            header="Datos de Vacaciones Planificadas"
+                            rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipo eq 'V' and
+                                        vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral!=null}">
+
+                            <br/>
+
+                            <h:panelGrid style="margin:auto" rendered="#{not (vacacionSolicitudBean.vacacionSolicitudHelper.tienePlanificaciones)}">
+                                <div class="isa_info">
+                                    <i class="fa fa-info-circle"></i>
+                                    No tiene planificaciones aprobadas.
+                                </div>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="panelVacacionPlanificadas" style="margin:auto" rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.tienePlanificaciones}">
+                                <div id="vacacionPlanificadaCalenar" class="datesPicker"></div> 
+                                <p:inputText id="vacacionPlanificadaCalenarSeleccion" style="width: 95%; visibility: hidden" styleClass="stringDates"
+                                             value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.diasPlanificados}"/>
+
+                                <script>
+                                    $('.datesPicker').multiDatesPicker({
+                                        dateFormat: 'dd/mm/yy',
+                                        numberOfMonths: [3, 4],
+                                        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sábado'],
+                                        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                                        firstDay: 1,
+                                        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                                        onSelect: function () {
+                                            establecerDiasVacacionPlanificada();
+                                        }
+                                    });
+                                    function establecerDiasVacacionPlanificada() {
+                                        try {
+                                            var fechas = $("INPUT[id$='vacacionPlanificadaCalenarSeleccion']").val();
+                                            $('#vacacionPlanificadaCalenar').multiDatesPicker("resetDates");
+                                            if (fechas.length > 0) {
+                                                fechas = fechas.split(',');
+                                                $('#vacacionPlanificadaCalenar').multiDatesPicker("addDates", fechas);
+                                            }
+                                        } catch (e) {
+
+                                        }
+                                    }
+
+                                    $(function () {
+                                        establecerDiasVacacionPlanificada();
+                                    });
+                                </script>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <!-- vacaciones no planificadas y anticipos -->
+                    <p:outputPanel id="panelSolicitudVacacionNoPlanificada">
+                        <p:panel  
+                            header="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipo eq 'A'? 'Datos de Vacaciones no Planificadas':'Datos de Anticipos de Vacaciones'} "
+                            rendered="#{ (vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipo eq 'A' 
+                                         or vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipo eq 'P') and
+                                         vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.vacacionParametro.regimenLaboral!=null}">
+                            <br/>
+                            <!-- Tipo de Periodo -->
+                            <p:panel id="panelTipoPeriodoVacacionNoPlanificada">                        
+                                <h:panelGrid columns="6">
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodo']}:"
+                                                   styleClass="labelFormulario" style="text-align: right"/>
+                                    <p:selectOneMenu id="tipoPeriodoVacacionNoPlanificada" 
+                                                     filter="true" 
+                                                     disabled="#{not vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                                     filterMatchMode="contains"
+                                                     value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo}"
+                                                     required="#{true}"
+                                                     requiredMessage="El campo tipo de periodo de solicitud es requerido">
+                                        <f:selectItems value="#{vacacionSolicitudBean.vacacionSolicitudHelper.listaOpcionesPeriodoVacacion}"/> 
+                                        <p:ajax event="change" listener="#{vacacionSolicitudBean.esVacacionNoPlanificada}"
+                                                update="panelSolicitudVacacionNoPlanificada panelBotonGuardar"/>
+                                    </p:selectOneMenu>
+                                    <h:panelGrid rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'D'}">
+                                        <div class="isa_info">
+                                            <i class="fa fa-info-circle"></i>
+                                            Seleccionar solo dias laborables.
+                                        </div>
+                                    </h:panelGrid>
+                                    <p:commandButton value="Reiniciar" 
+                                                     disabled="#{not vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                                     process="@this tipoPeriodoVacacionNoPlanificada"
+                                                     update="panelSolicitudVacacionNoPlanificada panelBotonGuardar"
+                                                     action="#{vacacionSolicitudBean.reiniciarSolicitud()}" />
+
+
+                                    <h:outputLabel value="Días Solicitados:"
+                                                   rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'D'}"
+                                                   styleClass="labelFormulario" 
+                                                   style="text-align: right" />
+                                    <h:outputText value="#{vacacionSolicitudBean.vacacionSolicitudHelper.diasSolicitados}"  
+                                                  rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'D'}"/>
+
+                                    <h:outputLabel value="Duración:"
+                                                   rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'H' and (not (vacacionSolicitudBean.vacacionSolicitudHelper.duracionMinutos eq null))}"
+                                                   styleClass="labelFormulario" 
+                                                   style="text-align: right" />
+                                    <h:outputText value="#{vacacionSolicitudBean.vacacionSolicitudHelper.duracionMinutos}"  
+                                                  rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'H' and (not (vacacionSolicitudBean.vacacionSolicitudHelper.duracionMinutos eq null))}"/>
+
+                                    <div class="isa_info" style="display: #{(vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'H' and not (vacacionSolicitudBean.vacacionSolicitudHelper.duracionMinutos eq null)) ? 'block' : 'none'}">
+                                        <i class="fa fa-info-circle"></i>
+                                        Duración del anticipo de vacación.
+                                    </div>
+
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <br/>
+
+                            <h:panelGrid id="panelVacacionNoPlanificadaDia" style="margin:auto" 
+                                         rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'D'}">
+                                <div id="vacacionNoPlanificadaDiaCalenar" class="datesPicker"></div> 
+                                <p:remoteCommand name="asignarNoPlanificadaDiaCalenarSeleccion" process="@this vacacionNoPlanificadaDiaCalenarSeleccion" 
+                                                 update="vacacionNoPlanificadaDiaCalenarSeleccion panelBotonGuardar panelTipoPeriodoVacacionNoPlanificada"                                 
+                                                 actionListener="#{vacacionSolicitudBean.asignarNoPlanificadaDiaCalenarSeleccion()}"
+                                                 oncomplete="establecerDiasVacacionNoPlanificadaDiaDias();"/>
+                                <p:inputText id="vacacionNoPlanificadaDiaCalenarSeleccion" style="width: 95%; visibility: hidden" styleClass="stringDates"
+                                             value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.diasPlanificados}"/>
+
+                                <script>
+                                    var readOnly = #{vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo ? false : true};
+                                    $('.datesPicker').multiDatesPicker({
+                                        dateFormat: 'dd/mm/yy',
+                                        numberOfMonths: [3, 4],
+                                        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sábado'],
+                                        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                                        firstDay: 1,
+                                        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                                        onSelect: function () {
+                                            if (readOnly) {
+                                                establecerDiasVacacionNoPlanificadaDiaDias();
+                                            } else {
+                                                $("INPUT[id$='vacacionNoPlanificadaDiaCalenarSeleccion']").val($('#vacacionNoPlanificadaDiaCalenar').val());
+                                                asignarNoPlanificadaDiaCalenarSeleccion([
+                                                    {
+                                                        name: 'seleccionDias',
+                                                        value: $('#vacacionNoPlanificadaDiaCalenar').val()
+                                                    }
+                                                ]);
+                                            }
+                                        }
+                                    });
+                                    function establecerDiasVacacionNoPlanificadaDiaDias() {
+                                        try {
+                                            var fechas = $("INPUT[id$='vacacionNoPlanificadaDiaCalenarSeleccion']").val();
+                                            $('#vacacionNoPlanificadaDiaCalenar').multiDatesPicker("resetDates");
+                                            if (fechas.length > 0) {
+                                                fechas = fechas.split(',');
+                                                $('#vacacionNoPlanificadaDiaCalenar').multiDatesPicker("addDates", fechas);
+                                            }
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                    $(function () {
+                                        establecerDiasVacacionNoPlanificadaDiaDias();
+                                    });
+                                </script>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="panelVacacionNoPlanificadaHora" columns="3"
+                                         rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.tipoPeriodo eq 'H' }">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDia']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:calendar required="true" 
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}" 
+                                            showOn="button"
+                                            disabled="#{not vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                            value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.fecha}">
+                                    <p:ajax event="dateSelect" listener="#{vacacionSolicitudBean.esVacacionNoPlanificadaHoraValida}"
+                                            update="panelBotonGuardar panelVacacionNoPlanificadaHora panelTipoPeriodoVacacionNoPlanificada"/>
+                                </p:calendar>
+                                <p:spacer/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDiaHoraSalida']}:"
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right"/>
+                                <p:calendar required="true" 
+                                            timeOnly="true" 
+                                            onkeypress="esVacacionNoPlanificadaHoraValidaLocal(event)"
+                                            disabled="#{not vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}" showOn="button"
+                                            value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.horaInicio}" >
+                                    <p:ajax event="dateSelect" listener="#{vacacionSolicitudBean.esVacacionNoPlanificadaHoraValida}"
+                                            update="panelBotonGuardar panelVacacionNoPlanificadaHora panelTipoPeriodoVacacionNoPlanificada"/>
+                                </p:calendar>
+                                <p:spacer/>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.tipoPeriodoDiaHoraEntrada']}:"
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right"/>
+                                <p:calendar required="true" 
+                                            timeOnly="true" 
+                                            onkeypress="esVacacionNoPlanificadaHoraValidaLocal(event)"
+                                            disabled="#{not vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}" 
+                                            showOn="button"
+                                            value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.horaFin}" >
+                                    <p:ajax event="dateSelect" listener="#{vacacionSolicitudBean.esVacacionNoPlanificadaHoraValida}"
+                                            update="panelBotonGuardar panelVacacionNoPlanificadaHora panelTipoPeriodoVacacionNoPlanificada"/>
+                                </p:calendar>
+                                <p:spacer/>
+
+                                <p:remoteCommand name="esVacacionNoPlanificadaHoraValida" 
+                                                 process="@this panelVacacionNoPlanificadaHora" 
+                                                 update="panelBotonGuardar panelVacacionNoPlanificadaHora panelTipoPeriodoVacacionNoPlanificada"                                 
+                                                 actionListener="#{vacacionSolicitudBean.esVacacionNoPlanificadaHoraValida}"/>
+
+                                <script>
+                                    function esVacacionNoPlanificadaHoraValidaLocal(event) {
+                                        if (event.keyCode == 13) {
+                                            esVacacionNoPlanificadaHoraValida();
+                                        }
+                                    }
+                                </script>
+
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" rendered="#{false}">
+                                <h:outputLabel value="* No Días:"
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right" />
+                                <p:inputText id="cantidadSolicitadaId"
+                                             value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.cantidadSolicitada}"
+                                             disabled="#{!(vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo)}"
+                                             styleClass="campoNumerico" 
+                                             maxlength="3"
+                                             style="width: 70px" >
+                                    <p:ajax event="blur" 
+                                            process="@this"
+                                            update="fechaFinId,cantidadSolicitadaId,panelBotonGuardar"
+                                            listener="#{vacacionSolicitudBean.registrarVacacionesNoPlanificadas()}"/>  
+
+                                </p:inputText>
+                                <div class="isa_info">
+                                    <i class="fa fa-info-circle"></i>
+                                    Dias de vacaciones otorgadas.
+                                </div>
+
+                                <h:outputLabel value="* Fecha de Inicio:"
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right" />
+                                <p:calendar navigator="true" 
+                                            required="true"
+                                            showOn="button" 
+                                            readonlyInput="true"
+                                            disabled="#{!(vacacionSolicitudBean.vacacionSolicitudHelper.esNuevo)}"
+                                            value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.fechaInicio}"
+                                            mindate="#{vacacionSolicitudBean.vacacionSolicitudHelper.hoy}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            requiredMessage="La fecha inicio es requerida">
+                                    <p:ajax event="dateSelect" 
+                                            process="@this"
+                                            update="fechaFinId,cantidadSolicitadaId,panelBotonGuardar"
+                                            listener="#{vacacionSolicitudBean.registrarVacacionesNoPlanificadas()}"/>  
+                                </p:calendar>
+                                <div class="isa_info">
+                                    <i class="fa fa-info-circle"></i>
+                                    Debe seleccionar una fecha que corresponda a un día laboral
+                                </div>
+
+                                <h:outputLabel value="Fecha Final"
+                                               styleClass="labelFormulario" 
+                                               style="text-align: right" />
+                                <p:calendar id="fechaFinId"  
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.fechaFin}"
+                                            disabled="true">
+                                </p:calendar>
+                                <div class="isa_info">
+                                    <i class="fa fa-info-circle"></i>
+                                    Fecha final de vacaciones
+                                </div>
+
+
+                            </h:panelGrid>
+
+
+
+                            <h:panelGrid columns="2"
+                                         rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.aprobador!=null}">
+                                <h:outputText value="Observación:"/>
+                                <p:inputTextarea value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.motivo}" 
+                                                 style="width: 600px;overflow: auto"
+                                                 disabled="true" /> 
+                                <h:outputText value="Validador:" rendered="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.aprobador!=null}"  />
+                                <p:inputTextarea value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionSolicitud.aprobador.servidor.apellidosNombres}" 
+                                                 style="width: 600px;overflow: auto"
+                                                 disabled="true" /> 
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:outputPanel>
+
+
+
+                </p:panel>
+
+            </h:form>
+
+
+            <!-- confirmacion de envio de solicitud -->
+            <p:confirmDialog id="confirmDialog" header ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionTilulo']}"  
+                             message  ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionMsg']}" 
+                             severity="alert" widgetVar="confirmation"> 
+                <h:form id="frmConfirm">
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirm" value="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}" 
+                                             update=":frmSolicitudVacacion" 
+                                             action="#{vacacionSolicitudBean.guardar}"/>                        
+                            <p:commandButton id="decline" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                             onclick="confirmation.hide()" type="button" />
+                        </span>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+            <p:confirmDialog id="confirmDialog1" header ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionVacacion.titulo']}"  
+                             message  ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionVacacion.mensaje']} " 
+                             severity="alert" widgetVar="confirmation1"> 
+                <h:form id="frmConfirm1">
+                    <h:panelGrid columns="2" >
+                        <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_desde']}     " />
+                        <p:inputText value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionDetalle.fechaInicio}" disabled="true">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+
+                        <h:outputText value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_hasta']}:     "/>
+                        <p:inputText value="#{vacacionSolicitudBean.vacacionSolicitudHelper.vacacionDetalle.fechaFin}" disabled="true">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid> <div style="text-align: center">
+                        <p:separator/>
+                        <span>
+                            <p:commandButton id="confirmm" value="#{msg['ec.gob.mrl.smp.generico.boton.enviar']}" 
+                                             update=":frmSolicitudVacacion:tablaplanificacionVacacion" 
+                                             ajax="#{false}"
+                                             action="#{vacacionSolicitudBean.guardarDetallePlanificacion}"/>                        
+                            <p:commandButton id="declinee" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                             onclick="confirmation1.hide()" type="button" />
+                        </span>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+            <!-- confirmacion de reversion de solicitud -->
+            <p:confirmDialog header ="#{msg['ec.gob.mrl.smp.administracion.vacacion.revertir.confirmacionTilulo']}"  
+                             message  ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionMsgSolicitudVacacion']}" 
+                             severity="alert" widgetVar="confirmRevertir"> 
+                <h:form id="confirmRevertirForm">
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirm" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.revertir']}" 
+                                             action="#{vacacionSolicitudBean.revertir(false)}"
+                                             update=":frmSolicitudVacacion"/>                        
+                            <p:commandButton id="decline" 
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                             onclick="confirmRevertir.hide()" type="button" />
+                        </span>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script> 
+
+
+        </ui:define>
+
+
+    </ui:composition>
+</html>

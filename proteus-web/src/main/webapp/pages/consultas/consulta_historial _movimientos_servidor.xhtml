@@ -1,0 +1,195 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="4">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         ajax="#{false}"
+                                         action="#{movimientoBean.buscar()}"                                         
+                                         update="listaMovimientos, panelBusqueda"/>  
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.limpiar']}"
+                                         ajax="#{false}"
+                                         action="#{movimientoBean.limpiarCamposBusqueda()}"                                         
+                                         update="listaMovimientos, panelBusqueda"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         action="#{movimientoBean.salirPantallaPrincipal()}"                                         
+                                         update="listaMovimientos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"                                         
+                                         action="#{movimientoBean.imprimir()}"
+                                         update="listaMovimientos, panelBusqueda, totalReg"/>
+                    </h:panelGrid>     
+
+                </p:panel>    
+                <p:panel header="Historial de Movimientos del Servidor ">
+                    <p:fieldset id="fldFiltroBusqueda" legend="Filtros de Búsqueda" style="width: 95%;margin:auto;">
+                        <p:panel id="panelBusqueda">
+                            <h:panelGrid columns="1">                                   
+                                <h:panelGrid columns="4" >
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.tipoMOvimiento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:spacer width="47" height="10"/>
+                                    <p:selectOneMenu id="consulta_tipoMovimieto"
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     style="width: 400px"                                             
+                                                     value="#{movimientoBean.movimientoHelper.tipoMovimientoId}">                                      
+                                        <f:selectItems value="#{movimientoBean.movimientoHelper.listaTipoMovimiento}"/>                                        
+                                    </p:selectOneMenu>
+                                    <p:message for="consulta_tipoMovimieto" display="icon"/>                                  
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.estadoTramites']}:   "
+                                                   styleClass="labelFormulario"/>                                                                            
+                                    <p:spacer width="47" height="10"/>
+                                    <p:selectOneMenu id="consulta_tramites"
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     style="width: 400px"                                             
+                                                     value="#{movimientoBean.movimientoHelper.codigoFase}">                                      
+                                        <f:selectItems value="#{movimientoBean.movimientoHelper.listaFase}" />                                           
+                                    </p:selectOneMenu>                                    
+                                    <p:message for="consulta_tramites" display="icon"/>         
+                                </h:panelGrid>                                
+                                <h:panelGrid columns="6">
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.FechaVigenciaDesde']}:"
+                                                   styleClass="labelFormulario"/>   
+                                    <p:calendar id="fecha_vigente_desde"                                    
+                                                value="#{movimientoBean.movimientoHelper.fechaVigenteDesde}"                                    
+                                                showOn="button"
+                                                navigator="true"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>                                    
+                                    <p:message for="fecha_vigente_desde" display="icon"/>
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.FechaVigenciaHasta']}:"
+                                                   styleClass="labelFormulario"/>                        
+                                    <p:calendar id="fecha_vigente_hasta"                                                
+                                                value="#{movimientoBean.movimientoHelper.fechaVigenteHasta}"                                    
+                                                showOn="button"
+                                                navigator="true"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>   
+                                    <p:message for="fecha_vigente_hasta" display="icon"/>         
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.FechaSolicitudDesde']}:"
+                                                   styleClass="labelFormulario"/>  
+                                    <p:calendar id="fecha_vigente_estado_desde"                                    
+                                                value="#{movimientoBean.movimientoHelper.fechaEstadoDesde}"                                    
+                                                showOn="button"
+                                                navigator="true"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>                          
+                                    <p:message for="fecha_vigente_estado_desde" display="icon"/>
+
+                                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.FechaSolicitudHasta']}:"
+                                                   styleClass="labelFormulario"/>                        
+
+                                    <p:calendar id="fecha_vigente_estado_hasta"                                                
+                                                value="#{movimientoBean.movimientoHelper.fechaEstadoHasta}"                                    
+                                                showOn="button"
+                                                navigator="true"
+                                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>   
+                                    <p:message for="fecha_vigente_estado_hasta" display="icon"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:fieldset>
+                    <p:fieldset legend="Información de Trámites"> 
+                        <h:outputLabel id="totalReg" value="Total Registros: #{movimientoBean.movimientoHelper.numeroTramites}"/>   
+                        <p:dataTable id="listaMovimientos"                              
+                                     value="#{movimientoBean.movimientoHelper.listaMovimientos}"
+                                     var="movimiento"
+                                     rows="10"                                     
+                                     rowIndexVar="rowIndex"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}"
+                                     style="overflow: auto; width: 930px;">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>    
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.numeroTramite']}">
+                                <h:outputText value="#{movimiento.tramite.numericoTramite}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.movimiento']}" 
+                                      style=" text-align: center" width="200">
+                                #{movimiento.tramite.tipoMovimiento.nombre}
+                            </p:column>             
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.rigeAPartirDe']}">
+                                <h:outputText value="#{movimiento.rigeApartirDe}" >
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>  
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.unidadAdministrativa']}" 
+                                      width="220">
+                                #{movimiento.unidadAdministrativaCoreNombre}
+                            </p:column>                                   
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.denominacionPuesto']}"
+                                      width="220">
+                                #{movimiento.puestoInstitucionCoreNombre}
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaGeneral']}">
+                                <h:outputText value="#{movimiento.partidaGeneral}" style=" font-size: 0.8em;">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaIndividual']}">
+                                #{movimiento.partidaIndividual}   
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.grupoOcupacional']}"
+                                      style="text-align: center" width="80">
+                                #{movimiento.grupoOcupacionalNombre}
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.rmu']}">
+                                #{movimiento.rmu}
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.fechaRigeAPartirDe']}"
+                                      style="text-align: center">
+                                <h:outputText value="#{movimiento.tramite.fechaCreacion}">                                
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.fechaEstadoTramite']}"
+                                      style="text-align: center">
+                                <h:outputText value="#{movimiento.tramite.fechaActualizacion}">                                
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.estadoTramite']}"
+                                      style="text-align: center">
+                                #{movimiento.tramite.estado}
+                            </p:column> 
+                            <p:column headerText="Opciones">
+                                <div  style="width: 50px;text-align: center;">
+                                    <p:commandButton id="botonAccionPersonal" icon="ui-icon-print"
+                                                     process="@this"
+                                                     rendered="#{movimientoBean.movimientoHelper.codigoFase=='REG' or 
+                                                                 movimiento.tramite.estado=='REGISTRADO'}"
+                                                     partialSubmit="true"
+                                                     immediate="#{true}"
+                                                     action="#{movimientoBean.generarReporte()}"
+                                                     title="Imprimir Documento Habilitante">                            
+                                        <f:setPropertyActionListener value="#{movimiento}" 
+                                                                     target="#{movimientoBean.movimientoHelper.movimiento}"/>
+                                    </p:commandButton>
+                                    <h:commandLink action="#{movimientoBean.descargarArchivo}" 
+                                                   target="_blank"
+                                                   rendered="#{movimiento.tramite.codigoFase=='REG'}"
+                                                   value="Archivo">
+                                        <f:setPropertyActionListener value="#{movimiento}" 
+                                                                     target="#{movimientoBean.movimientoHelper.movimiento}"/>
+                                    </h:commandLink>
+                                </div>
+
+                            </p:column>
+                        </p:dataTable>    
+                    </p:fieldset>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

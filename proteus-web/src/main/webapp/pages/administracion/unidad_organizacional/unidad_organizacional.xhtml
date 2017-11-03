@@ -1,0 +1,238 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+
+            <h:form id="frmPrincipal">               
+                <p:panel id="panelubg">
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.titulo']}">
+                        <p:contextMenu for="tablaUbicacion" id="menu" >  
+                            <p:menuitem value="Nuevo" update=":frmUbicacion:panelfrm" icon="ui-icon-document"                                         
+                                        actionListener="#{unidadOrganizacionalBean.iniciarNuevo()}" 
+                                        oncomplete="dlgUnidadOrganizacional.show()"/>  
+                            <p:menuitem value="Editar" actionListener="#{unidadOrganizacionalBean.iniciarEdicion()}" 
+                                        update="tablaUbicacion,:frmUbicacion:panelfrm" icon="ui-icon-pencil"                                        
+                                        oncomplete="dlgUnidadOrganizacional.show()"/>
+                            <p:menuitem value="Eliminar"                                         
+                                        update="tablaUbicacion,:frmUbicacion:panelfrm" 
+                                        icon="ui-icon-trash"
+                                        oncomplete="confirmEliminacion.show()"/>
+                        </p:contextMenu>  
+                        <p:treeTable id="tablaUbicacion"
+                                     value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.root}"
+                                     var="ubicacion"
+                                     style="overflow: auto"                                              
+                                     selection="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.selectedNode}" 
+                                     selectionMode="single">
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{ubicacion.nombre}"
+                                      filterBy="#{ubicacion.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ubicacion.nombre}" 
+                                              title="#{ubicacion.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                      style="font-size: 8pt;width: 80px; text-align: center;"
+                                      sortBy="#{ubicacion.codigo}"
+                                      filterBy="#{ubicacion.codigo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ubicacion.codigo}" 
+                                              title="#{ubicacion.codigo}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.agrupador']}"
+                                      style="font-size: 8pt;width: 8px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.esAgrupador}" 
+                                                         disabled="#{true}"/>         
+                            </p:column>                            
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.rrhh']}"
+                                      style="font-size: 8pt;width: 8px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.rrhh}" 
+                                                         disabled="#{true}"/>         
+                            </p:column>                            
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.desconcentrado']}"
+                                      style="font-size: 8pt;width: 10px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.desconcentrado}" 
+                                                         disabled="#{true}"/>         
+                            </p:column>                            
+
+                            <p:column headerText="Legaliza"
+                                      style="font-size: 8pt;width: 8px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.legaliza}" 
+                                                         disabled="#{true}"/>         
+                            </p:column>                            
+
+                            <p:column headerText="Control"
+                                      style="font-size: 8pt;width: 8px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.control}" 
+                                                         disabled="#{true}"/>         
+                            </p:column> 
+
+                            <p:column headerText="Relojes"
+                                      style="font-size: 8pt;width: 8px; text-align: center;">
+                                <p:selectBooleanCheckbox value="#{ubicacion.tieneRelojesAsignadosEnBaseDatos}" 
+                                                         disabled="#{true}"/>         
+                            </p:column>
+
+                        </p:treeTable>
+                    </p:fieldset>
+                </p:panel>
+            </h:form>
+
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación"
+                             severity="alert"
+                             widgetVar="confirmEliminacion">  
+                <h:form id="formEliminarRegimenLaboral">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         style="margin: auto"
+                                         update=":frmPrincipal:panelubg, :frmPrincipal:tablaUbicacion"
+                                         actionListener="#{unidadOrganizacionalBean.borrar()}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <p:dialog modal="true"
+                      resizable="false"
+                      width="350"
+                      height="350"
+                      draggable="#{true}"
+                      header="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}"
+                      widgetVar="dlgUnidadOrganizacional"
+                      closable="false">
+                <h:form id="frmUbicacion">
+                    <h:panelGrid id="panelfrm" columns="2">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}:"/>
+                        <p:inputText value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.uoSuperior.codigo}" 
+                                     disabled="true"
+                                     style="width: 200px"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}:"/>
+                        <p:inputTextarea value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.uoSuperior.nombre}" 
+                                         style="width: 200px"
+                                         disabled="true"
+                                         styleClass="textoNombre" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}:"/>
+                        <p:inputText value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.codigo}" 
+                                     required="true"
+                                     style="width: 200px"
+                                     disabled="#{!unidadOrganizacionalBean.unidadOrganizacionalHelper.esNuevo}"
+                                     requiredMessage="El código es un campo requerido"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}:"/>
+                        <p:inputTextarea value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.nombre}" 
+                                         required="true"
+                                         style="width: 200px"
+                                         requiredMessage="El nombre es un campo requerido"
+                                         styleClass="textoNombre" />
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.agrupador']}:"/>
+                        <p:selectBooleanCheckbox value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.esAgrupador}"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.rrhh']}:"/>
+                        <p:selectBooleanCheckbox value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.rrhh}"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.desconcentrado']}:"/>
+                        <p:selectBooleanCheckbox value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.desconcentrado}"/>
+
+                        <h:outputLabel value="Legaliza:"/>
+                        <p:selectBooleanCheckbox value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.legaliza}"/>
+
+
+                        <h:outputLabel value="Control:"/>
+                        <p:selectBooleanCheckbox value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.control}"/>
+
+                        <h:outputLabel value="Relojes:"/>
+                        <p:commandLink id="cmlRelojes" 
+                                       style="color: blue"
+                                       value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.hayRelojesAsignadosEnLaVista 
+                                                ? 'Ver relojes asignados' : 'Click para asignar relojes'}"
+                                       action="#{unidadOrganizacionalBean.abrirDialogoAsignacionRelojes}"
+                                       immediate="#{true}"
+                                       update=":frmAsignacionRelojes"/>
+
+                    </h:panelGrid>
+                    <p:separator/>
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"                                         
+                                         actionListener="#{unidadOrganizacionalBean.guardar()}"
+                                         update=":frmPrincipal:panelubg, :frmPrincipal:tablaUbicacion"
+                                         />
+                        <p:commandButton id="btnCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgUnidadOrganizacional.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- DIALOGO PARA LA ASIGNACI[ON DE RELOJES-->
+            <p:dialog modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      width="700px"  
+                      header="Asignación de Relojes"
+                      widgetVar="dlgAsignacionRelojes">
+                <style>
+                    .cuo { width: 130px;}
+                </style>
+
+                <h:form id="frmAsignacionRelojes">
+                    <p:panelGrid columns="2" 
+                                 style="width: 100%;"
+                                 columnClasses="cuo">
+                        <p:outputLabel value="Unidad Organizacional: "/>
+                        <p:outputLabel value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.unidadOrganizacional.nombre}"/>
+                    </p:panelGrid>
+                    <p:separator />
+                    <p:pickList id="listaSeleccion" 
+                                value="#{unidadOrganizacionalBean.unidadOrganizacionalHelper.seleccionRelojes}" 
+                                var="reloj" 
+                                converter="relojConverter"
+                                addLabel="Asignar"
+                                addAllLabel="Asignar todos"
+                                removeLabel="Eliminar Asignación"
+                                removeAllLabel="Eliminar todas las asignaciones"
+                                itemValue="#{reloj}" 
+                                itemLabel="#{reloj.nombre}" 
+                                showSourceFilter="true" 
+                                showTargetFilter="true" 
+                                filterMatchMode="contains">
+                        <f:facet name="sourceCaption">Asignables</f:facet>
+                        <f:facet name="targetCaption">Asignados</f:facet>
+                    </p:pickList>
+                    <p:separator />
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         actionListener="#{unidadOrganizacionalBean.guardarAsignacionRelojes}"
+                                         update=":frmUbicacion:cmlRelojes" 
+                                         style="margin: auto; margin-right: 5px" /> 
+
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgAsignacionRelojes.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

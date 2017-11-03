@@ -1,0 +1,519 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition>
+        <style>
+            #box-table-b {
+                border-bottom: 7px solid #9BAFF1;
+                border-collapse: collapse;
+                border-top: 7px solid #9BAFF1;
+                /**font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;**/
+                font-size: 12px;
+                /**margin: 20px;**/
+                text-align: center;
+                width: 480px;
+            }
+
+            #box-table-b th {
+                /** background: none repeat scroll 0 0 #E8EDFF;**/
+                border-left: 1px solid #9BAFF1;
+                border-right: 1px solid #9BAFF1;
+                border-bottom: 1px solid #9BAFF1;
+                color: #003399;
+                font-size: 13px;
+                font-weight: normal;
+                padding: 8px;
+            }
+
+            #box-table-b td {
+                text-align: center;
+                /** background: none repeat scroll 0 0 #E8EDFF; **/
+                border-left: 1px solid #AABCFE;
+                border-right: 1px solid #AABCFE;
+                color: #666699;  
+                vertical-align: top;              
+            }
+
+            .botonTabla{
+                width: 22px;height: 22px;
+            }
+
+        </style>  
+        <p:dialog widgetVar="dlgHorarios" 
+                  modal="true"
+                  header="Horario"
+                  draggable="false"                     
+                  resizable="false">
+            <h:form id="frmHorario">
+
+                <table>
+                    <tr>
+                        <td style="vertical-align: bottom">
+                            <span>HORAS DIARIAS:</span>
+                            <span style="display: #{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'?'block':'none'}">
+                                HORAS RECUPERACIÓN:
+                            </span>
+                        </td>
+                        <td>
+                            <table summary="Most Favorit Movies" id="box-table-b">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" >
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="LUNES"/>
+                                                <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="1" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="MARTES"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 update=":frmHoras"    
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="2" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="MIÉRCOLES"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="3" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="JUEVES"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="4" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="VIERNES"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="5" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="SÁBADO"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="6" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="width: 99px">
+                                                <h:outputLabel value="DOMINGO"/>  <br/>
+                                                <p:commandButton value="AGREGAR" 
+                                                                 style="font-size: 8px"
+                                                                 process="@this"
+                                                                 action="#{licenciaHorarioBean.iniciarNuevoHorario}"
+                                                                 update=":frmHoras"                                               
+                                                                 oncomplete="dlgNuevaHoraDia.show()">
+                                                    <f:setPropertyActionListener value="7" target="#{licenciaHorarioBean.licenciaHorarioHelper.dia}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table>                                                
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(1)}"  
+                                                           var="lunes">
+                                                    <tr style="background-color: #{lunes.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{lunes.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{lunes.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>  
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{lunes}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(2)}" 
+                                                           var="martes">
+                                                    <tr style="background-color: #{martes.tipo=='R'?'#EBEBEB':'#C5DBEC'}">
+                                                        <td>
+                                                            <h:outputText value="#{martes.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{martes.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>   
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{martes}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>                         
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(3)}" 
+                                                           var="miercoles">
+                                                    <tr style="background-color: #{miercoles.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{miercoles.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{miercoles.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>   
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{miercoles}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>    
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(4)}" 
+                                                           var="jueves">
+                                                    <tr style="background-color: #{jueves.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{jueves.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{jueves.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>   
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{jueves}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>                           
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(5)}" 
+                                                           var="viernes">
+                                                    <tr style="background-color: #{viernes.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{viernes.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{viernes.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>  
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{viernes}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>                                   
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(6)}" 
+                                                           var="sabado">
+                                                    <tr style="background-color: #{sabado.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{sabado.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{sabado.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>  
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{sabado}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>    
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <ui:repeat value="#{licenciaHorarioBean.extraerListaHorario(7)}" 
+                                                           var="domingo">
+                                                    <tr style="background-color: #{domingo.tipo=='L'?'#C5DBEC':'#EBEBEB'}">
+                                                        <td>
+                                                            <h:outputText value="#{domingo.horaInicio}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td> 
+                                                        <td>
+                                                            <h:outputText value="#{domingo.horaFin}">
+                                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"/>
+                                                            </h:outputText>
+                                                        </td>  
+
+                                                        <td style="border: none;">
+                                                            <p:commandButton icon="ui-icon-close" 
+                                                                             styleClass="botonTabla"
+                                                                             update=":frmEliminacionHora"
+                                                                             action="#{licenciaHorarioBean.iniciarEliminacion()}"
+                                                                             process="@this">
+                                                                <f:setPropertyActionListener value="#{domingo}" 
+                                                                                             target="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario}"/>
+                                                            </p:commandButton>
+                                                        </td>                                        
+                                                    </tr>
+                                                </ui:repeat>
+                                            </table>                            
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                                <tfoot style="border-top:1px solid #9BAFF1; ">                            
+                                    <tr >
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(1).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(2).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(3).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(4).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(5).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(6).totalHoras)}</td>
+                                        <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(7).totalHoras)}</td>
+                                    </tr>
+                                    <c:if test="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'}">
+                                        <tr>
+                                            <td >#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(1).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(2).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(3).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(4).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(5).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(6).totalHorasRecuperacion)}</td>
+                                            <td>#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.extraerHorario(7).totalHorasRecuperacion)}</td>
+                                        </tr>
+                                    </c:if>
+                                </tfoot>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL SEMANAL:</td>
+                        <td><h:outputLabel value="#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.licenciaHorarioHelper.totalHorasSemana)}"/></td>
+                    </tr>
+                    <c:if test="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'}">
+                        <tr>
+                            <td>TOTAL SEMANAL RECUPERACIÓN:</td>
+                            <td><h:outputLabel value="#{licenciaHorarioBean.obtenerHorasMinutos(licenciaHorarioBean.licenciaHorarioHelper.totalHorasSemanaRecuperacion)}"/></td>
+                        </tr>
+                    </c:if>
+                </table>
+                <div class="ui-messages ui-widget" id="fmrTramite:mensajessss">
+                    <div class="ui-messages-info ui-corner-all">
+                        <span class="ui-messages-info-icon"></span>
+                        <ul>
+                            <li>
+
+                                <span class="ui-messages-info-summary">
+                                    <h:outputLabel rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.periodoControl=='D'}" 
+                                                   value="Aviso: el número máximo de horas diarias que puede solicitar son: #{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.valorPeriodoControl}, y el número máximo en una semana son: #{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.totalHorasSemana}"/>
+                                    <h:outputLabel rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.periodoControl=='S'}" 
+                                                   value="Aviso: el número máximo de horas semanales que puede solicitar son:  #{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.totalHorasSemana}"/>                                    
+
+                                </span>
+                            </li>                                
+                        </ul>
+                    </div>
+                </div>
+                <c:if test="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'}">
+                    <div style="text-align: left;" >
+                        <div style="width: 300px;height: 20px;background-color: #C5DBEC;text-align: center;">
+                            Horario para Licencia / Permisos en color celeste.
+                        </div>
+                        <div style="width: 300px;height: 20px;background-color: #EBEBEB;text-align: center;">
+                            Horario para Recuperación en color gris.
+                        </div>
+                    </div>
+                </c:if>
+                <div style="margin: auto;text-align: center;">
+                    <p:commandButton action="#{licenciaHorarioBean.agregarHorariosSolicitud()}"
+                                     value="ACEPTAR"
+                                     rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoPantalla=='NS'}"
+                                     update=":frmHorario"/>
+                    <p:commandButton action="#{licenciaHorarioBean.agregarHorariosTramite()}"
+                                     value="ACEPTAR"
+                                     rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoPantalla=='TR'}"
+                                     update=":frmHorario"/>
+                    <p:commandButton value="CANCELAR"
+                                     onclick="dlgHorarios.hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+        <!-- PopUp de elimicion de orario -->
+        <p:dialog widgetVar="dlgEliminacionHora"
+                  modal="true"
+                  header="Eliminación de hora."
+                  draggable="false"
+                  resizable="false">
+            <h:form id="frmEliminacionHora">
+                <h:outputLabel value="#{licenciaHorarioBean.licenciaHorarioHelper.mensajeEliminacion}"/>
+                <p:separator/>
+                <div style="margin: auto;text-align: center;">
+                    <p:commandButton action="#{licenciaHorarioBean.eliminar}"
+                                     value="ACEPTAR"
+                                     update=":frmHorario"/>
+                    <p:commandButton value="CANCELAR"
+                                     onclick="dlgEliminacionHora.hide();"/>
+                </div>  
+            </h:form>                
+        </p:dialog>
+        <!-- PopUp de nuevo horario -->
+        <p:dialog widgetVar="dlgNuevaHoraDia"
+                  modal="true"
+                  draggable="true"
+                  resizable="false">
+            <h:form id="frmHoras">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="* Hora inicio:"/>
+                    <p:calendar id="horaInicio" 
+                                value="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario.horaInicio}" 
+                                pattern="HH:mm" 
+                                autocomplete="off"
+                                required="#{true}"
+                                showOn="button"
+                                timeOnly="true"
+                                requiredMessage="El campo hora inicio es requerido"/>
+
+                    <h:outputLabel value="* Hora fin:"/>
+                    <p:calendar id="horaFin" 
+                                value="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario.horaFin}" 
+                                pattern="HH:mm" 
+                                autocomplete="off"
+                                required="#{true}"
+                                showOn="button"
+                                timeOnly="true" 
+                                requiredMessage="El campo hora fin es requerido."/>
+
+                    <h:outputLabel value="* Tipo:"                                   
+                                   rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'}"/>
+                    <p:selectOneRadio id="licenciaHorario_tipo" 
+                                      rendered="#{licenciaHorarioBean.licenciaHorarioHelper.tipoMovimiento.horarioDevengar=='S'}"
+                                      required="true"
+                                      requiredMessage="El Tipo es un campo requerido."
+                                      value="#{licenciaHorarioBean.licenciaHorarioHelper.licenciaHorario.tipo}">
+                        <f:selectItems value="#{licenciaHorarioBean.licenciaHorarioHelper.tipoHorario}"/>
+                    </p:selectOneRadio>
+
+                </h:panelGrid>
+                <div style="margin: auto;text-align: center;">
+                    <p:commandButton action="#{licenciaHorarioBean.agregar}"
+                                     value="AGREGAR"
+                                     update="frmHoras"/>
+                    <p:commandButton value="CANCELAR"
+                                     type="button"
+                                     immediate="true"
+                                     onclick="dlgNuevaHoraDia.hide();"/>
+                </div>                                                            
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

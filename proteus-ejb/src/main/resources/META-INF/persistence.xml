@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="proteusPU" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>jdbc/proteus</jta-data-source>
+        <validation-mode>AUTO</validation-mode>
+        <properties>
+            
+            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.jdbc.cache-statements" value="true"/>
+            <property name="eclipselink.jdbc.cache-statements.size" value="30"/>             
+            <property name="eclipselink.cache.shared.Customer" value="true"/>
+            <property name="eclipselink.jdbc.batch-writing" value="JDBC"/>
+            <!--  Optimization: value=400 a 1000 increasing the batch size to 1000 reduces the database accesses to 6 per page-->
+            <property name="eclipselink.jdbc.batch-writing.size" value="1000"/>
+            <!--  Optimization: Avoids the cost of flushing on every query execution.-->
+            <property name="eclipselink.persistence-context.flush-mode" value="commit"/>
+            <property name="eclipselink.persistence-context.close-on-commit" value="true"/>
+            <property name="eclipselink.persistence-context.persist-on-commit" value="false"/>
+            <property name="eclipselink.cache.size.default" value="0"/>
+            <property name="eclipselink.cache.type.default" value="None"/>
+            <property name="eclipselink.jdbc.uppercase-columns" value="true" />
+            <property name="javax.persistence.lock.timeout" value="1000"/>   
+            <!--  Optimization: value="FINE"  a off x Avoids some logging overhead-->  
+            
+            
+            
+            <!--<property name="eclipselink.profiler" value="PerformanceProfiler"/>-->
+            <!--<property name="eclipselink.ddl-generation" value="create-tables"/>-->
+            <!--<property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc"/>-->
+            <!--<property name="eclipselink.ddl-generation.output-mode" value="both"/>-->
+            
+        </properties>
+    </persistence-unit>
+</persistence>

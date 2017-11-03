@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <style>
+                input.ui-autocomplete-input.ui-inputfield.ui-widget.ui-state-default.ui-corner-all {
+                    width: 500px;
+                    text-transform: uppercase;
+                }
+            </style>
+            <smp:catalogo_formulario controlador="#{excepcionAsistenciaPersonalBean}" 
+                                     extendido="false"
+                                     titulo="ADMINISTRACIÓN DE EXCEPCIONES DE ASISTENCIA DE PERSONAL">
+                <f:facet name="contenido">
+                    <p:panel>
+                        <h:panelGrid columns="2" 
+                                     id="tablaformulario">
+
+                            <h:outputLabel value="* Servidor:"
+                                           styleClass="labelFormulario" />
+                            <p:autoComplete id="servidorExcepcion"
+                                            required="#{true}"
+                                            style="width: 500px; text-transform: uppercase;"
+                                            value="#{excepcionAsistenciaPersonalBean.excepcionAsistenciaPersonalHelper.excepcion.servidor}"
+                                            completeMethod="#{excepcionAsistenciaPersonalBean.buscarServidoresActivosEnPuestosOcupadosPorNombre}"  
+                                            var="servidor" 
+                                            itemValue="#{servidor}"
+                                            itemLabel="#{excepcionAsistenciaPersonalBean.concatenarNombreIdentificacion(servidor)}" 
+                                            maxResults="10"
+                                            minQueryLength="3"
+                                            queryDelay="750"
+                                            scrollHeight="100" 
+                                            converter="servidorConverter" 
+                                            requiredMessage="El campo 'Servidor' es requerido." 
+                                            forceSelection="#{true}">
+                            </p:autoComplete>
+
+                            <p:outputLabel value="* Justificación:"/>
+                            <p:inputTextarea value="#{excepcionAsistenciaPersonalBean.excepcionAsistenciaPersonalHelper.excepcion.justificacion}"
+                                             style="width: 500px; text-transform: uppercase;"
+                                             onblur="javascript:this.value = this.value.toUpperCase();"
+                                             required="#{true}"
+                                             requiredMessage="El campo 'Justificación' es requerido"
+                                             maxlength="400"/>
+                        </h:panelGrid>
+
+                    </p:panel>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

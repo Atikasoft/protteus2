@@ -1,0 +1,349 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form id="frmPrincipal">       
+                <p:panel header="Consulta Trayectoria Laboral" id="panel_botones">
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{consultaTrayectoriaLaboralBean.buscarMovimientos()}" 
+                                         update="tblListaNominas"/>
+                        <p:commandButton value="SALIR" 
+                                         immediate="#{true}"
+                                         action="#{consultaTrayectoriaLaboralBean.salirPantallaPrincipal()}" 
+                                         ajax="#{false}"/>
+                        <p:commandButton id="btnReporte" value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{consultaTrayectoriaLaboralBean.generarReporte()}" 
+                                         disabled="#{!consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.generarTeporte}"
+                                         update="tblListaNominas"/>
+                    </h:panelGrid>
+                </p:panel>                
+                <p:fieldset id="areaServidor" legend="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">  
+                    <p:panel id="panelInformacionServido" >                          
+                        <h:panelGrid columns="4" >
+                            <h:outputLabel value="Fecha Desde:"
+                                           styleClass="labelFormulario"/>   
+                            <p:calendar  id="fechaVigenciaDesde"
+                                         showOn="button"
+                                         navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.consultaTrayectoriaLaboralVO.fechaDesde}"/>                            
+
+                            <h:outputLabel value="Fecha Hasta:"
+                                           styleClass="labelFormulario"/>    
+                            <p:calendar  id="fechaVigenciaHasta"
+                                         showOn="button"
+                                         navigator="true"
+                                         pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                         value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.consultaTrayectoriaLaboralVO.fechaHasta}"/>                            
+                        </h:panelGrid>
+
+                        <p:tabView activeIndex="#{consultaTrayectoriaLaboralBean.tabViewIndex}" onTabChange="limpiarTab()"
+                                   widgetVar="tabViewWV" id="tabViewId">
+                            <p:tab title="Búsqueda por Identificación">
+
+                                <p:panel id="pnlBusquedaIdentificacion">
+                                    <p:spacer/>
+                                    <h:panelGrid columns="5" id="pnlGridBusquedaIdentificacion">
+                                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}: "
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDocumento']}"
+                                                       id="tipoDocumento_lbl"
+                                                       styleClass="labelFormulario"/>
+
+                                        <p:selectOneMenu id="tipoDocumento"   
+                                                         filter="true" 
+                                                         filterMatchMode="contains"
+                                                         value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.tipoIdentificacion}">
+                                            <f:selectItems value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.tipoDocumento}"/>                                  
+                                            <p:ajax update="numeroDocumento, panelBusqueda" process="@this" 
+                                                    listener="#{consultaTrayectoriaLaboralBean.validarCampoDisable()}" />                                
+                                        </p:selectOneMenu>                            
+                                        <p:message for="tipoDocumento" display="icon"/>                           
+
+                                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "
+                                                       title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroDocumento']}"
+                                                       id="numeroDocumento_lbl"                                           
+                                                       styleClass="labelFormulario"/>
+                                        <h:panelGrid id="panelBusqueda">
+                                            <p:inputText  id="numeroDocumento"  
+                                                          autocomplete="off"
+                                                          maxlength="15"
+                                                          disabled="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.tipoCedula}"
+                                                          style="width: 100px"
+                                                          onkeypress="return pulsar(event)"
+                                                          value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.numeroIdentificacion}">  
+                                                <f:validateLength minimum="0" maximum="15" />
+                                            </p:inputText>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </p:tab>
+                            <p:tab title="Búsqueda por Apellidos y Nombres">
+                                <p:panel id="pnlBusquedaNombre">
+                                    <p:spacer/>
+                                    <h:panelGrid columns="2" id="pnlGridBusquedaNombre">
+                                        <h:outputLabel value="* Nombre o Apellido:  "
+                                                       styleClass="labelFormulario"/>
+                                        <p:inputText id="apellidoNombreFilter"  widgetVar="apellidoNombreFilterWV"                                           
+                                                     style="width: 280px" 
+                                                     styleClass="letrasEspacio"
+                                                     value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.filtroNombre}"
+                                                     />    
+                                    </h:panelGrid>
+                                </p:panel>                                       
+                            </p:tab>
+                        </p:tabView>
+                        <p:remoteCommand name="limpiarTabRC" actionListener="#{consultaTrayectoriaLaboralBean.limpiarTab()}"/>
+                        <br/>
+                        <p:commandButton value="BUSCAR" 
+                                         update=":frmPrincipal:panelInformacionServido :frmPrincipal:panel_botones :dlgResultados"
+                                         action="#{consultaTrayectoriaLaboralBean.buscar()}"
+                                         style="margin-left: 45%"/>
+
+                        <p:separator/>
+
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:  "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.apellidosNombres']}"
+                                           id="apellidoNombre_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="apellidoNombre"                                              
+                                         style="width: 300px"
+                                         value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.consultaTrayectoriaLaboralVO.apellidosNombresServidor}"
+                                         disabled="#{true}"/>    
+                            <p:message for="apellidoNombre" display="icon"/>
+                        </h:panelGrid>
+                        <br/>
+
+                    </p:panel>
+                </p:fieldset>
+
+                <p:separator/>
+                <p:dataTable value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.listaMovimientos}"
+                             var="movimientos"
+                             id="tblListaNominas"
+                             emptyMessage="#{msg['message.listaVacia']}"
+                             paginator="#{true}"
+                             scrollable="true"
+                             style="overflow: auto "
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="width: 20px;text-align: center">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>                   
+                    <p:column headerText="No.Doc.Hab."
+                              style="width: 70px;"
+                              filterBy="#{movimientos.numeroMovimiento}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.numeroMovimiento}">
+                        <h:outputText value="#{movimientos.numeroMovimiento}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Grupo" 
+                              style="width: 100px;;background: sandybrown;color: white "
+                              filterBy="#{consultaTrayectoriaLaboralBean.nombreGrupo(movimientos.grupo)}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{consultaTrayectoriaLaboralBean.nombreGrupo(movimientos.grupo)}">
+                        <h:outputText value="#{consultaTrayectoriaLaboralBean.nombreGrupo(movimientos.grupo)}"  
+                                      style="font-size: 10px"/>
+                    </p:column>             
+                    <p:column headerText="Clase" 
+                              style="width: 100px;background: sandybrown;color: white "
+                              filterBy="#{movimientos.clase}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.clase}">
+                        <h:outputText value="#{movimientos.clase}"  
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Tipo Movimiento"
+                              style="width: 260px;;background: sandybrown;color: white "
+                              filterBy="#{movimientos.tipoMovimiento}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.tipoMovimiento}">
+                        <h:outputText value="#{movimientos.tipoMovimiento}" 
+                                      style="font-size: 10px;" />
+                    </p:column>             
+                    <p:column headerText="Desde"  
+                              style="width: 70px; text-align: center">
+                        <h:outputText value="#{movimientos.fechaDesde}"
+                                      style="font-size: 10px;"/>
+                    </p:column>                    
+                    <p:column headerText="Hasta"  
+                              style="width: 70px; text-align: center">
+                        <h:outputText value="#{movimientos.fechaHasta}"
+                                      style="font-size: 10px;"/>
+                    </p:column>                    
+                    <p:column headerText="Explicación"
+                              style="width: 600px;"
+                              filterBy="#{movimientos.explicacion}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.explicacion}">
+                        <h:outputText value="#{movimientos.explicacion}" 
+                                      style="font-size: 9px;"/>
+                    </p:column>             
+                    <p:column headerText="Unidad Presupuestaria"
+                              style="width: 300px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.unidadPresupuestaria}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.unidadPresupuestaria}">
+                        <h:outputText value="#{movimientos.unidadPresupuestaria}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Unidad Organizacional"
+                              style="width: 300px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.unidadOrganizacional}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.unidadOrganizacional}">
+                        <h:outputText value="#{movimientos.unidadOrganizacional}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Denominación de Puesto"
+                              style="width: 200px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.denominacionPuesto}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.denominacionPuesto}">
+                        <h:outputText value="#{movimientos.denominacionPuesto}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Grado"
+                              style="width: 60px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.grado}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.grado}">
+                        <h:outputText value="#{movimientos.grado}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="RMU/SBU"
+                              style="width: 60px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.rmu}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.rmu}">
+                        <h:outputText value="#{movimientos.rmu}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Certificación Presupuestaria"
+                              style="width: 120px;background: steelblue ;color: white;"
+                              filterBy="#{movimientos.certificacionPresupuestaria}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.rmu}">
+                        <h:outputText value="#{movimientos.certificacionPresupuestaria}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Elaborador"
+                              style="width: 120px;background: cadetblue ;color: white;"
+                              filterBy="#{movimientos.elaborador}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.rmu}">
+                        <h:outputText value="#{movimientos.elaborador}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Fecha Elaboración"
+                              style="width: 60px;background: cadetblue ;color: white;">
+                        <h:outputText value="#{movimientos.fechaElaborador}" 
+                                      style="font-size: 10px;">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>             
+
+                    <p:column headerText="Legalizador"
+                              style="width: 120px;background: cadetblue ;color: white;"
+                              filterBy="#{movimientos.legalizador}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%;"
+                              sortBy="#{movimientos.rmu}">
+                        <h:outputText value="#{movimientos.legalizador}" 
+                                      style="font-size: 10px;"/>
+                    </p:column>             
+                    <p:column headerText="Fecha Legalización"
+                              style="width: 60px;background: cadetblue ;color: white;">
+                        <h:outputText value="#{movimientos.fechaLegalizador}" 
+                                      style="font-size: 10px;">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>             
+
+
+                </p:dataTable>
+            </h:form>
+
+            <!-- resultados de busqueda por nombre -->
+            <p:dialog header="RESULTADOS DE BÚSQUEDA POR NOMBRE"
+                      modal="true" id="dlgResultados"
+                      resizable="false"
+                      draggable="false"
+                      widgetVar="dlgResultadosNombre">
+
+                <h:form id="frmResultados">  
+                    <p:panel id="panelResultados">
+                        <p:dataTable id="tblResultados" 
+                                     value="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.servidoresEncontrados}"
+                                     var="servidor"
+                                     rows="10"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="Seleccionar" style="text-align: center; width: 50px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-check"
+                                                 ajax="#{false}"  update="panelInformacionServido panel_botones"
+                                                 action="#{consultaTrayectoriaLaboralBean.procesarSeleccion}"
+                                                 title="Seleccione el servidor del cual desea consultar la trayectoria">
+                                    <f:setPropertyActionListener value="#{servidor}" 
+                                                                 target="#{consultaTrayectoriaLaboralBean.consultaTrayectoriaLaboralHelper.servidorSeleccionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres" style="text-align: left">
+                                <h:outputText value="#{servidor.apellidosNombres}" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: left" rendered="#{servidor.tipoIdentificacion eq 'C'}">
+                                <h:outputText value="CÉDULA" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: left" rendered="#{not (servidor.tipoIdentificacion eq 'C')}">
+                                <h:outputText value="PASAPORTE" style="font-size: 10px;"/>
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align: left">
+                                <h:outputText value="#{servidor.numeroIdentificacion}" style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <center>
+                            <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgResultadosNombre.hide()"
+                                             style="margin: auto" >
+                            </p:commandButton>
+                        </center>
+                    </p:panel>
+                </h:form>  
+
+            </p:dialog>
+
+            <script>
+                function limpiarTab() {
+                    limpiarTabRC();
+                }
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="#{msg['ec.gob.mrl.smp.reasignacionTramite.reasignacionTitulo']}">
+                    <p:dataTable id="tablaTramitesAsignados"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 value="#{reasignacionTramiteBean.reasignacionTramiteHelper.listaTareas}"
+                                 filteredValue="#{reasignacionTramiteBean.reasignacionTramiteHelper.listaTareasFiltradas}"
+                                 var="tarea"
+                                 scrollable="true"
+                                 rowIndexVar="rowIndex"
+                                 style="overflow: auto"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.opciones']}" 
+                                  style="text-align: center; width: 50px">
+                            <p:commandButton icon="ui-icon-extlink" ajax="false" 
+                                             title="#{msg['ec.gob.mrl.smp.reasignacionTramite.reasignarTitulo']}"
+                                             action="#{reasignacionTramiteBean.reasignarTramite()}">
+                                <f:setPropertyActionListener value="#{tarea.tarea}" 
+                                                             target="#{reasignacionTramiteBean.reasignacionTramiteHelper.tarea}"/>                                 
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 30px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.grupo']}"
+                                  sortBy="#{tarea.tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{tarea.tipoMovimiento.clase.grupo.nombre}"
+                                  filterMatchMode="contains"
+                                  style="text-align: left; width: 180px"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tarea.tipoMovimiento.clase.grupo.nombre}"
+                                          style="font-size: 9px; "/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.clase']}"
+                                  sortBy="#{tarea.tipoMovimiento.clase.nombre}"
+                                  filterBy="#{tarea.tipoMovimiento.clase.nombre}"
+                                  style="text-align: center; width: 180px"
+                                  filterMatchMode="contains" filterStyle="width: 90%">
+                            <h:outputText value="#{tarea.tipoMovimiento.clase.nombre}"
+                                          style="font-size: 9px; "/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}"
+                                  sortBy="#{tarea.tipoMovimiento.nombre}"
+                                  filterBy="#{tarea.tipoMovimiento.nombre}"                                 
+                                  style="text-align: left; width: 200px"
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{tarea.tipoMovimiento.nombre}"
+                                          style="font-size: 9px; "/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.tramite']}"
+                                  sortBy="#{tarea.tarea.detalle.instancia.proceso.nombre}"
+                                  filterBy="#{tarea.tarea.detalle.instancia.proceso.nombre}"
+                                  style="text-align: left; width: 200px" filterStyle="width: 90%"
+                                  filterMatchMode="contains" rendered="#{false}">
+                            <h:outputText value="#{tarea.tarea.detalle.instancia.proceso.nombre}"
+                                          style="font-size: 9px; "/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.numerotramite']}"
+                                  sortBy="#{tarea.tarea.numeroExterno}"
+                                  filterBy="#{tarea.tarea.numeroExterno}"
+                                  filterMatchMode="contains"
+                                  style="text-align: center; width: 100px" 
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tarea.tarea.numeroExterno}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.descripcion']}"
+                                  sortBy="#{tarea.tarea.descripcion}"
+                                  filterBy="#{tarea.tarea.descripcion}"
+                                  style="text-align: left; width: 200px" filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{tarea.tarea.descripcion}"
+                                          style="font-size: 9px;"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.estado']}"
+                                  sortBy="#{tarea.tarea.nombreEstadoActual}"
+                                  filterBy="#{tarea.tarea.nombreEstadoActual}"
+                                  filterMatchMode="contains"
+                                  style="text-align: center; width: 80px" filterStyle="width: 90%"
+                                  >
+                            <h:outputText value="#{tarea.tarea.nombreEstadoActual}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.usuarioAsignado']}"
+                                  sortBy="#{tarea.tarea.nombreUsuarioAsignado}"
+                                  filterBy="#{tarea.tarea.nombreUsuarioAsignado}"
+                                  style="text-align: left; width: 160px" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{tarea.tarea.nombreUsuarioAsignado}"
+                                          style="font-size: 9px;"/>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.fechaIngreso']}"
+                                  sortBy="#{tarea.tarea.fechaAsignacion}"
+                                  filterBy="#{reasignacionTramiteBean.localizedDateRep(tarea.tarea.fechaAsignacion)}"
+                                  filterMatchMode="contains"
+                                  style="text-align: center; width: 100px" filterStyle="width: 90%">
+                            <h:outputText value="#{tarea.tarea.fechaAsignacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form>
+                <smp:catalogo_lista controlador="#{grupoBean}" titulo="#{msg['ec.gob.mrl.smp.administracion.grupo.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaGrupos" 
+                                 value="#{grupoBean.grupoHelper.listaGrupo}"
+                                 var="grupo"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicion" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{grupoBean.iniciarEdicion()}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{grupo}" 
+                                                             target="#{grupoBean.grupoHelper.grupoEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{grupo}" 
+                                                             target="#{grupoBean.grupoHelper.grupoEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.grupo.nemonico']}" 
+                                  sortBy="#{grupo.nemonico}"
+                                  filterBy="#{grupo.nemonico}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{grupo.nemonico}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.grupo.nombre']}"
+                                  sortBy="#{grupo.nombre}"
+                                  filterBy="#{grupo.nemonico}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{grupo.nombre}"/>
+                        </p:column>                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}"
+                                  style="text-align: center; width: 100px">
+                            <p:selectBooleanCheckbox value="#{grupo.vigente}" 
+                                                     disabled="#{true}"/>
+                        </p:column>                            
+                                             
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaGrupos"
+                                             actionListener="#{grupoBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>             
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,172 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <!-- Dialogo para subida de archivos para reclutamiento masivo -->
+    <p:dialog modal="true"     
+              resizable="false"
+              width="780"  
+              height="375"
+              draggable="true"   
+              header="Archivos para reclutamiento masivo" 
+              widgetVar="dlgReclutamientoMasivo"
+              closable="false">
+
+        <h:form id="frmReclutamientoMasivo" enctype="multipart/form-data">
+            <p:panel style="border-style: none">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="* Reclutamiento (Datos Generales):"/>
+                    <h:panelGrid columns="2">                                
+                        <p:fileUpload id="archivoRDG"
+                                      required="true"
+                                      mode="advanced"
+                                      showButtons="true"                    
+                                      process="@this"
+                                      update="linkArchivoRDG :frmErrores"
+                                      widgetVar="fileuplaod_RDG"
+                                      allowTypes="/(\.|\/)(csv)$/"
+                                      label="Seleccione...."
+                                      sizeLimit="2097152"
+                                      style="width: 350px;"
+                                      fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                      value="#{reclutamientoBean.reclutamientoHelper.archivoRDG}"
+                                      oncomplete="clearInvalidFileMsg(fileuplaod_RDG);" 
+                                      invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                      invalidFileMessage="El archivo debe ser csv "
+                                      requiredMessage="Debe cargar un archivo"
+                                      auto="true">
+                            <f:attribute name="archivoId" value="RDG"/>
+                            <!--mostrarNombreArchivo('linkArchivoRDG', 'archivoRDG');-->
+                        </p:fileUpload>    
+                        <p:outputLabel id="linkArchivoRDG"
+                                       value="#{reclutamientoBean.reclutamientoHelper.archivoRDG.fileName}"/>
+                    </h:panelGrid>
+
+                    <p:outputLabel value="Reclutamiento (Capacitación):"/>
+                    <h:panelGrid columns="2">                                
+                        <p:fileUpload
+                            id="archivoRC"
+                            mode="advanced"
+                            showButtons="false"                       
+                            process="@this" 
+                            update="linkArchivoRC :frmErrores"
+                            widgetVar="fileuplaod_RC"
+                            allowTypes="/(\.|\/)(csv)$/"
+                            label="Seleccione...."
+                            sizeLimit="2097152"
+                            style="width: 350px;"
+                            fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                            value="#{reclutamientoBean.reclutamientoHelper.archivoRC}"
+                            oncomplete="clearInvalidFileMsg(fileuplaod_RC);" 
+                            invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                            invalidFileMessage="El archivo debe ser csv "
+                            requiredMessage="Debe cargar un archivo"
+                            auto="true">
+                            <f:attribute name="archivoId" value="RC"/>
+                        </p:fileUpload>        
+                        <p:outputLabel id="linkArchivoRC" 
+                                       value="#{reclutamientoBean.reclutamientoHelper.archivoRC.fileName}"/>
+                    </h:panelGrid>
+
+                    <p:outputLabel value="Reclutamiento (Datos Instrucción):"/>
+                    <h:panelGrid columns="2">                                
+                        <p:fileUpload
+                            id="archivoRI"
+                            mode="advanced"
+                            showButtons="false"                       
+                            process="@this"   
+                            update="linkArchivoRI :frmErrores"
+                            widgetVar="fileuplaod_RI"
+                            allowTypes="/(\.|\/)(csv)$/"
+                            label="Seleccione...."
+                            sizeLimit="2097152"
+                            style="width: 350px;"
+                            fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                            value="#{reclutamientoBean.reclutamientoHelper.archivoRI}"
+                            oncomplete="clearInvalidFileMsg(fileuplaod_RI);"
+                            invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                            invalidFileMessage="El archivo debe ser csv "
+                            requiredMessage="Debe cargar un archivo"
+                            auto="true">
+                            <f:attribute name="archivoId" value="RI"/>
+                        </p:fileUpload> 
+                        <p:outputLabel id="linkArchivoRI" 
+                                       value="#{reclutamientoBean.reclutamientoHelper.archivoRI.fileName}"/>
+                    </h:panelGrid>
+
+                    <p:outputLabel value="Reclutamiento (Trayectoria Laboral):"/>
+                    <h:panelGrid columns="2">                                
+                        <p:fileUpload id="archivoRTL"
+                                      mode="advanced"
+                                      showButtons="false"                       
+                                      process="@this"
+                                      update="linkArchivoRTL :frmErrores"
+                                      widgetVar="fileuplaod_RTL"
+                                      allowTypes="/(\.|\/)(csv)$/"
+                                      label="Seleccione...."
+                                      sizeLimit="2097152"
+                                      style="width: 350px;"
+                                      fileUploadListener="#{reclutamientoBean.cargarArchivo}"
+                                      value="#{reclutamientoBean.reclutamientoHelper.archivoRI}"
+                                      oncomplete="clearInvalidFileMsg(fileuplaod_RTL);" 
+                                      invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                      invalidFileMessage="El archivo debe ser csv "
+                                      requiredMessage="Debe cargar un archivo"
+                                      auto="true">
+                            <f:attribute name="archivoId" value="RTL"/>
+                        </p:fileUpload>  
+                        <p:outputLabel id="linkArchivoRTL" 
+                                       value="#{reclutamientoBean.reclutamientoHelper.archivoRTL.fileName}"/>
+                    </h:panelGrid>
+                </p:panelGrid>
+
+            </p:panel>
+
+            <center>
+                <p:commandButton id="btnAceptar" 
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.procesar']}"
+                                 action="#{reclutamientoBean.guardarMasivamente()}"
+                                 update="@form" style="margin: auto"/>
+                <p:outputLabel value=" "/>
+                <p:commandButton id="btnCancelar" immediate="true" update="@form"
+                                 value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                 action="#{reclutamientoBean.cancelarReclutamientoMasivo}"
+                                 style="margin: auto"/>
+            </center>
+            <br />
+            <br />
+        </h:form>
+    </p:dialog>
+
+    <!-- Dialogo con los errores detectados en el archivo subido -->
+    <p:dialog header="#{msg['ec.gob.mq.prometeo.mensaje.reclutamiento.archivo.errores']}"
+              modal="true"
+              resizable="false"
+              draggable="false"
+              widgetVar="dlgCargaArchivoMasivoErrores" 
+              onHide="#{reclutamientoBean.cancelarReclutamientoMasivo()}">
+
+        <h:form id="frmErrores">  
+            <p:panel id="panelErrores">
+                <p:dataTable id="archivo_errores" 
+                             value="#{reclutamientoBean.reclutamientoHelper.listaErroresArchivoSubido}"
+                             var="error" rows="10"
+                             paginator="#{true}" 
+                             paginatorPosition="bottom"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="No" width="25px">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column headerText="Error" style="text-align: left">
+                        <h:outputText value="#{error}" style="font-size: 10px;"/>
+                    </p:column>
+                </p:dataTable>
+                <br />
+            </p:panel>
+        </h:form>  
+
+    </p:dialog>
+
+</html>

@@ -1,0 +1,324 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">           
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.titulo']}">
+
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="2"> 
+                            <p:commandButton id="btnGuardar"
+                                             value="GUARDAR"
+                                             title="Registrar personal de otra institución"
+                                             action="#{personalOtrasInstitucionesBean.confirmarRegistro()}"/>
+                            <p:commandButton id="salirBtn" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                             action="#{personalOtrasInstitucionesBean.regresar()}"
+                                             ajax="#{false}"
+                                             immediate="#{true}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                        </h:panelGrid>
+                    </h:panelGrid> 
+                </p:panel>
+                <h:panelGrid columns="5" id="tablaformulario">
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.tipoIdentificacion']}:"                                       
+                                   styleClass="labelFormulario"/>
+                    <p:selectOneMenu id="tipoIdentificacion"                                      
+                                     onchange="limpiarIdentificacion()"
+                                     style="width: 200px" 
+                                     value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.tipoIdentificacion}"
+                                     required="true"
+                                     requiredMessage="El tipo de identificación es un campo requerido"
+                                     disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}">
+                        <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.tiposIdentificacion}"
+                                       var="tipo"
+                                       itemLabel="#{tipo.descripcion}"
+                                       itemValue="#{tipo.codigo}"/>
+                    </p:selectOneMenu>
+                    <p:remoteCommand name="limpiarIdentificacion"
+                                     process="@this tipoIdentificacion" 
+                                     update="frmPrincipal:numeroIdentificacion">
+                        <p:resetInput target="frmPrincipal:numeroIdentificacion" />
+                    </p:remoteCommand>  
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.institucionOrigen.fechaSalida']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:calendar id="fechaSalida"
+                                required="true"
+                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                showOn="button"
+                                readonlyInput="true"
+                                maxdate="#{personalOtrasInstitucionesBean.fechaActual}"
+                                style="width: 200px"
+                                requiredMessage="La fecha de salida de la institución de origen es un campo requerido."
+                                value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.fechaSalidaInstitucionOrigen}"
+                                disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+
+
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.identificacion']}:"                                       
+                                   styleClass="labelFormulario"/>
+
+                    <p:inputText id="numeroIdentificacion"
+                                 styleClass="#{(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.tipoIdentificacion eq 'P'
+                                               || personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.tipoIdentificacion eq null) ? '' : 'campoNumerico'}"
+                                 style="width: 200px"
+                                 requiredMessage="El número de identificacion es un campo requerido."
+                                 maxlength="#{(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.tipoIdentificacion eq 'P' 
+                                              || personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.tipoIdentificacion eq null) ? 20 : 10}"
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.numeroIdentificacion}"
+                                 required="true" 
+                                 disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}">
+                        <p:ajax event="blur" 
+                                listener="#{personalOtrasInstitucionesBean.buscarServidor()}" 
+                                update="tablaformulario"/>
+                    </p:inputText>
+
+                    <p:spacer style="width: 20px"/>
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.institucionOrigen.rmu']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:inputText id="rmuOrigen"
+                                 required="true"
+                                 styleClass="campoNumerico"
+                                 style="width: 200px"
+                                 maxlength="20"
+                                 requiredMessage="El rmu de la institución de origen es un campo requerido."
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.rmuInstitucionOrigen}"
+                                 disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+
+
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.nombre']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:inputTextarea id="nombre" 
+                                     styleClass="letrasEspacio"
+                                     style="width: 200px"
+                                     requiredMessage="El nombre es un campo requerido."
+                                     maxlength="60"
+                                     value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.apellidosNombres}"
+                                     required="true"
+                                     disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo) or (personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.existeSistemaPersonas)}"/>
+                    <p:spacer style="width: 20px"/>
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.unidadOrganizacional']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:outputPanel id="unidadLbl">
+                        <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                            <p:inputTextarea id="unidadOrganizacional"
+                                             styleClass="textoNombre"
+                                             style="width: 200px; text-align: left;font-size: 9px;"
+                                             required="#{true}"
+                                             value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.unidadOrganizacional.ruta}"
+                                             disabled="true"
+                                             requiredMessage="El campo Unidad Organizacional es requerido"/>   
+                            <p:commandButton icon="ui-icon-search"        
+                                             immediate="true"
+                                             actionListener="#{personalOtrasInstitucionesBean.cargarArbolUnidadOrganizacional}"
+                                             disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                            <p:commandButton icon="ui-icon-trash"  
+                                             immediate="true" 
+                                             update="unidadOrganizacional"
+                                             disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"
+                                             process="@this">                                       
+                                <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivo.unidadOrganizacional}"                                                             
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.institucionOrigen']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:inputText id="institucionOrigen"
+                                 required="true"
+                                 style="width: 200px"
+                                 maxlength="200"
+                                 requiredMessage="La institución de origen es un campo requerido."
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.institucionOrigen}"
+                                 disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:spacer style="width: 20px"/>
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.fechaInicio']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:calendar id="fechaInicio"
+                                showOn="button"
+                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                required="true"
+                                readonlyInput="true"
+                                style="width: 200px"
+                                requiredMessage="La fecha de inicio es un campo requerido."
+                                value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.fechaInicio}"
+                                disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+
+
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.institucionOrigen.puesto']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:inputText id="puestoOrigen"
+                                 required="true"
+                                 style="width: 200px"
+                                 maxlength="200"
+                                 requiredMessage="El puesto en la institución de origen es un campo requerido."
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.puestoInstitucionOrigen}"
+                                 disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:spacer style="width: 20px"/>
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.fechaFin']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:calendar id="fechaFin"
+                                showOn="button"
+                                pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                required="true"
+                                readonlyInput="true"
+                                style="width: 200px"
+                                requiredMessage="La fecha de fin es un campo requerido."
+                                value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.fechaFin}"
+                                disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+
+                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.justificacion']}:"
+                                   styleClass="labelFormulario"/>
+                    <p:inputTextarea id="justificacion"
+                                     required="true"
+                                     style="width: 200px"
+                                     maxlength="1000"
+                                     requiredMessage="La justificación es un campo requerido."
+                                     value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.justificacionIngreso}"
+                                     disabled="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:spacer style="width: 20px"/>
+
+                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                   styleClass="labelFormulario"
+                                   rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:inputText id="fechaCreacion" 
+                                 style="width: 200px"
+                                 disabled="#{true}"
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.fechaCreacion}"                                     
+                                 rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}">
+                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                    </p:inputText>
+
+                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                   styleClass="labelFormulario"
+                                   rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:inputText id="usuarioCreacion" 
+                                 style="width: 200px"
+                                 disabled="#{true}"
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.usuarioCreacion}"                                     
+                                 rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:spacer style="width: 20px"/>
+
+                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                   styleClass="labelFormulario"
+                                   rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:inputText id="fechaActualizacion" 
+                                 style="width: 200px"
+                                 disabled="#{true}"
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.fechaActualizacion}"                                     
+                                 rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}">
+                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                    </p:inputText>
+
+                    <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                   styleClass="labelFormulario"
+                                   rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                    <p:inputText id="usuarioActualizacion" 
+                                 style="width: 200px"
+                                 disabled="#{true}"
+                                 value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.personalOtrasInstituciones.usuarioActualizacion}"                                     
+                                 rendered="#{!(personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.esNuevo)}"/>
+                </h:panelGrid>
+
+
+                <p:confirmDialog id="popOp" 
+                                 message="#{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.confirmacionRegistro']}"
+                                 header="CONFIRMAR REGISTRO DE LA INFORMACIÓN Y LA GENERACIÓN DE ACCIÓN DE PRESONAL" 
+                                 severity="alert" 
+                                 widgetVar="confirmRegistro"
+                                 width="600px">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="CONTINUAR" 
+                                         style="margin: auto"
+                                         actionListener="#{personalOtrasInstitucionesBean.guardar()}"/>  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmRegistro.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </p:confirmDialog> 
+
+            </h:form>
+
+            <p:dialog modal="true"     
+                      resizable="false"   
+                      width="800"  height="350"
+                      draggable="true"   
+                      header="#{msg['ec.gob.mrl.smp.administracion.personal.otras.instituciones.unidadOrganizacional']}" 
+                      widgetVar="dlgUnidadOrganizacional"
+                      closable="true">
+                <h:form id="frmUnidad">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:treeTable id="tablaUbicacion" 
+                                     value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.rootUnidadOrganizacional}"
+                                     var="reg" 
+                                     style="overflow: auto"                                              
+                                     selection="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.unidadSeleccionada}" 
+                                     selectionMode="single">
+                            <p:ajax event="select" 
+                                    listener="#{personalOtrasInstitucionesBean.onNodeSelectUnidad}" 
+                                    update=":frmPrincipal:unidadOrganizacional"/> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{reg.nombre}"
+                                      filterBy="#{reg.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nombre}" 
+                                              title="#{reg.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                      style="width: 100px; font-size: 8pt"
+                                      sortBy="#{reg.codigo}"
+                                      filterBy="#{reg.codigo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.codigo}" title="#{msg['message.para.seleccion']}" />
+                            </p:column>                    
+                        </p:treeTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" 
+                                         value="SELECCIONAR"
+                                         onclick="dlgUnidadOrganizacional.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- INFORMACION DE ACCION DE PERSONAL -->
+            <p:confirmDialog header="DESCARGAR ACCION DE PERSONAL DE REGISTRO"
+                             message="Descargar Acción de Personal de Registro"
+                             severity="info"  
+                             width="300px" 
+                             closable="true" 
+                             widgetVar="dlgAccionPersonalRegistro">  
+
+                <h:form id="frmAccionRegistro">
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.descargar']}" 
+                                         title="Descargar Anexo: Acción de Registro de Personal de Otras Instituciones "
+                                         icon="ui-icon-arrowthick-1-s"
+                                         ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop);
+                                                 dlgAccionPersonalRegistro.hide();">
+                            <p:fileDownload value="#{personalOtrasInstitucionesBean.personalOtrasInstitucionesHelper.archivoPdfAccionRegistro}" />
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}" 
+                                         immediate="#{true}"
+                                         ajax="#{false}"
+                                         onclick="dlgAccionPersonalRegistro.hide();"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+        </ui:define>
+    </ui:composition>
+
+
+</html>

@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition> 
+        <!-- Dialogo para subida de archivo masivo -->
+        <p:dialog modal="true"     
+                  resizable="false"
+                  width="600"  
+                  height="150"
+                  draggable="true"   
+                  header="Cambio masivo" 
+                  widgetVar="dlgCambioMasivo" closable="false">
+
+            <h:form id="frmCambioMasivo">
+                <p:panel style="border-style: none">
+                    <p:panelGrid columns="2">
+
+                        <p:outputLabel value="Subir el archivo(.csv):"/>
+                        <h:panelGrid columns="2">                                
+                            <p:fileUpload
+                                id="archivoCSV"
+                                mode="advanced"
+                                showButtons="false"                       
+                                process="@this"   
+                                widgetVar="fileuplaod_CSV"
+                                allowTypes="/(\.|\/)(csv)$/"
+                                label="Seleccione...."
+                                sizeLimit="2097152"
+                                style="width: 250px;"
+                                fileUploadListener="#{cargaMasivaModificarPuestosBean.cargarArchivo}"
+                                oncomplete="clearInvalidFileMsg(fileuplaod_CSV)"
+                                invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                invalidFileMessage="El archivo debe ser csv "
+                                requiredMessage="Debe cargar un archivo"
+                                auto="true" update=":frmCambioMasivo:btnAceptar,:frmCambioMasivo:filename,:frmErrores:panelErrores">
+                            </p:fileUpload>
+                            <p:commandLink id="downloadLink" 
+                                           value="Descargar Formato Requerido" 
+                                           title="Formato requerido para el archivo de edición masiva de puestos."                                           
+                                           ajax="false"        
+                                           style="color: blue"
+                                           onclick="PrimeFaces.monitorDownload(start, stop)">                                        
+                                <p:fileDownload value="#{cargaMasivaModificarPuestosBean.formatoArchivo}" />
+                            </p:commandLink>
+                        </h:panelGrid>
+
+                        <p:outputLabel value="Archivo cargado: " />
+                        <h:outputText id="filename" 
+                                      value="#{cargaMasivaModificarPuestosBean.cargaMasivaModificarPuestoHelper.nombreArchivoCSV}"/>
+
+
+                    </p:panelGrid>
+
+                </p:panel>
+
+                <center>
+                    <p:commandButton id="btnAceptar"
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                     actionListener="#{cargaMasivaModificarPuestosBean.procesarArchivo()}"
+                                     style="margin: auto" 
+                                     disabled="#{not cargaMasivaModificarPuestosBean.cargaMasivaModificarPuestoHelper.archivoSinError}"
+                                     update="@this"/>
+                    <p:spacer style="width: 5px"/>
+                    <p:commandButton id="btnCancelar" 
+                                     immediate="true" 
+                                     update="@form"
+                                     value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                     action="#{cargaMasivaModificarPuestosBean.cancelar}" 
+                                     onclick="dlgCambioMasivo.hide()"
+                                     style="margin: auto"/>
+                </center>
+            </h:form>
+        </p:dialog>
+
+        <!-- problemas al subir archivo masivo -->
+        <p:dialog header="ERRORES AL CARGAR ARCHIVO PARA EDICIÓN MASIVA DE PUESTOS "
+                  modal="true"
+                  resizable="false"
+                  draggable="false"
+                  widgetVar="dlgCargaArchivoMasivoErrores">
+
+            <h:form id="frmErrores">  
+                <p:panel id="panelErrores" 
+                         rendered="#{not cargaMasivaModificarPuestosBean.cargaMasivaModificarPuestoHelper.archivoSinError}">
+                    <p:dataTable id="archivo_errores" 
+                                 value="#{cargaMasivaModificarPuestosBean.cargaMasivaModificarPuestoHelper.erroresEnArchivo}"
+                                 var="error"
+                                 rows="10"
+                                 paginator="#{true}" 
+                                 paginatorPosition="bottom"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="No" >
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>   
+                        <p:column headerText="Error" 
+                                  style="text-align: left">
+                            <h:outputText value="#{error}" 
+                                          style="font-size: 10px;"/>
+                        </p:column>
+                    </p:dataTable>
+                    <center>
+                        <p:commandButton id="btnCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgCargaArchivoMasivoErrores.hide()"
+                                         style="margin: auto" >
+                        </p:commandButton>
+                    </center>
+                </p:panel>
+            </h:form>  
+
+        </p:dialog>
+    </ui:composition>
+</html>

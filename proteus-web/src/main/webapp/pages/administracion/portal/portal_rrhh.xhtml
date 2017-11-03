@@ -1,0 +1,1527 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <style type="text/css">
+                    .estadoApr{
+                        background: #c8e6c9;
+                        opacity: 0.7;
+                    }
+                    .estadoRec{
+                        background: #ffcdd2;
+                        opacity: 0.7;
+
+                    }
+                    .estadoReg{
+                        background: #fff9c4;
+                        opacity: 0.7;
+                    }
+                </style>
+                <p:panel >
+                    <h:panelGrid columns="2">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{portalRrhhBean.guardar}"
+                                         update="frmPrincipal"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         rendered="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                         action="#{portalRrhhBean.regresarLista()}"/>      
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         rendered="#{portalRrhhBean.portalRrhhHelper.presentar}"
+                                         action="#{fichaRrhhBean.regresarFormulario()}"/>   
+                    </h:panelGrid>
+                </p:panel >
+
+                <!-- CABECERA DE LA FICHA DE ERSONAL!-->
+
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.titulo']}" style="overflow: auto">
+                    <p:fieldset id="areaServidor" legend="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.titulo']}">  
+                        <h:panelGrid columns="3">
+                            <h:panelGrid columns="4" id="tablaformularioss">   
+
+
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}:  "
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputText id="numero_identificacion"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="100" 
+                                             disabled="true"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.numeroIdentificacion}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>  
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.apellidosNombres']}:  "
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="banco_nombre"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 maxlength="100"
+                                                 disabled="true"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.apellidosNombres}"
+                                                 required="true"
+                                                 requiredMessage="El campo nombre es requerido"/>  
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.genero']}:"
+                                               styleClass="labelFormulario"/>                                            
+                                <p:selectOneMenu id="generoc" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                                 requiredMessage="El campo tipo sangre es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoGeneroId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaGenero}"/>                                                                                                
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.tipoSangre']}: "
+                                               id="tipoCuenta_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoCuenta" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo tipo sangre es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoTipoSangreId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaTipoSangre}"/>                                                                                                
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.estadoCivil']}: "
+
+                                               id="tipoEstadoCivil_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="ESTADOCIVIL" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                                 requiredMessage="El campo tipo sangre es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoEstadoCivilId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaEstadoCivil}"/>                                                                                                
+                                </p:selectOneMenu>                          
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.mail']}: "
+                                               id="mail_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="mail"                                         
+                                             validator="validadorMail"                             
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.mail}"                                        
+                                             required="true" style="width: 200px"
+                                             requiredMessage="El campo mail es requerido"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.etnia']}: "
+                                               id="tipoEtnia_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tipoEtnia" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo etnia es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoEtniaId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaTipoEtnia}"/>                                                                                                
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.tallaUniforme']}: "
+
+                                               id="tallaUniforme_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tallaUniforme" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo talla uniforme es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoTallaUniformeId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaTallaUniforme}"/>                                                                                                
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.NumeroCalzado']}: "
+
+                                               id="tallaCalzado_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="tallaCalzado" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo número calzado es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoNumeroCalzadoId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaNumeroCalzado}"/>                                                                                                
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.nacionalidad']}: "
+                                               id="nacionalidad_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="nacionalidad" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                                 requiredMessage="El campo nacionalidad es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoNacionalidadId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaNacionalidad}"/>                                                                                                
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.pais']}: "
+
+                                               id="pais_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="pais" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo país es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.pais}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaPais}"/> 
+                                    <p:ajax listener="#{portalRrhhBean.llenarComboProvincia()}" update="provinvia"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.provincia']}: "
+
+                                               id="provinvia_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="provinvia" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 requiredMessage="El campo provincia es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.provincia}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaProvincia}"/>  
+                                    <p:ajax listener="#{portalRrhhBean.llenarComboCanton()}" update="canton"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.canton']}: "
+
+                                               id="canton_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="canton" 
+                                                 required="true"
+                                                 requiredMessage="El campo canton es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.canto}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaCanto}"/>  
+                                    <p:ajax listener="#{portalRrhhBean.llenarComboParroquia()}" update="parroquia"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parroquia']}: "
+
+                                               id="parroquia_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="parroquia" 
+                                                 required="true"
+                                                 requiredMessage="El campo parroquia es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.ubicacionGeograficaParroquiDomicilioId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaParroquia}"/>                                                                                                
+                                </p:selectOneMenu>
+
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.barrioDomicilio']}: "
+                                               id="barrioDomicilio_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="barrioDomicilio"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.barrioDomicilio}"                                        
+                                             required="false" style="width: 200px"
+                                             requiredMessage="El campo barrio domicilio es requerido"/>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.calleDomicilio']}: "
+                                               id="calleDomicilio_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="calleDomicilio"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.calleDomicilio}"                                        
+                                             required="false" style="width: 200px"
+                                             requiredMessage="El campo calle domicilio es requerido"/>  
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.refrerenciaDomicilio']}: "
+                                               id="referenciaDomicilio_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="referenciaDomicilio"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.referenciaDomicilio}"                                        
+                                             required="false" style="width: 200px"
+                                             requiredMessage="El campo referencia domicilio es requerido"/>     
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.numeroDomicilio']}: "
+                                               id="numeroDomicilio_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="numeroDomicilio"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.numeroDomicilio}"                                        
+                                             required="false" style="width: 200px"
+                                             requiredMessage="El campo número domicilio es requerido"/>     
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.fechaNacimiento']}:"/>
+                                <p:calendar id="fechaNacimiento" 
+                                            value="#{portalRrhhBean.portalRrhhHelper.servidor.fechaNacimiento}" 
+                                            navigator="true"                                                                                       
+                                            autocomplete="off"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                            showOn="button"/> 
+
+                                <h:outputLabel value="Teléfono: "
+                                               id="telefono_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="telefono"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.telefono}"                                        
+                                             required="false" 
+                                             style="width: 200px"/>     
+
+                                <h:outputLabel value="Celular:"
+                                               id="celular_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="celular"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.celular}"                                        
+                                             required="false" 
+                                             style="width: 200px"/>     
+
+                                <h:outputLabel value="No Extensión:"
+                                               id="extension_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="extension"
+                                             styleClass="textoNombre"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.noExt}"                                        
+                                             required="false" 
+                                             style="width: 200px"/>     
+
+
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.reclutamiento.numeroHoras']}:"
+                                               id="entrada_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:calendar id="horaEntrada"                                                                                                                               
+                                            value="#{portalRrhhBean.portalRrhhHelper.servidor.horaEntrada}"                                            
+                                            style="width: 200px"    
+                                            minHour="1"
+                                            maxHour="24"
+                                            disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                            required="true" 
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaHora']}"
+                                            timeOnly="true"  
+                                            showOn="button"
+                                            requiredMessage="El campo número de horas es requerido"> 
+                                    <p:tooltip for="horaEntrada" value="Formato de hora HH:mm"></p:tooltip>
+                                </p:calendar>
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.reclutamiento.tiempoJornadaDiaria']}: "
+                                               id="duracionJornada"
+                                               styleClass="labelFormulario"/>
+                                <p:inputText id="jornada"                                         
+                                             styleClass="campoNumerico"        
+                                             disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                             value="#{portalRrhhBean.portalRrhhHelper.servidor.jornada}"                                        
+                                             required="true" style="width: 80px"
+                                             requiredMessage="El campo jornada es requerido">
+                                    <f:validateLength maximum="8" minimum="0"/>
+                                </p:inputText>
+
+                            </h:panelGrid >
+                            <p:separator style="width: 100px; border: none; background: none"></p:separator>
+                            <h:panelGrid columns="1" >
+                                <p:graphicImage id="imgArchiv" width="150" height="120" 
+                                                value="#{portalRrhhBean.portalRrhhHelper.fotoServidor}" />  
+
+                                <p:commandButton style="margin-left: 30px"                                                             
+                                                 value="Cargar Foto"                                                                                                                                             
+                                                 onclick="cargarArchivoPopUp.show()"
+                                                 immediate="true"
+                                                 title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarFoto']}">   
+
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                        <p:outputPanel id="panelenfermedades" >
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.capacidadEspecial']}: "
+                                               id="capacidades_lbl"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="capacidades" 
+                                                 required="true"
+                                                 style="width: 200px"
+                                                 requiredMessage="El campo capacidad especial es requerido"
+                                                 value="#{portalRrhhBean.portalRrhhHelper.servidor.catalogoCapacidadesId}">
+                                    <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaCapacidadEspecial}"/>
+                                    <p:ajax  listener="#{portalRrhhBean.camposDiscapacidad()}"  
+                                             update=":frmPrincipal:panelenfermedades,panelEnfermedades" />
+                                </p:selectOneMenu>   
+                                <p:separator style="width: 30px; border: none; background: none"></p:separator>
+                                <p:outputPanel id="panelEnfermedades" rendered="#{!portalRrhhBean.portalRrhhHelper.discapacidad}">
+                                    <h:panelGrid columns="2">
+                                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.numeroCarnet']}: "
+                                                       id="carnet_conadis_lbl"                                                      
+                                                       styleClass="labelFormulario"/>                        
+                                        <p:inputText id="carnet_conadis"    
+                                                     styleClass="textoNemonico"                                                       
+                                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                                     value="#{portalRrhhBean.portalRrhhHelper.servidor.numeroCarnetConadis}"                                        
+                                                     style="width: 200px"
+                                                     requiredMessage="El campo número carnet es requerido"/>
+                                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.porcentajeDiscapacidad']}: "                                                   
+                                                       id="porcentajeDiscapacidad_lbl"                                                       
+                                                       styleClass="labelFormulario"/>
+                                        <p:inputText id="porcentajeDiscapacidad"                                                                                          
+                                                     styleClass="campoNumerico"                                                 
+                                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                                     value="#{portalRrhhBean.portalRrhhHelper.servidor.porcentajeDiscapacidad}"                                        
+                                                     required="true" style="width: 200px"
+                                                     requiredMessage="El campo porcentaje discapacidad es requerido"/>     
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:fieldset> 
+
+
+                    <p:panel id="institucionPanel" header="Institución">
+                        <h:panelGrid columns="2" > 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.fechaIngreso']}:"
+                                           for="fechaIngreso"/>
+                            <p:calendar id="fechaIngreso" 
+                                        value="#{portalRrhhBean.portalRrhhHelper.servidor.fechaIngresoInstitucion}" 
+                                        navigator="true"
+                                        maxdate="#{portalRrhhBean.portalRrhhHelper.hoy}"
+                                        readonlyInput="true"
+                                        autocomplete="off"
+                                        disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        showOn="button"/>    
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.fechaIngresoSectorPublico']}:"
+                                           for="fechaIngresoSectorPublico"/>
+                            <p:calendar id="fechaIngresoSectorPublico" 
+                                        value="#{portalRrhhBean.portalRrhhHelper.servidor.fechaIngresoSectorPublico}" 
+                                        navigator="true"
+                                        maxdate="#{portalRrhhBean.portalRrhhHelper.hoy}"
+                                        readonlyInput="true"
+                                        autocomplete="off"
+                                        disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        showOn="button"/>  
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.sueldoBasico']}:"
+                                           for="sueldoBasicoId"/>
+                            <p:inputText id="sueldoBasicoId"                                                                                          
+                                         styleClass="campoNumerico" 
+                                         disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidor.sueldoBasico}"                                        
+                                         required="true" 
+                                         requiredMessage="El campo sueldo básico es requerido"/>  
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionDomicilio.fondosReserva']}: "
+                                           id="fr"
+                                           styleClass="labelFormulario"/>
+                            <h:selectBooleanCheckbox value="#{portalRrhhBean.portalRrhhHelper.servidor.recibeFondoReserva}"
+                                                     disabled="#{!portalRrhhBean.portalRrhhHelper.presentar}"/>
+
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.mensualizaDecimoTercero']}:"
+                                           for="mensualizaDecimoTerceroId"/>
+                            <h:selectBooleanCheckbox 
+                                id="mensualizaDecimoTerceroId"
+                                value="#{portalRrhhBean.portalRrhhHelper.servidor.mensualizaDecimoTercero}"
+                                disabled="#{!portalRrhhBean.portalRrhhHelper.modificaDecimos or portalRrhhBean.portalRrhhHelper.presentar}"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.mensualizaDecimoCuarto']}:"
+                                           for="mensualizaDecimoCuartoId"/>
+                            <h:selectBooleanCheckbox 
+                                id ="mensualizaDecimoCuartoId"
+                                value="#{portalRrhhBean.portalRrhhHelper.servidor.mensualizaDecimoCuarto}"
+                                disabled="#{!portalRrhhBean.portalRrhhHelper.modificaDecimos or portalRrhhBean.portalRrhhHelper.presentar}"/>
+
+                            <h:outputLabel value="* Toma Transporte:"
+                                           for="tomaTransporteId"/>
+                            <h:selectBooleanCheckbox 
+                                id ="tomaTransporteId"
+                                value="#{portalRrhhBean.portalRrhhHelper.servidor.tomaTransporte}"
+                                disabled="true"/>
+
+                        </h:panelGrid>  
+                    </p:panel>
+                    <p:panel id="cuentasBancarias" 
+                             header="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.titlulo']}">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.nuevo']}" 
+                                         style="margin-top: 10px"
+                                         rendered="false"
+                                         action="#{portalRrhhBean.presentarDialogCuentaBancaria()}" 
+                                         process="@this"
+                                         update=":frmCuentaBancariaDlg"/>
+                        <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.servidor.cuentasBancarias}"
+                                     var="cuenta"
+                                     paginator="#{true}"
+                                     editable="true"
+                                     editMode="cell"
+                                     rows="10"
+                                     rowIndexVar="rowIndex"
+                                     style="margin-top: 5px"
+                                     id="cuentasBancariasTabla"
+                                     filterEvent="enter">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 15px" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.pagaNomina']}" 
+                                      rendered="false"
+                                      style="text-align: center; width: 60px">
+                                <p:selectBooleanCheckbox value="#{cuenta.pagoNomina}">
+                                    <p:ajax event="change" listener="#{portalRrhhBean.cambiarCuentaPagaNomina}" update=":frmPrincipal:cuentasBancariasTabla"/>
+                                    <f:attribute name="cuenta" value="#{cuenta}" />
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.banco']}" >
+                                <h:outputText value="#{cuenta.banco.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.tipoCuenta']}" style="text-align: center; width: 100px">
+                                <h:outputText value="#{portalRrhhBean.tipoCuenta(cuenta.tipoCuenta)}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cuentaBancaria.numeroCuenta']}" style="text-align: center; width: 100px">
+                                <h:outputText value="#{cuenta.numerCuenta}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 80px">
+                                <p:commandButton id="botonEdicioCuentaBancaria" icon="ui-icon-pencil"                                                            
+                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                 rendered="false"
+                                                 action="#{portalRrhhBean.iniciarEdicionCuentaBancaria()}" process="@this"
+                                                 update=":frmCuentaBancariaDlg">
+                                    <f:setPropertyActionListener value="#{cuenta}" 
+                                                                 target="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria}"/>
+                                </p:commandButton>
+                                <p:commandButton id="botonEliminCuentaBancaria" 
+                                                 icon="ui-icon-trash"                                             
+                                                 onclick="confirmEliminaCuenta.show()" 
+                                                 process="@this"          
+                                                 rendered="false"
+                                                 title="#{msg['message.btn.eliminar']}">
+                                    <f:setPropertyActionListener value="#{cuenta}" 
+                                                                 target="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <!-- AREAS DE TABS IFORMACION DE SERVIDORES ""!-->
+                    <p:remoteCommand name="actualizarPanelDatosAdicionales" update="panelInstruccion" immediate="true"/>
+                    <p:panel header="Detalles" id="panelInstruccion">
+                        <p:tabView id="VistaInstruccion">
+
+                            <!-- ACTUALIZAR LAS AREAS PARA BLANQUEAR DATOS  EN EL UPDATE""!-->                           
+                            <p:tab title="Capacitación" id="tabCapacitacion">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Capacitación"
+                                                     action="#{portalRrhhBean.presentarDialogCapacitacion()}"
+                                                     update=":frmreclutamientoCapacitacion"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorCapacitaciones}"
+                                                 var="capacitacion"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{capacitacion.estado eq 'REG' ? 'estadoReg' :  (  capacitacion.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="InstruccionCapacitacion"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="Evento" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.evento}"/>
+                                        </p:column> 
+                                        <p:column headerText="Capacitador" filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.capacitador}"/>
+                                        </p:column> 
+                                        <p:column headerText="Tipo Diploma" filterMatchMode="contains" style="width: 100px" styleClass="alineacionCentro">
+                                            <h:outputText value="#{portalRrhhBean.obtenerDescripcionTipoDocumento(capacitacion.tipoDiploma)}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.duracionHoras']}" 
+                                                  style="width: 100px;" styleClass="alineacionDerecha"
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{capacitacion.duracionHoras}"/>
+                                        </p:column>
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or capacitacion.bloqueado}" value="#{capacitacion.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{capacitacion.estado}" rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !capacitacion.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="InstruccionCapacitacion" />
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioCapacitacion" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasCapacitacion()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmreclutamientoCapacitacion">
+                                                <f:setPropertyActionListener value="#{capacitacion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarc" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionc.show()" process="@this"                                         
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{capacitacion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>                                               
+
+                            <p:tab id="tabEvaluacion" title="Evaluación">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Evaluación"
+                                                     action="#{portalRrhhBean.presentarDialogEvaluacion()}"
+                                                     update=":frmServidorEvaluacion"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorEvaluaciones}"
+                                                 var="evaluacion"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{evaluacion.estado eq 'REG' ? 'estadoReg' :  (  evaluacion.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="ServidorEvaluaciones"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px"  >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.periodo']}" filterMatchMode="contains">
+                                            <h:outputText value="#{evaluacion.periodo}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.institucionEvaluadora']}" filterMatchMode="contains">
+                                            <h:outputText value="#{evaluacion.institucionEvaluadora}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.evaluacionObtenida']}" filterMatchMode="contains" style="width: 100px;" styleClass="alineacionDerecha">
+                                            <h:outputText value="#{evaluacion.evaluacionObtenida}"/>
+                                        </p:column>
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or evaluacion.bloqueado}" value="#{evaluacion.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{evaluacion.estado}" rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !evaluacion.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="ServidorEvaluaciones" />
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioEvaluacion" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasEvaluacion()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmServidorEvaluacion">
+                                                <f:setPropertyActionListener value="#{evaluacion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorEvaluacionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarE" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionE.show()" process="@this"                                         
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{evaluacion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorEvaluacionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab id="tabExperiencia" title="Experiencia">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Experiencia"
+                                                     action="#{portalRrhhBean.presentarDialogExperiencia()}"
+                                                     update=":frmServidorExperiencia"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorExperiencias}"
+                                                 var="experiencia"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{experiencia.estado eq 'REG' ? 'estadoReg' :  (  experiencia.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="ServidorExperiencias"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_desde']}" filterMatchMode="contains" style="width: 80px; text-align: center">
+                                            <h:outputText value="#{experiencia.fechaDesde}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                            </h:outputText>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_hasta']}" filterMatchMode="contains" style="width: 80px; text-align: center">
+                                            <h:outputText value="#{experiencia.fechaHasta}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                            </h:outputText>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.empresa']}" filterMatchMode="contains" style="width: 80px; text-align: center">
+                                            <h:outputText value="#{experiencia.empresa}"/>
+                                        </p:column>   
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.denominacionPuesto']}" filterMatchMode="contains">
+                                            <h:outputText value="#{experiencia.denominacionPuesto}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.actividades']}" filterMatchMode="contains">
+                                            <h:outputText value="#{experiencia.actividades}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.razonSalida']}" filterMatchMode="contains">
+                                            <h:outputText value="#{experiencia.razonSalida}"/>
+                                        </p:column> 
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or experiencia.bloqueado}" value="#{experiencia.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{experiencia.estado}" rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !experiencia.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="ServidorExperiencias" />
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioEvaluacion" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasExperiencia()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmServidorExperiencia">
+                                                <f:setPropertyActionListener value="#{experiencia}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorExperienciaEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarE" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionEx.show()" process="@this"                                         
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{experiencia}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorExperienciaEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>               
+
+
+                            <p:tab id="tabInstruccion" title="Instrucción">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Instrucción"
+                                                     action="#{portalRrhhBean.presentarDialogInstruccion()}"
+                                                     update=":frmServidorInstruccion"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorInstrucciones}"
+                                                 var="instruccion"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{instruccion.estado eq 'REG' ? 'estadoReg' :  (instruccion.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="ServidorInstrucciones"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.unidadEducativa']}" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.unidadEducativa}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.especializacion']}" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.especializacion}"/>
+                                        </p:column> 
+                                        <p:column headerText="Nivel Instrucción" filterMatchMode="contains">
+                                            <h:outputText value="#{instruccion.titulo}"/>
+                                        </p:column>   
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.nivelInstitucion']}" filterMatchMode="contains" style="width: 100px; text-align: center">
+                                            <h:outputText value="#{instruccion.catalogoNivelInstruccion.nombre}"/>
+                                        </p:column>                                        
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or instruccion.bloqueado}" value="#{instruccion.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{instruccion.estado}" rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !instruccion.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="ServidorInstrucciones" />                                                
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioInstruccion" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasInstruccion()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmServidorInstruccion">
+                                                <f:setPropertyActionListener value="#{instruccion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorInstruccionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarInstruccion" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionIn.show()" process="@this"                                          
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{instruccion}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorInstruccionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab id="tabParientes" title="Parientes en la Institución">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Parientes"
+                                                     action="#{portalRrhhBean.presentarDialogParientes()}"
+                                                     update=":frmServidorParientes"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorParienteInstituciones}"
+                                                 var="parientes"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{parientes.estado eq 'REG' ? 'estadoReg' :  (parientes.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="ServidorParientes"
+                                                 filterEvent="enter">
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.dependencia']}" filterMatchMode="contains">
+                                            <h:outputText value="#{parientes.catalagoDependencia.nombre}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.nombres']}" filterMatchMode="contains">
+                                            <h:outputText value="#{parientes.nombres}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.parentezco']}" filterMatchMode="contains" style="width: 100px; text-align: center">
+                                            <h:outputText value="#{parientes.catalagoParentezco.nombre}"/>
+                                        </p:column>
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or parientes.bloqueado}" value="#{parientes.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{parientes.estado}" rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !parientes.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="ServidorParientes" />
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioparientes" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasParientes()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmServidorParientes">
+                                                <f:setPropertyActionListener value="#{parientes}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorParienteInstitucionEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarparientes" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacionPa.show()" process="@this"                                          
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{parientes}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorParienteInstitucionEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+
+                            </p:tab>
+
+
+                            <!-- <p:tab id="tabInformacionMedica" title="Información Médica">
+                                 <h:panelGrid columns="1" style="width: 980px">
+                                     <p:commandButton value="Ingresar Información Médica"
+                                                      action="#{portalRrhhBean.presentarDialogInformacionMedica()}"
+                                                      update=":frmServidorInformacionMedica"/>
+                                     <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaServidorInformacionMedicas}"
+                                                  var="medica"
+                                                  paginator="#{true}"
+                                                  rows="10"
+                                                  rowIndexVar="rowIndex"
+                                                  id="ServidorInformacionMedicas"
+                                                  filterEvent="enter">
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center" >
+                                             <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                         </p:column>
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.sufreEnfermedadCatastrofica']}" filterMatchMode="contains">
+                                             <h:selectBooleanCheckbox value="#{medica.sufreEnfermedadCatastrofica}"/>
+                                         </p:column>                                        
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.cedulaPersonaConDiscapacidad']}" filterMatchMode="contains">
+                                             <h:outputText value="#{medica.cedulaPersonaConDiscapacidad}"/>
+                                         </p:column>                                      
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.cuidaPersonaConDiscapacidadSevera']}" filterMatchMode="contains">
+                                             <h:selectBooleanCheckbox value="#{medica.cuidaPersonaConDiscapacidadSevera}"/>
+                                         </p:column>   
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.catalogoEnfermedades']}" filterMatchMode="contains">
+                                             <h:outputText value="#{medica.catalogoEnfermedades.nombre}"/>
+                                         </p:column>   
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.catalogoParentezcoConDiscapacidad']}" filterMatchMode="contains">
+                                             <h:outputText value="#{medica.catalogoParentezcoConDiscapacidad.nombre}"/>
+                                         </p:column>   
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.catalogoDiscapacidades']}" filterMatchMode="contains">
+                                             <h:outputText value="#{medica.catalogoDiscapacidades.nombre}"/>
+                                         </p:column>   
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.informacionMedica.nombresPersonaConDiscapacidad']}" filterMatchMode="contains">
+                                             <h:outputText value="#{medica.nombresPersonaConDiscapacidad}"/>
+                                         </p:column>   
+                                         <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                   style="text-align: center; width: 150px">
+                                             <p:commandButton id="botonEdicioparientes" icon="ui-icon-pencil"                                                            
+                                                              action="#{portalRrhhBean.iniciarEdicionListasInformacionMedica()}"
+                                                              title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                              update=":frmServidorInformacionMedica">
+                                                 <f:setPropertyActionListener value="#{medica}" 
+                                                                              target="#{portalRrhhBean.portalRrhhHelper.servidorInformacionMedicaEditDelete}"/>
+                                             </p:commandButton>
+                                             <p:commandButton id="botonEliminarparientes" icon="ui-icon-trash"                                             
+                                                              onclick="confirmEliminacionIm.show()"                                          
+                                                              title="#{msg['message.btn.eliminar']}">
+                                                 <f:setPropertyActionListener value="#{medica}" 
+                                                                              target="#{portalRrhhBean.portalRrhhHelper.servidorInformacionMedicaEditDelete}"/>
+                                             </p:commandButton>
+                                         </p:column>
+                                     </p:dataTable>
+                                 </h:panelGrid>
+ 
+                             </p:tab>-->
+                            <!-- TAB DE CARGAS FAMILIARES""!--> 
+                            <p:tab title="Cargas Familiares" id="tabCargasFamiliares">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <p:commandButton value="Ingresar Carga Familiar"
+                                                     action="#{portalRrhhBean.presentarDialogCargosFamiliares()}"
+                                                     update=":frmcargasFamiliares"/>
+                                    <p:dataTable value="#{portalRrhhBean.portalRrhhHelper.listaservidorCargaFamiliares}"
+                                                 var="carga"
+                                                 paginator="#{true}"
+                                                 rows="10"
+                                                 rowStyleClass="#{carga.estado eq 'REG' ? 'estadoReg' :  (carga.estado eq 'APR' ? 'estadoApr' : 'estadoRec' )  }"
+                                                 rowIndexVar="rowIndex"
+                                                 id="cargaFamiliar"
+                                                 filterEvent="enter">                                                                                                        
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 20px" >
+                                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.nombres']}" filterMatchMode="contains">
+                                            <h:outputText value="#{carga.nombres}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.discapacidad']}" filterMatchMode="contains" style="width: 80px; text-align: center">
+                                            <p:selectBooleanCheckbox value="#{carga.discapacitado}"/>
+                                        </p:column> 
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.fechaNacimiento']}" filterMatchMode="contains" style="width: 80px; text-align: center">
+                                            <h:outputText value="#{carga.fechaNacimiento}">
+                                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Estado" style="width: 100px; text-align: center">
+                                            <h:outputText rendered="#{!portalRrhhBean.portalRrhhHelper.presentar or carga.bloqueado}" value="#{carga.estadoNombre}"/>
+                                            <p:selectOneMenu value="#{carga.estado}" 
+                                                             rendered="#{portalRrhhBean.portalRrhhHelper.presentar and !carga.bloqueado}">
+                                                <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.estadosDatos}"/>
+                                                <p:ajax event="change" update="cargaFamiliar" />
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                                  style="text-align: center; width: 80px">
+                                            <p:commandButton id="botonEdicioCapacitacion" icon="ui-icon-pencil"                                                            
+                                                             action="#{portalRrhhBean.iniciarEdicionListasCargaFamiliar()}"
+                                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}"
+                                                             update=":frmcargasFamiliares">
+                                                <f:setPropertyActionListener value="#{carga}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorCargaFamiliarEditDelete}"/>
+                                            </p:commandButton>
+                                            <p:commandButton id="botonEliminarc" icon="ui-icon-trash"                                             
+                                                             onclick="confirmEliminacioncarga.show()"
+                                                             process="@this"
+                                                             title="#{msg['message.btn.eliminar']}">
+                                                <f:setPropertyActionListener value="#{carga}" 
+                                                                             target="#{portalRrhhBean.portalRrhhHelper.servidorCargaFamiliarEditDelete}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:tab>
+                        </p:tabView>
+                    </p:panel>
+
+                    <!-- eliminar capacitaciones. -->
+                    <p:confirmDialog id="popupCargafamiliar" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacioncarga">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarCarga" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:tabCargasFamiliares"
+                                             actionListener="#{portalRrhhBean.borrarCargaFamiliar()}"
+                                             oncomplete="confirmEliminacioncarga.hide()"  />  
+                            <p:commandButton id="eliminarCarga" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacioncarga.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                    <!-- eliminar capacitaciones. -->
+                    <p:confirmDialog id="popup" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionc">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto" process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:InstruccionCapacitacion"
+                                             actionListener="#{portalRrhhBean.borrarCapacitacion()}"
+                                             oncomplete="confirmEliminacionc.hide()"  />  
+                            <p:commandButton id="eliminar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionc.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                    <!-- eliminar cuenta. -->
+                    <p:confirmDialog id="confirmEliminaCuenta" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminaCuenta">  
+                        <div style="text-align: center">
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update=":frmPrincipal:cuentasBancariasTabla" process="@this"
+                                             actionListener="#{portalRrhhBean.eliminarCuentaBancaria()}"
+                                             oncomplete="confirmEliminaCuenta.hide()"  />  
+                            <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminaCuenta.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+                    <!-- ELIMINAR EVALUACION. -->
+                    <p:confirmDialog id="popupE" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionE">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarE" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto" process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:ServidorEvaluaciones"
+                                             actionListener="#{portalRrhhBean.borrarEvaluacion()}"
+                                             oncomplete="confirmEliminacionE.hide()"  />  
+                            <p:commandButton id="eliminarE" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionE.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+                    <!-- ELIMINAR EXPERIENCIA. -->
+                    <p:confirmDialog id="popupEx" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionEx">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarEx" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto" process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:ServidorExperiencias"
+                                             actionListener="#{portalRrhhBean.borrarExperiencia()}"
+                                             oncomplete="confirmEliminacionEx.hide()"  />  
+                            <p:commandButton id="eliminarEx" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionEx.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+
+                    <!-- ELIMINAR INSTRUCCIÓN. -->
+                    <p:confirmDialog id="popupIn" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionIn">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarIn" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto" process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:ServidorInstrucciones"
+                                             actionListener="#{portalRrhhBean.borrarInstruccion()}"
+                                             oncomplete="confirmEliminacionIn.hide()"  />  
+                            <p:commandButton id="eliminarIn" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionIn.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+
+                    <!-- ELIMINAR PARIENTES INSTITUCION. -->
+                    <p:confirmDialog id="popupPa" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacionPa">  
+                        <div style="text-align: center">
+                            <p:commandButton id="aceptarPa" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto" process="@this"
+                                             update=":frmPrincipal:VistaInstruccion:ServidorParientes"
+                                             actionListener="#{portalRrhhBean.borrarParientes()}"
+                                             oncomplete="confirmEliminacionPa.hide()"  />  
+                            <p:commandButton id="eliminarPa" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacionPa.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+
+
+
+                    <p:panel>
+                        <h:panelGrid columns="2" id="tablaformulario">                  
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_usuario_creo"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidor.usuarioCreacion}"
+                                         disabled="true"  style="width: 200px"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="banco_fecha_creo"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidor.fechaCreacion}"                                         
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                        
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_usuario_actual"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidor.usuarioActualizacion}"                                         
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="banco_fecha_actual"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidor.fechaActualizacion}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid> 
+                    </p:panel>   
+                </p:panel>
+            </h:form>
+            <!-- cargar archivo de la foto   -->
+            <p:dialog 
+                header="Cargar Archivo" 
+                widgetVar="cargarArchivoPopUp"
+                modal="true"
+                draggable="false"
+                resizable="false"> 
+                <h:form enctype="multipart/form-data">                    
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">                        
+                        <h:panelGrid columns="2" style="width: 400px">
+                            <p:fileUpload
+                                id="bandejaTareaBean_cargarDocumento"
+                                mode="advanced"
+                                showButtons="false"                       
+                                process="@this"                               
+                                widgetVar="fileuplaod_wgts"
+                                update=":frmPrincipal:areaServidor, :frmPrincipal:imgArchiv"
+                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                label="Seleccione...."
+                                sizeLimit="2097152"
+                                oncomplete="clearInvalidFileMsg(fileuplaod_wgts); cargarArchivoPopUp.hide()"                                
+                                fileUploadListener="#{portalRrhhBean.cargarArchivo}"
+                                invalidSizeMessage="El tamaño máximo permitido es de 2MB"
+                                invalidFileMessage="El archivo debe ser gif,jpg,png "
+                                auto="true">
+                            </p:fileUpload>
+                        </h:panelGrid>
+                        <p:growl id="messages" showDetail="true" for="bandejaTareaBean_cargarDocumento"/>
+                    </p:panel>           
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp cargas familiares. -->
+            <p:dialog 
+                widgetVar="cargasFamiliares"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="190px"
+                width="337px"
+                header="Cargas Familiares">
+                <h:form id="frmcargasFamiliares">
+
+                    <h:panelGrid columns="2" id="panelcargasFamiliares"> 
+                        <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.nombres']}: "
+                                       id="cargaFamiliar_nombres"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="cargaFamiliar_nombre"                                       
+                                         required="true"
+                                         requiredMessage="Los apellidos nombres es un campo requerido"                                     
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorCargaFamiliar.nombres}"                                        
+                                         style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.discapacidad']}: "
+                                       id="cargaFamiliar_lbl_discapacitado"
+                                       styleClass="labelFormulario"/>
+                        <p:selectBooleanCheckbox value="#{portalRrhhBean.portalRrhhHelper.servidorCargaFamiliar.discapacitado}"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.cargaFamiliar.fechaNacimiento']}"/>
+                        <p:calendar id="cargaFamiliar_fechaNacimiento" 
+                                    value="#{portalRrhhBean.portalRrhhHelper.servidorCargaFamiliar.fechaNacimiento}" 
+                                    navigator="true"
+                                    autocomplete="off"
+                                    readonlyInput="true" 
+                                    rendered="true"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="La fecha de nacimiento es un campo requerido"
+                                    showOn="button"/>                
+                    </h:panelGrid> 
+
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{portalRrhhBean.guardarServidorCargaFamiliar()}"                                         
+                                         update="panelcargasFamiliares,:frmPrincipal:VistaInstruccion:tabCargasFamiliares,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:cargaFamiliar">                              
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <!-- Cuenta Bancaria -->
+            <p:dialog 
+                widgetVar="cuentaBancariaDlg"
+                draggable="#{true}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                resizable="false"
+                width="540px"
+                header="Cuenta Bancaria">
+                <h:form id="frmCuentaBancariaDlg">                    
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <p:growl id="growlVisorCuentaBancariaDlg" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="Pago Nómina: "
+                                       id="pago_nomina_lbl"
+                                       styleClass="labelFormulario"/>
+
+                        <p:selectBooleanCheckbox id="pago_nomina_lbv" value="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria.pagoNomina}"/>
+
+                        <h:outputLabel value="* Banco: "
+                                       id="banco_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="banco_lbv"      
+                                         required="true"
+                                         requiredMessage="El banco es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria.banco.id}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.bancos}"/>                                                                                                
+                        </p:selectOneMenu>  
+                        <h:outputLabel value="* Tipo de Cuenta: "
+                                       id="tipo_cuenta_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="tipo_cuenta_lbv"      
+                                         required="true"
+                                         requiredMessage="El tipo de cuenta es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria.tipoCuenta}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.tiposCuenta}"/>                                                                                                
+                        </p:selectOneMenu>  
+                        <h:outputLabel value="* Número de Cuenta: "
+                                       id="numero_cuenta_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="numero_cuenta_lbv"                                    
+                                     required="true"
+                                     requiredMessage="El número de cuenta es un campo requerido"                                     
+                                     value="#{portalRrhhBean.portalRrhhHelper.cuentaBancaria.numerCuenta}"                                        
+                                     style="width: 200px"/>                                                   
+                    </h:panelGrid> 
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="GUARDAR"
+                                         update=":frmPrincipal:cuentasBancarias"
+                                         oncomplete="cuentaBancariaDlg.hide()"
+                                         action="#{portalRrhhBean.guardarCuentaBancaria()}">
+                        </p:commandButton> 
+                        <p:commandButton value="CANCELAR"
+                                         oncomplete="cuentaBancariaDlg.hide()"
+                                         immediate="#{true}"
+                                         >
+                        </p:commandButton>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <!-- PopUp reclutamiento Capacitacion. -->
+            <p:dialog 
+                widgetVar="reclutamientoCapacitacion"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="190px"
+                width="337px"
+                header="Capacitación">
+                <h:form id="frmreclutamientoCapacitacion">                    
+                    <h:panelGrid columns="2" id="panelreclutamientoCapacitacion">
+                        <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.capacitacion.evento']}: "
+                                       id="evento_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="evento"                                     
+                                     required="true"
+                                     requiredMessage="El evento es un campo requerido"                                    
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacion.evento}"                                        
+                                     style="width: 200px"/>                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.capacitacion.capacitador']}: "
+                                       id="capacitador_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="capacitador"                                    
+                                     required="true"
+                                     requiredMessage="El capacitador es un campo requerido"                                     
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacion.capacitador}"                                        
+                                     style="width: 200px"/>                          
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.capacitacion.tipoDiploma']}: "
+                                       id="tipo_diploma_lbl"
+                                       styleClass="labelFormulario"/>
+
+                        <p:selectOneMenu id="tipo_diploma"      
+                                         required="true"
+                                         requiredMessage="El tipo diploma es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacion.tipoDiploma}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaTipoDiploma}"/>                                                                                                
+                        </p:selectOneMenu>                                                                                            
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.duracionHoras']}: "
+                                       id="horas_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="horas"
+                                     styleClass="campoNumerico"
+                                     required="true"
+                                     requiredMessage="Duración en horas es un campo requerido"                                     
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorCapacitacion.duracionHoras}"                                        
+                                     style="width: 200px"/>                           
+                    </h:panelGrid> 
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         update="panelreclutamientoCapacitacion,:frmPrincipal:VistaInstruccion:tabCapacitacion,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:InstruccionCapacitacion"
+                                         action="#{portalRrhhBean.guardarServidorCapacitacion()}">
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+
+            <!-- PopUp SERVIDOR EVALUACION. -->
+            <p:dialog 
+                widgetVar="servidorEvaluacion"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="190px"
+                width="337px"
+                header="Evaluación">
+                <h:form id="frmServidorEvaluacion">
+
+                    <h:panelGrid columns="2" id="panelservidorEvaluacion"> 
+                        <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.periodo']}: "
+                                       id="periodo_id"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="periodo"
+
+                                     required="true"
+                                     requiredMessage="El campo periodo es un requerido"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorEvaluacion.periodo}"                                        
+                                     style="width: 200px"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.institucionEvaluadora']}: "
+                                       id="institucionEvaluadora_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="institucionEvaluadora"                           
+
+                                     required="true"
+                                     requiredMessage="El campo institucion evaluadora es un requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorEvaluacion.institucionEvaluadora}"                                        
+                                     style="width: 200px"/>      
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.evaluacion.evaluacionObtenida']}: "
+                                       id="Evaluacion_obtenida_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText          id="Evaluacion_obtenida"                           
+                                              styleClass="campoNumerico"
+                                              required="true"
+                                              requiredMessage="El campo evaluacion obtenida es un requerido"
+                                              maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                              value="#{portalRrhhBean.portalRrhhHelper.servidorEvaluacion.evaluacionObtenida}"                                        
+                                              style="width: 200px"/>                                                       
+                    </h:panelGrid> 
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{portalRrhhBean.guardarServidorEvaluacion()}"                                         
+                                         update="panelservidorEvaluacion,:frmPrincipal:VistaInstruccion:tabEvaluacion,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:ServidorEvaluaciones">                              
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+
+            <!-- PopUp SERVIDOR EXPERIENCIA. -->
+            <p:dialog 
+                widgetVar="servidorExperiencia"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="150px"
+                width="637px"
+                header="Experiencia ">
+                <h:form id="frmServidorExperiencia">
+
+                    <h:panelGrid columns="4" id="panelservidorExperiencia">                                                  
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_desde']}"/>
+                        <p:calendar id="horaInicio" 
+                                    value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.fechaDesde}" 
+                                    navigator="true"
+                                    required="true"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="La fecha desde es un campo requerido"
+                                    autocomplete="off"                                                                               
+                                    showOn="button"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.fecha_hasta']}"/>
+                        <p:calendar id="horaFin" 
+                                    value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.fechaHasta}"                                    
+                                    autocomplete="off"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    required="true"
+                                    requiredMessage="La fecha hasta es un campo requerido"                                                                              
+                                    showOn="button"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.empresa']}: "
+                                       id="empresa_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="empresa"                                                             
+                                     required="true"
+                                     requiredMessage="La empresa es un campo requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.empresa}"                                        
+                                     style="width: 200px"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.denominacionPuesto']}: "
+                                       id="denominacion_puesto_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="denominacion_puesto"                                 
+                                     required="true"
+                                     requiredMessage="El grupo ocupacional es un campo requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.denominacionPuesto}"                                        
+                                     style="width: 200px"/>  
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.actividades']}: "
+                                       id="actividades_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="actividades"                                 
+                                         required="true"
+                                         requiredMessage="La actividad es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.actividades}"                                        
+                                         style="width: 200px"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.experiencia.razonSalida']}: "
+                                       id="razon_salida_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="razon_salida"      
+                                         required="true"
+                                         requiredMessage="La razón de salida es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorExperiencia.razonSalida}"                                        
+                                         style="width: 200px"/>
+                    </h:panelGrid> 
+                    <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{portalRrhhBean.guardarServidorExperiencia()}"                                         
+                                         update="panelservidorExperiencia,growlVisor,:frmPrincipal:VistaInstruccion:tabExperiencia,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:ServidorExperiencias">                              
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp SERVIDOR INSTRUCCION. -->
+            <p:dialog 
+                widgetVar="servidorInstruccion"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="150px"
+                width="637px"
+                header="Instrucción">
+                <h:form id="frmServidorInstruccion">
+
+                    <h:panelGrid columns="2" id="panelservidorInstruccion">  
+                        <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.unidadEducativa']}: "
+                                       id="unidadEducativa_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="unidadEducativa"                        
+                                     required="true"
+                                     requiredMessage="La unidad educativa es un campo requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorInstruccion.unidadEducativa}"                                        
+                                     style="width: 200px"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.especializacion']}: "
+                                       id="especializacion_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="especializacion"                                 
+                                     required="true"
+                                     requiredMessage="La especializacion es un campo requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorInstruccion.especializacion}"                                        
+                                     style="width: 200px"/>  
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.titulo']}: "
+                                       id="titulo_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="titulo"           
+                                     required="true"
+                                     requiredMessage="El titulo es un campo requerido"
+
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorInstruccion.titulo}"                                        
+                                     style="width: 200px"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.instruccion.nivelInstitucion']}: "
+                                       id="nivelInstitucion_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="nivelInstitucion"  
+                                         required="true"
+                                         requiredMessage="El nivel instrucción es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorInstruccion.catalogoNivelInstruccionId}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaNivelInstruccion}"/>                                                                                                
+                        </p:selectOneMenu>
+                    </h:panelGrid> 
+
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{portalRrhhBean.guardarServidorInstruccion()}"                                         
+                                         update="panelservidorInstruccion,:frmPrincipal:VistaInstruccion:tabInstruccion,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:ServidorInstrucciones">                              
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <!-- PopUp SERVIDOR PARIENTES INSTITUCION. -->
+            <p:dialog 
+                widgetVar="servidorParientes"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="150px"
+                width="637px"
+                header="Parientes Institución">
+                <h:form id="frmServidorParientes">
+
+                    <h:panelGrid columns="2" id="panelservidorParientes"> 
+                        <p:growl id="growlVisor" showDetail="false" sticky="false" /> 
+                        <h:outputLabel/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.nombres']}: "
+                                       id="nombres_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="nombres"                        
+                                     required="true"
+                                     requiredMessage="Los apellidos nombres es un campo requerido"
+                                     value="#{portalRrhhBean.portalRrhhHelper.servidorParienteInstitucion.nombres}"                                        
+                                     style="width: 200px"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.parentezco']}: "
+                                       id="catalagoParentezcoid_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="catalagoParentezcoid"   
+                                         required="true"
+                                         requiredMessage="El parentesco es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorParienteInstitucion.catalagoParentezcoid}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaParentezco}"/>                                                                                                
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.fichaPersonal.parientesInstitucion.dependencia']}: "
+                                       id="catalagoDependenciaid_lbl"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="catalagoDependenciaid"  
+                                         required="true"
+                                         requiredMessage="La dependecia es un campo requerido"
+                                         value="#{portalRrhhBean.portalRrhhHelper.servidorParienteInstitucion.catalagoDependenciaid}">
+                            <f:selectItems value="#{portalRrhhBean.portalRrhhHelper.listaDependencia}"/>                                                                                                
+                        </p:selectOneMenu>
+                    </h:panelGrid> 
+                    <h:panelGrid columns="1">
+                        <p:commandButton value="GUARDAR"
+                                         action="#{portalRrhhBean.guardarServidorParientes()}"                                         
+                                         update="panelservidorParientes,:frmPrincipal:VistaInstruccion:tabParientes,:frmPrincipal:panelInstruccion, :frmPrincipal:VistaInstruccion:ServidorParientes">                              
+                        </p:commandButton>                   
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <script type="text/javascript">
+                $(function () {
+                    actualizarPanelDatosAdicionales();
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

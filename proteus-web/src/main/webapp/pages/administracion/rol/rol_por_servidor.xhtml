@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal" >
+                <p:panel id="pnlFiltros" header="#{msg['ec.gob.mq.proteus.administracion.permisos.titulo']}">
+                    <p:spacer height="10"/>
+                    <p:panel >
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         ajax="false" update="detalleDistributivo"
+                                         action="#{rolServidorBean.guardar}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         ajax="false" immediate="true"
+                                         action="#{rolServidorBean.regresar}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" 
+                                         action="#{rolServidorBean.salirPantallaPrincipal}"
+                                         ajax="false" immediate="true"/>  
+                        <p:separator/>   
+                        <h:panelGrid columns="4">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}: "                                                      
+                                           id="tipoDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="tipoDocumento"  
+                                          autocomplete="off"                                      
+                                          styleClass="textoNombre"
+                                          disabled="true"
+                                          style="width: 200px" 
+                                          value="#{rolServidorBean.obtenerDescripcionTipoDocumento(rolServidorBean.rolServidorHelper.servidor.tipoIdentificacion)}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.fichaPersonal.institucion.fechaIngreso']}: "  
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  styleClass="textoNombre"
+                                          autocomplete="off"    
+                                          disabled="true"
+                                          style="width: 200px" 
+                                          value="#{rolServidorBean.rolServidorHelper.distributivoDetalle.fechaIngreso}">     
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "                                                      
+                                           id="numeroDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputText  id="numeroDocumento"  
+                                          autocomplete="off"                                      
+                                          styleClass="textoNombre"
+                                          disabled="true"
+                                          style="width: 200px" 
+                                          value="#{rolServidorBean.rolServidorHelper.servidor.numeroIdentificacion}"/>     
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}: "                                                      
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea  id="nombre"  
+                                              styleClass="textoNombre"
+                                              disabled="true"
+                                              style="width: 300px; overflow: auto;" 
+                                              value="#{rolServidorBean.rolServidorHelper.distributivoDetalle.distributivo.unidadOrganizacional.ruta}"/>     
+
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}: "                                                      
+                                           id="nombre_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea  styleClass="textoNombre"
+                                              disabled="true"
+                                              style="width: 200px; overflow: auto;" 
+                                              value="#{rolServidorBean.rolServidorHelper.servidor.apellidosNombres}"/>     
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.escalaOcupacional']}: "                                                      
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea styleClass="textoNombre"
+                                             disabled="true" 
+                                             style="width: 300px; overflow: auto;" 
+                                             value="#{rolServidorBean.rolServidorHelper.distributivoDetalle.escalaOcupacional.nombreCompleto}"/>     
+
+
+
+                        </h:panelGrid>
+                    </p:panel> 
+                    <p:separator/>
+
+                    <p:panel id="detalleDistributivo" 
+                             header="#{msg['ec.gob.mq.proteus.administracion.permisos.roles']}" 
+                             style="text-align: center">                       
+                        <br/> 
+                        <center>
+
+                            <p:pickList id="pojoPickList" 
+                                        value="#{rolServidorBean.rolServidorHelper.listaRolesServidores}" 
+                                        var="reg" 
+                                        style="width: 300px"
+                                        converter="rolConverter" 
+                                        itemValue="#{reg}" 
+                                        itemLabel="#{reg.nombre}" 
+                                        showSourceFilter="true" 
+                                        showTargetFilter="true" 
+                                        filterMatchMode="contains" >  
+
+                                <f:facet name="sourceCaption">#{msg['ec.gob.mq.proteus.administracion.permisos.rolDisponible']}</f:facet>  
+                                <f:facet name="targetCaption">#{msg['ec.gob.mq.proteus.administracion.permisos.rolAsignado']}</f:facet>  
+
+                                <p:column style="width:90%;" >  
+                                    <h:outputText value="  #{reg.nombre}" title="#{reg.nombre}"/>        
+                                </p:column>  
+
+                            </p:pickList>      
+                        </center>
+                    </p:panel>
+                    <p:separator/>
+                </p:panel>
+
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

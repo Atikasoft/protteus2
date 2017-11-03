@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="Recuperación de Vacaciones">
+                    <br/>
+                    <div>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         action="#{vacacionRecuperacionBean.buscar()}"   
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         update="tablavacacionSolicitud"/>       
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{vacacionRecuperacionBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                    </div>
+                    <p:separator/>
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value="Unidad Organizacional: "
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                            <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                             style="font-size: 10px"
+                                             rows="3"
+                                             cols="41"
+                                             disabled="#{true}"
+                                             value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.unidadAdministrativaNombre}"/>
+                            <p:commandButton icon="ui-icon-search" 
+                                             rendered="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.esRRHH}"
+                                             oncomplete="unidadAdministrativa.show()"/>
+                            <p:commandButton icon="ui-icon-trash"
+                                             rendered="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.esRRHH}"
+                                             update="parametrosBusqueda_unidadAdministrativa">
+                                <f:setPropertyActionListener target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.unidadAdministrativaNombre}"                                                             
+                                                             value="#{null}" />
+                                <f:setPropertyActionListener target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.unidadAdministrativaId}"                                                             
+                                                             value="#{null}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:outputLabel value="Tipo Solicitud "
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu style="width: 320px;"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.tipoVacacion}">
+                            <f:selectItems value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.listaOpcionesTipoVacacion}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="Fecha Inicio Desde:"
+                                       styleClass="labelFormulario"/>   
+                        <p:calendar  id="fechaVigenciaDesde"
+                                     showOn="button"
+                                     navigator="true"
+                                     pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.fechaInicioPlanificacio}"/>
+                        <h:outputLabel value="Fecha Inicio Hasta:"
+                                       styleClass="labelFormulario"/>    
+                        <p:calendar  id="fechaVigenciaHasta"
+                                     showOn="button"
+                                     navigator="true"
+                                     pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.fechaFinPlanificacio}"/>
+                        <h:outputLabel value="Tipo Identificación: "
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu style="width: 320px;"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.tipoDocumentoServidor}">
+                            <f:selectItems value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.listaTipoDocumento}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Número Identificación:"
+                                       styleClass="labelFormulario"/>                  
+                        <p:inputText style="width: 310px;"
+                                     onkeypress="return pulsar(event);"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.numeroDocumentoServidor}"/>                  
+                        <h:outputLabel value="Nombres: "
+                                       styleClass="labelFormulario"/>
+                        <p:inputText style="width: 310px;"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.nombreServidor}"/>
+
+                    </h:panelGrid>
+                    <p:separator/>
+                    <p:dataTable id="tablavacacionSolicitud"
+                                 value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.listaVacacionSolicitudes}"
+                                 var="vacacionSolicitud"
+                                 paginator="#{true}"
+                                 filterEvent="enter"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 scrollable="true"
+                                 sortBy="#{vacacionSolicitud.fechaInicio}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 70px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="Tipo Identificación" 
+                                  sortBy="#{vacacionSolicitud.servidorInstitucion.servidor.tipoIdentificacion}" style="width: 70px" >                               
+                            <h:outputText value="#{vacacionRecuperacionBean.obtenerDescripcionTipoDocumento(vacacionSolicitud.servidorInstitucion.servidor.tipoIdentificacion)}"/>                                
+                        </p:column>    
+                        <p:column headerText="Número Identificación" 
+                                  sortBy="#{vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}" style="width: 80px" >                               
+                            <h:outputText value="#{vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}"/>                                
+                        </p:column>   
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}" 
+                                  sortBy="#{vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}" style="width: 300px" >                               
+                            <h:outputText value="#{vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}"/>                                
+                        </p:column> 
+                        <p:column headerText="Número Solicitud" 
+                                  sortBy="#{vacacionSolicitud.id}" style="width: 60px" >                               
+                            <h:outputText value="#{vacacionSolicitud.id}"/>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}" 
+                                  sortBy="#{vacacionSolicitud.tipo}" style="width: 150px" >                               
+                            <h:outputText value="#{vacacionRecuperacionBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"/>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaInicio']}" 
+                                  sortBy="#{vacacionSolicitud.fechaInicio}" style="width: 80px" >                               
+                            <h:outputText value="#{vacacionSolicitud.fechaInicio}" >
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaFin']}" 
+                                  sortBy="#{vacacionSolicitud.fechaFin}" style="width: 80px" >                               
+                            <h:outputText value="#{vacacionSolicitud.fechaFin}">                                
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}" 
+                                  sortBy="#{vacacionSolicitud.estado}" style="width: 80px" >                               
+                            <h:outputText value="#{vacacionRecuperacionBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"/>                                
+                        </p:column> 
+                        <p:column headerText="Tiempo" 
+                                  sortBy="#{vacacionSolicitud.cantidadSolicitada} " style="width: 90px" >     
+                            <h:outputText value="#{vacacionSolicitud.cantidadSolicitada} "/>
+                            <h:outputText value="#{vacacionSolicitudBean.obtenerDescripcionTipoPeriodo(vacacionSolicitud.tipoPeriodo)}"/>                                
+                        </p:column> 
+                        <p:column headerText="Validador" style="width: 150px;">
+                            <h:outputText value="#{vacacionSolicitud.validador.servidor.apellidosNombres}"/>
+                        </p:column>
+                        <p:column headerText="Aprobador" style="width: 150px;">
+                            <h:outputText value="#{vacacionSolicitud.aprobador.servidor.apellidosNombres}"/>
+                        </p:column>
+                        <p:column headerText="Recupera Saldo" style="width: 150px;">
+                            <h:outputText value="#{vacacionSolicitud.recuperador.apellidosNombres}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+
+                            <p:commandButton id="botonVer" icon="ui-icon-search"
+                                             ajax="#{false}"
+                                             action="#{vacacionRecuperacionBean.verSolicitud}"
+                                             title="#{msg['message.btn.ver']}">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             rendered="#{vacacionSolicitud.recuperador == null and vacacionSolicitud.tipoPeriodo=='D'}"
+                                             action="#{vacacionRecuperacionBean.iniciarEdicion}"
+                                             title="Editar">
+                                <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                             target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitudEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px;"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmPrincipal:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.busquedaVacacionVO.unidadAdministrativaId}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>  

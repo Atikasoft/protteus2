@@ -1,0 +1,1 @@
+INSERT INTO sch_proteus.reglas (descripcion, fecha_actualizacion, fecha_creacion, nemonico, nombre, usuario_creacion, valor_periodo, vigente, tipo) VALUES ('Validar que el servidor no tenga tareas pendientes de atender', null, '2017-08-01 00:00:00', 'VALTARASI', 'VALIDAR TAREAS PENDIENTES DE ATENDER', 'atk', 1, 1, 'M')

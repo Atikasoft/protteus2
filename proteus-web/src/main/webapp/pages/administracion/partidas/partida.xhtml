@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{partidaBean}" 
+                                     extendido="false"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.nuevaPartida.titulo']}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.partida.codigo']}:"                                       
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="partida_codigo"                                      
+                                     styleClass="campoAlfaNumerico"
+                                     style="width: 200px"
+                                     requiredMessage="El código es un campo requerido."
+                                     maxlength="100"
+                                     value="#{partidaBean.partidaHelper.partida.codigo}"
+                                     required="true"
+                                     disabled="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.partida.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="partida_nombre" 
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         requiredMessage="El nombre es un campo requerido."
+                                         maxlength="200"
+                                         value="#{partidaBean.partidaHelper.partida.nombre}"
+                                         required="true"/>
+                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.partida.numeroPartida']}:"                                       
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="partida_numero"                                      
+                                     style="width: 200px"
+                                     requiredMessage="El número de partida es un campo requerido."
+                                     maxlength="10"
+                                     value="#{partidaBean.partidaHelper.partida.partida}"
+                                     required="true"/>
+                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.partida.certificacionPresupuestaria']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectBooleanCheckbox id="partida_certificacion"                                                 
+                                                 value="#{partidaBean.partidaHelper.partida.certificacionPresupuestariaPuesto}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+                        <p:inputText id="partida_fechaCreacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{partidaBean.partidaHelper.partida.fechaCreacion}"                                     
+                                     rendered="#{!(partidaBean.partidaHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+                        <p:inputText id="partida_usuarioCreacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{partidaBean.partidaHelper.partida.usuarioCreacion}"                                     
+                                     rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+                        <p:inputText id="partida_fechaActualizacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{partidaBean.partidaHelper.partida.fechaActualizacion}"                                     
+                                     rendered="#{!(partidaBean.partidaHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+                        <p:inputText id="partida_usuarioActualizacion" 
+                                     style="width: 200px"
+                                     disabled="#{true}"
+                                     value="#{partidaBean.partidaHelper.partida.usuarioActualizacion}"                                     
+                                     rendered="#{!(partidaBean.partidaHelper.esNuevo)}"/>
+
+
+                    </h:panelGrid>
+
+                </f:facet>
+
+            </smp:catalogo_formulario>
+
+        </ui:define>
+    </ui:composition>
+</html>

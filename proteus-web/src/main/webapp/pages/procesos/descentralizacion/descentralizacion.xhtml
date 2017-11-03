@@ -1,0 +1,139 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmMain">
+                <p:panel>
+                    <h:panelGrid columns="3">                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         ajax="false"
+                                         action="#{descentralizacionBean.regresar}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" 
+                                         action="#{descentralizacionBean.salirPantallaPrincipal}"
+                                         ajax="false"/>
+                    </h:panelGrid>                
+                </p:panel>   
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.desconcentracion.titulo']}">
+                    <p:fieldset legend="Información del Tipo de Movimiento a Desconcentrar" style="margin: auto;width: 400px">
+                        <h:panelGrid columns="2" style="margin: auto;">
+                            <h:outputLabel value="Grupo:"/>
+                            <p:inputTextarea disabled="true" 
+                                         value="#{descentralizacionBean.descentralizacionHelper.tipoMovimiento.clase.grupo.nombre}"
+                                         style="width: 350px"/>
+                            <h:outputLabel value="Clase:"/>
+                            <p:inputTextarea disabled="true" 
+                                         value="#{descentralizacionBean.descentralizacionHelper.tipoMovimiento.clase.nombre}"
+                                         style="width: 350px"/>
+                            <h:outputLabel value="Tipo de Movimiento:"/>
+                            <p:inputTextarea disabled="true" 
+                                         value="#{descentralizacionBean.descentralizacionHelper.tipoMovimiento.nombre}"
+                                         style="width: 350px"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:separator/>
+                    <br/> <br/>
+                    <p:fieldset legend="Lista de Unidad con Gestión Desconcentrada">
+                        <p:spacer/>
+                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.agregar']}" 
+                                     oncomplete="dlgAgregar.show();"
+                                     update=":frmAgregar"/>                       
+                        <p:spacer height="10px;"/>
+                        <p:dataTable id="tblInstitucionesDesconcentradas" 
+                                     value="#{descentralizacionBean.descentralizacionHelper.listaTipoMovimientoDescentralizado}"
+                                     var="tmd"
+                                     rows="10"
+                                     filterEvent="enter"
+                                     paginator="#{true}"
+                                     style="overflow: auto;"
+                                     rowIndexVar="rowIndex">
+
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>  
+                            <p:column headerText="Unidades Descentralizadas" 
+                                      filterBy="#{tmd.unidadOrganizacional.nombre}" 
+                                      filterMatchMode="contains" >
+                            <h:outputText value="#{tmd.unidadOrganizacional.nombreCompleto}"/>  
+                            </p:column>
+                            <p:column headerText="Opción">
+                                <p:commandButton oncomplete="confEliminacion.show();" 
+                                                 process="@this"
+                                                 update=":frmConfirmElimDes"
+                                                 icon="ui-icon-trash">
+                                    <f:setPropertyActionListener value="#{tmd}" 
+                                                                 target="#{descentralizacionBean.descentralizacionHelper.tipoMovimientoDescentralizado}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
+                </p:panel>
+
+            </h:form>
+            <p:dialog widgetVar="confEliminacion"
+                      modal="true"
+                      draggable="false"
+                      resizable="false">
+                <h:form id="frmConfirmElimDes">
+                    <h:outputLabel value="¿Desea eliminar la Unidad Organizacional '
+                                   #{descentralizacionBean.descentralizacionHelper.tipoMovimientoDescentralizado.unidadOrganizacional.nombre}' 
+                                   de la lista de desconcentrados?"/>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update=":frmMain:tblInstitucionesDesconcentradas"
+                                         action="#{descentralizacionBean.eliminarUnidadOrganizacional}"/> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confEliminacion.hide()"
+                                         type="button" />  
+                    </div>             
+                </h:form>
+            </p:dialog>
+            <p:dialog widgetVar="dlgAgregar"
+                      modal="true" header="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}"
+                      width="700" height="350"
+                      draggable="false"
+                      resizable="false">
+                <h:form id="frmAgregar">
+                        <p:scrollPanel style="width:100%;height:320px;"  mode="native" >   
+                    <p:treeTable id="tblInstitucionesDesconcentradas" 
+                                 value="#{descentralizacionBean.descentralizacionHelper.rootUnidadOrganizacional}"
+                                 var="ubicacion" propagateSelectionUp="false"
+                                 style="overflow: auto"  
+                                 selectionMode="checkbox"
+                                 selection="#{descentralizacionBean.descentralizacionHelper.unidadesSeleccionadas}" >
+                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                  style="width: 400px; font-size: 8pt"
+                                  sortBy="#{ubicacion.nombre}"
+                                  filterBy="#{ubicacion.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{ubicacion.nombre}" 
+                                          title="#{ubicacion.nombre}"  />
+                        </p:column>
+                         <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                  style="font-size: 8pt"
+                                  sortBy="#{ubicacion.codigo}"
+                                  filterBy="#{ubicacion.codigo}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{ubicacion.codigo}" 
+                                          title="#{ubicacion.codigo}"  />
+                        </p:column>
+                   
+                    </p:treeTable>
+                        </p:scrollPanel>
+                    <br/>
+                    <div style="text-align: center;margin-left: 7%;">  
+                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         action="#{descentralizacionBean.agregarUnidadesOrganizacionales}"/> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgAgregar.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

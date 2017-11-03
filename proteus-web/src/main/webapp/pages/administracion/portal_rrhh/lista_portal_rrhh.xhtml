@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <smp:catalogo_lista controlador="#{adminPortalRrhhBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+
+                    <p:dataTable id="tablaClase"
+                                 value="#{adminPortalRrhhBean.admininistracionPortalRrhhHelper.listaPortalRhhs}"
+                                 var="portal" emptyMessage="No se encontraron registros"
+                                 scrollable="true"
+                                 style="overflow: auto;"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">   
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 50px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{adminPortalRrhhBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{portal}" 
+                                                             target="#{adminPortalRrhhBean.admininistracionPortalRrhhHelper.portalRrhhSeleccionado}"/>
+                            </p:commandButton>
+                            
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.codigo']}" 
+                                  sortBy="#{portal.codigo}" 
+                                  filterBy="#{portal.codigo}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains"
+                                  style="width: 30px">                                                                 
+                            <h:outputText value="#{portal.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.nombre']}" 
+                                  sortBy="#{portal.nombre}" 
+                                  filterBy="#{portal.nombre}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains"
+                                  style="width: 200px">                                                                 
+                            <h:outputText value="#{portal.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.nombreImagen']}"  
+                                  filterStyle="width: 90%"
+                                  style="width: 100px">                                                                 
+                            <h:outputText value="#{portal.nombreImagen}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.url']}"  
+                                  filterStyle="width: 90%"
+                                  style="width: 300px">                                                                 
+                            <h:outputText value="#{portal.url}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.portalRRHH.vigente']}" 
+                                  style="text-align: center; width: 50px">                                
+                            <p:selectBooleanCheckbox value="#{portal.vigente}" 
+                                                     disabled="#{true}"/>                                   
+                        </p:column>
+                    </p:dataTable>
+                     
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,128 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <smp:catalogo_lista controlador="#{comprobanteRetencionBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:spacer height="10"/>
+                    <center>
+                        <p:panel header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.filtro.busqueda.titulo']} " style="width: 370px;" >
+                            <p:panelGrid columns="2">
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.nombres']}: "                                                      
+                                               id="nombre_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="nombre"  
+                                              styleClass="textoNombre"
+                                              autocomplete="off"                                              
+                                              style="width: 200px" 
+                                              value="#{comprobanteRetencionBean.comprobanteRetencioHelper.nombreServidor}">     
+
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.identificacion']}: "                                                      
+                                               id="numeroDocumento_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"                                      
+                                              styleClass="textoNombre"
+                                              style="width: 200px" 
+                                              value="#{comprobanteRetencionBean.comprobanteRetencioHelper.numeroIdentificacionServidor}">     
+
+                                </p:inputText>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.ejecicioFiscal']}: "                                                      
+                                               id="ejercicioFiscal_lbl"                                           
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="ejercicioFiscal" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{comprobanteRetencionBean.comprobanteRetencioHelper.ejercicioFiscal}"
+                                                 required="true"
+                                                 requiredMessage="El campo estado es requerido">
+                                    <f:selectItems value="#{comprobanteRetencionBean.comprobanteRetencioHelper.listaEjercicioFiscal}"/> 
+                                </p:selectOneMenu>
+                                <br/>
+                                <center>
+                                    <p:commandButton id="buscar"  
+                                                     value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"                                                     
+                                                     title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"   
+                                                     action="#{comprobanteRetencionBean.buscar}"
+                                                     update="formularios,tabla"/>                        
+                                </center>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+
+                    <p:panel id="formularios" header="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.lista.titulo']}" style="text-align: center">                        
+                        <p:dataTable id="tabla"
+                                     value="#{comprobanteRetencionBean.comprobanteRetencioHelper.listaComprobanteRetencionImpuestoRenta}"
+                                     var="formulario"
+                                     sortBy="#{formulario.fechaRegistro}"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 80px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-note"
+                                                 action="#{comprobanteRetencionBean.iniciarEdicion}" >
+                                    <f:setPropertyActionListener value="#{formulario}" 
+                                                                 target="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRentaTransaccional}"/>
+                                </p:commandButton>
+                                <p:commandButton id="botonEliminar" icon="ui-icon-trash" onclick="eliminarPopUp.show();" process="@this" >
+                                    <f:setPropertyActionListener value="#{formulario}" 
+                                                                 target="#{comprobanteRetencionBean.comprobanteRetencioHelper.comprobanteRetencionImpuestoRentaTransaccional}"/>
+                                </p:commandButton> 
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                      style="width: 100px; text-align: center">                                                                 
+                                <h:outputText value="#{formulario.servidor.numeroIdentificacion}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.nombres']}" 
+                                      sortBy="#{formulario.servidor.apellidosNombres}">                                                                 
+                                <h:outputText value="#{formulario.servidor.apellidosNombres}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.comprobanteRetencion.fechaRegistro']}" 
+                                      sortBy="#{det.servidor.apellidosNombres}" style="width: 80px; text-align: center">                                                                 
+                                <h:outputText value="#{formulario.fechaRegistro}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>                                
+                            </p:column> 
+                        </p:dataTable>                                                            
+                    </p:panel>
+                </p:panel>
+                <p:dialog 
+                    header="Confirmación de Eliminación" 
+                    widgetVar="eliminarPopUp"
+                    modal="true" width="300"               
+                    resizable="false"> 
+                    <h:form id="eliminarPopUpForm">                    
+                        <p:panel id="eliminarPopUpPanel" style="border: none;">
+                            <div style="text-align: center">
+                                Confirma eliminar el Formulario
+                            </div>
+                            <br/>
+                            <div style="text-align: center">
+                                <p:commandButton icon="ui-icon-check" value="Aceptar"
+                                                 action="#{comprobanteRetencionBean.borrar}"
+                                                 process="@this" oncomplete="eliminarPopUp.hide();" 
+
+                                                 />
+                                <p:commandButton icon="ui-icon-close" immediate="true" value="Cancelar"  
+                                                 onclick="eliminarPopUp.hide();" process="eliminarPopUpForm"/>
+                            </div>
+                        </p:panel>           
+                    </h:form>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

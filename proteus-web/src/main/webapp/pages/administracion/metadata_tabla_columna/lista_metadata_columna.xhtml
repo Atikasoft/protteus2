@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>   
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.titulo']}">
+                    <br/>
+                    <div style="text-align: left">
+                        <p:commandButton id="acpe" value="#{msg['message.btn.regresar']}" ajax="false" 
+                                         action="#{metadataColumnaBean.irListaMetadataTablas}" process="@this"/> 
+                    </div>
+                    <br/>
+
+                    <p:dataTable id="tablametadataColumna"
+                                 value="#{metadataColumnaBean.metadataColumnaHelper.listaMetadataColumna}"
+                                 var="metadataColumna"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{metadataColumna.nombre}"  sortOrder="ascending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.nombre']}" 
+                                  sortBy="#{metadataColumna.nombre}" style="width: 400px" filterBy="#{metadataColumna.nombre}" filterMatchMode="contains">                               
+                            <h:outputText value="#{metadataColumna.nombre}"/>                                
+                        </p:column>                         
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.columna']}" 
+                                  sortBy="#{metadataColumna.columna}" style="width: 400px" filterBy="#{metadataColumna.columna}" filterMatchMode="contains">                               
+                            <h:outputText value="#{metadataColumna.columna}"/>                                
+                        </p:column>        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.tipoDato']}" 
+                                  sortBy="#{metadataColumna.tipo}" style="width: 400px" filterBy="#{metadataColumna.tipo}" filterMatchMode="contains">                               
+                            <h:outputText value="#{metadataColumnaBean.obtenerDescripcionTipoDato(metadataColumna.tipo)}"/>                                
+                        </p:column>        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{metadataColumna.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonVer" icon="ui-icon-search"
+                                             ajax="#{false}"
+                                             action="#{metadataColumnaBean.irFormulario}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.ver']}">
+                                <f:setPropertyActionListener value="#{metadataColumna}" 
+                                                             target="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.institucion.titulo']}"
+                                     controlador="#{institucionCatalogoControladorBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="3" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.institucion.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="institucion_nombre"                                      
+                                     styleClass="textoNombre"  
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.nombre}"
+                                     required="true" style="width: 150px"
+                                     disabled="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:message for="institucion_nombre" display="icon"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.institucion.codigo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="institucion_codigo"
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.codigo}"
+                                     disabled="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"
+                                     required="true" style="width: 400px"/>
+                        <p:message for="institucion_codigo" display="icon"/>
+                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.institucion.ruc']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="institucion_ruc"
+                                         styleClass="textoNemonico" 
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"
+                                         value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.ruc}"
+                                         disabled="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"
+                                         required="true" style="width: 400px"/>
+                        <p:message for="institucion_ruc" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.vigente}" 
+                                                 rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <br/>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:inputText id="institucion_usuario_creo"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}" style="width: 250px"/>
+                        <p:message for="institucion_usuario_creo" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:inputText id="institucion_fecha_creo"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.fechaCreacion}"
+                                     rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+                        <p:message for="institucion_fecha_creo" display="icon"/>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:inputText id="institucion_usuario_actual"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.usuarioActualizacion}"
+                                     rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"
+                                     disabled="true" style="width: 250px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <p:message for="institucion_usuario_actual" display="icon"/>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"/>
+                        <p:inputText id="institucion_fecha_actual"
+                                     value="#{institucionCatalogoControladorBean.institucionHelper.institucion.institucion.fechaActualizacion}"
+                                     rendered="#{!(institucionCatalogoControladorBean.institucionHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <p:message for="institucion_fecha_actual" display="icon"/>
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

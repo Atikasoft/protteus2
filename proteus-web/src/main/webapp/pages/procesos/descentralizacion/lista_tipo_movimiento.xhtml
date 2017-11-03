@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="tiposMovimientosFrom">
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="1">   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{delegacionAprobacionBean.salirPantallaPrincipal()}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <p:separator/>
+                <p:panel header="Desconcentración de Gestión de Movimientos">
+                    <p:dataTable id="tablaTiposMovimientos"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 value="#{descentralizacionBean.descentralizacionHelper.listaTiposMovimientos}"
+                                 var="tipoMovimiento"
+                                 rowIndexVar="rowIndex"
+                                 style="overflow: auto"
+                                 filterEvent="enter">
+                        <p:ajax event="filter" update=":tiposMovimientosFrom:clases_json" oncomplete="actualizarClases();"
+                                listener="#{descentralizacionBean.llenarComboClaseFiltrosEvent()}"/>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.opciones']}" style="text-align: center">
+                            <p:commandButton icon="ui-icon-person" ajax="false" 
+                                             process="@this"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.delegacioAprobacion.delegar']}"
+                                             action="#{descentralizacionBean.buscarInstitucionesPorTipoMovimiento}"                                             >
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{descentralizacionBean.descentralizacionHelper.tipoMovimiento}"/>                                 
+                                <f:setPropertyActionListener value="#{tipoMovimiento.id}" 
+                                                             target="#{descentralizacionBean.descentralizacionHelper.tipoMovimientoId}"/> 
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.grupo']}"
+                                  sortBy="#{tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{tipoMovimiento.clase.grupo.id}"
+                                  filterMatchMode="exact"
+                                  id="columna_grupo"
+                                  filterOptions="#{descentralizacionBean.descentralizacionHelper.listaGrupos}"
+                                  style="width: 80px"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{tipoMovimiento.clase.grupo.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.clase']}"
+                                  sortBy="#{tipoMovimiento.clase.nombre}"
+                                  filterBy="#{tipoMovimiento.clase.id}"
+                                  filterMatchMode="exact"
+                                  id="columna_clase"
+                                  filterOptions="#{descentralizacionBean.descentralizacionHelper.listaClases}"
+                                  >
+                            <h:outputText value="#{tipoMovimiento.clase.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.movimiento']}"
+                                  sortBy="#{tipoMovimiento.nombre}"
+                                  filterBy="#{tipoMovimiento.nombre}"                                 
+                                  style="width: 300px"
+                                  filterStyle="width: 100"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{tipoMovimiento.nombre}"/>
+                        </p:column>                                                            
+                        
+                    </p:dataTable>
+                    <p:inputTextarea id="clases_json" style="display: none"
+                                     value="#{descentralizacionBean.descentralizacionHelper.clasesJson}"/>
+
+                </p:panel>
+                <script type="text/javascript"
+                src="#{facesContext.externalContext.requestContextPath}/js/tipoMovimientosDescentralizacion.js"></script>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

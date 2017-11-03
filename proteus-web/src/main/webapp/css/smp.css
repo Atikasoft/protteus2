@@ -1,0 +1,140 @@
+/* 
+    Document   : proteus
+    Created on : 23/10/2012, 11:18:57 AM
+    Author     : Victor Quimbiamba <victor.quimbiamba@atikasoft.com.ec>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/**
+ * Estilos personalizados.
+ **/
+
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+
+.isa_info, .isa_success, .isa_warning, .isa_error {
+    margin: 5px 5px;
+    padding:5px;
+    border-radius:.5em;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin:5px 5px;
+    font-size:2em;
+    vertical-align:middle;
+}
+
+
+.labelFormulario{
+    /**   float: right;**/
+}
+
+#contenidoDer .ui-panel .ui-panel-content {
+    text-align: left;
+}
+
+#contenidoDer .ui-message-info, .ui-message-error, .ui-message-warn, .ui-message-fatal{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.miniBuscar{
+    background: url(../images/botones/buscar.png) no-repeat;
+    height:16px;
+    width:16px;
+    border: none;
+}
+
+.miniLimpiar{
+    background: url(../images/botones/limpiar.png) no-repeat;
+    height:16px;
+    width:16px;
+    border: none;
+}
+
+
+.textoNombre , .textoNombre-dis{
+    width:250px;
+    text-transform:uppercase;
+}
+
+.textoMayuscula, .textoMayuscula-dis {
+    text-transform:uppercase;
+}
+
+
+
+.textoNemonico, .textoNemonico-dis{
+    text-transform:uppercase;
+    width:250px;
+}
+.campoAlfaNumerico, .campoAlfaNumerico-dis{
+    text-transform:uppercase;
+
+}
+
+.textoDescripcion,.textoDescripcion-dis{
+    width:250px;
+    height:100px;
+}
+
+.areasTipoMovimiento{
+    width:920px;
+}
+
+#frmLlenarVancante input{
+    width: 250px;
+}
+
+.textoArea{
+    width: 250px;
+}
+.ui-growl {
+    right: 35%;
+    top:20%;
+}
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+    opacity: 0.59;
+    font-style: italic;
+}
+
+#frmLlenarVancante * .hasDatepicker, .hasDatepicker-disabled{
+    width: 80px;
+}
+
+#frmVerificarRequisito * .hasDatepicker, .hasDatepicker-disabled{
+    width: 70px;
+}
+
+#frmVerificarRequisito input{
+    width: 30px;
+}
+
+.colorPlomo {
+    background: silver !important ;
+}
+
+.mayusculas{
+    text-transform: uppercase;
+}
+
+.arriba td {
+    vertical-align: top;
+}

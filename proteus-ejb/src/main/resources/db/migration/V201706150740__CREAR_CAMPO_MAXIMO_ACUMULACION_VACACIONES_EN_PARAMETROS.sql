@@ -1,0 +1,1 @@
+ALTER TABLE sch_proteus.vacaciones_parametros ADD maximo_acumulacion_proporcionales INT;

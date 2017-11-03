@@ -1,0 +1,171 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form id="frmPrincipal" >                    
+                <p:panel>
+                    <p:commandButton id ="btnNuevo" value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}" 
+                                     title="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}" 
+                                     process="tipoDocumento"
+                                     update="tipoDocumento"
+                                     action="#{cuentaBancariaBean.iniciarNuevo()}"
+                                     ajax="false"> 
+                        <f:setPropertyActionListener value="#{cuentaBancariaBean.cuentaBancariaHelper.tipoPersonaFiltro}" 
+                                                     target="#{cuentaBancariaBean.cuentaBancariaHelper.cuentaBancaria.tipoPersona}"/>
+                    </p:commandButton>
+                </p:panel>
+                <p:separator/>
+                <p:fieldset id="areaServidor" >  
+                    <p:panel id="panelInformacionServido" header="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.titulo']}" > 
+                        <h:panelGrid columns="3">
+
+                            <h:outputLabel value="* Tipo Persona: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDocumento']}"
+                                           id="tipoPersona_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tipoPersona"   
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             required="true"
+                                             style="width: 200px"
+                                             requiredMessage="El campo Tipo Persona es requerido"
+                                             value="#{cuentaBancariaBean.cuentaBancariaHelper.tipoPersonaFiltro}" >
+                                <f:selectItems value="#{cuentaBancariaBean.cuentaBancariaHelper.listaTipoPersona}"/>                                                                                                
+                            </p:selectOneMenu>
+                            <p:message for="tipoPersona" display="icon"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.tipoDocumento']}"
+                                           id="tipoDocumento_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tipoDocumento"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             rendered="true"
+                                             style="width: 200px"
+                                             value="#{cuentaBancariaBean.cuentaBancariaHelper.tipoIdentificacion}">
+                                <f:selectItems value="#{cuentaBancariaBean.cuentaBancariaHelper.tipoDocumento}"/>                                  
+                                <p:ajax                                            
+                                    update="numeroDocumento_search,numeroDocumento,btnNuevo"/>                                
+                            </p:selectOneMenu>
+                            <h:panelGrid columns="2">
+                                <p:message for="tipoDocumento" display="icon"/>
+                            </h:panelGrid>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.devengamiento.numeroIdentificacion']}: "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.numeroDocumento']}"
+                                           id="numeroDocumento_lbl"                                           
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="3" >
+                                <p:inputText  id="numeroDocumento"  
+                                              autocomplete="off"
+                                              maxlength="15"
+                                              disabled="#{cuentaBancariaBean.cuentaBancariaHelper.tipoIdentificacion==null}"
+                                              style="width: 180px"
+                                              onkeypress="return pulsar(event)"
+                                              value="#{cuentaBancariaBean.cuentaBancariaHelper.numeroIdentificacion}">  
+                                    <f:validateLength minimum="0" maximum="15" />
+                                </p:inputText>
+
+                                <p:commandButton id="numeroDocumento_search"  
+                                                 icon="ui-icon-search"   
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                                 disabled="#{cuentaBancariaBean.cuentaBancariaHelper.tipoIdentificacion==null}"
+                                                 action="#{cuentaBancariaBean.buscar}" process="@this,numeroDocumento_lbl, tipoPersona"
+                                                 ajax="false"
+                                                 update="apellidoNombre, tablaClase ">
+                                </p:commandButton>
+                                <p:commandButton id="botonEliminarr" icon="ui-icon-trash"     immediate="true"  
+                                                 update="frmPrincipal:areaServidor"   process="@this"                                   
+                                                 title="#{msg['message.btn.eliminar']}" action="#{cuentaBancariaBean.encerarComponentes()}"/>
+
+
+                            </h:panelGrid>
+                            <f:verbatim/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:  "
+                                           title="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.tooltip.apellidosNombres']}"
+                                           id="apellidoNombre_lbl"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="apellidoNombre"      style="width: 200px"
+                                             disabled="true"                                        
+                                             value="#{cuentaBancariaBean.cuentaBancariaHelper.nombreEncontrado}"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:separator/>
+
+                    <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" header="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.TituloLista']}">
+                        <p:dataTable id="tablaClase"
+                                     value="#{cuentaBancariaBean.cuentaBancariaHelper.listaCuentaBancarias}"
+                                     var="tipo"
+                                     sortBy="#{tipo.servidor.apellidosNombres}"
+                                     paginator="#{true}"
+                                     emptyMessage="#{msg['message.listaVacia']}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">                            
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                      style="text-align: center; width: 150px">
+                                <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                                 ajax="#{false}"
+                                                 action="#{cuentaBancariaBean.iniciarEdicion}"
+                                                 title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                    <f:setPropertyActionListener value="#{tipo}" 
+                                                                 target="#{cuentaBancariaBean.cuentaBancariaHelper.cuentaBancariaEditDelete}"/>   
+                                    <f:setPropertyActionListener value="#{cuentaBancariaBean.cuentaBancariaHelper.tipoPersonaFiltro}" 
+                                                                 target="#{cuentaBancariaBean.cuentaBancariaHelper.cuentaBancariaEditDelete.tipoPersona}"/>   
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                      style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.banco']}" 
+                                      sortBy="#{tipo.banco.nombre}" style="width: 100px">                                                                 
+                                <h:outputText value="#{tipo.banco.nombre}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.servidor']}" 
+                                      sortBy="#{tipo.servidor.apellidosNombres}" style="width: 150px">                                                                 
+                                <h:outputText value="#{tipo.servidor.apellidosNombres}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioInstitucional.especial']}" 
+                                      sortBy="#{tipo.beneficiarioEspecial}" style="width: 150px" >                                                                 
+                                <h:outputText value="#{tipo.beneficiarioEspecial.nombreBeneficiario}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioInstitucional.normal']}" 
+                                      sortBy="#{tipo.beneficiarioInstitucion}" style="width: 150px" >                                                                 
+                                <h:outputText value="#{tipo.beneficiarioInstitucion.nombreBeneficiario}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.tipoCuenta']}" 
+                                      style="width: 70px">                                                                 
+                                <h:outputText value="#{cuentaBancariaBean.obtenerDescripcionTipoCuenta(tipo.tipoCuenta)}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.numeroCuenta']}" 
+                                      style="width: 150px">                                                                 
+                                <h:outputText value="#{tipo.numerCuenta}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.cuentaBancaria.pagaNomina']}" 
+                                      style="text-align: center; width: 70px">
+                                <p:selectBooleanCheckbox value="#{tipo.pagoNomina}"
+                                                         disabled="#{true}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" 
+                                      style="text-align: center; width: 70px"
+                                      >                                
+                                <p:selectBooleanCheckbox value="#{tipo.vigente}" 
+                                                         disabled="#{true}"/>                                   
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                </p:fieldset>
+            </h:form> 
+        </ui:define>
+    </ui:composition>
+</html>

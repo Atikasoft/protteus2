@@ -1,0 +1,180 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="formularioPrincipal">
+                <p:panel header="#{msg['ec.gob.mrl.smp.consulta.tramites.servidoresInactivos.titulo']}">                                                     
+                    <p:dataTable id="tablaTareas"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 value="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.listaTareas}"
+                                 filteredValue="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.listaTareasFiltradas}"
+                                 var="tareaVO"
+                                 scrollable="true"
+                                 rowIndexVar="rowIndex"
+                                 style="overflow: auto"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center;width: 70px;">
+                            <!--                            <p:commandButton icon="ui-icon-trash"
+                                                                         onclick="confirmacionEliminarWV.show()" 
+                                                                         title="Eliminar" 
+                                                                         disabled="#{not consultaTramitesServidoresInactivosBean.puedeEliminar(tareaVO)}">
+                                                            <f:setPropertyActionListener value="#{tareaVO}" 
+                                                                                         target="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.tareaVO}"/> 
+                                                        </p:commandButton>-->
+                            <p:commandButton icon="ui-icon-close"
+                                             onclick="justificacionAnularWV.show()"
+                                             title="Anular"
+                                             update=":formularioPrincipal:txtJustificacion"
+                                             disabled="#{not consultaTramitesServidoresInactivosBean.puedeAnular(tareaVO)}">
+                                <f:setPropertyActionListener value="#{tareaVO}" 
+                                                             target="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.tareaVO}"/> 
+                                <f:setPropertyActionListener value="" 
+                                                             target="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.justificacion}"/> 
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.numerotramite']}"
+                                  sortBy="#{tareaVO.tarea.numeroExterno}"
+                                  style="text-align: center; width: 70px"
+                                  filterBy="#{tareaVO.tarea.numeroExterno}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tarea.numeroExterno}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.grupo']}"
+                                  style="width: 100px;"
+                                  sortBy="#{tareaVO.tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{tareaVO.tipoMovimiento.clase.grupo.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tipoMovimiento.clase.grupo.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}"
+                                  sortBy="#{tareaVO.tipoMovimiento.nombre}"
+                                  style="width: 260px;"
+                                  filterBy="#{tareaVO.tipoMovimiento.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tipoMovimiento.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Fecha Elaboración"
+                                  sortBy="#{tareaVO.tramite.fechaCreacion}"
+                                  style="text-align: center; width: 100px;"
+                                  filterBy="#{tareaVO.tramite.fechaCreacion}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tramite.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.fechasAsignacion']}"
+                                  sortBy="#{tareaVO.tarea.fechaAsignacion}"
+                                  style="text-align: center; width: 160px"
+                                  filterBy="#{tareaVO.tarea.fechaAsignacion}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tarea.fechaAsignacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Identificación Servidor Inactivo"
+                                  sortBy="#{tareaVO.tarea.usuarioAsignado}"
+                                  style="text-align: center; width: 150px;"
+                                  filterBy="#{tareaVO.tarea.usuarioAsignado}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tarea.usuarioAsignado}"/>
+                        </p:column>
+
+                        <p:column headerText="Apellidos y Nombres Servidor Inactivo"
+                                  sortBy="#{tareaVO.tarea.nombreUsuarioAsignado}"
+                                  style="width: 200px;"
+                                  filterBy="#{tareaVO.tarea.nombreUsuarioAsignado}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tarea.nombreUsuarioAsignado}"/>
+                        </p:column>
+
+                        <p:column headerText="Unidad Elaboradora"
+                                  sortBy="#{tareaVO.tarea.nombreInstitucionElaborador}"
+                                  style="width: 200px;"
+                                  filterBy="#{tareaVO.tarea.nombreInstitucionElaborador}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tarea.nombreInstitucionElaborador}"  style="font-size: 10px"/>
+                        </p:column>
+
+                        <p:column headerText="Estado Trámite"
+                                  sortBy="#{tareaVO.tramite.estado}"
+                                  style="text-align: center; width: 100px"
+                                  filterBy="#{tareaVO.tramite.estado}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tareaVO.tramite.estado}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+                <p:confirmDialog header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']}"
+                                 message="¿Está seguro en eliminar el trámite?"
+                                 severity="info"
+                                 width="300"
+                                 widgetVar="confirmacionEliminarWV">
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         actionListener="#{consultaTramitesServidoresInactivosBean.eliminarTarea}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                         onclick="confirmacionEliminarWV.hide()"/>
+                    </div>
+                </p:confirmDialog>
+
+                <p:confirmDialog header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']}"
+                                 message="¿Está seguro en anular el trámite?"
+                                 severity="info"
+                                 width="300"
+                                 widgetVar="confirmacionAnularWV">
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         actionListener="#{consultaTramitesServidoresInactivosBean.anularTarea}"
+                                         update="formularioPrincipal:tablaTareas,formularioPrincipal:txtJustificacion"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                         onclick="confirmacionAnularWV.hide()"/>
+                    </div>
+                </p:confirmDialog>
+
+                <p:dialog header="Justificación de la Anulación"
+                          width="300"
+                          widgetVar="justificacionAnularWV">
+                    <p:panelGrid columns="2" style="text-align: left">
+                        <p:outputLabel value="Justificación"/>
+                        <p:inputTextarea rows="5"
+                            id="txtJustificacion"
+                            value="#{consultaTramitesServidoresInactivosBean.consultaTramitesServidoresInactivosHelper.justificacion}"/>
+                    </p:panelGrid>
+                    <br/>
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         onclick="confirmacionAnularWV.show()"/> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                         onclick="justificacionAnularWV.hide();"/>
+                    </div>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,426 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario id="f_beneficiario" titulo="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.titulo']}"
+                                     controlador="#{beneficiarioInstitucionalBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="1" id="tablaformularioS"> 
+
+                        <h:panelGrid columns="2" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.rubro.rubro']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="rubroDescuento" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}" 
+                                             required="false"
+                                             requiredMessage="El rubro es un campo requerido"
+                                             value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.idRubro}">
+                                <f:selectItems value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.listaOpcionesRubro}"/>    
+                                <p:ajax event="change" listener="#{beneficiarioInstitucionalBean.esRubroSeleccionado}" 
+                                        update="f_beneficiario:panelBeneficiarioNOrmal,f_beneficiario:panelBeneficiarioEspecial"/>
+                            </p:selectOneMenu> 
+                            <p:inputTextarea id="rubro_tipo_rubro"                                      
+                                             styleClass="campoNemonico"
+                                             style="width: 200px"       
+                                             disabled="true"
+                                             rendered="#{!beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}"
+                                             value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.rubro.nombre}"/>
+                        </h:panelGrid>
+
+                        <!-- Beneficiario Normal -->
+                        <p:outputPanel id="panelBeneficiarioNOrmal" style="width: 600px;">
+                            <p:fieldset id="f_BN" legend="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioNormal']}"
+                                        rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.rubro.tipoBeneficiario =='N'}">
+
+                                <h:panelGrid columns="2" id="gridBN" >
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:selectOneMenu id="tipoDocumento" 
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.tipoIdentificacion}"
+                                                     required="#{true}" style="width: 200px"
+                                                     requiredMessage="El tipo de documento es requerido">
+                                        <f:selectItems value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.listaOpcionesTipoDocumento}"/> 
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.tramite.numeroIdentificacion']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <h:panelGrid columns="2">
+                                        <p:outputPanel id="panel_identif_n">
+                                            <p:inputText id="numeroIdentificacionBE"
+                                                         styleClass="textoNombre"
+                                                         style="width: 200px"
+                                                         rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.tipoIdentificacion!='C'}"
+                                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.numeroIdentificacion}"
+                                                         required="true"
+                                                         requiredMessage="El campo número de identificación es requerido"/>    
+                                            <p:inputText id="numeroIdentificacionBn_cedula"
+                                                         styleClass="campoNumerico"
+                                                         style="width: 200px" maxlength="10"
+                                                         rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.tipoIdentificacion=='C'}"
+                                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.numeroIdentificacion}"
+                                                         required="true"
+                                                         requiredMessage="El campo número de identificación es requerido">
+                                            </p:inputText>
+                                        </p:outputPanel>
+                                        <p:commandButton icon="ui-icon-search"  action="#{beneficiarioInstitucionalBean.buscarBeneficiarioNormal}"
+                                                         title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                                         partialSubmit="true"
+                                                         update="panelBeneficiarioNOrmal"/> 
+                                    </h:panelGrid>
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.nombre']}:"
+                                                   styleClass="labelFormulario"/>
+                                    <p:inputTextarea id="nombreBeneficiario"
+                                                     styleClass="textoNombre"
+                                                     style="width: 200px" disabled="true"
+                                                     required="true"
+                                                     requiredMessage="El campo nombre es requerido"
+                                                     value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.nombreBeneficiario}"/>  
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </p:outputPanel>
+                        <!-- Beneficiario Especial -->
+                        <p:outputPanel id="panelBeneficiarioEspecial" style="width: 800px">
+                            <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioEspecial']} "
+                                        rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.rubro.tipoBeneficiario == 'E'}">
+
+                                <h:panelGrid columns="3" id="autocompleteGrid">
+
+                                    <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.servidorPublico']}:"
+                                                   styleClass="labelFormulario"/>
+
+                                    <p:inputText id="servidor_nombrescompletos"
+                                                 styleClass="campoNumerico"
+                                                 style="width: 350px" 
+                                                 rendered="#{!beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}"
+                                                 disabled="#{true}"
+                                                 value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.servidor.apellidosNombres}"
+                                                 />   
+                                    <p:autoComplete value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.servidor}" 
+                                                    style="width: 400px;" title="#{msg['message.minimo.caracteres.busqueda.porNombre']}"
+                                                    converter="servidorConverter"   
+                                                    var="s" 
+                                                    itemLabel="#{s.apellidosNombres}" 
+                                                    itemValue="#{s}"
+                                                    forceSelection="true"
+                                                    maxResults="10"
+                                                    rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}"
+                                                    minQueryLength="3"
+                                                    scrollHeight="100"
+                                                    completeMethod="#{beneficiarioInstitucionalBean.buscarServidorPorNombre}"
+                                                    multiple="false">
+                                        <p:ajax event="itemSelect" update="btnAgregar"/>
+                                    </p:autoComplete>
+
+                                    <p:outputPanel id="btnAgregar">
+                                        <p:commandButton id="botonAniadir" icon="ui-icon-plusthick"
+                                                         action="#{beneficiarioInstitucionalBean. iniciarBeneficiarioEspecial(true)}"
+                                                         update=":modalAgregar" 
+                                                         disabled="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.servidor==null}"
+                                                         title="#{msg['ec.gob.mrl.smp.generico.boton.aniadir']} #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioEspecial']}"/>
+
+                                    </p:outputPanel>   
+                                </h:panelGrid>
+                                <p:spacer width="30" height="20" />
+                                <p:dataTable id="tablaBeneficiariosEspeciales" 
+                                             value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.listaBeneficiarioEspecial}"
+                                             var="bb"   rowIndexVar="rowIndex"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             sortBy="#{bb.nombreBeneficiario}"  sortOrder="ascending"
+                                             style="overflow: auto">    
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                        <h:outputText value="#{rowIndex+1}"/>                                
+                                    </p:column>
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.tipoIdentificacion']}" 
+                                              sortBy="#{bb.tipoIdentificacion}" style="width: 80px">                               
+                                        <h:outputText value="#{beneficiarioInstitucionalBean.obtenerDescripcionTipoDocumento(bb.tipoIdentificacion)}"/>                                
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.numeroIdentificacion']}" 
+                                              sortBy="#{bb.numeroIdentificacion}" style="width: 80px">                               
+                                        <h:outputText value="#{bb.numeroIdentificacion}"/>                                
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.nombre']}" 
+                                              sortBy="#{bb.nombreBeneficiario}" style="width: 250px">                               
+                                        <h:outputText value="#{bb.nombreBeneficiario}"/>                                
+                                    </p:column>   
+                                    <p:column headerText="Servidor" 
+                                              sortBy="#{bb.beneficiarioInstitucional.servidor.apellidosNombres}" style="width: 350px"
+                                              rendered="#{!beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}">                               
+                                        <h:outputText value="#{bb.beneficiarioInstitucional.servidor.apellidosNombres}" 
+                                                      rendered="#{!beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo}"/>                                
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.valor']} " >                               
+                                        <h:outputText value="#{bb.valor}" style="text-align: right"/>                                
+                                    </p:column>   
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaInicio']} "   style="width: 80px">                               
+                                        <h:outputText value="#{bb.fechaInicio}">                                
+                                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                        </h:outputText>
+                                    </p:column>    
+
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaFinal']} "   style="width: 80px">                               
+                                        <h:outputText value="#{bb.fechaFin}">                                
+                                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                        </h:outputText>
+                                    </p:column>    
+
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                                        <p:commandButton id="botonEditar" icon="ui-icon-pencil"
+                                                         action="#{beneficiarioInstitucionalBean.iniciarEdicionBeneficiarioEspecial}"
+                                                         update=":formEditarBE"
+                                                         title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                            <f:setPropertyActionListener value="#{bb}" 
+                                                                         target="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecialTransaccion}"/>
+                                        </p:commandButton>
+                                        <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                                         onclick="confirmEliminacion.show()"                                          
+                                                         title="#{msg['message.btn.eliminar']}">
+                                            <f:setPropertyActionListener value="#{bb}" 
+                                                                         target="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial}"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>  
+                                <br/>
+                                <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                                 header="Eliminación" 
+                                                 severity="alert" 
+                                                 widgetVar="confirmEliminacion">  
+                                    <div style="text-align: center">
+                                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                                         style="margin: auto"
+                                                         update="tablaBeneficiariosEspeciales"
+                                                         actionListener="#{beneficiarioInstitucionalBean.eliminarBeneficiarioEspecial}"
+                                                         oncomplete="confirmEliminacion.hide()"  />  
+                                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                                         onclick="confirmEliminacion.hide()" 
+                                                         type="button"  immediate="true"
+                                                         style="margin: auto"/> 
+                                    </div>
+                                </p:confirmDialog> 
+                            </p:fieldset>
+                        </p:outputPanel>
+
+                        <!-- Datos de session -->
+
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>
+                            <p:selectBooleanCheckbox value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.vigente}" 
+                                                     disabled="true"
+                                                     rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>
+                            <p:inputText id="beneficiarioInstitucional_usuario_creo"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.usuarioCreacion}"
+                                         disabled="true" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"
+                                         style="width: 200px"/>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>
+                            <p:inputText id="beneficiarioInstitucional_fecha_creo"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.fechaCreacion}"
+                                         rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                            
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>
+                            <p:inputText id="beneficiarioInstitucional_usuario_actua"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.usuarioActualizacion}"
+                                         rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                            </p:inputText>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"/>
+                            <p:inputText id="beneficiarioInstitucional_fecha_actua"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioInstitucional.fechaActualizacion}"
+                                         rendered="#{!(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>     
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+
+            <!--modal Agregar Beneficiario Especial -->
+            <p:dialog id="modalAgregar" 
+                      header="#{msg['ec.gob.mrl.smp.generico.boton.aniadir']} #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioEspecial']}" 
+                      showEffect="fade" widgetVar="addDialog" modal="true"
+                      resizable="false">  
+                <h:form id="formAgregar">
+                    <p:outputPanel id="addPanel">  
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="tipoDocumentoBE" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.tipoIdentificacion}"
+                                             required="#{true}"
+                                             requiredMessage="El campo tipo de documento es requerido">
+                                <f:selectItems value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.listaOpcionesTipoDocumento}"/> 
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.tramite.numeroIdentificacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <h:panelGrid columns="2">
+                                <p:outputPanel id="panel_identif">
+                                    <p:inputText id="numeroIdentificacionBE"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.tipoIdentificacion!='CED'}"
+                                                 value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.numeroIdentificacion}"
+                                                 required="true"
+                                                 requiredMessage="El campo número de identificación es requerido">    
+                                    </p:inputText>
+                                    <p:inputText id="numeroIdentificacionBE_cedula"
+                                                 styleClass="campoNumerico"
+                                                 style="width: 200px" maxlength="10" 
+                                                 rendered="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.tipoIdentificacion=='CED'}"
+                                                 value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.numeroIdentificacion}"
+                                                 required="true"
+                                                 requiredMessage="El campo número de identificación es requerido">    
+                                    </p:inputText>
+                                </p:outputPanel>
+                                <p:commandButton icon="ui-icon-search"  
+                                                 action="#{beneficiarioInstitucionalBean.buscarBeneficiarioEspecial}"
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                                 ajax="true"
+                                                 update="formAgregar:panel_nombreLbl,formAgregar:panel_identif"/>
+                            </h:panelGrid>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.nombre']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:outputPanel id="panel_nombreLbl">
+                                <p:inputTextarea id="nombreBE"
+                                                 styleClass="textoNombre"
+                                                 style="width: 200px"
+                                                 disabled="#{!beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.registroManualNombres}"
+                                                 value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.nombreBeneficiario}"
+                                                 required="true"
+                                                 requiredMessage="El campo nombre es requerido"/>    
+                            </p:outputPanel>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.valor']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="valor"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.valor}"
+                                         required="false"
+                                         requiredMessage="El campo valor es requerido"/>    
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaInicio']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:calendar id="valorFechaIni"  navigator="true" 
+                                        required="false" showOn="button"
+                                        value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.fechaInicio}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha inicio es requerido"/>    
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaFinal']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:calendar id="valorFechaFin"  navigator="true" 
+                                        required="false" showOn="button"
+                                        value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.fechaFin}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha final es requerido"/>   
+                        </h:panelGrid> 
+                        <p:spacer/>
+                        <p:separator/>
+                        <center>
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"     
+                                             update=":f_beneficiario:tablaBeneficiariosEspeciales,addPanel"  
+                                             ajax="#{true}" 
+                                             action="#{beneficiarioInstitucionalBean.agregarBeneficiarioEspecial}"/>
+
+                            <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="addDialog.hide()"  
+                                             type="button" 
+                                             style="margin: auto"/>                         
+
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog>
+
+            <!--modal Editar Beneficiario Especial -->
+            <p:dialog id="modalEditar" 
+                      header="EDITAR #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.beneficiarioEspecial']}" 
+                      showEffect="fade" widgetVar="editDialog" modal="true"
+                      resizable="false">  
+                <h:form id="formEditarBE">
+                    <p:outputPanel id="editarPanelBE">  
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>                                    
+                            <p:inputText value="#{beneficiarioInstitucionalBean.obtenerDescripcionTipoDocumento(beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.tipoIdentificacion)}" disabled="true"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.numeroIdentificacion']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.numeroIdentificacion}" disabled="true"/>
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.nombre']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputTextarea id="nombreBE"
+                                             styleClass="textoNombre"
+                                             disabled="true"
+                                             style="width: 200px"
+                                             value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.nombreBeneficiario}"
+                                             requiredMessage="El campo nombre es requerido"/>    
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.valor']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="valor"
+                                         styleClass="campoDecimal"
+                                         value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.valor}"
+                                         required="false"
+                                         requiredMessage="El campo valor es requerido"/>    
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaInicio']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:calendar id="valorFechaIni"  navigator="true" 
+                                        required="false" showOn="button"
+                                        value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.fechaInicio}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha inicio es requerido"/>    
+
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.beneficiarioInstitucional.fechaFinal']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:calendar id="valorFechaFin"  navigator="true" 
+                                        required="false" showOn="button"
+                                        value="#{beneficiarioInstitucionalBean.beneficiarioInstitucionalHelper.beneficiarioEspecial.fechaFin}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha final es requerido"/>   
+                        </h:panelGrid> 
+                        <p:spacer/>
+                        <p:separator/>
+                        <center>
+                            <p:commandButton id="btnAceptar"
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"     
+                                             update=":f_beneficiario:tablaBeneficiariosEspeciales,editarPanelBE"  
+                                             action="#{beneficiarioInstitucionalBean.editarBeneficiarioEspecial}"/>
+
+                            <p:commandButton id="cerrar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="editDialog.hide()"  
+                                             type="button" 
+                                             style="margin: auto"/>                         
+
+                        </center>
+                    </p:outputPanel>  
+                </h:form>
+            </p:dialog> 
+
+
+        </ui:define>
+    </ui:composition>
+</html>

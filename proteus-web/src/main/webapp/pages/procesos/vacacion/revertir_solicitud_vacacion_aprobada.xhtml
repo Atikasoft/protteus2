@@ -1,0 +1,324 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmDatosServidor">  
+                <p:panel>
+                    <div>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{revertirVacacionesBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                    </div>
+                </p:panel>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.revertirVacacion.titulo']}"> 
+
+                    <!-- Informacion del usuario conectado-->
+                    <p:panel id="panelDatosServidor" 
+                             header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+
+                        <p:panelGrid id="busquedaForm" columns="2"
+                                     columnClasses="col35,col65">
+
+                            <p:panelGrid id="buscarPor" columns="2">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.genericos.etiquetas.buscarPor']}: "
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="comboBuscarPor"
+                                                 required="#{true}"
+                                                 styleClass="textoNemonico"
+                                                 value="#{revertirVacacionesBean.revertirVacacionesHelper.buscarServidorPor}">
+                                    <f:selectItems value="#{revertirVacacionesBean.revertirVacacionesHelper.opcionesBuscarServidorPor}"/>
+                                    <p:ajax update="@form"
+                                            listener="#{revertirVacacionesBean.limpiarFormulario()}"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="buscarIdentificacion" columns="5"
+                                         columnClasses="col15,col25,col15,col25"
+                                         rendered="#{revertirVacacionesBean.revertirVacacionesHelper.buscarServidorPor eq 'id'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.identificacion.tipo']}:"
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="planificacionVacacion_servidorTipoIdentificacion"
+                                                 styleClass="textoNemonico"
+                                                 value="#{revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion}"
+                                                 required="#{true}">
+                                    <f:selectItems value="#{revertirVacacionesBean.revertirVacacionesHelper.opcionesTipoIdentificacion}"/>
+                                    <p:ajax update="@form"
+                                            listener="#{revertirVacacionesBean.limpiarNroIdentificacion()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroCedula"
+                                             styleClass="campoNumerico" maxlength="10"
+                                             disabled="#{revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion eq null}"
+                                             rendered="#{revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion eq null
+                                                         || revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion eq'C'}"
+                                             value="#{revertirVacacionesBean.revertirVacacionesHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">
+                                    <f:validateRegex pattern="[0-9]{10}"/>
+                                </p:inputText>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroPasaporte"
+                                             styleClass="textoNemonico"
+                                             disabled="#{revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion eq null}"
+                                             rendered="#{revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion ne null
+                                                         and revertirVacacionesBean.revertirVacacionesHelper.tipoIdentificacion ne 'C'}"
+                                             value="#{revertirVacacionesBean.revertirVacacionesHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="busquedaForm" update="@form :frmResultados:tblResultados" 
+                                                 action="#{revertirVacacionesBean.buscarServidorYPlanificacionVacaciones}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="busApellidosNombres" columns="5"
+                                         columnClasses="col60"
+                                         rendered="#{revertirVacacionesBean.revertirVacacionesHelper.buscarServidorPor eq 'an'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNombresApellidos"
+                                             value="#{revertirVacacionesBean.revertirVacacionesHelper.apellidosNombres}"
+                                             style="width: 300px; text-transform:uppercase;" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="busquedaForm" update="@form :frmResultados:tblResultados"
+                                                 action="#{revertirVacacionesBean.buscarServidorYPlanificacionVacaciones()}"/>
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:separator/>
+
+                        <p:panelGrid id="dtServidor" columns="4"
+                                     columnClasses="col20,col30,col20,col30">
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu styleClass="textoNemonico"
+                                             value="#{revertirVacacionesBean.revertirVacacionesHelper.servidor.tipoIdentificacion}"
+                                             disabled="#{true}">
+                                <f:selectItems value="#{revertirVacacionesBean.revertirVacacionesHelper.opcionesTipoIdentificacion}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText styleClass="textoNemonico" disabled="#{true}"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.servidor.numeroIdentificacion}"
+                                         >
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.servidor.apellidosNombres}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="fechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.servidor.fechaIngresoInstitucion}"
+                                         disabled="#{true}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText value=" #{revertirVacacionesBean.revertirVacacionesHelper.institucionEjercicioFiscal.ejercicioFiscal.nombre}"
+                                         disabled="true" styleClass="labelFormulario"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.distributivosDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: " 
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="planificacionVacacion_saldoVacacionEfectivaDias"
+                                         styleClass="textoNemonico"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.saldoVacacionTexto}"
+                                         disabled="#{true}" title="Saldo vaciones efectivas pendiente"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldoProporcional']}: " 
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="planificacionVacacion_saldoVacacionProporcionalDias"
+                                         styleClass="textoNemonico"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.saldoVacacionProporcionalTexto}"
+                                         disabled="#{true}" title="Saldo vacaciones proporcionales pendiente"/>
+                        </p:panelGrid>
+
+                        <p:separator />
+                        <p:panel header="Solicitides de vacaciones aprobadas">
+                            <p:dataTable id="tablaVacSolicitudesAprobadas"
+                                         value="#{revertirVacacionesBean.revertirVacacionesHelper.listaVacacionSolicitudesAprobadas}"
+                                         var="vacacionSolicitud"
+                                         paginator="#{true}"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"
+                                         style="width: 100%; overflow: auto">  
+
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                          style="text-align: center; width: 5%">  
+                                    <p:commandButton id="botonRevertir" icon="ui-icon-arrowreturnthick-1-w"
+                                                     onclick="confirmRevertir.show()"
+                                                     title="#{msg['message.btn.revertir']}"
+                                                     update=":confirmRevertirForm">
+                                        <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                                     target="#{revertirVacacionesBean.revertirVacacionesHelper.solicitudVacionAprobada}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="text-align: center; width: 5%">
+                                    <h:outputText value="#{rowIndex+1}"/>                                
+                                </p:column>
+                                <p:column headerText="Número" 
+                                          filterBy="#{vacacionSolicitud.id}" 
+                                          filterMatchMode="contains"
+                                          sortBy="#{vacacionSolicitud.id}" 
+                                          style="width: 5%;text-align: center" >                               
+                                    <h:outputText value="#{vacacionSolicitud.id}"/>                                
+                                </p:column>     
+
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.tipoSolicitud']}" 
+                                          sortBy="#{vacacionSolicitud.tipo}" 
+                                          style="width: 20%" 
+                                          filterBy="#{revertirVacacionesBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"
+                                          filterMatchMode="contains">                               
+                                    <h:outputText value="#{revertirVacacionesBean.obtenerDescripcionTipoVacacion(vacacionSolicitud.tipo)}"/>                                
+                                </p:column> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}"
+                                          filterBy="#{revertirVacacionesBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"
+                                          filterMatchMode="contains" 
+                                          sortBy="#{vacacionSolicitud.estado}" 
+                                          style="width: 10%">                               
+                                    <h:outputText value="#{revertirVacacionesBean.obtenerDescripcionEstadoVacacion(vacacionSolicitud.estado)}"/>                                
+                                </p:column> 
+
+                                <p:column headerText="Duración"  
+                                          style="width: 20%; text-align: center" >                               
+                                    <h:outputText value="#{vacacionSolicitud.cantidadSolicitadaTexto} "/>   
+                                </p:column> 
+
+                                <p:column headerText="Observación"  
+                                          style="width: 30%; text-align: center" >                               
+                                    <h:outputText value="#{vacacionSolicitud.motivo} "/>   
+                                </p:column> 
+
+
+                            </p:dataTable>
+                        </p:panel>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+
+            <!-- resultados de busqueda por nombre -->
+            <p:dialog header="RESULTADO DE LA BÚSQUEDA"
+                      id="dlgResultados"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      widgetVar="dlgResultadosBusqueda">
+
+                <h:form id="frmResultados">  
+                    <p:panel id="panelResultados">
+                        <p:dataTable id="tblResultados" 
+                                     value="#{revertirVacacionesBean.revertirVacacionesHelper.listaDistributivosDetalles}"
+                                     var="distributivo" rowIndexVar="rowIndex"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     sortBy="#{distributivo.servidor.apellidosNombres}">
+
+                            <p:column style="text-align: center; width: 20px">
+                                <p:commandButton icon="ui-icon-play"
+                                                 update=":frmDatosServidor"
+                                                 title="Seleccionar"
+                                                 action="#{revertirVacacionesBean.seleccionarServidorBuscarPlanificacion()}">
+                                    <f:setPropertyActionListener value="#{distributivo.servidor}" 
+                                                                 target="#{revertirVacacionesBean.revertirVacacionesHelper.servidor}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}" style="float: right"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres"
+                                      sortBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{distributivo.servidor.apellidosNombres}" 
+                                              style="font-size: 10px; text-align: center"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: center"
+                                      sortBy="#{revertirVacacionesBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}">
+                                <h:outputText style="font-size: 10px;"
+                                              value="#{revertirVacacionesBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}" />
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align: center"
+                                      filterBy="#{distributivo.servidor.numeroIdentificacion}">
+                                <h:outputText value="#{distributivo.servidor.numeroIdentificacion}" 
+                                              style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br />
+                        <center>
+                            <p:commandButton id="btnCancelar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgResultadosBusqueda.hide();"
+                                             style="margin: auto" />
+                        </center>
+                        <br />
+                    </p:panel>
+                </h:form>  
+            </p:dialog>
+
+            <!-- confirmacion de reversion de solicitud -->
+            <p:confirmDialog header ="#{msg['ec.gob.mrl.smp.administracion.vacacion.revertir.confirmacionTilulo']}"  
+                             message  ="#{msg['ec.gob.mrl.smp.administracion.vacacion.confirmacionMsgSolicitudVacacion']}" 
+                             severity="alert" widgetVar="confirmRevertir"> 
+                <h:form id="confirmRevertirForm">
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirm" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.revertir']}" 
+                                             action="#{revertirVacacionesBean.revertir(true)}"
+                                             update=":frmDatosServidor"/>                        
+                            <p:commandButton id="decline" 
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                             onclick="confirmRevertir.hide()" type="button" />
+                        </span>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+        </ui:define>
+    </ui:composition>
+</html>
+
+<!--<p:commandButton id="botonVer" icon="ui-icon-search"
+                                                     ajax="#{false}"
+                                                     action="#{revertirVacacionesBean.mostrarSolicitud}"
+                                                     title="#{msg['message.btn.ver']}">
+                                        <f:setPropertyActionListener value="#{vacacionSolicitud}" 
+                                                                     target="#{revertirVacacionesBean.revertirVacacionesHelper.solicitudVacionAprobada}"/>
+                                    </p:commandButton>-->

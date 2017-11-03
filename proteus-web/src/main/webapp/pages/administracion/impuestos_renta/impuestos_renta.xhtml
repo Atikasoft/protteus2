@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.form.titulo']}"
+                                     controlador="#{impuestoRentaBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+                    <h:outputText value=""/>
+                    <h:panelGrid columns="2"  style="text-align:left" id="tablaformulario">
+
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.tooltip.ejercicioFiscal']}"
+                                       for="ejercicio_fiscal"
+                                       />
+                        <p:selectOneMenu id="ejercicio_fiscal" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         disabled="#{impuestoRentaBean.impuestoRentaHelper.existeEjercicioFiscalSeleccionado}"
+                                         value="#{impuestoRentaBean.impuestoRentaHelper.ejercicioFiscalSeleccionado}" required="true">
+                            <f:selectItems value="#{impuestoRentaBean.impuestoRentaHelper.ejerciciosFiscales}"/>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.fraccionBasica']}"
+                                       for="fraccion_basica"
+                                       />
+                        <p:inputText id="fraccion_basica" required="true" styleClass="campoFloat"
+                                     value="#{impuestoRentaBean.impuestoRentaHelper.impuestoRenta.fraccionBasica}"/>
+
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.excesoHasta']}"
+                                       for="exceso_hasta"
+                                       />
+                        <p:inputText id="exceso_hasta" required="false" styleClass="campoFloat"
+                                     value="#{impuestoRentaBean.impuestoRentaHelper.impuestoRenta.excesoHasta}"/>
+
+
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.impuestoALaFraccionBasica']}"
+                                       for="impuesto_base" 
+                                       />
+                        <p:inputText id="impuesto_base" required="true" styleClass="campoFloat"
+                                     value="#{impuestoRentaBean.impuestoRentaHelper.impuestoRenta.porcentajeImpuestoSobreFraccionBasica}"/>
+
+                        <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.impuestoRenta.impuestoALaFraccionExcedente']}"
+                                       for="impuesto_excedente"
+                                       />
+                        <p:inputText id="impuesto_excedente" required="true" styleClass="campoFloat"
+                                     value="#{impuestoRentaBean.impuestoRentaHelper.impuestoRenta.porcentajeImpuestoFraccionExcedente}"/>
+                    </h:panelGrid> 
+                    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/impuestoRenta.js"></script>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

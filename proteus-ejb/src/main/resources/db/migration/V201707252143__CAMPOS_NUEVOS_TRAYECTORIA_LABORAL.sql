@@ -1,0 +1,10 @@
+ALTER TABLE sch_proteus.trayectoria_laboral ADD numero_documento_habilitante VARCHAR(40);
+ALTER TABLE sch_proteus.trayectoria_laboral ADD clase text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD unidad_presupuestaria text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD unidad_organizacional text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD certificacion_presupuestaria VARCHAR(40);
+ALTER TABLE sch_proteus.trayectoria_laboral ADD denominacion_puesto text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD elaborador text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD fecha_elaborador DATETIME;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD legalizador text;
+ALTER TABLE sch_proteus.trayectoria_laboral ADD fecha_legalizador DATETIME;

@@ -1,0 +1,124 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="tiposMovimientosForm">
+                <smp:catalogo_lista controlador="#{tipoMovimientoBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaTiposMovimientos"
+                                 widgetVar="tablaTiposMovimientosWidgetVar"
+                                 value="#{tipoMovimientoBean.tipoMovimientoHelper.listaTipoMovimiento}"
+                                 var="tipoMovimiento"
+                                 paginator="#{true}"
+                                 rows="20"
+                                 rowIndexVar="rowIndex">
+                        <p:ajax event="filter" update=":tiposMovimientosForm:clases_json" oncomplete="actualizarClases();"
+                                listener="#{tipoMovimientoBean.llenarComboClaseFiltrosEvent()}"/>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width:220px;">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{tipoMovimientoBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimientoEditDelete}"/>                                
+                            </p:commandButton>
+                            <p:commandButton id="botonConfRequisitos"
+                                             icon="ui-icon-newwin"
+                                             ajax="#{false}"
+                                             action="#{tipoMovimientoRequisitoBean.iniciarConfiguracionRequisitos}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.boton.configurarRequisitos']}">
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{tipoMovimientoRequisitoBean.tipoMovimientoRequisitoHelper.tipoMovimiento}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonConfReglas"
+                                             icon="ui-icon-newwin"
+                                             ajax="#{false}"
+                                             action="#{tipoMovimientoReglaBean.iniciarConfiguracionReglas}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.boton.configurarReglas']}">
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{tipoMovimientoReglaBean.tipoMovimientoReglaHelper.tipoMovimiento}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonConfPrecedencia"
+                                             icon="ui-icon-newwin"
+                                             ajax="#{false}"
+                                             action="#{tipoMovimientoPrecedenciaBean.iniciarConfiguracionPrecedencia}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRegla.boton.configurarPrecedencia']}">
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{tipoMovimientoPrecedenciaBean.tipoMovimientoPrecedenciaHelper.tipoMovimientoEdit}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{tipoMovimiento}" 
+                                                             target="#{tipoMovimientoBean.tipoMovimientoHelper.tipoMovimientoEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tabla.grupo']}"
+                                  sortBy="#{tipoMovimiento.clase.grupo.nombre}" 
+                                  filterBy="#{tipoMovimiento.clase.grupo.id}"
+                                  filterMatchMode="exact" id="columna_grupo" 
+                                  filterOptions="#{tipoMovimientoBean.tipoMovimientoHelper.listaGrupo}"                                  
+                                  filterStyle="width: 80px" style="width: 100px">
+                            <h:outputText value="#{tipoMovimiento.clase.grupo.nombre}" style="font-size:10px;"/>
+                        </p:column>                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tabla.clase']}"
+                                  sortBy="#{tipoMovimiento.clase.nombre}"
+                                  filterBy="#{tipoMovimiento.clase.id}"
+                                  filterMatchMode="exact" id="columna_clase"    
+                                  filterOptions="#{tipoMovimientoBean.tipoMovimientoHelper.listaClasesFiltros}"
+                                  filterStyle="width: 80px" style="width: 200px">
+                            <h:outputText value="#{tipoMovimiento.clase.nombre}" style="font-size:10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tabla.nombre']}"
+                                  sortBy="#{tipoMovimiento.nombre}"
+                                  filterBy="#{tipoMovimiento.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 60%" 
+                                  style="width: 300px">
+                            <h:outputText value="#{tipoMovimiento.nombre}" style="font-size:10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.publicado']}" style="text-align: center;width: 40px">
+                            <p:selectBooleanCheckbox value="#{tipoMovimiento.publicado}" 
+                                                     disabled="#{true}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.tabla.desconcentrado']}" style="text-align: center;width: 40px">
+                            <p:selectBooleanCheckbox value="#{tipoMovimiento.tipoGestionDesconcentrado}" 
+                                                     disabled="#{true}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <h:inputTextarea id="clases_json" style="display: none"
+                                     value="#{tipoMovimientoBean.tipoMovimientoHelper.clasesFiltrosSeleccionados}"/>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaTiposMovimientos"
+                                             actionListener="#{tipoMovimientoBean.borrar()}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+                <script type="text/javascript"
+                src="#{facesContext.externalContext.requestContextPath}/js/tipoMovimientos.js"></script>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

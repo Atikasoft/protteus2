@@ -1,0 +1,203 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="#{msg['ec.gob.mrl.smp.bandejaTareas.titulo']}">                                                     
+                    <h:panelGrid columns="3" cellpadding="0" cellspacing="0" width="100%">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.ordenarPor']}:"
+                                       rendered="false"/>
+                        <p:selectOneMenu  value="#{bandejaTareaBean.bandejaTareaHelper.busquedaTareaVO.ordenarPor}"
+                                          filter="true" 
+                                          filterMatchMode="contains"
+                                          rendered="false">
+                            <f:selectItems value="#{bandejaTareaBean.bandejaTareaHelper.campoConsulta}"/>                            
+                        </p:selectOneMenu>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.tipoOrdenamiento']}:"
+                                       rendered="false"/>
+                        <p:selectOneMenu value="#{bandejaTareaBean.bandejaTareaHelper.busquedaTareaVO.tipoOrdenamiento}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         rendered="false">
+                            <f:selectItems value="#{bandejaTareaBean.bandejaTareaHelper.tipoOrdenamiento}"/>
+                        </p:selectOneMenu>
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla6.bandejaTareas.etiqueta.estadosTramite']}:"
+                                           title="#{msg['ec.gob.mrl.smp.pantalla6.bandejaTareas.tooltip.estadosTramite']}"/>
+                            <p:selectOneMenu 
+                                filter="true" 
+                                filterMatchMode="contains"
+                                value="#{bandejaTareaBean.bandejaTareaHelper.busquedaTareaVO.actividad}">                            
+                                <f:selectItems value="#{bandejaTareaBean.bandejaTareaHelper.tipoActividad}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton style="background: none;border: none;"
+                                             action="#{bandejaTareaBean.buscar}"
+                                             update="tablaTareas"
+                                             icon="ui-icon-search" title="#{msg['message.titulo.buscar']}">
+                                <f:param name="__desde_buscar__" value="SI"/>
+                            </p:commandButton>
+                        </h:panelGrid> 
+                        <p:inputText value="#{bandejaTareaBean.bandejaTareaHelper.busquedaTareaVO.valor}"
+                                     rendered="false"/>
+                        <p:spacer width="500px" height="10px"/>
+                        <h:panelGrid columns="2" cellpadding="0" cellspacing="0" width="30%">
+                            <p:commandButton icon="ui-icon-refresh" title="#{msg['ec.gob.mrl.smp.pantalla6.bandejaTareas.tooltip.refrescar']}"
+                                             update="tablaTareas"/>
+                            <p:button href="/pages/index.jsf" title="#{msg['ec.gob.mrl.smp.pantalla6.bandejaTareas.tooltip.inicio']}" 
+                                      icon="ui-icon-home"/> 
+                        </h:panelGrid> 
+                    </h:panelGrid>                                                            
+                </p:panel>
+                <p:separator /> 
+
+                <p:dataTable id="tablaTareas"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             value="#{bandejaTareaBean.bandejaTareaHelper.listaTareas}"
+                             filteredValue="#{bandejaTareaBean.bandejaTareaHelper.listaTareasFiltradas}"
+                             var="tarea"
+                             scrollable="true"
+                             rowIndexVar="rowIndex"
+                             style="overflow: auto"
+                             filterEvent="enter">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.atender']}" 
+                              style="text-align: center;width: 50px;" 
+                              rendered="#{!bandejaTareaBean.bandejaTareaHelper.verCamposAtendido}">
+                        <p:commandButton icon="ui-icon-extlink" 
+                                         action="#{bandejaTareaBean.atenderTarea}" 
+                                         ajax="false" 
+                                         title="#{msg['ec.gob.mrl.smp.pantalla6.bandejaTareas.tooltip.atender']}">
+                            <f:setPropertyActionListener value="#{tarea.tarea}" 
+                                                         target="#{bandejaTareaBean.bandejaTareaHelper.tarea}"/> 
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.comentario']}" 
+                              style="text-align: center;width: 50px;" 
+                              rendered="#{bandejaTareaBean.bandejaTareaHelper.verCamposAtendido}">                        
+                        <p:commandButton id="modalDialogButton" 
+                                         action="#{bandejaTareaBean.verPopUpComentario}" 
+                                         icon="ui-icon-comment" 
+                                         ajax="false">
+                            <f:setPropertyActionListener value="#{tarea.tarea}" 
+                                                         target="#{bandejaTareaBean.bandejaTareaHelper.tarea}"/> 
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="text-align: center; width: 20px">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.numerotramite']}"
+                              sortBy="#{tarea.tarea.numeroExterno}"
+                              filterBy="#{tarea.tarea.numeroExterno}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 70px"
+                              filterStyle="width: 68px">
+                        <h:outputText value="#{tarea.tarea.numeroExterno}"/>
+                    </p:column>
+
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.grupo']}"
+                              style="font-size: 10px;width: 160px;"
+                              filterBy="#{tarea.tipoMovimiento.clase.grupo.nombre}"
+                              filterMatchMode="contains"
+                              sortBy="#{tarea.tipoMovimiento.clase.grupo.nombre}">
+                        <h:outputText value="#{tarea.tipoMovimiento.clase.grupo.nombre}"/>
+                    </p:column>
+
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.clase']}"
+                              style="font-size: 10px;width: 200px;"
+                              filterBy="#{tarea.tipoMovimiento.clase.nombre}"
+                              filterMatchMode="contains"
+                              sortBy="#{tarea.tipoMovimiento.clase.nombre}">
+                        <h:outputText value="#{tarea.tipoMovimiento.clase.nombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}"
+                              sortBy="#{tarea.tipoMovimiento.nombre}"
+                              filterBy="#{tarea.tipoMovimiento.nombre}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 260px;font-size: 10px">
+                        <h:outputText value="#{tarea.tipoMovimiento.nombre}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.descripcion']}"
+                              sortBy="#{tarea.tarea.descripcion}"
+                              filterBy="#{tarea.tarea.descripcion}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 200px;font-size: 10px">
+                        <h:outputText value="#{tarea.tarea.descripcion}" style="font-size: 9px"/>
+                    </p:column>
+                    <p:column headerText="Unidad Elaboradora"
+                              sortBy="#{tarea.tarea.nombreInstitucionElaborador}"
+                              filterBy="#{tarea.tarea.nombreInstitucionElaborador}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 200px; font-size: 10px"
+                              filterStyle="width:90%">
+                        <h:outputText value="#{tarea.tarea.nombreInstitucionElaborador}"  style="font-size: 9px"/>
+                    </p:column>
+
+                    <p:column headerText="Usuario Elaborador"
+                              sortBy="#{tarea.tramite.usuarioAsignadoNombreElaborador}"
+                              filterBy="#{tarea.tramite.usuarioAsignadoNombreElaborador}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 200px; font-size: 10px"
+                              filterStyle="width:90%">
+                        <h:outputText value="#{tarea.tramite.usuarioAsignadoNombreElaborador}"  
+                                      style="font-size: 9px"/>
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.estado']}"
+                              sortBy="#{tarea.tarea.nombreEstadoActual}"
+                              filterBy="#{tarea.tarea.nombreEstadoActual}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 100px"
+                              filterStyle="width 30">
+                        <h:outputText value="#{tarea.tarea.nombreEstadoActual}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.estadoSiguiente']}"
+                              sortBy="#{tarea.tarea.nombreEstadoSiguiente}"
+                              rendered="#{bandejaTareaBean.bandejaTareaHelper.verCamposAtendido}"
+                              style="text-align: center; width: 100px"
+                              filterStyle="width 50">
+                        <h:outputText value="#{tarea.tarea.nombreEstadoSiguiente}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.fechasAsignacion']}"
+                              filterBy="#{tarea.tarea.fechaAsignacion}"
+                              filterMatchMode="contains"
+                              sortBy="#{tarea.tarea.fechaAsignacion}"
+                              style="text-align: center; width: 100px"
+                              filterStyle="width: 60px">
+                        <h:outputText value="#{tarea.tarea.fechaAsignacion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.fechaAtencion']}"
+                              sortBy="#{tarea.tarea.fechaAtencion}"
+                              style="text-align: center; width: 100px"
+                              rendered="#{bandejaTareaBean.bandejaTareaHelper.verCamposAtendido}">
+                        <h:outputText value="#{tarea.tarea.fechaAtencion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+                <p:dialog 
+                    header="#{msg['ec.gob.mrl.smp.tramiteBorrador.comentario']}" 
+                    widgetVar="dlg2"
+                    modal="true"
+                    draggable="false"
+                    resizable="false"
+                    visible="#{bandejaTareaBean.bandejaTareaHelper.verComentario}">  
+                    <h:panelGrid columns="1">
+                        <p:inputTextarea id="campoComentario"
+                                         value="#{bandejaTareaBean.bandejaTareaHelper.tarea.comentario}"
+                                         style="width: 250px;height: 250px;"
+                                         disabled="true"/>
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form id="frmListaTramitesAnulados">
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.titulo']}">
+                    <br/>
+                    <p:commandButton value="REGRESAR" 
+                                     ajax="#{false}"
+                                     immediate="true"
+                                     action="#{tramitesAnuladosBean.salirPantallaPrincipal()}"/>
+                    <p:separator/>
+
+                    <p:dataTable id="tablaTramitesAnulados" 
+                                 value="#{tramitesAnuladosBean.tramitesAnuladosHelper.listaTramitesAnulados}"
+                                 var="tramite"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.grupo']}" 
+                                  sortBy="#{tramite.tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{tramite.tipoMovimiento.clase.grupo.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.tipoMovimiento.clase.grupo.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.tipoMovimiento']}" 
+                                  sortBy="#{tramite.tipoMovimiento.nombre}"
+                                  filterBy="#{tramite.tipoMovimiento.nombre}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.tipoMovimiento.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.numeroTramite']}" 
+                                  sortBy="#{tramite.numericoTramite}"
+                                  filterBy="#{tramite.numericoTramite}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.numericoTramite}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.fechaElaboracion']}" 
+                                  sortBy="#{tramite.fechaCreacion}"
+                                  filterBy="#{tramite.fechaCreacion}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.estado']}" 
+                                  sortBy="#{tramite.estado}"
+                                  filterBy="#{tramite.estado}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.estado}"/>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.justificacionAnulacion']}" 
+                                  sortBy="#{tramite.comentarioAnulacionRechazo}"
+                                  filterBy="#{tramite.comentarioAnulacionRechazo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.comentarioAnulacionRechazo}"/>
+                        </p:column>  
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.usuarioAnulador']}" 
+                                  sortBy="#{tramite.usuarioAnulacionRechazo}"
+                                  filterBy="#{tramite.usuarioAnulacionRechazo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.usuarioAnulacionRechazo}"/>
+                        </p:column>  
+                        <p:column headerText="Nombre Usuario Anula/Rechaza" 
+                                  sortBy="#{tramite.nombreUsuarioAnulacionRechazo}"
+                                  filterBy="#{tramite.nombreUsuarioAnulacionRechazo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.nombreUsuarioAnulacionRechazo}"/>
+                        </p:column>  
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.consulta.tramites.anulados.fechaAnulador']}" 
+                                  sortBy="#{tramite.fechaAnulacionRechazo}"
+                                  filterBy="#{tramite.fechaAnulacionRechazo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{tramite.fechaAnulacionRechazo}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>  
+
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

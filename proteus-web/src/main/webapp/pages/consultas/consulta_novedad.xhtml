@@ -1,0 +1,209 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form id="frmPrincipal">                
+                <p:panel id="panelPrincipal" header="#{msg['ec.gob.mq.proteus.consulta.novedad.titulo']}">                                         
+                    <h:panelGrid columns="2">                      
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" action="#{novedadConsultaBean.refreshPagination}"                                         
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         update="tblListaNovedad"/>          
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}" title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         ajax="#{false}"
+                                         action="#{novedadConsultaBean.salirPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                    <p:separator /> 
+                    <p:accordionPanel  activeIndex="#{novedadConsultaBean.novedadConsultaHelper.activo}"
+                                       widgetVar="accordionPanel" id="tab1">
+                        <p:tab title="#{msg['ec.gob.mq.proteus.consulta.novedad.rotulo']}"  >
+
+                            <h:panelGrid columns="4">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu id="ejercicioFiscal" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.ejercicioFiscalId}"
+                                                 required="#{true}"  style="width: 200px"
+                                                 requiredMessage="El Ejercicio Fiscal es un campo requerido">
+                                    <f:selectItems value="#{novedadConsultaBean.novedadConsultaHelper.listaOpcionEjercicioFiscal}"/> 
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Periodo Nómina"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.periodoNominaId}">
+                                    <f:selectItems value="#{novedadConsultaBean.novedadConsultaHelper.listaOpcionPeriodoNomina}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Tipo Nómina"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.tipoNominaId}">
+                                    <f:selectItems value="#{novedadConsultaBean.novedadConsultaHelper.listaOpcionTipoNomina}"/>
+                                </p:selectOneMenu>
+
+
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.datoAdicional']}:"
+                                               styleClass="labelFormulario"/>
+                                <p:selectOneMenu style="width: 320px;"
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.datoAdicionalId}">
+                                    <f:selectItems value="#{novedadConsultaBean.novedadConsultaHelper.listaOpcionDatoAdicional}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Número Novedad: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.novedadNumero}"/>
+
+                                <h:outputLabel value="Número Nómina: "
+                                               styleClass="labelFormulario"/>
+                                <p:inputText style="width: 310px;"
+                                             value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.nominaNumero}"/>
+
+
+                                <h:outputLabel value="Servidor: "
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0" id="gridServidor">
+                                    <p:inputTextarea id="parametrosBusqueda_servidor" 
+                                                     style="font-size: 10px"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="#{true}"
+                                                     value="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.nombresServidor}"/>
+                                    <p:commandButton icon="ui-icon-search"    action="#{novedadConsultaBean.buscarServidores}"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     update="parametrosBusqueda_servidor">                                       
+                                        <f:setPropertyActionListener target="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.servidorId}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.nombresServidor}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+                            </h:panelGrid>
+                        </p:tab> 
+                    </p:accordionPanel>  
+                </p:panel>
+                <p:dataTable id="tblListaNovedad" 
+                             value="#{consultaNovedadPaginacion}"
+                             var="novedad"
+                             lazy="true" 
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             emptyMessage="#{msg['message.listaVacia']}"
+                             paginator="#{true}" scrollable="true"
+                             rowIndexVar="rowIndex">
+                    <f:facet name="header">#{msg['ec.gob.mq.proteus.consulta.novedad.tabla']}</f:facet>
+
+                    <p:column headerText="No" style="width:50px;">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>   
+                    <p:column headerText="Servidor" style="width:350px;">
+                        <h:outputText value="#{novedadConsultaBean.obtenerNombreServidor(novedad.servidorId)}"/>
+                    </p:column>
+                    <p:column headerText="Número Novedad" style="width:80px;">
+                        <h:outputText value=" #{novedad.novedadNumero}"/>
+                    </p:column>                 
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.datoAdicional.datoAdicional']}" style="width:150px;">
+                        <h:outputText value="#{novedad.datoAdicionalNombre}"/>
+                    </p:column>
+                    <p:column headerText="Valor" style="width:80px;">
+                        <h:outputText value="#{novedad.novedadDetalleValor}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.anticipo.fecha']}" style="width:80px;">
+                        <h:outputText value="#{novedad.novedadFechaCreacion}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Nómina" style="width:80px;">
+                        <h:outputText value="#{novedad.nominaNumero}"/>
+                    </p:column>
+                    <p:column headerText="Nombre Nómina" style="width:200px;">
+                        <h:outputText value="#{novedad.nominaDescripcion}"/>
+                    </p:column>
+                    <p:column headerText="Tipo Nómina" style="width:100px;">
+                        <h:outputText value="#{novedad.tipoNominaNombre}"/>
+                    </p:column>
+                    <p:column headerText="Periodo Nómina" style="width:100px;">
+                        <h:outputText value="#{novedad.periodoNominaNombre}"/>
+                    </p:column>
+                    <p:column headerText="Estado Nómina" style="width:90px;">
+                        <h:outputText value="#{novedadConsultaBean.obtenerDescripcionEstadoNomina(novedad.nominaEstado)}" style="width:80px;"/>
+                    </p:column>
+                    <p:column headerText="Pagado" style="width:50px;">
+                        <p:selectBooleanCheckbox value="#{novedad.novedadDetallePagado}"  disabled="true"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <!-- PopUp Servidor -->
+            <p:dialog widgetVar="dlgServidor"
+                      modal="true"
+                      width="800"  height="530"
+                      showEffect="fade"
+                      header="Seleccionar el Servidor " >
+                <h:form id="frmServidor">
+                    <p:scrollPanel style="width:100%;height:500px;"  mode="native">  
+                        <p:panel id="listaServidor" >
+                            <p:dataTable id="tablaClase"
+                                         value="#{novedadConsultaBean.novedadConsultaHelper.listaServidores}"
+                                         var="servidor"   
+                                         rowKey="#{servidor.id}"                                                                                                      
+                                         paginator="#{true}" filterEvent="enter"
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="text-align: center; width: 50px">
+                                    <h:outputText value="#{rowIndex+1}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.devengamiento.tipoIdentificacion']}" 
+                                          style="width: 80px">                                                                 
+                                    <h:outputText value="#{anticipoBean.obtenerDescripcionTipoDocumento(servidor.tipoIdentificacion)}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.numeroIdentificacion']}" 
+                                          style="width: 80px"
+                                          filterBy="#{servidor.numeroIdentificacion}" filterMatchMode="contains">                                                                 
+                                    <h:outputText value="#{servidor.numeroIdentificacion}"/>                                
+                                </p:column>
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.novedades.nombresApellidos']}" 
+                                          sortBy="#{servidor.apellidosNombres}" style="width: 250px"
+                                          filterBy="#{servidor.apellidosNombres}" filterMatchMode="contains">                                                                 
+                                    <h:outputText value="#{servidor.apellidosNombres}"/>                                
+                                </p:column> 
+                                <p:column style="width:4%" headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" >  
+                                    <p:commandButton id="selectButton" update=":frmPrincipal:tab1:parametrosBusqueda_servidor" 
+                                                     oncomplete="dlgServidor.hide()"
+                                                     icon="ui-icon-check"
+                                                     title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.etiqueta.seleccionar']}" >  
+                                        <f:setPropertyActionListener value="#{servidor.id}" target="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.servidorId}" />  
+                                        <f:setPropertyActionListener value="#{servidor.apellidosNombres}" target="#{novedadConsultaBean.novedadConsultaHelper.consultaNovedadVO.nombresServidor}" />  
+                                    </p:commandButton>  
+                                </p:column>  
+                            </p:dataTable>
+                        </p:panel>
+                    </p:scrollPanel>
+                    <div style="text-align: center">                            
+                        <p:commandButton id="confirm" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgServidor.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:dialog>
+
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

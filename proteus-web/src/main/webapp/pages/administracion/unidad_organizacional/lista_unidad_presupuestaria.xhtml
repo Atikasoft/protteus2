@@ -1,0 +1,252 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>                
+                <smp:catalogo_lista controlador="#{unidadPresupuestariaBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaunidad"
+                                 value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.listaUnidadesPresupuestarias}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 filterEvent="enter" 
+                                 scrollable="true" 
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 sortBy="#{unidad.sector.nombre}"  
+                                 sortOrder="ascending">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 90px">
+                            <p:commandButton id="botonCertif" icon="ui-icon-clipboard"
+                                             oncomplete="dlgCertificacionesPresupuestarias.show();"
+                                             immediate="#{true}"
+                                             action="#{unidadPresupuestariaBean.editarCertificacionesPresupuestarias}"
+                                             title="Editar certificaciones presupuestarias"
+                                             update=":editCertificaciones">
+                                <f:setPropertyActionListener value="#{unidad}" 
+                                                             target="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestariaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{unidadPresupuestariaBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{unidad}" 
+                                                             target="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestariaEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{unidad}" 
+                                                             target="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestariaEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.sector']}"
+                                  style="width: 150px; font-size: 8pt"
+                                  sortBy="#{unidad.sector.nombre}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.sector.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.sector.nombre}" 
+                                          title="#{unidad.sector.nombre}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.nombre']}"
+                                  style="width: 150px; font-size: 8pt"
+                                  sortBy="#{unidad.nombre}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.nombre}" 
+                                          title="#{unidad.nombre}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.codigo']}"
+                                  style="width: 60px;font-size: 8pt;text-align: center" 
+                                  filterStyle="width: 90%;"
+                                  sortBy="#{unidad.sector.codigo}#{unidad.codigo}"
+                                  filterBy="#{unidad.sector.codigo}#{unidad.codigo}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.sector.codigo}#{unidad.codigo}" 
+                                          title="#{unidad.sector.codigo}#{unidad.codigo}"  />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.codigoInterno']}"
+                                  style="width: 60px;font-size: 8pt;text-align: center" 
+                                  filterStyle="width: 90%;"
+                                  sortBy="#{unidad.codigoInterno}"
+                                  filterBy="#{unidad.codigoInterno}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.codigoInterno}" 
+                                          title="#{unidad.codigoInterno}"  />
+                        </p:column> 
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.grupo']}"
+                                  style="width: 120px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.grupoPresupuestario}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.grupoPresupuestario}" 
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.grupoPresupuestario}" 
+                                          title="#{unidad.grupoPresupuestario}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.sociedad']}"
+                                  style="width: 70px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.sociedad}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.sociedad}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.sociedad}" 
+                                          title="#{unidad.sociedad}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.centroCosto']}"
+                                  style="width: 95px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.centroCosto}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.centroCosto}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.centroCosto}" 
+                                          title="#{unidad.centroCosto}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.centroGestor']}"
+                                  style="width: 100px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.centroGestor}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.centroGestor}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.centroGestor}" 
+                                          title="#{unidad.centroGestor}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.proyecto']}"
+                                  style="width: 100px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.proyecto}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.proyecto}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.proyecto}" 
+                                          title="#{unidad.proyecto}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.fondo']}"
+                                  style="width: 60px;font-size: 8pt;text-align: center"
+                                  filterStyle="width: 90%;"
+                                  sortBy="#{unidad.fondo}"
+                                  filterBy="#{unidad.fondo}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.fondo}" 
+                                          title="#{unidad.fondo}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.programa']}"
+                                  style="width: 80px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.programa}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.programa}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.programa}" 
+                                          title="#{unidad.programa}"  />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.ruc']}"
+                                  style="width: 100px;font-size: 8pt;text-align: center"
+                                  sortBy="#{unidad.ruc}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{unidad.ruc}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{unidad.ruc}" 
+                                          title="#{unidad.ruc}"  />
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaunidad"
+                                             actionListener="#{unidadPresupuestariaBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+            <p:dialog modal="true" id="editCertificaciones"
+                      resizable="false"
+                      width="900"
+                      height="400"
+                      draggable="false"
+                      header="Certificaciones Presupuestarias - #{unidadPresupuestariaBean.unidadPresupuestariaHelper.unidadPresupuestariaEditDelete.nombre}"
+                      widgetVar="dlgCertificacionesPresupuestarias"
+                      closable="false">
+                <h:form id="frmCertificacion">
+                    <p:dataTable id="tblCertificacionesPresupuestarias"
+                                 value="#{unidadPresupuestariaBean.unidadPresupuestariaHelper.certificacionesPresupuestarias}"
+                                 var="certificacion"
+                                 editable="true"
+                                 editMode="cell"
+                                 paginator="#{true}"
+                                 paginatorPosition="bottom"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 filterEvent="enter" 
+                                 scrollable="true" 
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 sortBy="#{certificacion.modalidadLaboral.nombre}"  
+                                 sortOrder="ascending">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 5px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="Modalidad Laboral"
+                                  style="width: 100px;font-size: 8pt;text-align: left"
+                                  sortBy="#{certificacion.modalidadLaboral.nombre}"
+                                  filterStyle="width: 90%;"
+                                  filterBy="#{certificacion.modalidadLaboral.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{certificacion.modalidadLaboral.nombre}" />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.certificacionPresupuestaria']}"
+                                  style="width: 100px;font-size: 8pt;text-align: left"
+                                  sortBy="#{certificacion.certificacionPresupuestaria}"
+                                  filterStyle="width: 90%;"
+                                  footerText="De clic sobre la celda para editar el valor de Certificación Presupuestaria"
+                                  filterBy="#{certificacion.certificacionPresupuestaria}"
+                                  filterMatchMode="contains">
+                            <p:cellEditor>  
+                                <f:facet name="output">
+                                    <h:outputText value="#{certificacion.certificacionPresupuestaria}" 
+                                                  style="text-transform: uppercase"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:inputText value="#{certificacion.certificacionPresupuestaria}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:separator/>
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"                                         
+                                         actionListener="#{unidadPresupuestariaBean.guardarCertificaciones()}"
+
+                                         />
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgCertificacionesPresupuestarias.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmAprobacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.planificacion.validacion.titulo']}" >
+                    <p:spacer/>
+                    <br/>
+                    <div>
+                        <span style="text-align: center">
+                            <p:commandButton id="buscarBtn" 
+                                             action="#{planificacionVacacionValidacionBean.buscar}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                             update="tablaplanificacionVacacion"/>
+                        </span>
+                    </div>
+                    <p:separator/>
+                    <p:panel id="panelFiltros" header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.filtro.busqueda.titulo']}">
+                        <h:panelGrid columns="2" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="ejercicioFiscal" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.ejercicioFiscal}"
+                                             required="#{true}"
+                                             requiredMessage="El Ejercicio Fiscal es un campo requerido">
+                                <f:selectItems value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.listaOpcionesEjercicioFiscal}"/> 
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectOneMenu id="estado" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.estado}">
+                                <f:selectItems value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.listaOpcionesEstadoPlanifVacacion}"/> 
+                            </p:selectOneMenu>   
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:outputPanel id="panelUNidad">
+                                <p:inputTextarea id="unidadesOrganizacionales"
+                                                 styleClass="textoNemonico"
+                                                 disabled="#{true}"
+                                                 required="#{true}"
+                                                 requiredMessage="El campo Unidad Organizacional es requerido."
+                                                 value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.unidadOrganizacional.nombre}"
+                                                 style="width: 200px"/>
+                                <p:commandButton icon="ui-icon-search"
+                                                 oncomplete="dlgAgregar.show();"
+                                                 rendered="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.esRRHH}"
+                                                 update=":frmAgregar"/>
+                                <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                 rendered="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.esRRHH}"
+                                                 update="panelUNidad">
+                                    <f:setPropertyActionListener target="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.unidadOrganizacional}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </p:outputPanel>
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <p:spacer/>
+
+                    <p:dataTable id="tablaplanificacionVacacion"
+                                 value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.listaVacacionVO}"
+                                 var="plan"
+                                 paginator="#{true}" scrollable="true"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 sortBy="#{plan.planificacionVacacion.servidor.apellidosNombres}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}" 
+                                  style="width: 150px" rendered="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.esRRHH}">                               
+                            <h:outputText value="#{plan.distributivoDetalle.distributivo.unidadOrganizacional.nombre}" />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}" 
+                                  sortBy="#{plan.planificacionVacacion.servidor.tipoIdentificacion}" style="width: 60px" >                               
+                            <h:outputText value="#{planificacionVacacionValidacionBean.obtenerDescripcionTipoDocumento(plan.planificacionVacacion.servidor.tipoIdentificacion)}" />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}" filterMatchMode="contains"
+                                  filterStyle="width: 50px"
+                                  sortBy="#{plan.planificacionVacacion.servidor.numeroIdentificacion}" style="width: 70px" filterBy="#{plan.planificacionVacacion.servidor.numeroIdentificacion}" >                               
+                            <h:outputText value="#{plan.planificacionVacacion.servidor.numeroIdentificacion}" />
+                        </p:column> 
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}"  filterMatchMode="contains"
+                                  sortBy="#{plan.planificacionVacacion.servidor.apellidosNombres}" style="width: 200px" filterBy="#{plan.planificacionVacacion.servidor.apellidosNombres}" >                               
+                            <h:outputText value="#{plan.planificacionVacacion.servidor.apellidosNombres}" />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}" 
+                                  sortBy="#{plan.planificacionVacacion.institucionEjercicioFiscal.ejercicioFiscal.nombre}" style="width: 50px" >                               
+                            <h:outputText value="#{plan.planificacionVacacion.institucionEjercicioFiscal.ejercicioFiscal.nombre}" />
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.gastosPersonal.fechaRegistro']}" 
+                                  sortBy="#{plan.planificacionVacacion.fechaCreacion}" style="width: 80px" >   
+                            <h:outputText value="#{plan.planificacionVacacion.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>          
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}" >                                
+                            <h:outputText value="#{planificacionVacacionBean.obtenerDescripcionEstadoPlanifVacacion((plan.planificacionVacacion.estado))}"/>                      
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 80px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-extlink"
+                                             ajax="#{false}" immediate="true"
+                                             rendered="#{plan.planificacionVacacion.estado=='E'}"
+                                             action="#{planificacionVacacionValidacionBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.tramiteBorrador.atender']}">
+                                <f:setPropertyActionListener value="#{plan.planificacionVacacion}" 
+                                                             target="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.planificacionVacacionEditDelete}"/>
+                            </p:commandButton>
+
+                            <p:commandButton id="botonVer" icon="ui-icon-search"
+                                             ajax="#{false}" immediate="true"
+                                             action="#{planificacionVacacionValidacionBean.iniciarEdicion}"
+                                             rendered="#{plan.planificacionVacacion.estado!='E'}"
+                                             title="#{msg['message.btn.ver']}">
+                                <f:setPropertyActionListener value="#{plan.planificacionVacacion}" 
+                                                             target="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.planificacionVacacionEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+
+
+            <p:dialog widgetVar="dlgAgregar"
+                      modal="true"
+                      width="700" height="400"
+                      draggable="false"
+                      resizable="false">
+                <h:form id="frmAgregar">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:treeTable id="tblInstitucionesDesconcentradas" 
+                                     value="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.rootUnidadOrganizacional}"
+                                     var="unidad" propagateSelectionUp="false"
+                                     style="overflow: auto"  
+                                     selectionMode="single"
+                                     selection="#{planificacionVacacionValidacionBean.planificacionVacacionValidacionHelper.unidadSeleccionada}" >
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{unidad.nombre}"
+                                      filterBy="#{unidad.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{unidad.nombre}" 
+                                              title="#{unidad.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                      style="font-size: 8pt"
+                                      sortBy="#{unidad.codigo}"
+                                      filterBy="#{unidad.codigo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{unidad.codigo}" 
+                                              title="#{unidad.codigo}"  />
+                            </p:column>                       
+                        </p:treeTable>
+                    </p:scrollPanel>  
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         action="#{planificacionVacacionValidacionBean.asignarUnidadOrganizacionalSeleccionada}"
+                                         update=":frmAprobacion:panelUNidad"/> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgAgregar.hide();"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

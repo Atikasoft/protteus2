@@ -1,0 +1,252 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmSolicitudVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="Recuperación de Vacaciones">  
+                    <br/>
+                    <div>
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:commandButton id="guardarBtn" 
+                                             actionListener="#{vacacionRecuperacionBean.activarGuardado}"
+                                             update=":confirmDialog" 
+                                             disabled="#{!vacacionRecuperacionBean.vacacionRecuperacionHelper.editar}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                        </p:outputPanel>
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{vacacionRecuperacionBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{vacacionRecuperacionBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+
+                    </div>
+                    <p:separator/>
+                </p:panel>
+                <!-- Informacion del usuario conectado-->
+                <p:panel id="panel1" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                    <h:panelGrid columns="4" id="tablaformulario">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="vacacionSolicitud_servidorTipoIdentificacion"
+                                     styleClass="textoNemonico"
+                                     disabled="#{true}"
+                                     value="#{vacacionRecuperacionBean.obtenerDescripcionTipoDocumento(
+                                              vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.servidorInstitucion.servidor.tipoIdentificacion)}"
+                                     style="width: 200px"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="vacacionSolicitud_servidorNumeroIdentificacionn"
+                                     styleClass="textoNemonico"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.servidorInstitucion.servidor.numeroIdentificacion}"
+                                     disabled="#{true}" style="width: 200px"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="vacacionSolicitud_servidorNombres"
+                                     styleClass="textoNemonico"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.servidorInstitucion.servidor.apellidosNombres}"
+                                     disabled="#{true}" style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="vacacionSolicitud_regimen"
+                                     styleClass="textoNemonico"
+                                     rendered="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.vacacionParametro.regimenLaboral!=null}"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.vacacionParametro.regimenLaboral.nombre}"
+                                     disabled="#{true}" style="width: 200px"/>
+                        <h:outputLabel value=" #{msg['message.distributivo.SinConfiguracionRegimen']} " style="color: #D20005 "
+                                       styleClass="labelFormulario" rendered="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.vacacionParametro.regimenLaboral==null}"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.fechaIngresoInstitucion']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="vacacionSolicitud_servidorFechaIngreso"
+                                     styleClass="textoNemonico"
+                                     value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.servidorInstitucion.fechaIngreso}"
+                                     disabled="#{true}" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </p:inputText>
+
+                        <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: "
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value=" #{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.cadenaSaldo}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:commandButton id="botonVerDetalles" 
+                                             icon="ui-icon-comment"   
+                                             onclick="dlgDetalles.show();"
+                                             immediate="true"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.verDetalle']}"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                </p:panel>
+                <br/>  <p:separator/>
+                <!-- detalles de avances de vacaciones y permisos con cargo a vacacion -->
+                <p:outputPanel id="temp">
+                    <p:panel id="panelSolicitudVacacion" 
+                             header="#{msg['ec.gob.mrl.smp.administracion.vacacion.datosSolicitud']}">
+                        <h:panelGrid columns="2">
+                            <p:panel style="height: 250px;">
+                            <h:panelGrid columns="4" >
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaInicio']}:"
+                                               styleClass="labelFormulario" style="text-align: right" />
+
+                                <p:calendar id="valorFecha"  navigator="true" readonlyInput="true"
+                                            required="true" showOn="button" 
+                                            value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.fechaInicio}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                            disabled="#{true}"
+                                            disabledWeekends="false"
+                                            requiredMessage="La fecha inicio es requerida">
+                                </p:calendar>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaFin']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:calendar id="valorFechaFin"  navigator="true" 
+                                            showOn="button"
+                                            value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.fechaFin}"
+                                            disabled="#{true}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.tiempoSolicitado']}:"
+                                               styleClass="labelFormulario" /> 
+                                <p:inputText id="dias_sol"
+                                             styleClass="textoNumerico"
+                                             style="width: 100px"
+                                             disabled="true"
+                                             value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.cantidadSolicitada} Días"/> 
+                                <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']}:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="observacion_lbl"
+                                                 style="width: 200px;overflow: auto"
+                                                 disabled="#{true}"
+                                                 value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.observacion}"/>   
+                                <h:outputText value="Validador:" />
+                                <p:inputTextarea value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.validador!=null ?
+                                                          vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.validador.servidor.apellidosNombres: null}" 
+                                                 style="width: 200px;overflow: auto"
+                                                 disabled="true" /> 
+                                <h:outputText value="Aprobador:"  />
+                                <p:inputTextarea value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.aprobador!=null?
+                                                          vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.aprobador.servidor.apellidosNombres:null}" 
+                                                 style="width: 200px;overflow: auto"
+                                                 disabled="true" /> 
+                            </h:panelGrid>
+                              </p:panel>
+                            <p:panel style="height: 250px;">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="* Días a recuperar:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputText id="dias_rec"
+                                             styleClass="textoNumerico"
+                                             required="true"
+                                             requiredMessage="El campo días a recuperar es requerido"
+                                             disabled="#{!vacacionRecuperacionBean.vacacionRecuperacionHelper.editar}"
+                                             style="width: 100px"
+                                             value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.cantidadRecuperada}"/> 
+                                <h:outputLabel value="* Motivo:"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:inputTextarea id="motivo_lbl"
+                                                 styleClass="textoDescripcion"
+                                                 style="width: 200px"
+                                                 maxlength="400"
+                                                 disabled="#{!vacacionRecuperacionBean.vacacionRecuperacionHelper.editar}"
+                                                 value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.motivo}"
+                                                 required="true"
+                                                 requiredMessage="El campo motivo es requerido"/>   
+                                  <h:outputText value="Aprueba Recuperación de Saldo:" />
+                                <p:inputTextarea value="#{vacacionRecuperacionBean.vacacionRecuperacionHelper.vacacionSolicitud.recuperador.apellidosNombres}" 
+                                                 style="width: 200px;overflow: auto"
+                                                 disabled="true" /> 
+                            </h:panelGrid>
+                                </p:panel>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:outputPanel>
+            </h:form>
+            <!-- confirmacion de envio de solicitud -->
+            <p:confirmDialog id="confirmDialog" header ="Recuperación de Saldo de Vacaciones"  
+                             message  ="¿Está seguro de recuperar los días de vacaciones indicados. 
+                             Recuerde que una vez que guarde este registro, no podrá volver a actualizarlo?" 
+                             severity="alert" widgetVar="confirmation"> 
+                <h:form id="frmConfirm">
+                    <div style="text-align: center">
+                        <span>
+                            <p:commandButton id="confirm" value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}" 
+                                             update=":frmSolicitudVacacion" 
+                                             ajax="#{false}"
+                                             action="#{vacacionRecuperacionBean.guardar}"/>                        
+                            <p:commandButton id="decline" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}" 
+                                             onclick="confirmation.hide()" type="button" />
+                        </span>
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+            <!-- vacaciones por periodo -->
+            <p:dialog modal="true"     resizable="false"   width="800"  height="350"
+                      draggable="true"   
+                      header="Detalles de Saldo de Vacaciones" 
+                      widgetVar="dlgDetalles"
+                      closable="true">
+                <h:form id="frmDetalles">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:dataTable id="tablaregP"
+                                     value="#{vacacionRecuperacionBean.listaSaldosVacaciones}"
+                                     var="vacacion"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     rowKey="#{reg.id}"  
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     style="overflow: auto" >
+
+                            <f:facet name="header">Detalle de Saldo de Vacaciones</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaFin']}" 
+                                      sortBy="#{vacacion.fechaInicioPeriodo}" style="width: 80px" >                               
+                                <h:outputText value="#{vacacion.fechaInicioPeriodo}">                                
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>      
+                            </p:column>     
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaInicio']}" 
+                                      sortBy="#{vacacion.fechaFinPeriodo}" style="width: 80px" >                               
+                                <h:outputText value="#{vacacion.fechaFinPeriodo}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>      
+                            </p:column> 
+                            <p:column headerText="Saldo en Días" 
+                                      sortBy="#{vacacion.saldoDias}" style="width: 80px" >                               
+                                <h:outputText value="#{vacacion.saldoDias}"/>                                
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']}" 
+                                      sortBy="#{vacacion.observacion}" style="width: 350px" >                               
+                                <h:outputText value="#{vacacion.observacion}"/>                                
+                            </p:column> 
+                             <p:column headerText="Efectivas"  style="width: 40px" > 
+                                 <p:selectBooleanCheckbox value="#{!vacacion.enAcreditacion}" disabled="true"/>
+                             </p:column>
+                        </p:dataTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgDetalles.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

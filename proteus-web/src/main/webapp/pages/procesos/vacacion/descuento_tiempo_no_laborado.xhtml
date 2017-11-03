@@ -1,0 +1,283 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmDatosServidor">  
+                <p:panel>
+                    <div>
+                        <p:commandButton id="salirBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{descuentoTiempoNoLaboradoBean.salir}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"/>
+                    </div>
+                </p:panel>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.descuento.tiempoNoLaborado.titulo']}"> 
+
+                    <!-- Informacion del usuario conectado-->
+                    <p:panel id="panelDatosServidor" 
+                             header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+
+                        <p:panelGrid id="panelBusqueda" columns="2"
+                                     columnClasses="col35,col65">
+
+                            <p:panelGrid id="buscarPor" columns="2">
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.genericos.etiquetas.buscarPor']}: "
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="comboBuscarPor"
+                                                 required="#{true}"
+                                                 styleClass="textoNemonico"
+                                                 value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.buscarServidorPor}">
+                                    <f:selectItems value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.opcionesBuscarServidorPor}"/>
+                                    <p:ajax update="@form"
+                                            listener="#{descuentoTiempoNoLaboradoBean.limpiarFormulario()}"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="buscarIdentificacion" columns="5"
+                                         columnClasses="col15,col25,col15,col25"
+                                         rendered="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.buscarServidorPor eq 'id'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.identificacion.tipo']}:"
+                                               styleClass="labelFormulario"/>                            
+                                <p:selectOneMenu id="planificacionVacacion_servidorTipoIdentificacion"
+                                                 styleClass="textoNemonico"
+                                                 value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion}"
+                                                 required="#{true}">
+                                    <f:selectItems value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.opcionesTipoIdentificacion}"/>
+                                    <p:ajax update="@form"
+                                            listener="#{descuentoTiempoNoLaboradoBean.limpiarNroIdentificacion()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroCedula"
+                                             styleClass="campoNumerico" maxlength="10"
+                                             disabled="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion eq null}"
+                                             rendered="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion eq null
+                                                         || descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion eq'C'}"
+                                             value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">
+                                    <f:validateRegex pattern="[0-9]{10}"/>
+                                </p:inputText>
+
+                                <p:inputText id="planificacionVacacion_servidorNumeroPasaporte"
+                                             styleClass="textoNemonico"
+                                             disabled="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion eq null}"
+                                             rendered="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion ne null
+                                                         and descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.tipoIdentificacion ne 'C'}"
+                                             value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.nroIdentificacion}"
+                                             style="width: 150px" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="panelBusqueda" update="@form :frmResultados:tblResultados" 
+                                                 action="#{descuentoTiempoNoLaboradoBean.recuperarDatosServidor}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="busApellidosNombres" columns="5"
+                                         columnClasses="col60"
+                                         rendered="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.buscarServidorPor eq 'an'}">
+
+                                <h:outputLabel value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.servidor.apellidosNombres']}:"
+                                               styleClass="labelFormulario"/>
+
+                                <p:inputText id="planificacionVacacion_servidorNombresApellidos"
+                                             value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.apellidosNombres}"
+                                             style="width: 300px; text-transform:uppercase;" required="#{true}">                                
+                                </p:inputText>
+
+                                <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                                 process="panelBusqueda" update="@form :frmResultados:tblResultados"
+                                                 action="#{descuentoTiempoNoLaboradoBean.recuperarDatosServidor}"/>
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:separator/>
+
+                        <p:panelGrid id="dtServidor" columns="4"
+                                     columnClasses="col20,col30,col20,col30">
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu styleClass="textoNemonico"
+                                             value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle.servidor.tipoIdentificacion}"
+                                             disabled="#{true}">
+                                <f:selectItems value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.opcionesTipoIdentificacion}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText styleClass="textoNemonico" disabled="#{true}"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle.servidor.numeroIdentificacion}"
+                                         >
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle.servidor.apellidosNombres}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="fechaIngreso"
+                                         styleClass="textoNemonico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle.servidor.fechaIngresoInstitucion}"
+                                         disabled="#{true}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText value=" #{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.institucionEjercicioFiscal.ejercicioFiscal.nombre}"
+                                         disabled="true" styleClass="labelFormulario"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_regimen"
+                                         styleClass="textoNemonico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}"
+                                         disabled="#{true}"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: " 
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="planificacionVacacion_saldoVacacionEfectivaDias"
+                                         styleClass="textoNemonico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.saldoVacacionTexto}"
+                                         disabled="#{true}" title="Saldo vaciones efectivas pendiente"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.vacacion.saldoProporcional']}: " 
+                                           styleClass="labelFormulario" />
+                            <p:inputText id="planificacionVacacion_saldoVacacionProporcionalDias"
+                                         styleClass="textoNemonico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.saldoVacacionProporcionalTexto}"
+                                         disabled="#{true}" title="Saldo vacaciones proporcionales pendiente"/>
+                        </p:panelGrid>
+                        <br />
+                        <br />
+                        <div style="text-align: center">
+                            <p:commandButton id="dlgDescuentoBtn"
+                                             actionListener="#{descuentoTiempoNoLaboradoBean.iniciarDialogoDescuento()}"
+                                             rendered="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.botonDescontar}"
+                                             update=":frmDatosDescuento"
+                                             value="REALIZAR DESCUENTO"
+                                             title="Realizar descuento de tiempo no laborado"/>
+                        </div>
+                        <br />
+                    </p:panel>
+                </p:panel>
+            </h:form>
+
+            <!-- resultados de busqueda por nombre -->
+            <p:dialog header="RESULTADO DE LA BÚSQUEDA"
+                      id="dlgResultados"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      widgetVar="dlgResultadosBusqueda">
+
+                <h:form id="frmResultados">  
+                    <p:panel id="panelResultados">
+                        <p:dataTable id="tblResultados" 
+                                     value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.listaDistributivosDetalles}"
+                                     var="distributivo" rowIndexVar="rowIndex"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     paginator="#{true}" paginatorPosition="bottom"
+                                     sortBy="#{distributivo.servidor.apellidosNombres}">
+
+                            <p:column style="text-align: center; width: 20px">
+                                <p:commandButton icon="ui-icon-play"
+                                                 update=":frmDatosServidor"
+                                                 title="Seleccionar"
+                                                 action="#{descuentoTiempoNoLaboradoBean.seleccionarServidorYrecuperarDatosVacaciones(true)}">
+                                    <f:setPropertyActionListener value="#{distributivo}" 
+                                                                 target="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.distributivoDetalle}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}" style="float: right"/>
+                            </p:column>   
+                            <p:column headerText="Apellidos y Nombres"
+                                      sortBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterBy="#{distributivo.servidor.apellidosNombres}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{distributivo.servidor.apellidosNombres}" 
+                                              style="font-size: 10px; text-align: center"/>
+                            </p:column>
+                            <p:column headerText="Tipo de Identificación" style="text-align: center"
+                                      sortBy="#{descuentoTiempoNoLaboradoBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}">
+                                <h:outputText style="font-size: 10px;"
+                                              value="#{descuentoTiempoNoLaboradoBean.obtenerDescripcionTipoDocumento(distributivo.servidor.tipoIdentificacion)}" />
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align: center"
+                                      filterBy="#{distributivo.servidor.numeroIdentificacion}">
+                                <h:outputText value="#{distributivo.servidor.numeroIdentificacion}" 
+                                              style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br />
+                        <center>
+                            <p:commandButton id="btnCancelar"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgResultadosBusqueda.hide();"
+                                             style="margin: auto" />
+                        </center>
+                        <br />
+                    </p:panel>
+                </h:form>  
+            </p:dialog>
+
+            <!-- Dialogo para introducir los datos del descuento de tiempo no laborado -->
+            <p:dialog header="INGRESE CANTIDAD DE MINUTOS A DESCONTAR"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      draggable="true"
+                      width="350px"
+                      widgetVar="dlgDatosDescuento">
+
+                <h:form id="frmDatosDescuento">  
+                    <p:panel>
+                        <br/>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Tiempo no laborado (Minutos)"/>
+                            <p:inputText style="width: 70px" styleClass="campoNumerico"
+                                         value="#{descuentoTiempoNoLaboradoBean.descuentoTiempoNoLaboradoHelper.minutosADescontar}">
+                                <f:validateLongRange minimum="1" 
+                                                     maximum="28800" />
+                            </p:inputText>
+                        </p:panelGrid>
+                        <br />
+                        <center>
+                            <p:commandButton id="guardarBtn" 
+                                             action="#{descuentoTiempoNoLaboradoBean.descontarTiempoNoLaborado}"
+                                             update=":frmDatosServidor"
+                                             value="DESCONTAR"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                            <p:outputLabel/>
+                            <p:commandButton id="btnCancelar" immediate="true"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgDatosDescuento.hide();"
+                                             style="margin: auto" />
+                        </center>
+                        <br />
+                    </p:panel>
+                </h:form>  
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{desconcentradoBean}" 
+                                     extendido="false"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo']}">
+
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" style="text-align: left" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.desconcentrado.nombre']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="desconcentradoNombre"
+                                     value="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado.nombre}"
+                                     style="width: 200px" 
+                                     maxlength="200"
+                                     required="true"
+                                     requiredMessage="El campo nombre requerido."/>                        
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.desconcentrado.responsable']}:"
+                                       styleClass="labelFormulario" />
+                        <p:autoComplete id="desconcentradoResponsable"
+                                        value="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado.servidorResponsable.id}"
+                                        completeMethod="#{desconcentradoBean.buscarServidorPorNombre}"  
+                                        var="servidor" 
+                                        itemLabel="#{servidor.apellidosNombres}" 
+                                        itemValue="#{servidor}"
+                                        forceSelection="false" 
+                                        maxResults="10"
+                                        minQueryLength="3"
+                                        style="width: 800px;"
+                                        scrollHeight="100" 
+                                        converter="servidorConverter" 
+                                        multiple="true"/>
+
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

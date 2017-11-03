@@ -1,0 +1,14 @@
+url:			 	jdbc:sqlserver://172.20.12.47:1433;databaseName=proteus_pruebas
+user y password:	sa
+
+/**
+PARA SOLVENTAR PROBLEMAS DE JDBC 
+****************************************************/
+Reemplazar la siguiente sentencia:
+<property name="odaJndiName">jdbc/proteus</property>
+
+Por:
+<property name="odaDriverClass">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+ <property name="odaURL">jdbc:sqlserver://172.20.12.47:1433;databaseName=proteus_pruebas</property>
+            <property name="odaUser">sa</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">c2E=</encrypted-property>

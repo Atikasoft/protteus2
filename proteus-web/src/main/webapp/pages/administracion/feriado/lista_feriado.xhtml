@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frm_listaFeriados">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.feriado.titulo']}">
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"   
+                                         update="@form"
+                                         action="#{feriadoBean.iniciarNuevo}">
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}" 
+                                         immediate="true" rendered="false"
+                                         ajax="false"/>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="3" id="tablaformulario">
+                        <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}:"
+                                        styleClass="labelFormulario" style="width: 200px; text-align: right" />
+                        <p:selectOneMenu id="feriado_regimenLaboral" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{feriadoBean.feriadoHelper.feriadoEditDelete.regimenLaboral.id}"
+                                         required="#{true}"
+                                         requiredMessage="El campo Régimen Laboral es requerido">
+                            <f:selectItems value="#{feriadoBean.feriadoHelper.listaOpcionRegimenLaboral}"/>    
+                        </p:selectOneMenu> 
+                        <p:commandButton id="numeroDocumento_search"  
+                                         icon="ui-icon-search"   
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                         action="#{feriadoBean.buscar}"
+                                         ajax="false"
+                                         update="tablaferiado ">
+                        </p:commandButton>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <p:dataTable id="tablaferiado"
+                                 value="#{feriadoBean.feriadoHelper.listaFeriados}"
+                                 var="feriado" 
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex" filterEvent="enter"
+                                 sortBy="#{feriado.fecha}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="text-align: center; width: 100px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             immediate="true"
+                                             action="#{feriadoBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{feriado}" 
+                                                             target="#{feriadoBean.feriadoHelper.feriadoEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"  
+                                             immediate="true"
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{feriado}" 
+                                                             target="#{feriadoBean.feriadoHelper.feriadoEditDelete}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.feriado.descripcion']}" 
+                                  sortBy="#{feriado.descripcion}" style="width: 400px"
+                                  filterBy="#{feriado.descripcion}" filterMatchMode="contains">                                                                 
+                            <h:outputText value="#{feriado.descripcion}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.feriado.fecha']}" 
+                                  sortBy="#{feriado.fecha}" style="width: 100px">                               
+                            <h:outputText value="#{feriado.fecha}">                                
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.feriado.ejercicioFiscal']}" 
+                                  sortBy="#{feriado.ejercicioFiscal.nombre}" style="width: 80px">                               
+                            <h:outputText value="#{feriado.ejercicioFiscal.nombre}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}" style="text-align: center; width: 100px">                                
+                            <p:selectBooleanCheckbox value="#{feriado.vigente}" 
+                                                     disabled="#{true}"/>                                
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaferiado"
+                                             actionListener="#{feriadoBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/> 
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

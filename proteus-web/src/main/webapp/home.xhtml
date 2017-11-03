@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:outputPanel id="outputBuienvenidoUsuario">
+                    <h:outputText value="Bienvenido: "/>
+                    <h:outputText value="#{inicioControlador.usuarioRol.usuario.nombre}"/>
+                    <h:outputText value=", usted es funcionario publico en "/>
+                    <h:outputText value="#{inicioControlador.usuarioRol.usuario.institucion.nombre}"/>
+                </p:outputPanel>
+                <p:outputPanel id="outputImagenHome">
+                    <p:graphicImage value="/images/uaths.png" />
+                </p:outputPanel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.banco.titulo']}"
+                                     controlador="#{bancoBean}"
+                                     extendido="false">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.banco.codigo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="banco_codigo"
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{bancoBean.bancoHelper.banco.codigo}"
+                                     disabled="#{!(bancoBean.bancoHelper.esNuevo)}"
+                                     required="true" style="width: 200px"
+                                     requiredMessage="El campo código es requerido"/>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.banco.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="banco_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{bancoBean.bancoHelper.banco.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.banco.pais']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="banco_pais"
+                                     styleClass="textoNemonico"
+                                     maxlength="2"
+                                     value="#{bancoBean.bancoHelper.banco.pais}"
+                                     disabled="#{!(bancoBean.bancoHelper.esNuevo)}"
+                                     required="true" style="width: 200px"
+                                     requiredMessage="El campo país es requerido"/>                        
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{bancoBean.bancoHelper.banco.vigente}" 
+                                                 rendered="#{!(bancoBean.bancoHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:inputText id="banco_usuario_creo"
+                                     value="#{bancoBean.bancoHelper.banco.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(bancoBean.bancoHelper.esNuevo)}" style="width: 200px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:inputText id="banco_fecha_creo"
+                                     value="#{bancoBean.bancoHelper.banco.fechaCreacion}"
+                                     rendered="#{!(bancoBean.bancoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:inputText id="banco_usuario_actual"
+                                     value="#{bancoBean.bancoHelper.banco.usuarioActualizacion}"
+                                     rendered="#{!(bancoBean.bancoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(bancoBean.bancoHelper.esNuevo)}"/>
+                        <p:inputText id="banco_fecha_actual"
+                                     value="#{bancoBean.bancoHelper.banco.fechaActualizacion}"
+                                     rendered="#{!(bancoBean.bancoHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

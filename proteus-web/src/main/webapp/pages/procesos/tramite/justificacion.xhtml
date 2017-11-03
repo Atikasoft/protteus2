@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form>
+                <p:panel>
+                    <h:panelGrid columns="2" >                           
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{justificacionBean.guardarJustificacion()}"
+                                         update="panelDatos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{justificacionBean.regresar()}"
+                                         style="text-align: left"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>                       
+                    </h:panelGrid> 
+                </p:panel>
+                <p:panel header="#{msg['ec.gob.mrl.smp.justificacionReglas.justificacion']}"
+                         id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">                  
+                    <h:panelGrid id="panelDatos" columns="3">
+                        <h:outputText value="#{msg['ec.gob.mrl.smp.justificacionReglas.regla']}"
+                                      style="alignment-adjust: central"/> 
+                        <p:inputTextarea id="justificacion_nombreRegla" 
+                                         value="#{justificacionBean.justificacionHelper.justificacionVO.reglaMensaje.regla.nombre}"
+                                         disabled="true"
+                                         style="width: 285px"/>
+                        <p:message for="justificacion_nombreRegla" display="icon"/>
+                        <h:outputText value="#{msg['ec.gob.mrl.smp.justificacionReglas.mensaje']}"
+                                      style="alignment-adjust: central"/> 
+                        <p:inputTextarea id="justificacion_mensajeRegla" 
+                                         value="#{justificacionBean.justificacionHelper.justificacionVO.reglaMensaje.mensaje}"
+                                         disabled="true"
+                                         style="width: 285px"/>
+                        <p:message for="justificacion_mensajeRegla" display="icon"/>
+                        <h:outputText value="* #{msg['ec.gob.mrl.smp.justificacionReglas.numeroDocumento']}"
+                                      style="alignment-adjust: central"/> 
+                        <p:inputText id="justificacion_numeroDocumento" 
+                                     value="#{justificacionBean.justificacionHelper.justificacionVO.justificacion.numeroDocumento}"
+                                     requiredMessage="El campo número de documento es requerido"
+                                     required="true"/>
+                        <p:message for="justificacion_numeroDocumento" display="icon"/>
+                        <h:outputText value="* #{msg['ec.gob.mrl.smp.justificacionReglas.fecha']}"
+                                      style="alignment-adjust: central"/>
+                        <p:calendar id="justificacion_fechaDocumento"                                                
+                                    value="#{justificacionBean.justificacionHelper.justificacionVO.justificacion.fechaDocumento}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                    requiredMessage="El campo fecha de documento es requerido"
+                                    required="true"
+                                    showOn="button"/>
+                        <p:message for="justificacion_fechaDocumento" display="icon"/>                            
+                        <h:outputText value="* #{msg['ec.gob.mrl.smp.justificacionReglas.observacion']}"
+                                      style="alignment-adjust: central"/> 
+                        <p:inputTextarea id="justificacion_observacion"
+                                         value="#{justificacionBean.justificacionHelper.justificacionVO.justificacion.observacion}"
+                                         style="width: 285px"
+                                         requiredMessage="El campo observación es requerido"
+                                         required="true"/>
+                        <p:message for="justificacion_observacion" display="icon"/>
+                        <h:outputText value="* #{msg['ec.gob.mrl.smp.justificacionReglas.documento']}"
+                                      style="alignment-adjust: central"/> 
+                        <p:commandButton id="botonCargarArchivo" 
+                                         icon="ui-icon-arrowthickstop-1-n"
+                                         onclick="cargarArchivoPopUp.show()"                                         
+                                         title="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}">                              
+                        </p:commandButton> 
+                        <p:message for="botonCargarArchivo" display="icon"/>
+                        <p:spacer width="10"/>
+                        <h:outputText value="Documento Cargado: #{justificacionBean.justificacionHelper.archivoCargado.fileName}"
+                                      rendered="#{justificacionBean.justificacionHelper.archivoCargado.fileName!=null}"
+                                      style="font-weight: bold"/>
+                        <h:outputText value="Documento Cargado: #{justificacionBean.justificacionHelper.justificacionVO.justificacion.archivo.nombre}" 
+                                      rendered="#{justificacionBean.justificacionHelper.archivoCargado==null}"
+                                      style="font-weight: bold"/>
+                        <p:message for="botonCargarArchivo" display="icon"/>
+                    </h:panelGrid>                   
+                </p:panel>
+            </h:form> 
+            <p:dialog header="#{msg['ec.gob.mrl.smp.verificarRequisito.boton.cargarArchivo']}" 
+                      widgetVar="cargarArchivoPopUp"
+                      modal="true"
+                      draggable="false"
+                      resizable="false">  
+                <h:form enctype="multipart/form-data">
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">      
+                        <p:fileUpload id="justificacion_archivoCargado"
+                                      value="#{justificacionBean.justificacionHelper.archivoCargado}" 
+                                      mode="simple"
+                                      allowTypes=".pdf"/> 
+                        <p:separator />
+                        <div style="text-align: center">
+                            <p:commandButton value="Subir archivo" ajax="false"  
+                                             actionListener="#{justificacionBean.upload}"/> 
+                        </div>                       
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

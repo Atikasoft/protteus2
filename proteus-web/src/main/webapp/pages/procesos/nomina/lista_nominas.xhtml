@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel header="NÓMINAS" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton  ajax="false" value="BUSCAR" 
+                                          action="#{nominaBean.listarNominas}" 
+                                          update="tblListaNominas"/>
+                        <p:commandButton value="NUEVO" 
+                                         immediate="true" 
+                                         action="#{nominaBean.iniciarCreacion}" 
+                                         ajax="false"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel header="Filtros de Búsqueda" >
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="periodoFiscal" value="Ejercicio:"/>
+                        <p:selectOneMenu id="periodoFiscal"    
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.filtro.periodoFiscal}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaPeriodoFiscal}"/>
+                            <p:ajax event="change" listener="#{nominaBean.buscarPeriodos()}" 
+                                    update="periodoNominal"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoFiscal"/>
+
+                        <p:outputLabel for="periodoNominal" value="Periodo:"/>
+                        <p:selectOneMenu id="periodoNominal" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.filtro.periodoNomina}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="periodoNominal"/>
+
+                        <p:outputLabel for="tipoNomina" value="Tipo:"/>
+                        <p:selectOneMenu id="tipoNomina" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         value="#{nominaBean.nominaHelper.filtro.tipoNomina}">
+                            <f:selectItems value="#{nominaBean.nominaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+                        <p:message for="tipoNomina"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:dataTable value="#{nominaBean.nominaHelper.listaNominas}"
+                             var="nomina"
+                             scrollable="true"
+                             style="overflow: auto"
+                             id="tblListaNominas"
+                             emptyMessage="#{msg['message.listaVacia']}"
+                             paginator="#{true}"
+                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" style="width: 60px">
+                        <p:commandButton process="@this" 
+                                         ajax="false" 
+                                         icon="ui-icon-extlink"
+                                         title="ATENDER"
+                                         action="#{nominaBean.iniciarEdicion}">
+                            <f:setPropertyActionListener value="#{nomina}" target="#{nominaBean.nominaHelper.nomina}"/>
+                        </p:commandButton>
+                        <p:commandButton process="@this" 
+                                         ajax="false" 
+                                         icon="ui-icon-newwin"
+                                         title="NOVEDADES"
+                                         action="#{nominaBean.irFormularioNovedadesNomina}">
+                            <f:setPropertyActionListener value="#{nomina}" target="#{nominaBean.nominaHelper.nomina}"/>
+                            <f:setPropertyActionListener value="#{1}" target="#{novedadNominaBean.nominaNovedadHelper.retorno}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="width: 20px;text-align: center">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>
+                    <p:column headerText="Número"
+                              sortBy="#{nomina.numero}"
+                              filterBy="#{nomina.numero}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 60px;text-align: center">
+                        <h:outputText value="#{nomina.numero}"/>
+                    </p:column>
+                    <p:column headerText="Ejercicio"
+                              sortBy="#{nomina.periodoNomina.ejercicioFiscal.nombre}"
+                              filterBy="#{nomina.periodoNomina.ejercicioFiscal.nombre}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 60px;text-align: center">
+                        <h:outputText value="#{nomina.periodoNomina.ejercicioFiscal.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Periodo"
+                              sortBy="#{nomina.periodoNomina.nombre}"
+                              filterBy="#{nomina.periodoNomina.nombre}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 60px;text-align: center">
+                        <h:outputText value="#{nomina.periodoNomina.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Tipo"
+                              sortBy="#{nomina.tipoNomina.nombre}"
+                              filterBy="#{nomina.tipoNomina.nombre}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 200px;text-align: left">
+                        <h:outputText value="#{nomina.tipoNomina.nombre}" style="font-size: 10px;"/>
+                    </p:column>
+
+                    <p:column headerText="Descripción"
+                              filterBy="#{nomina.descripcion}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 300px;text-align: left">
+                        <h:outputText value="#{nomina.descripcion}" style="font-size: 10px;"/>
+                    </p:column>
+                    <p:column headerText="Fecha Creación"
+                              style="width: 100px;text-align: center">
+                        <h:outputText value="#{nomina.fechaCreacion}" style="font-size: 10px;">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha Generación"
+                              style="width: 100px;text-align: center">
+                        <h:outputText value="#{nomina.fechaGeneracion}" style="font-size: 10px;">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha Aprobación"
+                              style="width: 100px;text-align: center">
+                        <h:outputText value="#{nomina.fechaAprovacion}" style="font-size: 10px;">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Bloqueado"
+                              style="width: 100px;text-align: center">
+                        <p:selectBooleanCheckbox value="#{nomina.bloqueado}" 
+                                                 disabled="#{true}"/>
+                    </p:column>
+
+                    <p:column headerText="Estado"
+                              sortBy="#{nomina.estadoNombre}"
+                              filterBy="#{nomina.estadoNombre}"
+                              filterMatchMode="contains"
+                              filterStyle="width: 90%"
+                              style="width: 100px;text-align: center">
+                        <p:outputLabel value="#{nomina.estadoNombre}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

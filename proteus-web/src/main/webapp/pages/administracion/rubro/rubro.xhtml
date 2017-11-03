@@ -1,0 +1,285 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.rubro.titulo']}"
+                                     controlador="#{rubroBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="1" id="tablaformularioExt">
+                        <h:panelGrid columns="2" id="tablaformulario">
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.rubro.tipo']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:selectOneMenu id="rubro_tipo_rubro" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{rubroBean.rubroHelper.rubro.tipo}"
+                                             required="#{true}" style="width: 200px;"
+                                             requiredMessage="El campo tipo es requerido">
+                                <f:selectItems value="#{rubroBean.rubroHelper.tipo}"/>    
+                                <p:ajax event="change" listener="#{rubroBean.OnTipoRubroSeleccionado}" 
+                                        update="tablaformulario,panelBeneficiario"/>
+                            </p:selectOneMenu> 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.rubro.ordinal']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="rubro_ordinal"
+                                         styleClass="campoNumerico"
+                                         style="width: 60px"                                             
+                                         value="#{rubroBean.rubroHelper.rubro.ordinal}"
+                                         required="true"
+                                         requiredMessage="El campo ordinal es requerido"/> 
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.rubro.codigo']}:"
+                                           styleClass="labelFormulario" style="text-align: right;width: 200px;"/>
+                            <p:inputText id="rubro_codigo"                                      
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"                                     
+                                         value="#{rubroBean.rubroHelper.rubro.codigo}"
+                                         required="true"
+                                         disabled="#{!(rubroBean.rubroHelper.esNuevo)}"
+                                         requiredMessage="El campo código es requerido"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.rubro.nombre']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputTextarea id="rubro_nombre"
+                                             styleClass="textoNombre"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             value="#{rubroBean.rubroHelper.rubro.nombre}"
+                                             required="true"
+                                             requiredMessage="El campo nombre es requerido"/>           
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.rubro.descripcion']}:"
+                                           styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                            <p:inputTextarea id="rubro_descripcion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                             value="#{rubroBean.rubroHelper.rubro.descripcion}"
+                                             required="true"
+                                             requiredMessage="El campo descripción es requerido"/>    
+
+                            <h:outputLabel id="lbl_rubro_prioridad"
+                                           value="#{msg['ec.gob.mrl.smp.administracion.rubro.prioridadDescuento']}:"
+                                           rendered="#{rubroBean.rubroHelper.rubro.tipo=='D'}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="rubro_prioridad" style="width: 200px;"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{rubroBean.rubroHelper.rubro.prioridadDescuento}"
+                                             rendered="#{rubroBean.rubroHelper.rubro.tipo=='D'}"
+                                             requiredMessage="El campo prioridad es requerido">
+                                <f:selectItems value="#{rubroBean.rubroHelper.opcionPrioridad}"/>    
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel id="lbl_rubro_partida"
+                                           value="Partida:"
+                                           rendered="#{rubroBean.rubroHelper.rubro.tipo=='I' or rubroBean.rubroHelper.rubro.tipo=='P'}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="rubro_partida" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{rubroBean.rubroHelper.rubro.partidaId}"
+                                             required="#{true}"
+                                             rendered="#{rubroBean.rubroHelper.rubro.tipo=='I' or rubroBean.rubroHelper.rubro.tipo=='P'}"
+                                             requiredMessage="El campo partida es requerido">
+                                <f:selectItems value="#{rubroBean.rubroHelper.opcionPartida}"/>   
+                            </p:selectOneMenu> 
+                            
+                            <h:outputLabel id="lbl_rubro_codigo_contable"
+                                           value="Código Contable:"
+                                           rendered="#{rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='P'}"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:selectOneMenu id="rubro_codigo_contable" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{rubroBean.rubroHelper.rubro.idCodigoContable}"
+                                             required="#{true}"
+                                             rendered="#{rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='P'}"
+                                             requiredMessage="El campo código contable es requerido">
+                                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                <f:selectItems value="#{rubroBean.rubroHelper.listaCodigoContable}" 
+                                               var="codigoContable" 
+                                               itemLabel="#{codigoContable.nombre}" 
+                                               itemValue="#{codigoContable.id}"/>   
+                            </p:selectOneMenu> 
+
+
+                            <h:outputLabel id="lbl_rubro_fase"
+                                           value="* Fase:"
+                                           styleClass="labelFormulario" 
+                                           style="text-align: right"/>
+                            <p:selectOneMenu id="rubro_fase" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{rubroBean.rubroHelper.rubro.fase}"
+                                             required="#{true}"
+                                             requiredMessage="El campo Fase es requerido">
+                                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                <f:selectItem itemLabel="1" itemValue="1" />
+                                <f:selectItem itemLabel="2" itemValue="2" />
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel  id="lbl_benef_unico"
+                                            value=" #{msg['ec.gob.mrl.smp.administracion.rubro.beneficiarioUnico']}:" 
+                                            rendered="#{rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='R' or rubroBean.rubroHelper.rubro.tipo=='P'}"/>
+                            <p:selectBooleanCheckbox id="benef_unico"
+                                                     value="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"
+                                                     rendered="#{rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='R' or rubroBean.rubroHelper.rubro.tipo=='P'}">
+                                <p:ajax listener="#{rubroBean.OnBeneficiarioUnicoSeleccionado}"        
+                                        update="panelBeneficiario,tipo_beneficiario_,lbl_tipo_beneficiario"                            />
+                            </p:selectBooleanCheckbox>
+                            <p:outputPanel id="lbl_tipo_beneficiario">
+                                <h:outputLabel  id="lbl_rubro_tipo_beneficiario"
+                                                value="* #{msg['ec.gob.mrl.smp.administracion.rubro.tipoBeneficiario']}:"
+                                                rendered="#{!rubroBean.rubroHelper.rubro.beneficiarioUnico and 
+                                                            (rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='P' or rubroBean.rubroHelper.rubro.tipo=='R')}"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            </p:outputPanel>  <p:outputPanel id="tipo_beneficiario_">
+                                <p:selectOneMenu id="rubro_tipo_beneficiario" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 200px;"
+                                                 value="#{rubroBean.rubroHelper.rubro.tipoBeneficiario}"
+                                                 required="#{true}"
+                                                 rendered="#{!rubroBean.rubroHelper.rubro.beneficiarioUnico and 
+                                                             (rubroBean.rubroHelper.rubro.tipo=='D' or rubroBean.rubroHelper.rubro.tipo=='P' or rubroBean.rubroHelper.rubro.tipo=='R')}"
+                                                 requiredMessage="El campo tipo beneficiario es requerido">
+                                    <f:selectItems value="#{rubroBean.rubroHelper.tipoBeneficiario}"/>    
+                                </p:selectOneMenu>  
+                            </p:outputPanel> 
+                        </h:panelGrid>
+                        <!-- Beneficiario Unico-->   
+                        <p:outputPanel id="panelBeneficiario"   > 
+                            <p:fieldset  legend="#{msg['ec.gob.mrl.smp.administracion.rubro.beneficiarioUnico']}"
+                                         rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}">
+                                <h:panelGrid  columns="2" >          
+                                    <h:outputLabel id="lbl_rubro_tipo_identificicion"                                      
+                                                   value="* Tipo Identificación Beneficiario:"
+                                                   styleClass="labelFormulario" rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"/>
+                                    <p:selectOneMenu value="#{rubroBean.rubroHelper.rubro.tipoIdentificacionBeneficiario}"
+                                                     filter="true" 
+                                                     filterMatchMode="contains"
+                                                     required="true" 
+                                                     style="width: 200px;"
+                                                     requiredMessage="El campo tipo de identificación del beneficiario es requerido"
+                                                     rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}">
+                                        <f:selectItems value="#{rubroBean.rubroHelper.tipoDocumento}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel id="lbl_rubro_identificicion"                                      
+                                                   value="* #{msg['ec.gob.mrl.smp.administracion.rubro.identificacionBeneficiario']}:"
+                                                   styleClass="labelFormulario" rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"/>
+
+                                    <h:panelGrid id ="benefi_unico_grid" columns="2" rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}">
+
+                                        <p:inputText id="rubro_identificicion"                                      
+                                                     styleClass="campoNemonico"
+                                                     style="width: 200px"       
+                                                     required="true"
+                                                     requiredMessage="El campo número de identificación del beneficiario es requerido"
+                                                     rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"
+                                                     value="#{rubroBean.rubroHelper.rubro.identificacionBeneficiario}"/>
+                                        <p:commandButton icon="ui-icon-search"  action="#{rubroBean.buscarBeneficiarioUnico}"
+                                                         title="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}"
+                                                         process="tablaformulario,panelBeneficiario" ajax="true"
+                                                         rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"
+                                                         update="panelBeneficiario"/>
+                                    </h:panelGrid>                        
+                                    <h:outputLabel  id="lbl_rubro_nombreBeneficiario"  
+                                                    value="* #{msg['ec.gob.mrl.smp.administracion.rubro.nombreBeneficiario']}:"
+                                                    styleClass="labelFormulario" rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"/>
+                                    <p:inputTextarea id="rubro_nombreBeneficiario"                                      
+                                                     styleClass="campoNemonico" disabled="true"
+                                                     style="width: 200px"     
+                                                     rendered="#{rubroBean.rubroHelper.rubro.beneficiarioUnico}"
+                                                     value="#{rubroBean.rubroHelper.rubro.nombreBeneficiario}"/>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </p:outputPanel> 
+                        <h:panelGrid columns="2" id="tablaformulario2">
+                            <h:outputLabel  value=" #{msg['ec.gob.mrl.smp.administracion.rubro.gravable']}:" styleClass="labelFormulario"  />
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.gravable}" /> 
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.calculoCapacidadPago']}:"
+                                           styleClass="labelFormulario" />
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.calculoCapacidadPago}" />      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esDecimoTercero']}:"
+                                           styleClass="labelFormulario" />
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esDecimoTercero}" />     
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esDecimoCuarto']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esDecimoCuarto}" />     
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esImpuestoRenta']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esImpuestoRenta}" />  
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esProyeccionImpuestoRenta']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esProyeccionImpuestoRenta}" />  
+
+
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esFondoReserva']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esFondoReserva}" />  
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.rubro.esRmu']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.esRmu}" />  
+
+                            <h:outputLabel value="Con Descuento Parcial:"
+                                           styleClass="labelFormulario" 
+                                           rendered="#{rubroBean.rubroHelper.rubro.tipo=='D'}"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.conDescuentoParcial}" 
+                                                     rendered="#{rubroBean.rubroHelper.rubro.tipo=='D'}"/>      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                           styleClass="labelFormulario" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>
+                            <p:selectBooleanCheckbox value="#{rubroBean.rubroHelper.rubro.vigente}" disabled="true"
+                                                     rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>      
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                           styleClass="labelFormulario" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>
+                            <p:inputText id="rubro_usuario_creo"
+                                         value="#{rubroBean.rubroHelper.rubro.usuarioCreacion}"
+                                         disabled="true" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"
+                                         style="width: 200px"/>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>
+                            <p:inputText id="rubro_fecha_creo"
+                                         value="#{rubroBean.rubroHelper.rubro.fechaCreacion}"
+                                         rendered="#{!(rubroBean.rubroHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>                            
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>
+                            <p:inputText id="rubro_usuario_actua"
+                                         value="#{rubroBean.rubroHelper.rubro.usuarioActualizacion}"
+                                         rendered="#{!(rubroBean.rubroHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                            </p:inputText>
+
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                           styleClass="labelFormulario" rendered="#{!(rubroBean.rubroHelper.esNuevo)}"/>
+                            <p:inputText id="rubro_fecha_actua"
+                                         value="#{rubroBean.rubroHelper.rubro.fechaActualizacion}"
+                                         rendered="#{!(rubroBean.rubroHelper.esNuevo)}"
+                                         disabled="true" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </p:inputText>
+                        </h:panelGrid>   
+
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

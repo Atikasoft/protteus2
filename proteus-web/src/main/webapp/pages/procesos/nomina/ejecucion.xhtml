@@ -1,0 +1,177 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">   
+        <ui:define name="page-content">
+            <h:form id="fmrCalculoNomina">
+                <p:growl id="growl" />
+
+                <p:panel header="NÓMINA '#{nominaBean.nominaHelper.nomina.descripcion}'" >
+                </p:panel>
+                <p:separator/>
+                <p:panel>
+                    <h:panelGrid columns="2"  style="margin: 0 auto;">
+                        <p:commandButton value="PROCESAR" 
+                                         immediate="false"
+                                         update="@form"
+                                         rendered="#{!nominaBean.nominaHelper.calculando}"
+                                         action="#{nominaBean.procesarNomina()}" />
+                        <p:commandButton value="CERRAR" 
+                                         action="#{nominaBean.iniciarEdicion()}" 
+                                         immediate="true"/>
+                    </h:panelGrid>
+                </p:panel>
+                <h:panelGrid columns="2"
+                             rendered="#{!nominaBean.nominaHelper.calculando}">
+                    <p:selectOneRadio id="nomina_minimoPagarTipo"   
+                                      style="text-align: center"
+                                      value="#{nominaBean.nominaHelper.datosNomina.tipoCalculo}">  
+                        <p:ajax update="cntCalucloNominaD" 
+                                event="change"
+                                process="@this"/>
+                        <f:selectItem itemLabel="Nómina Completa" itemValue="C"  />  
+                        <f:selectItem itemLabel="Nómina Parcial" itemValue="P" />  
+                    </p:selectOneRadio> 
+                </h:panelGrid>
+                <p:panel id="cntCalucloNominaD"
+                         rendered="#{!nominaBean.nominaHelper.calculando}">
+                    <p:panel id="pnlCalculoNominaCompleta" 
+                             rendered="#{nominaBean.nominaHelper.datosNomina.tipoCalculo=='C'}" 
+                             style="height: 150px;">
+                        <h:panelGrid columns="1"  style="margin: 0 auto;">
+                            <h:outputLabel value="SE EJECUTARA LA NÓMINA DE TODOS LOS SERVIDORES MUNICIPALES"/>
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <p:panel id="pnlCalculoNominaParcial" 
+                             rendered="#{nominaBean.nominaHelper.datosNomina.tipoCalculo=='P'}">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="RÉGIMEN LABORAL:"/>
+                            <p:selectOneMenu value="#{nominaHelper.datosNomina.regimenLaboralId}" 
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             disabled="true"
+                                             style="width: 300px;">
+                                <p:ajax update="datosNomina_nivelOcupacionalId"  
+                                        listener="#{nominaBean.buscarNivelesPorRegimen}" />  
+                                <f:selectItems value="#{nominaHelper.listaRegimenLaboral}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="ESCALA REMUNERATIVA:"/>
+                            <p:selectOneMenu id="datosNomina_nivelOcupacionalId" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{nominaHelper.datosNomina.nivelOcupacionalId}">
+                                <f:selectItems value="#{nominaHelper.listaNivelOcupacional}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="MODALIDAD LABORAL:"/>
+                            <p:selectOneMenu id="datosNomina_modalidadLaboralId" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 300px;"
+                                             value="#{nominaHelper.datosNomina.modalidadLaboralId}">
+                                <f:selectItems value="#{nominaHelper.listaModalidadLaboral}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="SERVIDORES:"/>
+                            <p:autoComplete value="#{nominaBean.nominaHelper.listaServidores}" 
+                                            completeMethod="#{nominaBean.buscarServidorPorNombre}"  
+                                            var="p" itemLabel="#{p.apellidosNombres}" itemValue="#{p}"
+                                            forceSelection="false" 
+                                            maxResults="10"
+                                            minQueryLength="3"
+                                            style="width: 800px;"
+                                            scrollHeight="100" 
+                                            converter="servidorConverter" 
+                                            multiple="true">  
+                            </p:autoComplete>  
+                            <h:outputLabel value="MODO:"/>
+                            <p:selectOneRadio id="modo" value="#{nominaBean.nominaHelper.modo}">
+                                <f:selectItem itemLabel="Incluir Servidores" itemValue="I" />
+                                <f:selectItem itemLabel="Excluir Servidores" itemValue="E" />
+                            </p:selectOneRadio>
+
+                        </h:panelGrid>
+                    </p:panel>
+                </p:panel>
+                <p:panel rendered="#{nominaBean.nominaHelper.calculando}"
+                         header="EJECUCION DE NOMINA">
+                    <p:poll 
+                        id="pollId"
+                        widgetVar="poll"
+                        interval="10" 
+                        listener="#{nominaBean.buscarEjecuciones()}" 
+                        update="@form" />
+                    <p:dataTable value="#{nominaBean.nominaHelper.listaEjecuciones}"
+                                 var="ejecucion"
+                                 id="tblEjecuciones"
+                                 emptyMessage="#{msg['message.listaVacia']}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="width: 20px;text-align: center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="Fecha"
+                                  width="20">
+                            <h:outputText value="#{ejecucion.fechaCreacion}" 
+                                          style="font-size: 10px;text-align: center">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Evento" 
+                                  width="300">
+                            <p:outputLabel value="#{ejecucion.evento}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+
+            <!-- Clave de ejecucion de nomina -->
+            <p:dialog modal="true"    
+                      resizable="false"  
+                      width="70%"   
+                      height="430"
+                      draggable="true"  
+                      header="AUTORIZACIÓN EJECUCIÓN DE NÓMINA COMPLETA " 
+                      id="popOpAutorizacion"
+                      widgetVar="dlgAutorizacionEjecucionNominaCompleta" 
+                      closable="true">
+                <h:form id="frmAutorizacion">
+                    <br/>
+                    <center>
+                        <h:outputText value="CLAVE"
+                                      style="font-size: 10pt; "/>
+                        <br/>
+                        <p:password id="nomina_autorizacion"
+                                    value="#{nominaBean.nominaHelper.claveCalculo}" />
+                        <br/>  
+                        <p:separator/>
+                    </center>
+                    <br/><p:separator/>
+                    <div style="text-align: center">
+                        <p:commandButton id="autorizacionCancelarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="autorizacionEjecucionNominaCompleta.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                        <p:commandButton id="autorizacionAceptarBtn" 
+                                         action="#{nominaBean.procesarNominaClave()}"
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         type="button" 
+                                         style="margin: auto"/> 
+
+                    </div>
+                </h:form>
+            </p:dialog> 
+
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <composite:interface>
+        <composite:attribute name="institucion"
+                             required="true"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Institucion">
+        </composite:attribute>
+
+        <composite:attribute name="idComponenteParaActualizar"
+                             required="true"
+                             type="java.lang.String">
+        </composite:attribute>
+
+
+        <composite:attribute name="renderizar"
+                             required="false"
+                             default="true"
+                             type="boolean">
+        </composite:attribute>
+
+        <composite:attribute name="agregarMetodoDespuesSet"
+                             required="false"
+                             default="false"
+                             type="boolean">
+        </composite:attribute>
+
+        <composite:attribute name="metodoDespuesSet"
+                             method-signature="void accion()" 
+                             shortDescription="Metodo que va ser llamado despues de seleccionar una institucion"
+                             required="false">
+        </composite:attribute>
+
+        <composite:attribute name="institucionCriterioInicial"
+                             required="false"
+                             type="ec.gob.mrl.siith.persistencia.entidades.Institucion">
+        </composite:attribute>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <p:outputPanel rendered="#{cc.attrs.renderizar}">
+
+
+            <p:commandButton style="background: #528BB7;color: #FFFFFF;"  value="#{messages['mensaje.general.boton.buscar']}"
+                             action="#{busquedaInstitucionBean.inicializarPopupBusquedaInstitucionPorCriterio}"
+                             update="outputPanelMensajesBusquedaInstitucion,outputPanelBuscadorInstitucion"
+                             oncomplete="widgetVarDialogBusquedaInstitucion.show()"
+                             disabled="#{cc.attrs.desactivar}">
+                <f:setPropertyActionListener target="#{busquedaInstitucionBean.busquedaInstitucionBB.institucionCriterioInicial}"
+                                             value="#{cc.attrs.institucionCriterioInicial}">
+                </f:setPropertyActionListener>
+            </p:commandButton>
+
+            <p:outputPanel>
+                <p:dialog id="dialogBusquedaInstitucion"
+                          widgetVar="widgetVarDialogBusquedaInstitucion"
+                          modal="true"
+                          height="400"
+                          width="768"
+                          header="#{messages['recursos.busqueda.institucion.titulo.popup']}"
+                          position="center"
+                          dynamic="true"
+                          draggable="false"
+                          resizable="false"
+                          style="overflow: auto;">
+
+                    <p:outputPanel id="outputPanelMensajesBusquedaInstitucion">
+                        <h:outputText rendered="#{busquedaInstitucionBean.busquedaInstitucionBB.dummyVar}"></h:outputText>
+                        <p:message for="dialogBusquedaInstitucion"></p:message>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outputPanelBuscadorInstitucion">
+                        <p:outputPanel rendered="#{busquedaInstitucionBean.busquedaInstitucionBB.mostrarPantallaBusquedaInstituciones}">
+
+                            <center>
+                                <p:panel id="panelBuscadorFiltros"
+                                         header="#{messages['recursos.busqueda.institucion.titulo.panel.filtros']}">
+                                    <p:panelGrid columns="2">
+                                        <h:outputLabel for="busquedaInstitucion_nombre"
+                                                       value="#{messages['mensaje.general.etiqueta.nombre']}" />
+                                        <p:inputText id="busquedaInstitucion_nombre"
+                                                     value="#{busquedaInstitucionBean.busquedaInstitucionBB.institucionCriterio.nombre}" />
+                                        <h:outputLabel for="busquedaInstitucion_ruc"
+                                                       value="#{messages['mensaje.general.etiqueta.ruc']}" />
+                                        <p:inputText id="busquedaInstitucion_ruc"
+                                                     value="#{busquedaInstitucionBean.busquedaInstitucionBB.institucionCriterio.ruc}" />
+                                    </p:panelGrid>
+                                    <p:outputPanel>
+                                        <p:commandButton style="background: #528BB7;color: #FFFFFF;"  actionListener="#{busquedaInstitucionBean.buscarInstitucionesPorCriterio}"
+                                                         value="#{messages['mensaje.general.boton.buscar']}"
+                                                         update="outputPanelMensajesBusquedaInstitucion,outputPanelBuscadorListaInstitucion">
+                                        </p:commandButton>
+                                    </p:outputPanel>
+                                </p:panel>
+                            </center>
+
+                            <p:outputPanel id="outputPanelBuscadorListaInstitucion">
+                                <p:panel header="#{messages['recursos.busqueda.institucion.titulo.panel.listaInstituciones']}"
+                                         rendered="#{busquedaInstitucionBean.busquedaInstitucionBB.mostrarTablaListaResultados}">
+                                    <p:dataTable id="dataTableBusquedaInstitucion"
+                                                 value="#{busquedaInstitucionBean.busquedaInstitucionBB.listaInstitucion}"
+                                                 var="institucion"
+                                                 emptyMessage=""
+                                                 paginator="true"
+                                                 rows="#{busquedaInstitucionBean.busquedaInstitucionBB.numeroDeFilas}"
+                                                 paginatorPosition="bottom">
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{messages['mensaje.general.columna.nombre']}" />
+                                            </f:facet>
+                                            <h:outputText value="#{institucion.nombre}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{messages['mensaje.general.columna.siglas']}" />
+                                            </f:facet>
+                                            <h:outputText value="#{institucion.siglas}" />
+                                        </p:column>                    
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{messages['mensaje.general.columna.ruc']}" />
+                                            </f:facet>
+                                            <h:outputText value="#{institucion.ruc}" />
+                                        </p:column>                               
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{messages['mensaje.general.columna.opciones']}" />
+                                            </f:facet>
+                                            <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                           action="#{cc.attrs.metodoDespuesSet}"
+                                                           rendered="#{cc.attrs.agregarMetodoDespuesSet}"
+                                                           oncomplete="widgetVarDialogBusquedaInstitucion.hide()"
+                                                           update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                                <f:setPropertyActionListener target="#{cc.attrs.institucion}"
+                                                                             value="#{institucion}">
+                                                </f:setPropertyActionListener>
+                                            </p:commandLink>
+                                            <p:commandLink value="#{messages['mensaje.general.link.seleccionar']}"
+                                                           rendered="#{!cc.attrs.agregarMetodoDespuesSet}"
+                                                           oncomplete="widgetVarDialogBusquedaInstitucion.hide()"
+                                                           update=":#{p:component(cc.attrs.idComponenteParaActualizar)}">
+                                                <f:setPropertyActionListener target="#{cc.attrs.institucion}"
+                                                                             value="#{institucion}">
+                                                </f:setPropertyActionListener>
+                                            </p:commandLink>
+                                        </p:column>                                        
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:dialog>
+            </p:outputPanel>
+
+        </p:outputPanel>
+    </composite:implementation>
+</html>

@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <smp:catalogo_lista controlador="#{estadoAdminPuestoBean}" 
+                                    titulo="#{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuesto.titulo']}"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+
+                    <p:dataTable id="tablaClase"
+                                 value="#{estadoAdminPuestoBean.estadoAdministracionPuestoHelper.listaEstadoAdministracionPuesto}"
+                                 var="estado" emptyMessage="No se encontraron registros"
+                                 scrollable="true"
+                                 style="overflow: auto;"
+                                 sortBy="#{estado.nombre}"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">   
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 20px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{estadoAdminPuestoBean.iniciarEdicion}"
+                                             title="#{msg['ec.gob.mrl.smp.genericos.etiquetas.editar']}">
+                                <f:setPropertyActionListener value="#{estado}" 
+                                                             target="#{estadoAdminPuestoBean.estadoAdministracionPuestoHelper.estadoAdministracionPuestoEditDelete}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{estado}" 
+                                                             target="#{estadoAdminPuestoBean.estadoAdministracionPuestoHelper.estadoAdministracionPuestoEditDelete}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuesto.codigo']}" 
+                                  sortBy="#{estado.codigo}" 
+                                  filterBy="#{estado.codigo}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains"
+                                  style="width: 50px">                                                                 
+                            <h:outputText value="#{estado.codigo}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.estadoAdministracionPuesto.nombre']}" 
+                                  sortBy="#{estado.nombre}" 
+                                  filterBy="#{estado.nombre}" 
+                                  filterStyle="width: 90%"
+                                  filterMatchMode="contains"
+                                  style="width: 300px">                                                                 
+                            <h:outputText value="#{estado.nombre}"/>                                
+                        </p:column>                                                                                      
+                        <p:column headerText="Activo" 
+                                  style="text-align: center; width: 50px">                                
+                            <p:selectBooleanCheckbox value="#{estado.activo}" 
+                                                     disabled="#{true}"/>                                   
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">  
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaClase"
+                                             actionListener="#{estadoAdminPuestoBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

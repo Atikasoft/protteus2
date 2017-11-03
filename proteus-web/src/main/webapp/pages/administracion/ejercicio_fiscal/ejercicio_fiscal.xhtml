@@ -1,0 +1,217 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario controlador="#{ejercicioFiscalBean}" 
+                                     extendido="true"
+                                     titulo="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.titulo']}">
+                <f:facet name="contenido">
+
+                    <h:panelGrid columns="3" style="text-align: left" id="tablaformulario">
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.nombre']}:"
+                                       styleClass="labelFormulario"
+                                       />
+
+                        <p:inputText id="ejercicioFiscal_nombre"
+                                     styleClass="textoNombre" 
+                                     required="true"
+                                     disabled="#{true}"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nombre.max']}"
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.nombre}"/>
+                        <p:message for="ejercicioFiscal_nombre" display="icon"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaInicio']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="ejercicioFiscal_fechaInicio"  navigator="true" 
+                                    required="true"
+                                    disabled="#{true}"
+                                    value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.fechaInicio}"
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>                            
+                        <p:message for="ejercicioFiscal_fechaInicio" display="icon"/>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.fechaFin']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:calendar id="ejercicioFiscal_fechaFin" 
+                                    required="true"
+                                    disabled="#{true}"
+                                    value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.fechaFin}" 
+                                    pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/> 
+
+                        <p:message for="ejercicioFiscal_fechaFin" display="icon"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.gastosPersonal.fraccionBasica']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="ejercicioFiscal_fraccionBasica" 
+                                     title="Valor monetario establecido por el Servicio de Rentas Internas para el cálculo de Impuesto a la Renta."
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.fraccionBasica}" />
+
+                        <p:message for="ejercicioFiscal_fraccionBasica" display="icon"/>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.rucContador']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="ejercicioFiscal_rucContador" 
+                                     styleClass="campoNumerico"
+                                     maxlength="13"
+                                     title="RUC del contador para el formulario 107."
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.rucContador}" />
+                        <p:message for="ejercicioFiscal_rucContador" display="icon"/>
+
+
+                        <h:outputLabel value="* Nueva #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.firmaContador']}:"
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="2">
+                            <p:fileUpload id="firmaContador"
+                                          widgetVar="firmaContadorWV"
+                                          label="Seleccione..."
+                                          requiredMessage="La firma del contador es un campo requerido."
+                                          required="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaContador eq null}" 
+                                          fileUploadListener="#{ejercicioFiscalBean.cargarArchivoFirmaContador}" 
+                                          mode="advanced"
+                                          auto="true"
+                                          process="@this"
+                                          allowTypes="/(\.|\/)(jpg)$/"
+                                          oncomplete="clearInvalidFileMsg(firmaContadorWV)"
+                                          invalidFileMessage="El archivo debe ser: jpg o jpeg"
+                                          update="filenameFirmaContador"/>  
+                            <h:outputText id="filenameFirmaContador" 
+                                          value="#{ejercicioFiscalBean.ejercicioFiscalHelper.nombreArchivoFirmaContador}"/>
+                        </h:panelGrid>
+                        <p:message for="firmaContador" display="icon"/>
+
+
+                        <h:outputLabel value="Anterior #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.firmaContador']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{not (ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaContador eq null)}"/>
+                        <p:graphicImage id="firmaContadorImagen"
+                                        value="#{ejercicioFiscalHelper.firmaContadorImage}" 
+                                        rendered="#{not (ejercicioFiscalHelper.ejercicioFiscal.firmaContador eq null)}"/>
+                        <p:message for="firmaContadorImagen" 
+                                   display="icon" 
+                                   rendered="#{not (ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaContador eq null)}"/>
+
+
+                        <h:outputLabel value="* Nueva #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.firmaRetencion']}:"
+                                       styleClass="labelFormulario"/>
+                        <h:panelGrid columns="2">
+                            <p:fileUpload id="firmaRetencion"
+                                          widgetVar="firmaRetencionWV"
+                                          label="Seleccione..."
+                                          requiredMessage="La firma del agente de retención es un campo requerido."
+                                          required="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaAgenteRetencion eq null}" 
+                                          fileUploadListener="#{ejercicioFiscalBean.cargarArchivoFirmaRetencion}" 
+                                          mode="advanced"
+                                          auto="true"
+                                          process="@this"
+                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                          oncomplete="clearInvalidFileMsg(firmaRetencionWV)"
+                                          invalidFileMessage="El archivo debe ser: png,gif,jpg o jpeg"
+                                          update="filenameFirmaRetencion"/>  
+                            <h:outputText id="filenameFirmaRetencion" 
+                                          value="#{ejercicioFiscalBean.ejercicioFiscalHelper.nombreArchivoFirmaRetencion}"/>
+                        </h:panelGrid>
+                        <p:message for="firmaRetencion" display="icon"/>
+                        
+                        
+                        <h:outputLabel value="Anterior #{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.firmaRetencion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{not (ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaAgenteRetencion eq null)}"/>
+                        <p:graphicImage id="firmaRetencionImagen"
+                                        value="#{ejercicioFiscalHelper.firmaRetencionImage}" 
+                                        rendered="#{not (ejercicioFiscalHelper.ejercicioFiscal.firmaAgenteRetencion eq null)}"/>
+                        <p:message for="firmaRetencionImagen" 
+                                   display="icon" 
+                                   rendered="#{not (ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.firmaAgenteRetencion eq null)}"/>
+                        
+
+                        <h:outputLabel value="*#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.fechaEntregaFormulario']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputMask id="ejercicioFiscal_fechaEntregaFormulario" 
+                                     title="Fecha de entrega del formulario 107."
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.fechaEntrega}"
+                                     mask="99/99/9999">
+                        </p:inputMask>
+                        <p:message for="ejercicioFiscal_fechaEntregaFormulario" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.impuestoRentaCompletado']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectBooleanCheckbox id="ejercicioFiscal_impuestoCompletado" 
+                                                 required="true"
+                                                 value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.impuestoRentaCompletado}"/>
+                        <p:message for="ejercicioFiscal_impuestoCompletado" display="icon"/>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox id="ejercicioFiscal_vigente" 
+                                                 required="true"
+                                                 value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.vigente}"
+                                                 rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:message for="ejercicioFiscal_vigente" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.ejercicioFiscal.esElProximo']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectBooleanCheckbox id="ejercicioFiscal_siguiente" 
+                                                 required="true"
+                                                 value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.esProximoEjercicio}"/>
+                        <p:message for="ejercicioFiscal_siguiente" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:inputText id="ejercicioFiscal_fechaCreacion" 
+                                     disabled="#{true}"
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.fechaCreacion}"
+                                     rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <p:message for="ejercicioFiscal_fechaCreacion" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:inputText id="ejercicioFiscal_usuarioCreacion" 
+                                     disabled="#{true}"
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.usuarioCreacion}"
+                                     rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:message for="ejercicioFiscal_usuarioCreacion" display="icon"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:inputText id="ejercicioFiscal_fechaActualizacion" 
+                                     disabled="#{true}"
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.fechaActualizacion}"
+                                     rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                        <p:message for="ejercicioFiscal_fechaActualizacion" display="icon"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario"
+                                       rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:inputText id="ejercicioFiscal_usuarioActualizacion" 
+                                     disabled="#{true}"
+                                     value="#{ejercicioFiscalBean.ejercicioFiscalHelper.ejercicioFiscal.usuarioActualizacion}"
+                                     rendered="#{!(ejercicioFiscalBean.ejercicioFiscalHelper.esNuevo)}"/>
+                        <p:message for="ejercicioFiscal_usuarioActualizacion" display="icon"/>
+                    </h:panelGrid>
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

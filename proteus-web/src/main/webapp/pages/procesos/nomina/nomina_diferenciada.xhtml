@@ -1,0 +1,536 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">        
+        <ui:define name="page-content">
+            <!-- Formulario  creacion -->
+            <h:form rendered="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.esNuevo}" id="frmMain" >
+                <p:panel header="NUEVA NÓMINA" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="GUARDAR"   
+                                         update="@form"
+                                         action="#{nominaDiferenciadaBean.guardarNomina}"/>
+                        <p:commandButton value="REGRESAR" 
+                                         immediate="true" 
+                                         action="#{nominaDiferenciadaBean.listarNominas()}" 
+                                         ajax="false">
+                            <f:setPropertyActionListener value="#{null}" target="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.esNuevo}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel>
+                    <h:panelGrid columns="2">
+                        <p:outputLabel  value="Ejercicio Fiscal:"/>
+                        <p:inputText id="nomina_ejercicioId"
+                                     disabled="true"
+                                     value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.periodoNomina.ejercicioFiscal.nombre}"/>
+
+                        <p:outputLabel value="Periodo:"/>
+                        <p:selectOneMenu id="nomina_periodoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         disabled="true"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.periodoNominaId}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel  value="* Cobertura:"/>
+                        <p:selectOneMenu id="coberturaNomina" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         required="#{true}"
+                                         requiredMessage="El campo cobertura es requerido"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNomina.cobertura}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaCoberturaNomina}"/>
+                            <p:ajax event="change" update="nomina_tipoNominaId" 
+                                    listener="#{nominaDiferenciadaBean.iniciarTiposNomina(nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNomina.cobertura)}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel   value="* Tipo Nómina:"/>
+                        <p:selectOneMenu id="nomina_tipoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         required="true"
+                                         requiredMessage="El campo tipo de nómina es requerido"
+                                         style="width: 300px;"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNominaId}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="* Tipo mínimo a pagar:"/>
+                        <p:selectOneRadio id="nomina_minimoPagarTipo" 
+                                          style="width: 200px;"
+                                          required="true"
+                                          requiredMessage="El campo Tipo Mínimo a pagar es requerido"
+                                          value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.minimoPagarTipo}">  
+                            <f:selectItem itemLabel="Fijo" itemValue="F" />  
+                            <f:selectItem itemLabel="Porcentual" itemValue="P" />  
+                        </p:selectOneRadio> 
+
+                        <p:outputLabel  value="* Valor mínimo a pagar:"/>
+                        <p:inputText required="true"
+                                     requiredMessage="El campo Valor Mínimo a pagar es requerido"
+                                     id="nomina_minimoPagarValor"
+                                     style="width: 200px;"
+                                     value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.minimoPagarValor}" />
+
+                        <p:outputLabel  value="Descripción:"/>
+                        <p:inputTextarea id="nomina_descripcion" 
+                                         required="true"
+                                         requiredMessage="El campo descripción es requerido"
+                                         style="width: 400px;"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.descripcion}" />
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+            <!-- Formulario no creacion -->
+            <h:form rendered="#{!nominaDiferenciadaBean.nominaDiferenciadaHelper.esNuevo}" id="frmMainNoCrear">
+                <p:blockUI block="pntContnt" widgetVar="bui" blocked="true"/>  
+                <p:panel header="NÓMINA DE #{nominaDiferenciadaBean.obtenerDescripcionCobertura(nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNomina.cobertura)}: '#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.descripcion}'" >
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="REGRESAR" 
+                                         immediate="true" 
+                                         action="#{nominaDiferenciadaBean.listarNominas}" 
+                                         ajax="false"/>
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:panel id="pntContnt">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Periodo:"/>
+                        <p:selectOneMenu id="nomina_periodoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         disabled="true"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.periodoNominaId}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaPeriodoNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel  value="* Cobertura:"/>
+                        <p:selectOneMenu id="nomina_coberturaNomina" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         required="true"
+                                         requiredMessage="El campo Cobertura es requerido"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.filtro.coberturaNomina}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaCoberturaNomina}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="* Tipo:"/>
+                        <p:selectOneMenu id="nomina_tipoNominaId" 
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         style="width: 300px;"
+                                         required="true"
+                                         requiredMessage="El campo Tipo es requerido"
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNominaId}">
+                            <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaTipoNomina}"/>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="* Tipo mínimo pagar:"/>
+                        <p:selectOneRadio id="nomina_minimoPagarTipo" 
+                                          required="true"
+                                          requiredMessage="El campo Tipo Mínimo a pagar es requerido"
+                                          value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.minimoPagarTipo}">  
+                            <f:selectItem itemLabel="Fijo" itemValue="F" />  
+                            <f:selectItem itemLabel="Porcentual" itemValue="P" />  
+                        </p:selectOneRadio> 
+
+
+                        <p:outputLabel value="* Valor mínimo pagar:"/>
+                        <p:inputText required="true"
+                                     id="nomina_minimoPagarValor"
+                                     requiredMessage="El campo Valor mínimo pagar es requerido"
+                                     value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.minimoPagarValor}" />
+
+                        <p:outputLabel value="Estado Actual:"/>
+                        <p:inputText id="nomina_estado"
+                                     value="#{nominaDiferenciadaBean.obtenerDescripcionEstado(nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.estado)}" />
+                    </h:panelGrid>
+                </p:panel>
+                <p:separator/>
+                <p:outputPanel rendered="#{!nominaDiferenciadaBean.nominaDiferenciadaHelper.nominaAnulada}">
+                    <h:panelGrid columns="6"  >
+                        <p:commandButton value="CÁLCULO" 
+                                         immediate="true"
+                                         rendered="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.calcular}"
+                                         action="#{nominaDiferenciadaBean.iniciarCalculo}" 
+                                         update=":fmrCalculoNomina"/>
+                        <p:commandButton value="RESULTADOS"  
+                                         immediate="true" 
+                                         ajax="false"
+                                         action="#{nominaDiferenciadaBean.irFormularioResultadoNomina}">
+                            <f:setPropertyActionListener value="#{2}" 
+                                                         target="#{nominaBean.resultadoNominaHelper.retorno}"/>
+                        </p:commandButton>
+                        <p:commandButton value="OBSERVACIONES"
+                                         immediate="true"
+                                         action="#{nominaDiferenciadaBean.verObservaciones}" 
+                                         update=":fmrObservacionesNomina"/>
+                        <p:commandButton value="ELIMINAR DETALLES" immediate="true"
+                                         rendered="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.calcular}"
+                                         onclick="confirmEliminacion.show();"/>
+                        <p:commandButton value="ARCHIVOS SIPARI" title="GENERAR ARCHIVOS SIPARI"
+                                         actionListener="#{nominaDiferenciadaBean.iniciarListaTipoArchivoSIPARI}"  
+                                         immediate="true"  
+                                         rendered="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nominaAprobada}"/>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <p:panel rendered="#{!nominaDiferenciadaBean.nominaDiferenciadaHelper.nominaAnulada}">
+                        <p:outputPanel autoUpdate="true">
+                            <h:panelGrid columns="2" style="margin: 0 auto;" id="gridComentario">                      
+                                <p:outputLabel  value="* COMENTARIO:" rendered="#{!nominaDiferenciadaBean.nominaDiferenciadaHelper.nominaAnulada}"/>
+                                <p:inputTextarea  id="nomina_comentario"
+                                                  value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.observacion}"
+                                                  required="true" style="width: 300px;"
+                                                  requiredMessage="El campo Comentario es requerido">
+                                </p:inputTextarea>
+
+                                <p:outputLabel  value="* ACCIÓN:"/>
+                                <p:selectOneMenu id="nomina_accionId" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 required="true"
+                                                 style="width: 300px;"
+                                                 value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.accion}"
+                                                 requiredMessage="El campo Acción es requerido"> 
+                                    <f:selectItems value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaAcciones}"/>
+                                    <p:ajax event="change"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            <center>
+                                <p:commandButton id="botonContinuar" value="CONTINUAR"  
+                                                 action="#{nominaDiferenciadaBean.activarPanelActualizarEstado}" 
+                                                 update=":popOpAcciones"
+                                                 ajax="true"
+                                                 title="CONTINUAR"/>
+                            </center>
+                        </p:outputPanel>
+                    </p:panel>
+                </p:outputPanel>
+            </h:form>
+            <!-- eliminacion detalles -->
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación" 
+                             severity="alert" 
+                             widgetVar="confirmEliminacion">  
+                <div style="text-align: center">
+                    <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                     style="margin: auto"
+                                     actionListener="#{nominaDiferenciadaBean.eliminarDetalles}"
+                                     oncomplete="confirmEliminacion.hide()"  />  
+                    <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="confirmEliminacion.hide()" 
+                                     type="button" 
+                                     style="margin: auto"/> 
+                </div>
+            </p:confirmDialog> 
+            <!-- pop Up generacion -->
+            <p:dialog modal="true" 
+                      resizable="false" 
+                      draggable="false"
+                      width="700"
+                      height="400"
+                      widgetVar="dlgCalculoNomina">
+                <h:form id="fmrCalculoNomina">
+                    <p:panel>
+                        <h:panelGrid columns="2"  style="margin: 0 auto;">
+                            <p:commandButton value="PROCESAR" 
+                                             immediate="false"
+                                             action="#{nominaDiferenciadaBean.procesarNomina}" />
+                            <p:commandButton value="CERRAR" 
+                                             immediate="true"
+                                             oncomplete="dlgCalculoNomina.hide()"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:scrollPanel style="width:100%;height:350px; alignment-adjust: central"  mode="native">  
+                        <p:panel id="pnlCalculoNominaParcial" >
+                            <h:panelGrid columns="1">
+                                <p:dataTable rendered="#{nominaDiferenciadaBean.esLiquidacion()}"
+                                             value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaLiquidaciones}"
+                                             var="liquidacion"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             scrollable="true"
+                                             filterEvent="enter"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             paginator="#{true}"
+                                             rowIndexVar="rowIndex">
+                                    <f:facet name="header">#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.seleccionar']}</f:facet>
+                                    <p:column headerText="" style="text-align: center" width="20">
+                                        <p:selectBooleanCheckbox value="#{liquidacion.selecto}" />
+                                    </p:column>
+                                    <p:column headerText="No" width="10" >
+                                        <h:outputText value="#{rowIndex+1}"/>
+                                    </p:column>   
+                                    <p:column headerText="Tipo" 
+                                              style="text-align: center" 
+                                              width="50">
+                                        <h:outputText value="#{busquedaPuestoBean.obtenerDescripcionTipoDocumento(liquidacion.servidor.tipoIdentificacion)}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Identificación" 
+                                              width="60" 
+                                              filterBy="#{liquidacion.servidor.numeroIdentificacion}" 
+                                              filterMatchMode="contains"
+                                              filterStyle="width:90%">
+                                        <h:outputText value="#{liquidacion.servidor.numeroIdentificacion}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Apellidos y Nombres" 
+                                              width="200" 
+                                              filterBy="#{liquidacion.servidor.apellidosNombres}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{liquidacion.servidor.apellidosNombres}" style="font-size: 10px;"/>
+                                    </p:column>                
+                                </p:dataTable>
+                                <p:dataTable rendered="#{nominaDiferenciadaBean.esAnticipo()}"
+                                             value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaAnticipos}"
+                                             var="anticipo"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             style="overflow: auto;width: 100%"
+                                             filterEvent="enter"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             paginator="#{true}"
+                                             rowIndexVar="rowIndex">
+                                    <f:facet name="header">#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.seleccionar']}</f:facet>
+                                    <p:column headerText="" 
+                                              style="text-align: center;width: 3%">
+                                        <p:selectBooleanCheckbox value="#{anticipo.selecto}" />
+                                    </p:column>
+                                    <p:column headerText="No" 
+                                              style="text-align: center;width: 3%">
+                                        <h:outputText value="#{rowIndex+1}"/>
+                                    </p:column>   
+                                    <p:column headerText="Tipo" 
+                                              style="text-align: center;width: 10%">
+                                        <h:outputText value="#{busquedaPuestoBean.obtenerDescripcionTipoDocumento(anticipo.servidor.tipoIdentificacion)}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Identificación" 
+                                              style="text-align: center;width: 10%" 
+                                              filterBy="#{anticipo.servidor.numeroIdentificacion}" 
+                                              filterMatchMode="contains"
+                                              filterStyle="width:90%">
+                                        <h:outputText value="#{anticipo.servidor.numeroIdentificacion}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Apellidos y Nombres" 
+                                              style="width: 60%"
+                                              filterBy="#{anticipo.servidor.apellidosNombres}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{anticipo.servidor.apellidosNombres}" style="font-size: 10px;"/>
+                                    </p:column>                
+                                    <p:column headerText="Valor" 
+                                              style="width: 14%"
+                                              filterBy="#{anticipo.valor}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{anticipo.valor}" style="font-size: 10px;float: right;">
+                                            <f:convertNumber pattern="###,##0.00" />
+                                        </h:outputText>
+                                    </p:column>                
+                                </p:dataTable>
+                                <p:dataTable id="nomina_pagoTerceros" 
+                                             value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaTerceros}"
+                                             var="tercero"
+                                             rendered="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.nomina.tipoNomina.cobertura == 'T'}"
+                                             emptyMessage="#{msg['message.listaVacia']}"
+                                             scrollable="true"
+                                             filterEvent="enter"
+                                             rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                             paginator="#{true}"
+                                             rowIndexVar="rowIndex">
+                                    <f:facet name="header">#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.seleccionar']}</f:facet>
+                                    <p:column headerText="" style="text-align: center" width="20">
+                                        <p:selectBooleanCheckbox value="#{tercero.seleccionado}" />
+                                    </p:column>
+                                    <p:column headerText="No" width="10" >
+                                        <h:outputText value="#{rowIndex+1}"/>
+                                    </p:column>   
+                                    <p:column headerText="Tipo" style="text-align: center" width="50">
+                                        <h:outputText value="#{busquedaPuestoBean.obtenerDescripcionTipoDocumento(tercero.tipoIdentificacion)}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Identificación" width="80" filterBy="#{tercero.numeroIdentificacion}" filterMatchMode="contains"
+                                              filterStyle="width:50px" sortBy="#{tercero.numeroIdentificacion}">
+                                        <h:outputText value="#{tercero.numeroIdentificacion}" style="font-size: 10px;"/>
+                                    </p:column>
+                                    <p:column headerText="Nombres" width="300" filterBy="#{tercero.nombres}" filterMatchMode="contains"
+                                              sortBy="#{tercero.nombres}">
+                                        <h:outputText value="#{tercero.nombres}" style="font-size: 10px;"/>
+                                    </p:column>        
+                                    <p:column headerText="Valor" width="80" filterBy="#{tercero.valor}" filterMatchMode="contains" style="text-align: right"
+                                              filterStyle="width:50px">
+                                        <h:outputText value="#{tercero.valor}" style="font-size: 10px;"/>
+                                    </p:column>        
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+
+            <!-- pop Up observaciones -->
+            <p:dialog modal="true" 
+                      resizable="false" 
+                      draggable="false"
+                      width="1000"
+                      height="300"
+                      widgetVar="dlgObservacionesNomina">
+                <h:form id="fmrObservacionesNomina">
+                    <p:panel>
+                        <h:panelGrid columns="2"  style="margin: 0 auto;">
+                            <p:commandButton value="CERRAR" 
+                                             immediate="true"
+                                             oncomplete="dlgObservacionesNomina.hide()"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="OBSERVACIONES DE LA NÓMINA">                              
+                        <h:panelGrid columns="1" width="100%">
+                            <p:dataTable id="tablaObservaciones" 
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaProblemas}"
+                                         var="obs"         
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         paginator="#{true}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"                                     
+                                         style="overflow: auto;font-size: 9px;">
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                          style="width: 5%;text-align: center">
+                                    <h:outputLabel value="#{rowIndex+1}"/>
+                                </p:column>
+
+                                <p:column headerText="Identificación"
+                                          style="text-align: center; width: 5%"
+                                          sortBy="#{obs.numeroDocumento}">
+                                    <h:outputLabel value="#{obs.numeroDocumento}"/>
+                                </p:column>
+                                <p:column headerText="Nombres"
+                                          style="text-align: left; width: 25%"
+                                          sortBy="#{obs.apellidosNombres}">
+                                    <h:outputLabel value="#{obs.apellidosNombres}"/>
+                                </p:column>
+                                <p:column headerText="Rubro"
+                                          style="text-align: left; width: 20%;"
+                                          sortBy="#{obs.nombreRubro}">
+                                    <h:outputLabel value="#{obs.nombreRubro}"/>
+                                </p:column>
+                                <p:column headerText="Observación"
+                                          style="text-align: left; width: 45%"
+                                          sortBy="#{obs.problema}">
+                                    <h:outputLabel value="#{obs.problema}"/>
+                                </p:column>                                
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            <!-- confirmacion de acciones -->
+            <p:confirmDialog id="popOpAcciones" 
+                             message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar.acciones']}"
+                             header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']} ACCIÓN : #{nominaDiferenciadaBean.obtenerAccionEstado(nominaDiferenciadaBean.nominaDiferenciadaHelper.accion)}" 
+                             severity="alert" 
+                             widgetVar="confirmAccion">  
+                <br/>
+                <h:form id="frmacciones">
+                    <div style="text-align: center">
+                        <p:commandButton id="guardarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         actionListener="#{nominaDiferenciadaBean.guardarNomina}" ajax="false"
+                                         update=":frmMainNoCrear" />  
+
+                        <p:commandButton id="confimAccionCerrar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmAccion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+
+            <!-- confirmacion de creación de archivo sipari -->
+            <p:dialog modal="true"    resizable="false"  width="70%"   height="430"
+                      draggable="true"  
+                      header="#{msg['ec.gob.mrl.smp.genericos.etiquetas.confirmar']} CREACIÓN ARCHIVOS SIPARI: " 
+                      id="popOpArchivo"
+                      widgetVar="confirmArchivo" closable="true">
+                <h:form id="frmMenu">
+                    <br/>
+                    <center>
+                        <h:outputText value="¿Está seguro de enviar a CREAR los archivos para el Sistema SIPARI ? " 
+                                      style="font-size: 10pt; "/>
+                        <br/>
+                        <h:outputText value="Este proceso puede tardar varios minutos !!!!" 
+                                      style="font-size: 9pt; color: #003399;font-weight: bold"/>
+                        <br/>  
+                        <p:separator/>
+                        <p:fieldset legend="ARCHIVOS" id="panelArchivo">
+                            <br/>
+                            <h:outputText value=" Seleccione los archivos que va a enviar a crear. Una vez creados podrá descargarlos." 
+                                          style="font-size: 9pt;"/>
+                            <br/>
+                            <p:dataTable id="tablaArchivos" 
+                                         value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaTipoArchivoSIPARI}"
+                                         var="file"    rowKey="#{rowIndex+1}"     
+                                         emptyMessage="#{msg['message.listaVacia']}"
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         rowIndexVar="rowIndex"                              
+                                         style="overflow: auto;font-size: 10px;">
+
+                                <p:column headerText="Archivo" style="width:15%" >  
+                                    <h:outputLabel value="#{nominaDiferenciadaBean.obtenerDescripcionTipoArchivo(file.tipo)} "
+                                                   rendered="#{file.id==null}"/>
+                                    <h:outputLabel value="#{file.tipoNombre} " rendered="#{file.id!=null}"/>
+                                </p:column>  
+                                <p:column headerText="Nombre" style="width:50%">  
+                                    <h:outputLabel value="#{file.nombre} " rendered="#{file.id!=null}"/>
+                                </p:column>  
+
+                                <p:column headerText="Fecha Creación" style="width:15%" >                                  
+                                    <h:outputText value="#{file.fechaCreacion}" rendered="#{file.id!=null}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                    </h:outputText> 
+                                </p:column>                              
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                          style=" width: 10%; text-align: center;">
+                                    <p:commandButton id="botonCrear" value="Crear"
+                                                     immediate="true"
+                                                     rendered="#{file.id ==null}"
+                                                     style="margin: auto" 
+                                                     update=":frmMenu:tablaArchivos"
+                                                     actionListener="#{nominaDiferenciadaBean.generarArchivoSipari(file)}"
+                                                     title="Crear Archivo Sipari"/>
+                                    <p:outputPanel id ="panelDescarga" rendered="#{file.id!=null}">
+                                        <a href="#{nominaDiferenciadaBean.invocarServlet(file.id, file.nombre,file.tipo)}" >Descargar</a>    
+
+                                    </p:outputPanel>                                     
+                                </p:column>
+
+                            </p:dataTable> 
+                            <p:outputPanel autoUpdate="true" style="text-align: left;">
+                                <p:dataList value="#{nominaDiferenciadaBean.nominaDiferenciadaHelper.listaMensajes}" var="item" itemType="disc" style="text-align: left;"
+                                            rendered="#{not empty nominaDiferenciadaBean.nominaDiferenciadaHelper.listaMensajes}">
+                                    <h:outputLabel value="#{item}"
+                                                   styleClass="labelFormulario" style="color: #D20005"/>
+                                </p:dataList>
+                            </p:outputPanel>
+                        </p:fieldset>
+                    </center>
+                    <br/><p:separator/>
+                    <div style="text-align: center">
+
+                        <p:commandButton id="cerrarArchivosBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmArchivo.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:dialog> 
+
+        </ui:define>
+    </ui:composition>
+</html>

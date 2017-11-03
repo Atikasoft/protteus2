@@ -1,0 +1,81 @@
+/* 
+    Document   : educa
+    Created on : 12/03/2013, 11:42:10 AM
+    Author     : Victor Quimbiamba <victor.quimbiamba@atikasoft.com.ec>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.labelFormulario{
+    float: right;
+}
+
+.ui-state-default .ui-icon-document {
+    background-image: url("../imagenes/nuevo.png");
+    background-size:16px 16px;
+    height: 16px;
+    width: 16px;
+}
+.textoNombre , .textoNombre-dis{
+    width:250px;
+    text-transform:uppercase;
+}
+
+.textoMayuscula, .textoMayuscula-dis {
+    text-transform:uppercase;
+}
+
+#apellido {
+    width:250px;
+    text-transform:uppercase;
+}
+
+#keyChain {
+    top:155px;
+    left:230px;
+    position:absolute;
+}
+#keyChain_inicio {
+    top:170px;
+    left:370px;
+    position:absolute;
+}
+#escudo {
+    border: 1px solid #A6C9E2;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    left: 27.4%;
+    position: absolute;
+    top: 78px;
+    width: 605px
+}
+
+.ui-menu.ui-menu-dynamic {
+    width: 300px
+}
+
+#nombre_institucion {    
+    position: absolute;
+    top:47px;
+    text-align: center;
+/*    left: -100px;*/
+    width: 100%;
+}
+
+.dialogo_aviso{        
+    width: 900px; 
+    height: 380px;
+    overflow: no-display;
+}
+
+.ui-menu .ui-menu-parent .ui-menu-child {
+width: 320px;
+}
+
+.animated .ui-progressbar-value {
+        background-image: url("/images/ajaxloadingbar.gif.xhtml");
+    }

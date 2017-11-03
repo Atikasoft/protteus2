@@ -1,0 +1,724 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form  id="frmPrinc">
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                         header="#{msg['ec.gob.mrl.smp.administracion.puestos.titulo']}">
+                    <div id="divbtn" style="padding: 5px">
+                        <p:commandButton id="guardarBtn" 
+                                         action="#{distributivoBean.guardar()}" 
+                                         process="@this,distributivo_modalidadLaboral,distributivo_unidad"
+                                         update="tablaformularios"
+                                         rendered="#{distributivoBean.distributivoHelper.esNuevo}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+                        <p:commandButton id="regresarBtn"   
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{distributivoBean.irLista}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"/>
+                    </div>
+                    <p:separator/>
+                    <h:panelGrid  columns="4" id="tablaformularios">  
+                        <h:outputLabel id="distributivo_modalidadLaboralLbl" 
+                                       value="* #{msg['ec.gob.mrl.smp.administracion.modalidadLaboral.modalidadLaboral']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:selectOneMenu id="distributivo_modalidadLaboral" 
+                                         value="#{distributivoBean.distributivoHelper.distributivo.idModalidadLaboral}"
+                                         required="#{true}"  
+                                         style="width: 200px;"
+                                         disabled="#{!distributivoBean.distributivoHelper.esNuevo}"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         requiredMessage="El campo Modalidad Laboral es requerido">
+                            <f:selectItems id="itemsModalidad" 
+                                           value="#{distributivoBean.distributivoHelper.opcionesModalidadLaboral}"/>    
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel id="distributivo_UnidadOrganizacionalLbl" value="* #{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.unidadOrganizacional']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+
+                        <p:outputPanel id="distributivo_unidadLbl">
+                            <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+
+                                <p:inputTextarea id="distributivo_unidad"
+                                                 styleClass="textoNombre"
+                                                 style="width: 400px; text-align: left"
+                                                 disabled="true"  
+                                                 required="true"
+                                                 value="#{distributivoBean.distributivoHelper.distributivo.unidadOrganizacional.nombre}"
+                                                 requiredMessage="El campo Unidad Organizacional es requerido"/>   
+
+                                <p:commandButton icon="ui-icon-search" 
+                                                 immediate="true"
+                                                 disabled="#{!distributivoBean.distributivoHelper.esNuevo}"
+                                                 actionListener="#{distributivoBean.cargarArbolUnidadOrganizacional}"/>
+                                <p:commandButton icon="ui-icon-trash"  
+                                                 disabled="#{!distributivoBean.distributivoHelper.esNuevo}"
+                                                 immediate="true" 
+                                                 process="@this"
+                                                 update="distributivo_unidadLbl,distributivo_unidad">                                       
+                                    <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivo.unidadOrganizacional}"                                                             
+                                                                 value="#{null}" />
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                    </h:panelGrid>  
+                    <p:separator/>
+                    <!-- NUEVO PUESTO -->
+                    <p:fieldset id="panelNuevoReg"
+                                legend="AGREGAR / MODIFICAR PUESTO" 
+                                toggleable="true" 
+                                toggleSpeed="500"
+                                collapsed="#{distributivoBean.distributivoHelper.distributivoDetalle.id eq null}"
+                                rendered="#{!(distributivoBean.distributivoHelper.esNuevo)}">
+                        <h:panelGrid  columns="4" id="puestoId">  
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.unidadPresupuestaria']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:outputPanel id="unidadPresupuestariaPanel">
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="distributivo_unidad_presupuestaria"
+                                                     styleClass="textoNombre"
+                                                     style="width: 300px;"
+                                                     disabled="true"
+                                                     required="#{false}"
+                                                     value="#{distributivoBean.distributivoHelper.distributivoDetalle.unidadPresupuestaria.nombre}"
+                                                     requiredMessage="El campo unidad presupuestaria es requerido"/>  
+                                    <p:commandButton icon="ui-icon-search"      
+                                                     disabled="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                                     actionListener="#{distributivoBean.buscarUnidadesPresupuestarias}" 
+                                                     immediate="true"/>
+                                    <p:commandButton icon="ui-icon-trash" 
+                                                     immediate="true"
+                                                     disabled="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                                     update="unidadPresupuestariaPanel">                                       
+                                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivoDetalle.unidadPresupuestaria}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+
+
+
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.escalaOcupacional']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:outputPanel id="rmuEscalaLbl0">
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+
+
+                                    <p:inputTextarea id="distributivo_escalaOcupacional"
+                                                     styleClass="textoNombre"
+                                                     style="width: 300px;"
+                                                     disabled="true"
+                                                     required="#{false}"
+                                                     value="#{distributivoBean.distributivoHelper.distributivoDetalle.escalaOcupacional.nombreCompleto}"
+                                                     requiredMessage="El campo Escala Ocupacional es requerido"/>   
+                                    <p:commandButton icon="ui-icon-search"   
+                                                     disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                                     actionListener="#{distributivoBean.cargarArbolEscalaOcupacional()}" 
+                                                     immediate="true"/>
+                                    <p:commandButton icon="ui-icon-trash" 
+                                                     immediate="true"
+                                                     disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                                     update="rmuEscalaLbl0,rmuEscalaLbl,rmuEscalaLbl1,rmuEscalaLbl7,
+                                                     rmuEscalaLbl4,rmuEscalaLbl5,rmuEscalaLbl6">                                       
+                                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivoDetalle.escalaOcupacional}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivoDetalle.rmu}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivoDetalle.rmuEscala}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.puestos.certificacionPresupuestaria']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:inputText id="puesto_certificacion"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         required="false"
+                                         disabled="true"
+                                         requiredMessage="El campo Certificación Presupuestaria es requerido"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"      
+                                         value="#{distributivoBean.distributivoHelper.distributivoDetalle.certificacionPresupuestaria}"/> 
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.grupo']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:outputPanel id="grupoP">
+<!--                                <p:selectOneMenu id="distributivo_grupoP" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 100px;"
+                                                 value="#{distributivoBean.distributivoHelper.distributivoDetalle.unidadPresupuestaria.grupoPresupuestario}"
+                                                 required="#{true}"
+                                                 requiredMessage="El campo Grupo Presupuestario es requerido">
+                                    <f:selectItems value="#{distributivoBean.distributivoHelper.opcionesGrupoPresupuestario}"/>
+                                </p:selectOneMenu>  -->
+                                <p:inputText id="distributivo_grupoP"                                      
+                                             style="width: 200px"                                    
+                                             value="#{distributivoBean.distributivoHelper.distributivoDetalle.unidadPresupuestaria.grupoPresupuestario}"
+                                             disabled="true"/>
+                            </p:outputPanel>
+
+
+                            <p:outputPanel id="rmuEscalaLbl">
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu']}:" /> 
+                            </p:outputPanel>
+                            <p:outputPanel id="rmuEscalaLbl1">
+                                <p:inputText id="rmu"                                      
+                                             styleClass="textoNemonico"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                             value="#{distributivoBean.distributivoHelper.distributivoDetalle.rmu}"
+                                             required="true"
+                                             disabled="true"
+                                             requiredMessage="El campo rmu es requerido"/> 
+                            </p:outputPanel>
+                            <p:outputPanel id="rmuEscalaLbl4">
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu.escala']}:" /> 
+                            </p:outputPanel><p:outputPanel id="rmuEscalaLbl5">
+                                <p:inputText id="rmuEscala"                                      
+                                             styleClass="textoNemonico"
+                                             style="width: 200px"
+                                             maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"                                     
+                                             value="#{distributivoBean.distributivoHelper.distributivoDetalle.rmuEscala}"
+                                             required="true"
+                                             disabled="true"
+                                             requiredMessage="El campo rmu Escala es requerido"/> 
+                            </p:outputPanel>
+                            <p:outputPanel id="rmuEscalaLbl6">
+                                <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.grado']}:"
+                                                styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            </p:outputPanel>
+                            <p:outputPanel id="rmuEscalaLbl7">
+                                <p:inputText id="gradoEscala"
+                                             style="width: 200px"
+                                             maxlength="100"
+                                             disabled="true"
+                                             value="#{distributivoBean.distributivoHelper.distributivoDetalle.escalaOcupacional.grado}"
+                                             required="true"
+                                             requiredMessage="El campo grado es requerido"/> 
+                            </p:outputPanel>
+
+                            <p:outputLabel/>
+                            <p:outputLabel/>
+
+                            <h:outputLabel id="fechainicio" value="* #{msg['ec.gob.mrl.smp.administracion.puestos.fechaInicio']}:" />  
+
+                            <p:calendar id="valorFechaINicio"
+                                        style="width: 200px"
+                                        navigator="true" 
+                                        required="#{true}" 
+                                        showOn="button"
+                                        disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                        value="#{distributivoBean.distributivoHelper.fechainicio}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        requiredMessage="El campo valor fecha de inicio es requerido">
+                            </p:calendar>
+                            <h:outputLabel id="fechaFin" value=" #{msg['ec.gob.mrl.smp.administracion.puestos.fechaFin']}:" />  
+                            <p:outputPanel id="fechaFin_1"> 
+                                <p:calendar id="valorFechaFin"  
+                                            style="width: 200px"
+                                            navigator="true"
+                                            showOn="button"
+                                            disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                            value="#{distributivoBean.distributivoHelper.fechafin}"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>    
+                            </p:outputPanel>    
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.tramite.denomincacionPuesto']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:outputPanel id="denominacionP">
+                                <p:selectOneMenu id="distributivo_denominacionP" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 style="width: 300px;"
+                                                 value="#{distributivoBean.distributivoHelper.idDenominacion}"
+                                                 disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                                 required="true"
+                                                 requiredMessage="El campo Grupo Ocupacional es requerido">
+                                    <f:selectItems value="#{distributivoBean.distributivoHelper.opcionesDenominacionPuesto}"/>
+                                </p:selectOneMenu>  
+                            </p:outputPanel>
+
+
+
+
+                            <h:outputLabel  value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.ubicacionGeografica']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                            <p:outputPanel id="ubicacion0">
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                    <p:inputTextarea id="distributivo_ubicacionn"
+                                                     styleClass="textoNombre"
+                                                     style="width: 300px"
+                                                     disabled="true"
+                                                     required="#{false}"
+                                                     value="#{distributivoBean.distributivoHelper.distributivoDetalle.ubicacionGeografica.nombreCompleto}"
+                                                     requiredMessage="El campo Ubicación Geográfica es requerido"/>  
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                                     actionListener="#{distributivoBean.cargarArbolUbicacionGeografica}" 
+                                                     immediate="true"/>
+                                    <p:commandButton icon="ui-icon-trash" 
+                                                     disabled="#{!distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.puedeOcuparse}"
+                                                     immediate="true"
+                                                     update="ubicacion0">                                       
+                                        <f:setPropertyActionListener target="#{distributivoBean.distributivoHelper.distributivoDetalle.ubicacionGeografica}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+
+                            <h:outputLabel  value=" #{msg['ec.gob.mrl.smp.administracion.puestos.codigoPuesto']}:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right"
+                                            rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"/>
+                            <p:inputText id="puesto_codigPuesto"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         disabled="true"
+                                         rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                         value="#{distributivoBean.distributivoHelper.distributivoDetalle.codigoPuesto}"/> 
+
+
+                            <h:outputLabel  value=" Partida Individual:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right"
+                                            rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"/>
+                            <p:inputText id="puesto_partidaInd"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         disabled="true"
+                                         rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                         value="#{distributivoBean.distributivoHelper.distributivoDetalle.partidaIndividual}"/> 
+                            <h:outputLabel  value=" Estado:"
+                                            styleClass="labelFormulario" style="width: 100px; text-align: right"
+                                            rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"/>
+                            <p:inputText id="puesto_estado"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         disabled="true"
+                                         rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                         title="#{distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.nombre}"
+                                         value="#{distributivoBean.distributivoHelper.distributivoDetalle.estadoPuesto.nombre}"/> 
+
+                        </h:panelGrid> 
+                        <p:separator/>
+                        <p:outputPanel id="botones">
+                            <center>
+                                <p:commandButton id="botonAniadir" value="#{msg['ec.gob.mrl.smp.generico.boton.agregar']}"
+                                                 actionListener="#{distributivoBean.agregarDetalle}" 
+                                                 rendered="#{!distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                                 process="@this,distributivo_denominacionP,valorFechaINicio,valorFechaFin,puesto_certificacion,grupoP"
+                                                 update=":frmPrinc:tablaDetalle,:frmPrinc:panelNuevoReg, distributivo_denominacionP,valorFechaINicio,valorFechaFin,puesto_certificacion,grupoP" 
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.aniadir']}"/>
+                                <p:commandButton id="botonActualizar" value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                                 actionListener="#{distributivoBean.actualizarPuesto}" 
+                                                 rendered="#{distributivoBean.distributivoHelper.esEdicionPuesto}"
+                                                 process="@this,distributivo_denominacionP,valorFechaINicio,valorFechaFin,puesto_certificacion,grupoP"
+                                                 update=":frmPrinc:panelNuevoReg,tablaDetalle,:frmPrinc:botones" 
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"/>
+
+                                <p:commandButton id="botonCancealr" value="CANCELAR"
+                                                 actionListener="#{distributivoBean.iniciarDetalle}" 
+                                                 update="panelNuevoReg,grupoP" 
+                                                 immediate="true"
+                                                 title="Cancelar">
+                                </p:commandButton>
+                            </center>
+                        </p:outputPanel>    
+                    </p:fieldset>
+
+                    <!-- detalles: puestos -->
+                    <p:dataTable id="tablaDetalle"
+                                 value="#{distributivoBean.distributivoHelper.distributivosDetalles}"
+                                 var="distributivo" 
+                                 rowKey="#{rowIndex+1}"
+                                 paginator="#{true}"
+                                 rendered="#{!(distributivoBean.distributivoHelper.esNuevo)}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 rowIndexVar="rowIndex"
+                                 filterEvent="enter"
+                                 sortBy="#{distributivo.fechaInicio}"  
+                                 sortOrder="ascending" 
+                                 scrollable="true">      
+                        <f:facet name="header">Puestos Agregados</f:facet>
+                        <p:column id="opcC" headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width: 60px">
+                            <p:commandButton id="botonEdit" 
+                                             icon="ui-icon-pencil"     
+                                             process="@this"    
+                                             update=":frmPrinc" 
+                                             onclick="topScrollFunction();"
+                                             action="#{distributivoBean.editarDetalle}" 
+                                             title="Editar">
+                                <f:setPropertyActionListener id="parame" 
+                                                             value="#{distributivo}" 
+                                                             target="#{distributivoBean.distributivoHelper.distributivoDetalle}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonEliminarr" 
+                                             icon="ui-icon-trash"     
+                                             immediate="true"                                        
+                                             onclick="confirmEliminacion.show()"   
+                                             process="@this"                                       
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener id="parame" 
+                                                             value="#{distributivo}" 
+                                                             target="#{distributivoBean.distributivoHelper.distributivoDetalleEliminar}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                        <p:column id="dd" 
+                                  headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 30px">
+                            <h:outputText id="rowIndex" 
+                                          value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column id="col_codigoPuesto"  
+                                  headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.codigoPuesto']}" 
+                                  sortBy="#{distributivo.codigoPuesto}" 
+                                  style="width: 85px;text-align: center" 
+                                  filterBy="#{distributivo.codigoPuesto}" 
+                                  filterMatchMode="contains" 
+                                  filterStyle="width:90%">                               
+                            <h:outputText id="col_codigoPuesto_valor" 
+                                          value="#{distributivo.codigoPuesto}" />        
+                        </p:column> 
+                        <p:column id="c1" headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.escalaOcupacional']}" 
+                                  sortBy="#{distributivo.escalaOcupacional.nombre}" 
+                                  style="width: 400px"
+                                  filterBy="#{distributivo.escalaOcupacional.nombre}" 
+                                  filterStyle="width:90%"
+                                  filterMatchMode="contains">                               
+                            <h:outputText  id="c1Nombre"  
+                                           value="#{distributivo.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre}  / #{distributivo.escalaOcupacional.nivelOcupacional.nombre} / #{distributivo.escalaOcupacional.nombre}"/>                                
+                        </p:column>  
+                        <p:column headerText="Grado" 
+                                  sortBy="#{distributivo.escalaOcupacional.grado}" 
+                                  style="width: 100px"
+                                  filterBy="#{distributivo.escalaOcupacional.grado}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width:90%">                               
+                            <h:outputText  id="grado"  
+                                           value="#{distributivo.escalaOcupacional.grado}"/>                                
+                        </p:column> 
+                        <p:column headerText="Partida Ind." 
+                                  sortBy="#{distributivo.partidaIndividual}" 
+                                  style="width: 150px;text-align: center"
+                                  filterBy="#{distributivo.partidaIndividual}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width:90%">                               
+                            <h:outputText   value="#{distributivo.partidaIndividual}"/>                                
+                        </p:column>                          
+                        <p:column id="cc0"  
+                                  headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.rmu']}" 
+                                  sortBy="#{distributivo.escalaOcupacional.rmu}" 
+                                  style="width: 60px;text-align: right"
+                                  filterBy="#{distributivo.escalaOcupacional.rmu}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width:90%">                               
+                            <h:outputText  value="#{distributivo.escalaOcupacional.rmu}"/>                                
+                        </p:column>
+                        <p:column headerText="Unidad Organizacional" 
+                                  sortBy="#{distributivo.distributivo.unidadOrganizacional.nombre }" 
+                                  style="width: 200px"
+                                  filterBy="#{distributivo.distributivo.unidadOrganizacional.nombre}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width:90%">                               
+                            <h:outputText  id="unidadOrganizacionalId"  
+                                           value="#{distributivo.distributivo.unidadOrganizacional.nombre}"/>      
+                        </p:column>
+
+                        <p:column id="grupoOc"  
+                                  headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.denominacionPuesto']}" 
+                                  sortBy="#{distributivo.denominacionPuesto.nombre }" 
+                                  style="width: 240px"
+                                  filterBy="#{distributivo.denominacionPuesto.nombre}" 
+                                  filterMatchMode="contains"
+                                  filterStyle="width:90%">                               
+                            <h:outputText  id="denominacion321"  
+                                           value="#{distributivo.denominacionPuesto.nombre}"/>      
+                        </p:column>
+                        <p:column  headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.unidadPresupuestaria']}" 
+                                   sortBy="#{distributivo.unidadPresupuestaria.nombreCompleto}" 
+                                   style="width: 240px"
+                                   filterBy="#{distributivo.unidadPresupuestaria.nombreCompleto}" 
+                                   filterStyle="width:90%"
+                                   filterMatchMode="contains">                               
+                            <h:outputText value="#{distributivo.unidadPresupuestaria.nombreCompleto}"/>                                
+                        </p:column>
+                        <p:column id="col_certificacionPresupuestaria"  
+                                  headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.certificacionPresupuestaria']}" 
+                                  sortBy="#{distributivo.certificacionPresupuestaria}" 
+                                  style="width: 78px"
+                                  filterBy="#{distributivo.certificacionPresupuestaria}" 
+                                  filterMatchMode="contains" 
+                                  filterStyle="width:90%">                               
+                            <h:outputText  id="val_certificacionPresupuestaria"  
+                                           value="#{distributivo.certificacionPresupuestaria}"/>                                
+                        </p:column>
+                        <p:column id="col_grpPresupuestario"  
+                                  headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.grupo']}" 
+                                  sortBy="#{distributivo.unidadPresupuestaria.grupoPresupuestario}" 
+                                  style="width: 80px;text-align: center"
+                                  filterBy="#{distributivo.unidadPresupuestaria.grupoPresupuestario}" 
+                                  filterMatchMode="contains" 
+                                  filterStyle="width:90%">                               
+                            <h:outputText  id="val_grupoPresupuestario"  
+                                           value="#{distributivo.unidadPresupuestaria.grupoPresupuestario}"/>                                
+                        </p:column>
+
+                        <p:column id="c0"  headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaInicio']}" 
+                                  sortBy="#{distributivo.fechaInicio}" style="width: 80px">                               
+                            <h:outputText id="finicio"  value="#{distributivo.fechaInicio}">                                
+                                <f:convertDateTime id="va"  pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column id="ca"  headerText="#{msg['ec.gob.mrl.smp.administracion.puestos.fechaFin']}" 
+                                  style="width: 80px">                               
+                            <h:outputText id="puestodenomin" value="#{distributivo.fechaFin}" >
+                                <f:convertDateTime id="va2"  pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>
+                        </p:column> 
+
+                        <p:column id="cb"  
+                                  headerText="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.ubicacionGeografica']}" 
+                                  sortBy="#{distributivo.ubicacionGeografica.nombreCompleto}" 
+                                  style="width: 220px"
+                                  filterBy="#{distributivo.ubicacionGeografica.nombreCompleto}" 
+                                  filterStyle="width:90%"
+                                  filterMatchMode="contains">                               
+                            <h:outputText id="ubicaNombre" value="#{distributivo.ubicacionGeografica.nombreCompleto}" />        
+                        </p:column> 
+                        <p:column id="cEstado"  
+                                  headerText="#{msg['ec.gob.mrl.smp.administracion.estadoPuesto.estadoPuesto']}" 
+                                  sortBy="#{distributivo.estadoPuesto.nombre}" 
+                                  style="width: 90px">                               
+                            <h:outputText id="estadoNombre" value="#{distributivo.estadoPuesto.nombre}" /> 
+                        </p:column> 
+                        <p:column headerText="Identificación" 
+                                  filterBy="#{distributivo.servidor.numeroIdentificacion}" 
+                                  filterStyle="width:90%"
+                                  filterMatchMode="contains"
+                                  style="width: 80px">                               
+                            <h:outputText value="#{distributivo.servidor.numeroIdentificacion}" /> 
+                        </p:column>   
+                        <p:column headerText="Apellidos y Nombres" 
+                                  filterBy="#{distributivo.servidor.apellidosNombres}" 
+                                  filterStyle="width:90%"
+                                  filterMatchMode="contains"
+                                  style="width: 300px">                               
+                            <h:outputText  value="#{distributivo.servidor.apellidosNombres}" /> 
+                        </p:column>    
+                        <f:facet name="footer">
+                            TOTAL DE PUESTOS : #{distributivoBean.distributivoHelper.distributivosDetalles.size()} 
+                        </f:facet>
+                    </p:dataTable>
+
+                </p:panel> 
+                <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                 header="Eliminación" 
+                                 severity="alert" 
+                                 widgetVar="confirmEliminacion">  
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         process="@this,tablaDetalle"
+                                         update="tablaDetalle" 
+                                         actionListener="#{distributivoBean.eliminarDetalle}"/>  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </p:confirmDialog> 
+            </h:form>
+
+
+            <p:dialog modal="true"     
+                      resizable="false"   
+                      width="800"  height="350"
+                      draggable="true"   
+                      header="#{msg['ec.gob.mrl.smp.procesos.distributivo.unidadOrganizacional.nombre']}" 
+                      widgetVar="dlgUnidadOrganizacional"
+                      closable="true">
+                <h:form id="frmUnidad">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:treeTable id="tablaUbicacion" 
+                                     value="#{distributivoBean.distributivoHelper.rootUnidadOrganizacional}"
+                                     var="reg" 
+                                     style="overflow: auto"                                              
+                                     selection="#{distributivoBean.distributivoHelper.unidadSeleccionada}" 
+                                     selectionMode="single">
+                            <p:ajax event="select" 
+                                    listener="#{distributivoBean.onNodeSelectUnidad}" 
+                                    update=":frmPrinc:distributivo_unidadLbl"/> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{reg.nombre}"
+                                      filterBy="#{reg.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.nombre}" 
+                                              title="#{reg.nombre}"  />
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nemonico']}"
+                                      style="width: 100px; font-size: 8pt"
+                                      sortBy="#{reg.codigo}"
+                                      filterBy="#{reg.codigo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{reg.codigo}" title="#{msg['message.para.seleccion']}" />
+                            </p:column>                    
+                        </p:treeTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnSeleccionar" 
+                                         value="SELECCIONAR"
+                                         action="#{distributivoBean.buscar()}"
+                                         onclick="dlgUnidadOrganizacional.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog modal="true" resizable="false" width="800"   height="350"
+                      draggable="true"  header="#{msg['ec.gob.mrl.smp.administracion.tipoMovimiento.ubicacionGeografica']}"
+                      widgetVar="dlgUbicacionGeografica"
+                      closable="true">
+                <h:form id="frmUbicacion">
+                    <center>
+                        <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                            <p:treeTable id="tablaUbicacion"
+                                         value="#{distributivoBean.distributivoHelper.rootUbicacionGeografica}"
+                                         var="reg"
+                                         style="overflow: auto"                                                                      
+                                         selection="#{distributivoBean.distributivoHelper.ubicacionSeleccionada}" 
+                                         selectionMode="single">
+                                <p:ajax event="select" listener="#{distributivoBean.onNodeSelectUbicacion}" 
+                                        update=":frmPrinc:ubicacion0"/> 
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.titulo']}"
+                                          style="width: 400px; font-size: 8pt"
+                                          sortBy="#{reg.nombre}"
+                                          filterBy="#{reg.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{reg.nombre}"  title="#{msg['message.para.seleccion']}" />
+                                </p:column>
+                            </p:treeTable>
+                        </p:scrollPanel>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgUbicacionGeografica.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog modal="true"    resizable="false"  width="800"   height="350"
+                      draggable="true" header="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']} - #{msg['ec.gob.mrl.smp.procesos.distributivo.escalaOcupacional.nombre']}"
+                      widgetVar="dlgRegimenLaboral" closable="true">
+                <h:form id="frmRegimen">
+                    <center>
+                        <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                                <p:treeTable id="treetable" value="#{distributivoBean.distributivoHelper.rootRegimen}" var="item" 
+                                             selectionMode="single" selection="#{distributivoBean.distributivoHelper.escalaSeleccionada}">  
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.procesos.distributivo.regimenLaboral.nombre']}" 
+                                              sortBy="#{item.nombre}" style=" overflow: auto; width: 400px"
+                                              filterBy="#{item.nombre}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.nombre}" title="#{msg['message.para.seleccion']}"/>
+                                    </p:column>  
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.codigo']}" 
+                                              sortBy="#{item.codigo}" style="width: 50px"
+                                              filterBy="#{item.codigo}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.codigo}" style=" padding-left: 0; width: 71px" title="#{msg['message.para.seleccion']}"/>
+                                    </p:column> 
+                                    <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.regimenLaboral.grado']}" 
+                                              sortBy="#{item.grado}" style="width: 50px"
+                                              filterBy="#{item.grado}" 
+                                              filterMatchMode="contains">
+                                        <h:outputText value="#{item.grado}" style=" padding-left: 0; width: 71px" title="#{msg['message.para.seleccion']}"/>
+                                    </p:column>  
+                                    <p:ajax event="select" listener="#{distributivoBean.onNodeSelectRegimen}" 
+                                            update=":frmPrinc:rmuEscalaLbl0,:frmPrinc:rmuEscalaLbl,:frmPrinc:rmuEscalaLbl1,:frmPrinc:rmuEscalaLbl7,
+                                            :frmPrinc:rmuEscalaLbl4,:frmPrinc:rmuEscalaLbl5,:frmPrinc:rmuEscalaLbl6"/>  
+                                </p:treeTable>
+                            </p:panel>    
+                        </p:scrollPanel>
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgRegimenLaboral.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog modal="true"    resizable="false"  width="950"   height="350"
+                      draggable="true" header="Unidades Presupuestarias"
+                      id="unidadPresupuestariaModal"
+                      widgetVar="dlgUnidadPresupuestaria" closable="false">
+                <h:form id="frmPrestacional">
+                    <center>
+                        <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                            <p:dataTable id="tablaunidadP"
+                                         value="#{distributivoBean.distributivoHelper.unidadesPresupuestarias}"
+                                         var="unidad"
+                                         paginator="#{true}"
+                                         emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                         rowKey="#{unidad.id}"  
+                                         rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                         style="overflow: auto" 
+                                         selection="#{distributivoBean.distributivoHelper.unidadPresupuestariaSeleccionada}" 
+                                         selectionMode="single">
+                                <p:ajax event="rowSelect" listener="#{distributivoBean.seleccionarUnidadPresupuestaria()}" update=":frmPrestacional" />
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadPresupuestaria.sector']}"
+                                          style="width: 50%;font-size: 8pt"
+                                          sortBy="#{unidad.sector.nombre}"
+                                          filterBy="#{unidad.sector.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{unidad.sector.nombre}" title="#{unidad.sector.nombre}" />
+                                </p:column>                           
+
+
+                                <p:column headerText="Unidad Presupuestaria"
+                                          style="width: 50%;font-size: 8pt"
+                                          sortBy="#{unidad.nombre}"
+                                          filterBy="#{unidad.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{unidad.nombre}" 
+                                                  title="#{unidad.nombre}"  />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>    
+                        <p:commandButton id="btnCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgUnidadPresupuestaria.hide()"
+                                         update=":frmPrinc:puestoId"
+                                         style="margin: auto" >
+                        </p:commandButton>
+
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <script>
+                function topScrollFunction() {
+                    document.body.scrollTop = 0; // For Chrome, Safari and Opera
+                    document.documentElement.scrollTop = 0; // For IE and Firefox
+                }
+            </script>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

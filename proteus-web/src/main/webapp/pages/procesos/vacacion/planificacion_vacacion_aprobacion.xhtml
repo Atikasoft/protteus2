@@ -1,0 +1,273 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmPlanificacionVacacion">                
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}"
+                         header="#{msg['ec.gob.mrl.smp.administracion.vacacion.planificacion.aprobacion.titulo']}">  
+                    <br/>
+                    <div>
+                        <p:outputPanel id="panelBotonGuardar">
+                            <p:commandButton id="aprobarBtn" 
+                                             action="#{planificacionVacacionAprobacionBean.validarCamposRequeridos(true)}"
+                                             disabled="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.guardado}"
+                                             rendered="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.estado=='E'}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.aprobado']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.aprobado']}"/>
+
+                            <p:commandButton id="noAprobrBtn" 
+                                             action="#{planificacionVacacionAprobacionBean.validarCamposRequeridos(false)}"
+                                             rendered="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.estado=='E'}"
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.noAprobado']}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.noAprobado']}"/>
+
+                        </p:outputPanel>
+
+                        <p:commandButton id="regresarBtn" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                         action="#{planificacionVacacionAprobacionBean.irListaAprobacion}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         title="#{msg['ec.gob.mrl.smp.administracion.vacacion.verLista']}"/>
+
+                    </div>
+                    <p:separator/>
+
+                    <!-- Informacion del servidor-->
+                    <p:panel id="panelDatosServidor" header="#{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.informacionServidor']}">
+                        <h:panelGrid columns="4" id="tablaformulario">
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.tipoDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="planificacionVacacion_servidorTipoIdentificacion"
+                                         styleClass="textoNemonico"
+                                         disabled="#{true}"
+                                         value="#{planificacionVacacionAprobacionBean.obtenerDescripcionTipoDocumento(planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.
+                                                  planificacionVacacionVO.planificacionVacacion.servidor.tipoIdentificacion) }"
+                                         style="width: 200px"/>
+
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.numeroDocumento']}:"
+                                           styleClass="labelFormulario"/>
+                            <p:inputText id="planificacionVacacion_servidorNumeroIdentificacionn"
+                                         styleClass="textoNemonico"
+                                         value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.servidor.numeroIdentificacion}"
+                                         disabled="#{true}" style="width: 200px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.puestos.fechaIngreso']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="fechaIngreso"
+                                         styleClass="textoNemonico"
+                                         rendered="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.distributivoDetalle!=null}"
+                                         value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.fechaIngreso}"
+                                         disabled="#{true}" style="width: 200px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </p:inputText>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.apellidosNombres']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_servidorNombres"
+                                         styleClass="textoNemonico"
+                                         value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.servidor.apellidosNombres}"
+                                         disabled="#{true}" style="width: 500px"/>
+
+
+
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacion.ejercicioFiscal']}: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText value=" #{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.
+                                                     planificacionVacacion.institucionEjercicioFiscal.ejercicioFiscal.nombre}"
+                                         disabled="true"
+                                         styleClass="labelFormulario"  style="width: 200px"/>
+                            <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla3.datosPuesto.etiqueta.regimenLaboral']}:"
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:inputText id="planificacionVacacion_regimen"
+                                         styleClass="textoNemonico"
+                                         rendered="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.distributivoDetalle!=null}"
+                                         value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.distributivoDetalle.escalaOcupacional.nombre}"
+                                         disabled="#{true}" style="width: 500px"/>
+                            <h:outputLabel value=" #{msg['message.distributivo.SinConfiguracionRegimen']} " style="color: #D20005 "
+                                           styleClass="labelFormulario" rendered="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.distributivoDetalle == null}"/>
+
+                            <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacion.saldo']}: "
+                                           styleClass="labelFormulario" style="text-align: right"/>
+                            <p:outputPanel>
+                                <h:outputLabel value=" #{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.cadenaSaldo}"
+                                               styleClass="labelFormulario" style="text-align: right"/>
+                                <p:commandButton id="botonVerDetalles" 
+                                                 icon="ui-icon-comment"   
+                                                 immediate="true"
+                                                 onclick="dlgDetalles.show();"
+                                                 title="#{msg['ec.gob.mrl.smp.generico.boton.verDetalle']}"/>
+                            </p:outputPanel>
+                        </h:panelGrid>
+
+                    </p:panel>
+                    <br/>  <p:separator/>
+                    <!-- Informacion de la aprobacion-->
+                    <h:panelGrid id="detallesAprobacion" columns="4">
+
+                        <!--<h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']} Validación:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="observacion_validacion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px; height: 30px"
+                                         maxlength="400" disabled="true"
+                                         value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.observacionValidacion}" />   
+                        -->
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']} Aprobación"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:outputPanel id="obsr">
+                            <p:inputTextarea id="observacion_aprobacion"
+                                             styleClass="textoDescripcion"
+                                             style="width: 200px; height: 30px"
+                                             maxlength="400" required="true"
+                                             value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.planificacionVacacion.observacionAprobacion}"
+                                             requiredMessage="El campo observación de Aprobación es requerido"/>   
+                        </p:outputPanel>
+                    </h:panelGrid>
+
+                    <!-- detalles -->
+                    <p:dataTable id="tablaplanificacionVacacionDet"
+                                 value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.listaPlanificacionVacacionDetalles}"
+                                 var="det"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 sortBy="#{det.fechaInicio}"  sortOrder="descending"
+                                 style="overflow: auto">                            
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 50px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaInicio']}" 
+                                  sortBy="#{det.fechaInicio}" style="width: 80px" >                               
+                            <h:outputText value="#{det.fechaInicio}" >
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaFin']}" 
+                                  sortBy="#{det.fechaFin}" style="width: 80px" >                               
+                            <h:outputText value="#{det.fechaFin}" >
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:outputText>                                
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.numDias']}" 
+                                  sortBy="#{det.numeroDias}" style="width: 80px; text-align:right" >                               
+                            <h:outputText value="#{det.numeroDias}"/>   
+                        </p:column> 
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.estado']}" style="text-align: center; width: 100px">                                
+                            <h:outputText value="#{planificacionVacacionBean.obtenerDescripcionEstadoPlanifVacacionDetalle((det.estado))}"/>                      
+                        </p:column>
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="3" footerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.planificacio.totalDias']}" style="text-align:right"/>  
+                                <p:column footerText="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.totalDias}" style="text-align:right"/>  
+                                <p:column />
+                            </p:row>  
+                            <p:row>  
+                                <p:column colspan="3" footerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.planificacio.totalDias.faltantes']}" style="text-align:right"/>  
+                                <p:column footerText="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.totalSaldoVacacion - planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.planificacionVacacionVO.totalDias}" style="text-align:right"/>  
+                                <p:column />
+                            </p:row>  
+                        </p:columnGroup>  
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <!-- vacaciones por periodo -->
+            <p:dialog modal="true"     resizable="false"   width="800"  height="350"
+                      draggable="true"   
+                      header="Detalles de Saldo de Vacaciones" 
+                      widgetVar="dlgDetalles"
+                      closable="true">
+                <h:form id="frmDetalles">
+                    <p:scrollPanel style="width:100%;height:320px;"  mode="native">  
+                        <p:dataTable id="tablaregP"
+                                     value="#{planificacionVacacionAprobacionBean.planificacionVacacionAprobacionHelper.listaSaldoVacaciones}"
+                                     var="vacacion"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     rowKey="#{reg.id}"  
+                                     rowIndexVar="rowIndex"
+                                     filterEvent="enter"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     style="overflow: auto" >
+
+                            <f:facet name="header">Detalle de Saldo de Vacaciones</f:facet>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaFin']}" 
+                                      sortBy="#{vacacion.fechaInicioPeriodo}" style="width: 80px; text-align: center" >                               
+                                <h:outputText value="#{vacacion.fechaInicioPeriodo}">                                
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>      
+                            </p:column>     
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.fechaInicio']}" 
+                                      sortBy="#{vacacion.fechaFinPeriodo}" style="width: 80px; text-align: center" >                               
+                                <h:outputText value="#{vacacion.fechaFinPeriodo}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>      
+                            </p:column> 
+                            <p:column headerText="Saldo en Días" 
+                                      sortBy="#{vacacion.saldoDias}" style="width: 80px; text-align: right" >                               
+                                <h:outputText value="#{vacacion.saldoDias}"/>                                
+                            </p:column> 
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.vacacion.observacion']}" 
+                                      sortBy="#{vacacion.observacion}" style="width: 350px" >                               
+                                <h:outputText value="#{vacacion.observacion}"/>                                
+                            </p:column> 
+                            <p:column headerText="Efectivas"  style="width: 40px; text-align: center" > 
+                                <p:selectBooleanCheckbox value="#{!vacacion.enAcreditacion}" disabled="true"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:scrollPanel>
+                    <center>
+                        <p:commandButton id="btnCerrar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                         onclick="dlgDetalles.hide()" 
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- cONFIRMACIÓN de planificacion -->
+            <p:confirmDialog id="popOpAprobar" message="¿Está seguro de Aprobar la Planificación Anual de Vacaciones?"
+                             header="APROBACIÓN DE PLANIFICACIÓN ANUAL DE VACACIONES" 
+                             severity="alert" 
+                             widgetVar="confirmAprobar">  
+                <h:form id="repfrm">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpeReg" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update=":frmPlanificacionVacacion"
+                                         action="#{planificacionVacacionAprobacionBean.aprobar}"
+                                         oncomplete="confirmAprobar.hide()"/>  
+                        <p:commandButton id="elimReprog" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmAprobar.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+            <!-- cONFIRMACIÓN de planificacion -->
+            <p:confirmDialog id="popOpNegar" message="¿Está seguro de NO Aprobar la Planificación Anual de Vacaciones?"
+                             header="APROBACIÓN DE PLANIFICACIÓN ANUAL DE VACACIONES NEGADA" 
+                             severity="alert" 
+                             widgetVar="confirmNegar">  
+                <h:form id="repfrmNeg">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpeReg1" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin: auto"
+                                         update=":frmPlanificacionVacacion"
+                                         action="#{planificacionVacacionAprobacionBean.noAprobar}"
+                                         oncomplete="confirmNegar.hide()"/>  
+                        <p:commandButton id="elimReprog1" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmNegar.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+        </ui:define>
+    </ui:composition>
+</html>

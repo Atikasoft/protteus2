@@ -1,0 +1,196 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.titulo']}"
+                                     controlador="#{vacacionParametroBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="vacacionParametro_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         disabled="#{!vacacionParametroBean.vacacionParametroHelper.esNuevo}"
+                                         value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.nombre}"
+                                         required="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.regimenLaboral.regimenLaboral']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+
+                        <p:selectOneMenu id= "regimenLaboral"
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.idRegimenLaboral}"
+                                         required="#{true}" 
+                                         disabled="#{!vacacionParametroBean.vacacionParametroHelper.esNuevo}"
+                                         requiredMessage="El campo Regimen Laboral es requerido">
+                            <f:selectItems value="#{vacacionParametroBean.vacacionParametroHelper.opcionRegimenLaboral}"/>    
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.numeroDias']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right" />
+                        <p:inputText id="numeroDias"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.numeroDias}"
+                                     required="true"
+                                     requiredMessage="El campo número de días es requerido"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maximoAcumulacion']}:"
+                                       styleClass="labelFormulario" />
+                        <p:outputPanel id="panelAcumulacionVacaciones"> 
+                            <h:panelGrid columns="3">
+                                <p:inputText id="maximaAcumulacion"                                      
+                                             styleClass="campoNumerico"
+                                             style="width: 70px"
+                                             maxlength="2"                                     
+                                             value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.maximoAcumulacion}"
+                                             required="true"
+                                             requiredMessage="El campo número de días es requerido"/>
+                                <p:selectOneMenu id="tipoAcumulacion" 
+                                                 filter="true" 
+                                                 filterMatchMode="contains"
+                                                 value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.tipoAcumulacion}"
+                                                 required="#{true}"
+                                                 requiredMessage="El campo Tipo Acumulación es requerido">
+                                    <f:selectItems value="#{vacacionParametroBean.vacacionParametroHelper.opcionTipoAcumulacion}"/> 
+                                    <p:ajax event="change" update="panelPeriodos"/>
+                                </p:selectOneMenu> 
+                                <p:outputPanel id="panelPeriodos">
+                                    <p:inputText id="maximaAcumulacion_dias"                                      
+                                                 styleClass="campoNumerico"
+                                                 style="width: 50px"
+                                                 maxlength="2"        
+                                                 title="Máximo número de días a acumular en los periodos"
+                                                 value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.diasEnPeriodo}"
+                                                 required="false"
+                                                 rendered="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.tipoAcumulacion=='P'}"
+                                                 requiredMessage="El campo Máximo número de días a acumular en los periodos es requerido"/>
+                                    <h:outputLabel value="Días" styleClass="labelFormulario" rendered="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.tipoAcumulacion=='P'}"/>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="* Máxima Acumulación Proporcionales:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="maximaAcumulacionProporcional"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="2"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.maximoAcumulacionProporcionales}"
+                                     required="true"
+                                     requiredMessage="El campo es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maximosDiasTomarPermisos']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="maximosDiasTomarPermisos"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.maximosDiasTomarPermisos}"
+                                     required="true"
+                                     requiredMessage="El campo máximo días para permisos es requerido"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.valorIncremento']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="valorIncremento"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.valorIncremento}"
+                                     required="true"
+                                     requiredMessage="El campo incremento es requerido"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.periodoInicio']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="periodoInicio"     title="Número de Años que inicia el incremento de Días Adicionales."                                 
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.periodoInicio}"
+                                     required="true"
+                                     requiredMessage="El campo periodo inicio es requerido"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.periodoFin']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="periodoFin"        title="Número de Años que finaliza el incremento de Días Adicionales."                              
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.periodoFin}"
+                                     required="true"
+                                     requiredMessage="El campo periodo fin es requerido"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.mesesDerechoVacacion']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="mesesDerechoVacacion"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos_1']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.minimoMesesDerechoVacacion}"
+                                     required="true"
+                                     requiredMessage="El campo meses Derecho Vacación es requerido"/>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.minimoDiasTomarVacacion']}:"
+                                       styleClass="labelFormulario" />
+                        <p:inputText id="minimoDiasTomarVacacion"                                      
+                                     styleClass="campoNumerico"
+                                     style="width: 70px"
+                                     maxlength="#{msg['ec.gob.mrl.smp.administracion.vacacionParametro.maxTamanioCampos']}"                                     
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.minimoDiasTomarVacacion}"
+                                     required="true"
+                                     requiredMessage="El campo mínimo Dias Tomar Vacación es requerido"/>
+
+                        <h:outputLabel value=" #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.justificacion']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectBooleanCheckbox value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.justificacion}" /> 
+
+                        <h:outputLabel value="  #{msg['ec.gob.mrl.smp.administracion.vacacionParametro.imputarFinesSemana']}:"
+                                       styleClass="labelFormulario" />
+                        <p:selectBooleanCheckbox value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.imputarFinSemanaVacacion}" /> 
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.vigente}" 
+                                                 disabled="true"
+                                                 rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>      
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>
+                        <p:inputText id="vacacionParametro_usuario_creo"
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"
+                                     style="width: 200px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>
+                        <p:inputText id="vacacionParametro_fecha_creo"
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.fechaCreacion}"
+                                     rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                            
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>
+                        <p:inputText id="vacacionParametro_usuario_actua"
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.usuarioActualizacion}"
+                                     rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                        </p:inputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"/>
+                        <p:inputText id="vacacionParametro_fecha_actua"
+                                     value="#{vacacionParametroBean.vacacionParametroHelper.vacacionParametro.fechaActualizacion}"
+                                     rendered="#{!(vacacionParametroBean.vacacionParametroHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+                    </h:panelGrid>                                       
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

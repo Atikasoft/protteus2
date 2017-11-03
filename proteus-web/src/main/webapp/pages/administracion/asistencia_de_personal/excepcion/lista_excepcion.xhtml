@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">            
+            <h:form>
+                <smp:catalogo_lista controlador="#{excepcionAsistenciaPersonalBean}" 
+                                    titulo="ADMINISTRACIÓN DE EXCEPCIONES DE ASISTENCIA DE PERSONAL"/>
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tablaExcepciones" 
+                                 value="#{excepcionAsistenciaPersonalBean.excepcionAsistenciaPersonalHelper.listaExcepciones}"
+                                 var="excepcion" 
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"
+                                  style="text-align: center; width: 60px">
+                            <p:commandButton id="botonEliminar" 
+                                             icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"                                          
+                                             title="#{msg['message.btn.eliminar']}">
+                                <f:setPropertyActionListener value="#{excepcion}" 
+                                                             target="#{excepcionAsistenciaPersonalBean.excepcionAsistenciaPersonalHelper.excepcion}"/>
+                            </p:commandButton>
+                        </p:column>  
+                        
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"
+                                  style="text-align: center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mq.prometeo.administracion.tipoIdentificacion']}" 
+                                  sortBy="#{excepcionAsistenciaPersonalBean.obtenerTipoIdentificacionDadoCodigo(excepcion.servidor.tipoIdentificacion)}"
+                                  filterBy="#{excepcionAsistenciaPersonalBean.obtenerTipoIdentificacionDadoCodigo(excepcion.servidor.tipoIdentificacion)}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%"
+                                  style="text-align: center; width: 45px">
+                            <h:outputText value="#{excepcionAsistenciaPersonalBean.obtenerTipoIdentificacionDadoCodigo(excepcion.servidor.tipoIdentificacion)}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mq.prometeo.administracion.numeroIdentificacion']}" 
+                                  sortBy="#{excepcion.servidor.numeroIdentificacion}"
+                                  filterBy="#{excepcion.servidor.numeroIdentificacion}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%"
+                                  style="width: 30px">
+                            <h:outputText value="#{excepcion.servidor.numeroIdentificacion}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msg['ec.gob.mq.prometeo.administracion.apellidosNombres']}" 
+                                  sortBy="#{excepcion.servidor.apellidosNombres}"
+                                  filterBy="#{excepcion.servidor.apellidosNombres}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{excepcion.servidor.apellidosNombres}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Justificación" 
+                                  sortBy="#{excepcion.justificacion}"
+                                  filterBy="#{excepcion.justificacion}"
+                                  filterMatchMode="contains"
+                                  filterStyle="width: 90%">
+                            <h:outputText value="#{excepcion.justificacion}"/>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                     header="Eliminación" 
+                                     severity="alert" 
+                                     widgetVar="confirmEliminacion">
+                        <div style="text-align: center">
+                            <p:commandButton id="acpe" 
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                             style="margin: auto"
+                                             update="tablaExcepciones"
+                                             actionListener="#{excepcionAsistenciaPersonalBean.borrar}"
+                                             oncomplete="confirmEliminacion.hide()"  />  
+                            <p:commandButton id="elim" 
+                                             value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                             onclick="confirmEliminacion.hide()" 
+                                             type="button" 
+                                             style="margin: auto"/>   
+                        </div>
+                    </p:confirmDialog> 
+                </p:panel>
+            </h:form>             
+        </ui:define>
+    </ui:composition>
+</html>

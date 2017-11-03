@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelBotones" header="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.titulo']}">
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         action="#{tipoMovimientoRequisitoBean.guardar}"
+                                         update="panelBotones, panelCabezera, panelTablaRequisitos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"
+                                         action="#{tipoMovimientoRequisitoBean.buscar}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{tipoMovimientoRequisitoBean.generarReporte}"/>
+                    </h:panelGrid>
+                </p:panel> 
+                <p:panel id="panelCabezera">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.grupo']}:"
+                                       style="text-align: left"/>
+                        <p:inputText id="tipoMovimientoRequisito_grupo"                                                
+                                     value="#{tipoMovimientoRequisitoBean.tipoMovimientoRequisitoHelper.tipoMovimiento.clase.grupo.nombre}"
+                                     required="true"
+                                     disabled="true"
+                                     style="width:200px"
+                                     requiredMessage="El campo grupo es requerido"/>                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.clase']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoRequisito_clase"                                                
+                                         value="#{tipoMovimientoRequisitoBean.tipoMovimientoRequisitoHelper.tipoMovimiento.clase.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px;"
+                                         requiredMessage="El campo clase es requerido"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.tipoMovimiento']}:"
+                                       style="text-align: left"/>
+                        <p:inputTextarea id="tipoMovimientoRequisito_tipoMovimiento"                                                
+                                         value="#{tipoMovimientoRequisitoBean.tipoMovimientoRequisitoHelper.tipoMovimiento.nombre}"
+                                         required="true"
+                                         disabled="true"
+                                         style="width: 300px"
+                                         requiredMessage="El campo tipo de movimiento es requerido"/>
+
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="panelTablaRequisitos">
+                    <p:dataTable id="tablaRequisitos"
+                                 value="#{tipoMovimientoRequisitoBean.tipoMovimientoRequisitoHelper.listaTipoMovimientoRequisitoVO}"
+                                 var="tipoMovimientoRequisito"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}"  style="text-align: center;">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.validar']}" 
+                                  style="text-align: center;"
+                                  sortBy="#{tipoMovimientoRequisito.seleccionar}">
+                            <p:selectBooleanCheckbox value="#{tipoMovimientoRequisito.seleccionar}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.requerimientos']}"
+                                  filterBy="#{tipoMovimientoRequisito.requisito.nombre}"
+                                  filterMatchMode="contains" 
+                                  filterStyle="width: 90%" 
+                                  sortBy="#{tipoMovimientoRequisito.requisito.nombre}">
+                            <h:outputText value="#{tipoMovimientoRequisito.requisito.nombre}"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.obligatorio']}" style="text-align: center;">
+                            <p:selectBooleanButton value="#{tipoMovimientoRequisito.obligatorio}" 
+                                                   onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                   offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"/>
+                        </p:column>
+                        <!--
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.presentaServidorPublico']}" style="text-align: center;">
+                            <p:selectBooleanButton value="#{tipoMovimientoRequisito.presentaServidorPublico}" 
+                                                   onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                   offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"
+                                                   id="botonPresentaServidorPublico"/>                             
+                        </p:column>-->
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.subirArchivoObligatorio']}" style="text-align: center;">                            
+                            <p:selectBooleanButton value="#{tipoMovimientoRequisito.subirArchivoObligatorio}" 
+                                                   onLabel="#{msg['ec.gob.mrl.smp.generico.boton.si']}"
+                                                   offLabel="#{msg['ec.gob.mrl.smp.generico.boton.no']}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"
+                                                   id="botonSubirArchivoObligatorio"/>
+                            <p:tooltip for="botonSubirArchivoObligatorio" value="#{msg['ec.gob.mrl.smp.administracion.tipoMovimientoRequisito.toolTip.botonSubirArchivoObligatorio']}" showEffect="fade" hideEffect="fade" /> 
+                        </p:column>  
+                    </p:dataTable>
+                </p:panel>    
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

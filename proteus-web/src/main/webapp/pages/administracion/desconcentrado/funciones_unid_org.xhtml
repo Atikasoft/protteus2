@@ -1,0 +1,134 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <style>
+                div.ui-panel-titlebar.ui-widget-header.ui-helper-clearfix.ui-corner-all {
+                    text-align: center;
+                }
+            </style>
+            <h:form id="frmPrincipal">               
+                <p:panel id="panelBtn"
+                         header="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo']}">
+
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGrid columns="3"> 
+                            <p:commandButton id="btnGuardar" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                             action="#{desconcentradoBean.guardar()}"
+                                             update="panelConfiguracion">
+                                <f:setPropertyActionListener target="#{desconcentradoBean.desconcentradoHelper.guardarSoloDatosGeneralesYApoyos}"
+                                                             value="#{false}"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnRegresar" 
+                                             value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"
+                                             action="#{desconcentradoBean.regresar()}"
+                                             immediate="#{true}"
+                                             ajax="#{false}"
+                                             title="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"/>
+                        </h:panelGrid>
+                    </h:panelGrid> 
+
+                    <p:panel id="panelConfiguracion">
+                        <f:facet name="header">
+                            <p:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo.config.uo']}"
+                                           style="text-align: center"/>
+                            <br/>
+                            <p:outputLabel value="Unidad Desconcentrada: #{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado.nombre}"
+                                           style="text-align: center"/>
+                        </f:facet>
+                        <br/>
+                        <p:panelGrid columns="5">
+                            <h:outputLabel value="* Función: "
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu id="comboFuncion"
+                                             required="#{true}"
+                                             value="#{desconcentradoBean.desconcentradoHelper.codigoFuncionSeleccionada}"
+                                             requiredMessage="El campo Función es obligatorio">
+                                <f:selectItems value="#{desconcentradoBean.desconcentradoHelper.listaFuncionesDesconcentrado}"/>
+                                <p:ajax update="tablaUbicacion comboFuncionOrigenCopia"
+                                        listener="#{desconcentradoBean.actualizarArbolUO(true)}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="Importar configuración desde: "
+                                           styleClass="labelFormulario"/>                            
+                            <p:selectOneMenu id="comboFuncionOrigenCopia"
+                                             disabled="#{empty desconcentradoBean.desconcentradoHelper.codigoFuncionSeleccionada}"
+                                             value="#{desconcentradoBean.desconcentradoHelper.codigoFuncionOrigenCopia}">
+                                <f:selectItems value="#{desconcentradoBean.desconcentradoHelper.listaFuncionesDesconcentrado2}"/>
+                                <p:ajax update="btnCopiarConfig"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="btnCopiarConfig" 
+                                             disabled="#{empty desconcentradoBean.desconcentradoHelper.codigoFuncionOrigenCopia}"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.hint.boton.importarConfig']}"
+                                             icon="ui-icon-copy"
+                                             type="button"
+                                             style="margin-left: -15px"
+                                             onclick="dlgConfirmImportConfig.show();"/>
+                        </p:panelGrid>
+
+                        <p:separator/>
+
+                        <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.titulo']}">
+
+                            <p:treeTable id="tablaUbicacion"
+                                         value="#{desconcentradoBean.desconcentradoHelper.root}"
+                                         var="ubicacion"
+                                         style="overflow: auto"                                              
+                                         selection="#{desconcentradoBean.desconcentradoHelper.selectedNode}" 
+                                         selectionMode="single">
+
+                                <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unidadOrganizacional.nombre']}"
+                                          style="width: 400px; font-size: 8pt"
+                                          sortBy="#{ubicacion.nombre}"
+                                          filterBy="#{ubicacion.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{ubicacion.codigo} #{ubicacion.nombre}" 
+                                                  title="#{ubicacion.nombre}"  />
+                                </p:column> 
+
+                                <p:column headerText="Tiene Configuración Interna"
+                                          style="font-size: 8pt;width: 80px; text-align: center">
+                                    <p:selectBooleanCheckbox value="#{ubicacion.tieneConfiguracionInterna}" 
+                                                             disabled="#{true}"/>         
+                                </p:column>
+
+                                <p:column headerText="Asignado"
+                                          style="font-size: 8pt;width: 5px; text-align: center">
+                                    <p:selectBooleanCheckbox value="#{ubicacion.seleccionado}"
+                                                             disabled="#{empty desconcentradoBean.desconcentradoHelper.codigoFuncionSeleccionada}">
+                                        <p:ajax listener="#{desconcentradoBean.actualizarUnidadModificada(ubicacion)}" 
+                                                update="tablaUbicacion"/>
+                                    </p:selectBooleanCheckbox>         
+                                </p:column>                            
+
+                            </p:treeTable>
+                        </p:fieldset>
+                    </p:panel>
+                </p:panel>  
+
+                <p:confirmDialog id="confirmImportConfig" 
+                                 message="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.mensaje.importarConfig']}"
+                                 header="Confirmación" 
+                                 severity="alert" width="500px" 
+                                 widgetVar="dlgConfirmImportConfig">  
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin-right: 5px;"
+                                         update="panelConfiguracion"
+                                         action="#{desconcentradoBean.importarUnidadesOrganizacionalesDesdeOtraFuncion}"
+                                         onsuccess="dlgConfirmImportConfig.hide()"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgConfirmImportConfig.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </p:confirmDialog>               
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

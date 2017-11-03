@@ -1,0 +1,216 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmTramoteBorrador">
+                <p:panel header="#{msg['ec.gob.mrl.smp.tramiteBorrador.titulo']}">
+                    <p:panel rendered="false">                   
+                        <h:panelGrid columns="9" cellpadding="0" cellspacing="0" width="100%">
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.ordenarPor']}:"/>
+                            <p:selectOneMenu  filter="true" 
+                                              filterMatchMode="contains"
+                                              value="#{tramiteBorradorBean.tramiteBorradorHelper.ordenarPor}">
+                                <f:selectItems value="#{tramiteBorradorBean.tramiteBorradorHelper.listaOrdenarPor}"/>                            
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.tipoOrdenamiento']}:"/>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu 
+                                    filter="true" 
+                                    filterMatchMode="contains"
+                                    value="#{tramiteBorradorBean.tramiteBorradorHelper.tipoOrdenamiento}">
+                                    <f:selectItems value="#{tramiteBorradorBean.tramiteBorradorHelper.listaTipoOrdenamiento}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton style="background: none;border: none;"
+                                                 action="#{tramiteBorradorBean.buscar()}"
+                                                 update="tablaTareasBorrador"
+                                                 icon="ui-icon-search"
+                                                 title="#{msg['message.titulo.buscar']}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">
+                                <p:inputText value="#{tramiteBorradorBean.tramiteBorradorHelper.token}"/>
+                                <p:commandButton style="background: none;border: none;"
+                                                 action="#{tramiteBorradorBean.buscar()}"
+                                                 update="tablaTareasBorrador"
+                                                 icon="ui-icon-search"
+                                                 title="#{msg['message.titulo.buscar']}"/>
+                            </h:panelGrid>
+                            <p:commandButton icon="ui-icon-refresh"
+                                             update="tablaTareasBorrador"
+                                             title="#{msg['message.titulo.refrescar']}"
+                                             action="#{tramiteBorradorBean.cargarTablaTramitesBorrador}"/>
+                            <p:button href="/pages/index.jsf"
+                                      icon="ui-icon-home"
+                                      title="#{msg['message.titulo.salir']}"/> 
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:separator rendered="false"/>
+                    <p:remoteCommand name="filtroTabla"  update=":frmTramoteBorrador:clases_json" oncomplete="actualizarClases();"
+                                     actionListener="#{tramiteBorradorBean.llenarComboClaseFiltrosEvent()}">
+                        <h:inputHidden id="grupo_filtro_seleccionado" value="null"/>
+                        <h:inputHidden id="clase_filtro_seleccionado" value="null"/>
+                        <h:inputHidden id="movimiento_filtro_seleccionado" value="null"/>
+                    </p:remoteCommand>
+                    <p:remoteCommand name="filtroTablaDo"  oncomplete="tablaTareasBorrador.filter();">
+                    </p:remoteCommand>
+                    <p:dataTable id="tablaTareasBorrador"
+                                 widgetVar="tablaTareasBorrador"
+                                 scrollable="true"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 value="#{tramiteBorradorBean.tramiteBorradorHelper.listaTramitesBorrador}"
+                                 var="tareasBorrador"
+                                 rowIndexVar="rowIndex"
+                                 style="overflow: auto;"
+                                 rowStyleClass="fila20"
+                                 filterEvent="enter">
+                        <p:ajax event="filter" onstart="return checkLoad();"/>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}"  style="text-align: center; width: 80px">
+                            <p:commandButton id="botonEdicio" icon="ui-icon-pencil"
+                                             ajax="#{false}"
+                                             action="#{tramiteBorradorBean.iniciarEdicion()}"
+                                             title="#{msg['ec.gob.mrl.smp.pantalla4.tramiteBorrador.tooltip.editarTramite']}">
+                                <f:setPropertyActionListener value="#{tareasBorrador}" 
+                                                             target="#{tramiteBorradorBean.tramiteHelper.tramite}"/>
+                            </p:commandButton> 
+                            <p:commandButton id="botonEliminar" icon="ui-icon-trash"                                             
+                                             onclick="confirmEliminacion.show()"    
+                                             process="@this"
+                                             rendered="#{!tareasBorrador.conSolicitud}"
+                                             title="#{msg['ec.gob.mrl.smp.pantalla4.tramiteBorrador.tooltip.eliminarTramite']}">
+                                <f:setPropertyActionListener value="#{tareasBorrador}" 
+                                                             target="#{tramiteBorradorBean.tramiteBorradorHelper.tramite}"/>
+                            </p:commandButton>
+                            <p:commandButton id="botonRechazar" icon="ui-icon-close"                                             
+                                             onclick="confirmRechazarMov.show()"    
+                                             process="@this"
+                                             update=":frmConfirmRechazarMov"
+                                             rendered="#{tareasBorrador.conSolicitud}"
+                                             title="#{msg['ec.gob.mrl.smp.pantalla4.tramiteBorrador.tooltip.rechazarTramite']}">
+                                <f:setPropertyActionListener value="#{tareasBorrador}" 
+                                                             target="#{tramiteBorradorBean.tramiteBorradorHelper.tramite}"/>
+                                <f:setPropertyActionListener value="#{null}" 
+                                                             target="#{tramiteBorradorBean.tramiteBorradorHelper.comentario}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}" />
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.numeroTramite']}"
+                                  sortBy="#{tareasBorrador.numericoTramite}"
+                                  filterBy="#{tareasBorrador.numericoTramite}"
+                                  filterMatchMode="contains"
+                                  id="numero_tramite"
+                                  style="text-align: center; width: 80px"
+                                  filterStyle="width: 80px">
+                            <h:outputText value="#{tareasBorrador.numericoTramite}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.descripcion']}"
+                                  sortBy="#{tareasBorrador.descripcion}"
+                                  style="text-align: left; width: 400px">
+                            <h:outputText value="#{tareasBorrador.descripcion}"  style="font-size: 10px"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.grupo']}" 
+                                  sortBy="#{tareasBorrador.tipoMovimiento.clase.grupo.nombre}"
+                                  filterBy="#{tareasBorrador.tipoMovimiento.clase.grupo.id}"
+                                  filterOptions="#{tramiteBorradorBean.tramiteHelper.listaGrupo}"
+                                  filterMatchMode="exact" id="columna_grupo"
+                                  filterStyle="width: 160px"
+                                  style="text-align: left; width: 160px">
+                            <h:outputText value="#{tareasBorrador.tipoMovimiento.clase.grupo.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.clase']}"
+                                  sortBy="#{tareasBorrador.tipoMovimiento.clase.nombre}"
+                                  filterBy="#{tareasBorrador.tipoMovimiento.clase.id}"
+                                  id="columna_clase"
+                                  filterOptions="#{tramiteBorradorBean.tramiteHelper.listaClase}"
+                                  filterStyle="width: 250px"
+                                  style="text-align: left; width: 250px"
+                                  filterMatchMode="exact">
+                            <h:outputText value="#{tareasBorrador.tipoMovimiento.clase.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.movimiento']}"
+                                  sortBy="#{tareasBorrador.tipoMovimiento.nombre}"
+                                  filterBy="#{tareasBorrador.tipoMovimiento.id}"
+                                  filterOptions="#{tramiteBorradorBean.tramiteHelper.listaTipoMovimiento}"
+                                  filterMatchMode="exact"
+                                  id="columna_movimientos"
+                                  filterStyle="width: 300px"
+                                  style="text-align: left; width: 350px">
+                            <h:outputText value="#{tareasBorrador.tipoMovimiento.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.estado']}"
+                                  sortBy="#{tareasBorrador.estado}"
+                                  style="text-align: center; width: 100px">
+                            <h:outputText value="#{tareasBorrador.conSolicitud?'SOLICITADO':tareasBorrador.estado}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.fechaIngreso']}"
+                                  sortBy="#{tareasBorrador.fechaCreacion}"
+                                  style="text-align: center; width: 100px"
+                                  filterStyle="width: 60px">                        
+                            <h:outputText value="#{tareasBorrador.fechaCreacion}"  style="font-size: 10px">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                    <h:inputTextarea id="clases_json" style="display: none" value="#{tramiteBorradorBean.tramiteBorradorHelper.clasesFiltrosSeleccionados}"/>
+                </p:panel>
+            </h:form>
+
+            <!-- pop Up eliminacion tramite -->
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación" 
+                             severity="alert" 
+                             widgetVar="confirmEliminacion"> 
+                <div style="text-align: center">
+                    <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                     action="#{tramiteBorradorBean.borrar}"
+                                     oncomplete="actualizarTabla(); confirmEliminacion.hide()"/>  
+                    <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                     onclick="confirmEliminacion.hide()"
+                                     type="button"/>
+                </div>
+            </p:confirmDialog> 
+            <!-- pop Up Rechazar tramite -->
+            <p:confirmDialog message="Desea Rechazar el Trámite ?" 
+                             header="Rechazo de Trámite"
+                             widgetVar="confirmRechazarMov">   
+                <h:form id="frmConfirmRechazarMov">
+                    <h:panelGrid columns="2" style="text-align: center" >
+                        <h:outputLabel value="* Justificación:"/>
+                        <p:inputTextarea id="justificacionConfirmacion"   
+                                         style="width: 400px"
+                                         autoResize="false"
+                                         value="#{tramiteBorradorBean.tramiteBorradorHelper.comentario}"
+                                         required="#{true}"
+                                         requiredMessage="La justificación es un campo requerido."
+                                         maxlength="1000"/>                        
+                    </h:panelGrid>
+                    <div style="text-align: center;margin-left: 7%;">  
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         oncomplete="actualizarTabla(); confirmRechazarMov.hide()" 
+                                         action="#{tramiteBorradorBean.rechazarTramite()}" /> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmRechazarMov.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+
+            <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/js/tramitesBorrador.js"></script>
+            <script type="text/javascript">
+                                             $(function () {
+                                                 init();
+                                             });
+            </script>
+
+        </ui:define>
+    </ui:composition>
+</html>

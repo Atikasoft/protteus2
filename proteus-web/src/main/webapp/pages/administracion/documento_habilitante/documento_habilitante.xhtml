@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <smp:catalogo_formulario titulo="#{msg['ec.gob.mrl.smp.administracion.documentoHabilitante.titulo']}"
+                                     controlador="#{documentoHabilitanteBean}">
+                <f:facet name="contenido">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        <h:outputLabel value="*#{msg['ec.gob.mrl.smp.administracion.documentoHabilitante.nemonico']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="documentoHabilitante_nemonico"                                      
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.nemonico.max']}"                                     
+                                     value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.nemonico}"
+                                     required="true" style="width: 200px"
+                                     disabled="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"
+                                     requiredMessage="El campo nemónico es requerido"/>
+
+                        <h:outputLabel value="*#{msg['ec.gob.mrl.smp.administracion.documentoHabilitante.nombre']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="documentoHabilitante_nombre"
+                                         styleClass="textoNombre"
+                                         maxlength="100"
+                                         value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.nombre}"
+                                         required="true" style="width: 200px"
+                                         requiredMessage="El campo nombre es requerido"/>
+
+                        <h:outputLabel value="*#{msg['ec.gob.mrl.smp.administracion.documentoHabilitante.descripcion']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputTextarea id="documentoHabilitante_descripcion"
+                                         styleClass="textoDescripcion"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.descripcion}"
+                                         required="true" 
+                                         style="width: 200px"
+                                         requiredMessage="El campo descripción es requerido"/>
+
+                        <h:outputLabel value="*Tipo:"
+                                       styleClass="labelFormulario"/>
+                        <p:selectOneMenu id="documentoHabilitante_tipo"  
+                                         filter="true" 
+                                         filterMatchMode="contains"
+                                         value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.catalogoTipoDocumentoHabilitanteId}"
+                                         required="true"
+                                         style="width: 200px"
+                                         requiredMessage="El campo tipo es requerido">                            
+                            <f:selectItems value="#{documentoHabilitanteBean.documentoHabilitanteHelper.listaTipoDocumentosHabilitantes}"/>                        
+                        </p:selectOneMenu>                       
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.vigente}" 
+                                                 rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <br/>
+                        <p:separator rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"  style="width: 250"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <p:inputText id="documentoHabilitante_usuario_creo"
+                                     value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}" style="width: 200px"/>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <p:inputText id="documentoHabilitante_fecha_creo"
+                                     value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.fechaCreacion}"
+                                     rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <p:inputText id="documentoHabilitante_usuario_actua"
+                                     value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.usuarioActualizacion}"
+                                     rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">                            
+                        </p:inputText>
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"/>
+                        <p:inputText id="documentoHabilitante_fecha_actua"
+                                     value="#{documentoHabilitanteBean.documentoHabilitanteHelper.documentoHabilitante.fechaActualizacion}"
+                                     rendered="#{!(documentoHabilitanteBean.documentoHabilitanteHelper.esNuevo)}"
+                                     disabled="true" style="width: 200px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>                    
+                </f:facet>
+            </smp:catalogo_formulario>
+        </ui:define>
+    </ui:composition>
+</html>

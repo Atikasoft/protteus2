@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form>
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="5">                   
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.reasignar']}"                                         
+                                         action="#{reasignacionTramiteBean.guardar}">                            
+                        </p:commandButton>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}"  
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{reasignacionTramiteBean.regresarReasignacion()}"/>                                         
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{reasignacionTramiteBean.salirPantallaPrincipal}"/>                         
+                    </h:panelGrid>                
+                </p:panel>
+                <p:separator/>
+                <p:panel id="datosTramite" header="#{msg['ec.gob.mrl.smp.reasignacionTramite.datosTramite']}">
+                    <h:panelGrid columns="5">                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.numerotramite']}:"
+                                       styleClass="labelFormulario" />
+                        <h:outputText value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tarea.numeroExterno}"
+                                      styleClass="lblText" style="width: 300px"/><br/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.reasignacionTramite.asignadoA']}:" styleClass="labelFormulario" />                        
+                        <h:outputText id="usuario" value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tarea.nombreUsuarioAsignado}"
+                                      styleClass="lblText" style="width: 400px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.grupo']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tramite.tipoMovimiento.clase.grupo.nombre}"
+                                      styleClass="lblText" style="width: 300px"/><br/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.fechaAsignacion']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tarea.fechaAsignacion}"
+                                      styleClass="lblText" style="width: 300px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </h:outputText>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.clase']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tramite.tipoMovimiento.clase.nombre}"
+                                      styleClass="lblText" style="width: 300px"/><br/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.institucion.estado']}:" styleClass="labelFormulario" />
+                        <h:outputText value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tarea.nombreEstadoActual}"
+                                      styleClass="lblText" style="width: 300px"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}:" styleClass="labelFormulario" />
+                        <h:inputTextarea  value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tramite.tipoMovimiento.nombre}"
+                                          styleClass="lblText" disabled="true" style="width: 300px"/><br/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.descripcion']}:" styleClass="labelFormulario" />
+                        <h:inputTextarea  value="#{reasignacionTramiteBean.reasignacionTramiteHelper.tramite.descripcion}"
+                                          styleClass="lblText" disabled="true"  style="width: 300px"/>                        
+                    </h:panelGrid>                    
+                </p:panel>
+                <p:separator/>                
+                <div class="ui-messages ui-widget" id="fmrReasignacion:mensajessss" style="text-align: left">
+                    <div class="ui-messages-info ui-corner-all">
+                        <span class="ui-messages-info-icon"></span>
+                        <ul>
+                            <li>
+                                <span class="ui-messages-info-summary">Seleccione un servidor de la siguiente lista</span>
+                            </li>                                
+                        </ul>
+                    </div>
+                </div>
+                <p:separator/>
+                <p:dataTable id="tablaServidores"
+                             value="#{reasignacionTramiteBean.reasignacionTramiteHelper.listaUsuariosRolVO}"
+                             var="servidores"
+                             rowKey="#{servidores.numeroIdentificacion}"
+                             rowIndexVar="rowIndex"
+                             filterEvent="enter"
+                             selection="#{reasignacionTramiteBean.reasignacionTramiteHelper.selectedUsuarioRolVO}">
+                    <f:facet name="header">  
+                        #{msg['ec.gob.mrl.smp.reasignacionTramite.areaAsignacionTitulo']}  
+                    </f:facet>             
+                    <p:column headerText="Sel" selectionMode="single" style="width:20px; text-align: center"/>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                              style="text-align: center; width: 20px">
+                        <h:outputText value="#{rowIndex+1}"/>
+                    </p:column>                    
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.rol']}" 
+                              sortBy="#{servidores.nombreRol}"
+                              filterBy="#{servidores.nombreRol}"
+                              filterStyle="width: 90%">
+                        <h:outputText value="#{servidores.nombreRol}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.usuarioAsignado']}"
+                              sortBy="#{servidores.nombresServidor}"
+                              filterBy="#{servidores.nombresServidor}"
+                              filterMatchMode="contains" filterStyle="width: 90%">
+                        <h:outputText value="#{servidores.nombresServidor}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.usuarioAsignado']}"
+                              rendered="false">
+                        <h:outputText value="#{servidores.numeroIdentificacion}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.reasignacionTramite.numeroTramitesAsignados']}"
+                              rendered="false"
+                              sortBy="#{servidores.numeroAsignaciones}"
+                              filterBy="#{servidores.numeroAsignaciones}"
+                              filterMatchMode="contains"
+                              style="text-align: center; width: 100px" filterStyle="width: 90%">
+                        <h:outputText value="#{servidores.numeroAsignaciones}"/>
+                    </p:column>                                            
+                </p:dataTable>
+                <p:separator/>                
+                <h:panelGrid id="panelMotivo" columns="2">
+                    <h:outputLabel value="*#{msg['ec.gob.mrl.smp.reasignacionTramite.motivo']}: " styleClass="labelFormulario"/>
+                    <p:inputTextarea id="motivo"  required="true"
+                                     value="#{reasignacionTramiteBean.reasignacionTramiteHelper.motivo}"
+                                     maxlength="400"
+                                     style="width: 400px"
+                                     requiredMessage="El campo motivo es requerido"  autoResize="#{false}"/>                    
+                </h:panelGrid>                
+            </h:form>          
+        </ui:define>
+    </ui:composition>
+</html>

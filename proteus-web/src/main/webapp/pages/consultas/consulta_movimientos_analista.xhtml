@@ -1,0 +1,415 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <style>
+                .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield{
+                    width: 70px;
+                }
+            </style>
+            <h:form id="frmConsultaMovimientoInsti">
+                <p:panel id="panelBuscadorDeServidorFiltros" header="Consulta Movimientos Analista">
+                    <h:panelGrid columns="4">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.buscar']}" 
+                                         action="#{consultaPuestoAnalistaBean.refreshPagination()}" update="tblConsultaMovimientoInsti"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.limpiar']}" 
+                                         action="#{consultaPuestoAnalistaBean.limpiar}" update="tblConsultaMovimientoInsti, fldFiltroBusqueda"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         action="#{movimientoBean.salirPantallaPrincipal()}"                                         
+                                         update="listaMovimientos"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.imprimir']}"
+                                         action="#{consultaPuestoAnalistaBean.imprimir()}" update="tblConsultaMovimientoInsti"/>
+                    </h:panelGrid>
+                    <p:fieldset id="fldFiltroBusqueda" legend="Filtros de Búsqueda:" style=" text-align: left; width: 95%;margin:auto;">
+
+                        <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.tiposMovimientos}"/>
+                        <p:panel style="border: 0">    
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Grupo:" />
+                                <h:selectOneMenu value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.grupo}" 
+                                                 style="width: 400px;">
+                                    <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.grupos}"/>
+                                    <p:ajax event="change" listener="#{consultaPuestoAnalistaBean.cargarClases}" update="filtro_clases filtro_movimiento"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Clase:"/>
+                                <h:selectOneMenu value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.clase}"
+                                                 style="width: 400px;" id="filtro_clases">
+                                    <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.clases}"/>
+                                    <p:ajax event="change" listener="#{consultaPuestoAnalistaBean.cargarTiposMovimientos}" update="filtro_movimiento"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Movimiento:"/>
+                                <h:selectOneMenu value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.tipoMovimiento}"
+                                                 style="width: 400px;" id="filtro_movimiento">
+                                    <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.tiposMovimientos}"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Código Puesto:"/>
+                                <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.codigoPuesto}"
+                                             styleClass="textoNumerico"
+                                             style="width: 150px;"/>  
+                                <h:outputLabel value="Unidad Organizacional: "
+                                               rendered="#{consultaPuestoAnalistaBean.consultaPuestoHelper.seleccionarUnidadOrganizacional}"
+                                               styleClass="labelFormulario"/>
+                                <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
+                                             rendered="#{consultaPuestoAnalistaBean.consultaPuestoHelper.seleccionarUnidadOrganizacional}">
+                                    <p:inputTextarea id="parametrosBusqueda_unidadAdministrativa" 
+                                                     style="font-size: 10px; width: 300px"
+                                                     rows="3"
+                                                     cols="41"
+                                                     disabled="#{true}"
+                                                     value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" 
+                                                     update=":frmUnidadAdministrativa:unidadAdministrativa"       
+                                                     oncomplete="unidadAdministrativa.show()"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     update=":frmConsultaMovimientoInsti:parametrosBusqueda_unidadAdministrativa">
+                                        <f:setPropertyActionListener target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"                                                             
+                                                                     value="#{null}" />
+                                        <f:setPropertyActionListener target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaId}"                                                             
+                                                                     value="#{null}" />
+                                    </p:commandButton>                                      
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:panel>
+                        <h:panelGrid columns="3">                         
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Partida Presupuestaria Individual:"/>
+                                <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.partidaPresupuestariaIndividual}"
+                                             style="width: 150px;"/>                               
+                                <h:outputLabel value="Número Trámite:"/>                        
+                                <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.numeroTramite}" style="width: 150px;"/>
+                                <h:outputLabel value="Número Doc. Habilitante:"/>
+                                <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.numeroDocumentoHabilitante}"
+                                             style="width: 150px;"/>  
+                                <h:outputLabel value="Estado Trámite:"/>
+                                <h:selectOneMenu value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.estado}"
+                                                 style="width: 150px;">
+                                    <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.estadosTramite}"/>
+                                </h:selectOneMenu> 
+                                <h:outputLabel value="Fecha Elaboración Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaElaboracionDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/> 
+                                <h:outputLabel value="Fecha Elaboración Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaElaboracionHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">                                
+                                <h:outputLabel value="Fecha Revisión Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaRevisionDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Revisión Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaRevisionHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Validación Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaValidacionDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Validación Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaValidacionHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Aprobación Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaAprobacionDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Aprobación Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaAprobacionHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">                               
+                                <h:outputLabel value="Fecha Legalización Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaLegalizacionDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Legalización Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaLegalizacionHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Vigencia Desde:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaVigenciaDesde}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <h:outputLabel value="Fecha Vigencia Hasta:"/>
+                                <p:calendar value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.fechaVigenciaHasta}"
+                                            showOn="button"
+                                            navigator="true"
+                                            pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                <br/> <br/>  <br/> <br/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <br/>
+                        <p:fieldset legend="Servidor Público" style=" text-align:left; width: 90%; margin:auto; ">
+                            <h:panelGrid columns="3">
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Tipo Identificación:"/>
+                                    <h:selectOneMenu value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.tipoIdentificacion}"
+                                                     style="width: 150px;" id="_combo_tipo_documentos" onchange="alternarCampoDocumento()">
+                                        <f:selectItems value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.tipoIdentificacion}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" id="celda_numero_documento">
+                                    <h:outputLabel value="Número Identificación:"/>
+                                    <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.numeroIdentificacion}"
+                                                 style="width: 150px;"/>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Apellidos y/o nombres:"/>
+                                    <p:inputText value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.nombres}"
+                                                 style="width: 150px;"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:fieldset>
+                     
+                      
+                                <br/>                                     
+                        <p:dataTable scrollable="true"
+                                     paginator="true"
+                                     rows="10"
+                                     lazy="true"
+                                     id="tblConsultaMovimientoInsti"
+                                     value="#{consultaMovimientoPaginador}"
+                                     emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                     var="movimiento"
+                                     rowIndexVar="rowIndex"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                     <f:facet name="header">Información de Trámites</f:facet>    
+                            <p:column headerText="Opciones" style="text-align: center; width: 80px;">
+                                <p:commandButton id="botonAccionPersonal" icon="ui-icon-print"                                                     
+                                                 rendered="#{movimiento.tramite.codigoFase!='REG' and movimiento.tramite.codigoFase!='ELI'}"                                                     
+                                                 ajax="#{true}"
+                                                 action="#{consultaPuestoAnalistaBean.generarReporte()}"
+                                                 title="Imprimir Documento Habilitante">                            
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.movimiento}"/>
+                                </p:commandButton>
+
+                                <h:commandLink action="#{consultaPuestoAnalistaBean.descargarArchivo}" 
+                                               target="_blank"
+                                               rendered="#{movimiento.tramite.codigoFase=='REG'}"
+                                               value="Archivo">
+                                    <f:setPropertyActionListener value="#{movimiento}" 
+                                                                 target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.movimiento}"/>
+                                </h:commandLink>
+                                <p:commandButton icon="ui-icon-comment" 
+                                                 title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verHistorial']}"
+                                                 action="#{consultaPuestoBean.verDetalleHistorico}"
+                                                 update=":popUpHistoricoTramiteWin"
+                                                 oncomplete="popUpHistoricoTramite.show();"
+                                                 
+                                                 >
+                                    <f:setPropertyActionListener value="#{movimiento.tramite}" 
+                                                                 target="#{consultaPuestoBean.consultaPuestoHelper.tramite}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align: center; width: 15px">
+                                <h:outputText value="#{rowIndex+1}"/>                                
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.numeroTramite']}" style="width: 80px;">
+                                <h:outputText value="#{movimiento.tramite.numericoTramite}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramiteBorrador.movimiento']}" 
+                                      style=" text-align: center" width="200">
+                                <h:outputText value="#{movimiento.tramite.tipoMovimiento.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Unidad Organizacional" 
+                                       rendered="#{consultaPuestoAnalistaBean.consultaPuestoHelper.seleccionarUnidadOrganizacional}"
+                                      style=" text-align: center; width: 200px">
+                                <h:outputText value="#{movimiento.distributivoDetalle.distributivo.unidadOrganizacional.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.rigeAPartirDe']}"
+style="width: 80px; text-align: center"
+                            >
+                                <h:outputText value="#{movimiento.rigeApartirDe}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Código Puesto" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.distributivoDetalle.codigoPuesto}" style=" font-size: 0.8em;"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.partidaIndividual']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.distributivoDetalle.partidaIndividual}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.tipoIdentificacion']}"
+                                      style="text-align: center; width: 80px">
+                                <h:outputText value="#{movimiento.tipoIdentificacion}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.numeroIdentificacion']}"
+                                      style="width: 70px">
+                                <h:outputText value="#{movimiento.numeroIdentificacion}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.tramite.apellidosNombres']}"
+                                      style="text-align: center" width="150">
+                                <h:outputText value="#{movimiento.apellidosNombres}"/>
+                            </p:column>
+                            <p:column headerText="Elaborado Por"
+                                      style="text-align: center" width="150">
+                                <h:outputText value="#{movimiento.tramite.nombreInstitucion}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.fechaElaboracion']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaElaboracion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.fechaRevision']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaRevision}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.fechaValidacion']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaValidacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Aprobado Por"
+                                      style="text-align: center" width="150">
+                                <h:outputText value="#{movimiento.tramite.nombreInstitucionAprobador}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.fechaAprobacion']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaAprobacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.fechaLegalizacion']}" style="width: 80px; text-align: center">
+                                <h:outputText value="#{movimiento.tramite.tramiteBitacora.fechaLegalizacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.historial.servidor.estadoTramite']}"
+                                      style="text-align: center" width="100">
+                                <h:outputText value="#{movimiento.tramite.estado}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.cedulaUsuarioAsignado']}"
+                                      style="text-align: center" width="90">
+                                <h:outputText value="#{movimiento.tramite.usuarioAsignadoCedula}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.consultas.movimientos.analista.nombreUsuarioAsignado']}"
+                                      style="text-align: center" width="150">
+                                <h:outputText value="#{movimiento.tramite.usuarioAsignadoNombre}"/>
+                            </p:column>                            
+                        </p:dataTable>
+                       
+                </p:panel>
+            </h:form>      
+            <!-- PopUp Unidad Administrativa. -->
+            <p:dialog 
+                widgetVar="unidadAdministrativa"
+                draggable="#{false}"                          
+                modal="#{true}"
+                dynamic="#{true}"
+                height="450"
+                width="900"
+                header="Unidad Organizacional">
+                <h:form id="frmUnidadAdministrativa">
+                    <p:dataTable value="#{consultaPuestoAnalistaBean.consultaPuestoHelper.listaUnidadesOrganizacionales}"
+                                 var="unidad"
+                                 paginator="#{true}"
+                                 rows="10"
+                                 rowIndexVar="rowIndex"
+                                 id="unidadAdministrativa"
+                                 filterEvent="enter">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                            <h:outputText value="#{rowIndex+1}"  style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Nombre" filterMatchMode="contains" filterBy="#{unidad.nombre}" filterStyle="width:300px">
+                            <h:outputText value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}" style="font-size: 10px"/>
+                        </p:column>
+                        <p:column headerText="Opción">
+                            <p:commandButton icon="ui-icon-check"
+                                             update=":frmConsultaMovimientoInsti:parametrosBusqueda_unidadAdministrativa"
+                                             oncomplete="unidadAdministrativa.hide()"  style="font-size: 10px">
+                                <f:setPropertyActionListener value="#{unidad.unidadOrganizacional.nombre} / #{unidad.nombre}"
+                                                             target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaNombre}"/>
+                                <f:setPropertyActionListener value="#{unidad.id}"
+                                                             target="#{consultaPuestoAnalistaBean.consultaPuestoHelper.consultaTramiteVO.unidadAdministrativaId}"/>
+
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+            <!-- Historico -->
+            <!-- PopUp de Historial del tramite -->
+            <p:dialog widgetVar="popUpHistoricoTramite"
+                      modal="true" id="popUpHistoricoTramiteWin"
+                      resizable="false" style="width: 750px"
+                      header="Histórico del Tramite">
+                <p:panel id="contenidoPopUpHistoricoTramite"> 
+                <h:form id="formHistoricoTramite">                       
+                    <p:dataTable value="#{consultaPuestoBean.consultaPuestoHelper.listaDetalles}"
+                                 var="detalle"
+                                 style="width: 800px;"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex">
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" style="text-align:center; width: 15px">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="Fecha" >
+                            <h:outputText value="#{detalle.fechaCreacion}">
+                                <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Identificación" style="text-align:center;">
+                            <h:outputText value="#{detalle.usuario}"/>
+                        </p:column>
+                        <p:column headerText="Nombre" >
+                            <h:outputText value="#{detalle.nombreUsuario}"/>
+                        </p:column>
+                        <p:column headerText="Comentario" >
+                            <h:outputText value="#{detalle.comentario}"/>
+                        </p:column>
+                        <p:column headerText="Estado" style="text-align:center;">
+                            <h:outputText value="#{detalle.estado.nombre}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <br/>
+                    <div style="text-align:center">
+                      <p:commandButton onclick="popUpHistoricoTramite.hide();" 
+                                       immediate="true" value="Cerrar" process="formHistoricoTramite"/>
+                    </div>
+                    </h:form>
+                </p:panel>
+            </p:dialog>
+            <script type="text/javascript">
+                function alternarCampoDocumento(){
+                    var tipos = $("SELECT[id$=_combo_tipo_documentos]");
+                    var celdaDocumento = $("TABLE[id$=celda_numero_documento]");
+                    if(!tipos.val()){
+                        celdaDocumento.hide();
+                    }else{
+                        celdaDocumento.find("INPUT").first().val("");
+                        celdaDocumento.show();
+                    }
+                }
+                $(function(){
+                    var tipos = $("SELECT[id$=_combo_tipo_documentos]");
+                    tipos.val("");
+                    alternarCampoDocumento();
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>

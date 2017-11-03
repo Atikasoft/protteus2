@@ -1,0 +1,955 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">       
+        <ui:define name="page-content">
+            <style>
+                .grid6lb{
+                    width: 80px;
+                    text-align: right;
+                }
+                .grid6lb_rep{
+                    width: 140px;
+                    text-align: right;
+                }
+                .grid6val{
+                    width: 120px;
+                }
+                .grid6val input.hasDatepicker{
+                    width: 60%;
+                }
+                .grid6val input.ui-inputtext{
+                    width: 98%;
+                }
+                .grid2lb_area{
+                    width: 70px;
+                    text-align: right;
+                }
+                .grid2val_area textarea{
+                    width: 98%;                   
+                }
+
+            </style>
+            <h:form id="fmrTramite">         
+                <p:panel id="panelOpcionesPrincipal">
+                    <h:panelGrid columns="7">                  
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.guardar']}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.botonGuardar']}"
+                                         action="#{tramiteBean.guardar}"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='nx' or tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                         update="panelNuevoTramite, panelOpcionesPrincipal"/>                       
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla5.edicionTramite.etiqueta.validar']}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla5.edicionTramite.tooltip.validar']}"
+                                         action="#{validarMensajeBean.validarMensaje()}"
+                                         ajax="#{false}"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                         update="panelNuevoTramite"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla5.edicionTramite.etiqueta.enviar']}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla5.edicionTramite.tooltip.enviar']}"
+                                         onclick="confEnviarTramite.show()"
+                                         type="button"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"/>                        
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.verHistorial']}" 
+                                         title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verHistorial']}"
+                                         actionListener="#{tramiteBean.verDetalleHistorico}"
+                                         immediate="#{true}"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                         oncomplete="popUpHistoricoTramite.show();"
+                                         update="contenidoPopUpHistoricoTramite"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.etiqueta.verBitacora']}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla7.bandejaTareas.tooltip.verBitacora']}"
+                                         actionListener="#{tramiteBean.verBitacora}"
+                                         immediate="#{true}"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                         oncomplete="popUpBitacoraTramite.show();"
+                                         update="contenidoPopUpBitacoraTramite"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.cancelar']}"                                        
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='vr'}"
+                                         action="#{tramiteBean.regresarNavegacion()}"
+                                         ajax="false"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.regresar']}" 
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{tramiteBean.regredarTramiteBorrador}"
+                                         rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"/>
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         ajax="#{false}"
+                                         immediate="#{true}"
+                                         action="#{tramiteBean.salirPantallaPrincipal}"/>
+                    </h:panelGrid> 
+
+                </p:panel>
+                <p:confirmDialog id="confEnviarTramite"
+                                 widgetVar="confEnviarTramite"
+                                 message="ESTA SEGURO EN ENVIAR EL TRÁMITE ?"
+                                 header="TRÁMITE"
+                                 severity="alert">
+                    <div style="text-align: center;margin-left: 7%;">
+                        <p:commandButton id="confirm" value="ACEPTAR"
+                                         oncomplete="confEnviarTramite.hide()"
+                                         ajax="false"
+                                         action="#{tramiteBean.enviarTramite}" /> 
+                        <p:commandButton id="decline" value="CANCELAR" onclick="confEnviarTramite.hide()" type="button" />
+                    </div>
+                </p:confirmDialog>
+                <p:panel id="panelNuevoTramite" header="#{tramiteBean.tramiteHelper.controlNavegacion=='nx'?'Nuevo':'Edición'} Trámite">
+                    <h:panelGrid columns="2">  
+                        <h:outputLabel value="Elaborado Por:"
+                                       rendered="#{tramiteBean.tramiteHelper.tramite.id != null}"
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.solicitadoPor']}"/>            
+                        <p:inputText id="elaborado_por"
+                                     value="#{tramiteBean.tramiteHelper.tramite.institucionEjercicioFiscal.institucion.nombre}"
+                                     disabled="#{true}"  
+                                     rendered="#{tramiteBean.tramiteHelper.tramite.id != null}"
+                                     style="width: 500px"/>
+
+                        <h:outputLabel value="Trámite No:"
+                                       rendered="#{tramiteBean.tramiteHelper.tramite.id != null}"
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.tramiteNo']}"
+                                       style="width: 300px"/>            
+                        <p:inputText id="tramite_no"
+                                     rendered="#{tramiteBean.tramiteHelper.tramite.id != null}"
+                                     value="#{tramiteBean.tramiteHelper.tramite.numericoTramite}"
+                                     disabled="#{true}"                                    
+                                     style="width: 145px"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.Grupo']}:"                                      
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.Grupo']}"
+                                       style="width: 300px"/>
+                        <h:panelGrid columns="2">
+                            <p:selectOneMenu id="tramite_grupo"    
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 200px"
+                                             disabled="#{!tramiteBean.tramiteHelper.editable}"
+                                             value="#{tramiteBean.tramiteHelper.grupoId}"
+                                             required="#{true}"
+                                             requiredMessage="El grupo de movimientos de personal es un campo requerido">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaGrupo}"/>
+                                <p:ajax update="tramite_clase, tramite_tipoMovimieto, tramite_sustentoLega, tramite_descripcion"                    
+                                        listener="#{tramiteBean.controlSeleccionGrupo}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.Clase']}:"                                      
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.Clase']}"
+                                       style="width: 300px"/>
+                        <h:panelGrid columns="2">
+                            <p:selectOneMenu id="tramite_clase"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"                                             
+                                             disabled="#{!tramiteBean.tramiteHelper.editable}"
+                                             value="#{tramiteBean.tramiteHelper.claseId}"
+                                             required="#{true}"
+                                             requiredMessage="La clase de movimientos de personal es un campo requerido">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaClase}"/>
+                                <p:ajax update="tramite_tipoMovimieto, tramite_sustentoLega, tramite_descripcion" 
+                                        listener="#{tramiteBean.controlSeleccionClase}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.tramite.tipoMovimieto']}:"                                       
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.tipoMovimiento']}"
+                                       style="width: 300px"/>
+                        <h:panelGrid columns="2">
+                            <p:selectOneMenu id="tramite_tipoMovimieto"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             style="width: 400px"
+                                             disabled="#{!tramiteBean.tramiteHelper.editable}"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.id}"
+                                             required="#{true}"
+                                             requiredMessage="El tipo de movimiento es un campo requerido">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaTipoMovimiento}"/>
+                                <p:ajax update="tramite_sustentoLega, tramite_descripcion, panelNuevoTramite" 
+                                        listener="#{tramiteBean.controlSeleccionTipoMovimiento}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.tramite.sustentoLega']}:"                                       
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.sustentoLegal']}"
+                                       style="width: 300px"/>
+                        <h:panelGrid columns="3">
+                            <p:inputTextarea id="tramite_sustentoLega"
+                                             style="width: 500px"
+                                             disabled="#{true}"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.sustentoLegal}"
+                                             required="#{true}"/>
+                            <p:message for="tramite_sustentoLega" display="icon"/>
+                            <p:commandButton icon="ui-icon-search"
+                                             immediate="true"
+                                             title="VER SUSTENTO LEGAL"
+                                             oncomplete="sustentoLegalCompleto.show();"
+                                             update="pnlSustentoLegalCompleto"/>
+                        </h:panelGrid>
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.descripcion']}:"                                       
+                                       title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.descripcion']}"
+                                       style="width: 300px"/>
+                        <h:panelGrid columns="2">
+                            <p:inputTextarea id="tramite_descripcion"
+                                             maxlength="400"
+                                             disabled="#{param['est']!=null and param['est']!='edt'}"
+                                             value="#{tramiteBean.tramiteHelper.tramite.descripcion}"
+                                             style="width: 720px"
+                                             autoResize="false"
+                                             required="#{true}"
+                                             requiredMessage="La descripción es un campo requerido"/>
+
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <p:separator rendered="#{tramiteBean.tramiteHelper.creado}"/>
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.seleccionarPuestos']}"
+                                     title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.seleccionarPuestos']}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"                                    
+                                     action="#{tramiteBean.busquedaPuesto()}" 
+                                     ajax="#{false}">
+                    </p:commandButton>
+                    <p:commandButton value="Descargar Documentos Habilitantes"
+                                     title="Permite descargar los documentos habilitantes de todos movimientos en un solo PDF"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"                                    
+                                     immediate="true" 
+                                     ajax="false"
+                                     onclick="PrimeFaces.monitorDownload(start, stop)">
+                        <p:fileDownload value="#{tramiteBean.descargarDocumentosHabilitantes()}" />   
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Configuración Firmas"                                     
+                                     onclick="panelFirmas.show()"  
+                                     update=":frmPanelFirmas"
+                                     action="#{tramiteBean.buscarAuxiliar()}"
+                                     disabled="#{tramiteBean.tramiteHelper.listaMovimientos.size()==0}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt' and (tramiteBean.tramiteHelper.esMemorando or tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato)}"
+                                     title="Configuración Masiva de Firmas"/>
+                    <p:commandButton value="Configuración Documento Habilitante"                                     
+                                     onclick="panelDocumentoHabilitante.show()"  
+                                     update=":frmPanelDocumentoHabilitante"
+                                     action="#{tramiteBean.buscarAuxiliar()}"
+                                     disabled="#{tramiteBean.tramiteHelper.listaMovimientos.size()==0}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt' and (tramiteBean.tramiteHelper.esMemorando or tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato)}"
+                                     title="Configuración Masiva de Documentos Habilitantes"/>
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.registroMasivoPuestos']}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt' and (tramiteBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='GRU.ING' or tramiteBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='GRU.SAL')}"
+                                     title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.registroMasivoPuestos']}"
+                                     immediate="true"
+                                     partialSubmit="true"
+                                     process="@this"
+                                     oncomplete="dlgCargaArchivoMasivo.show()"/>
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.registroMasivoPuestos.errores']}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt' and (tramiteBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='GRU.ING' or tramiteBean.tramiteHelper.tramite.tipoMovimiento.clase.grupo.nemonico=='GRU.SAL')
+                                                 and tramiteBean.tramiteHelper.erroresCargaMasiva.size()>0}"
+                                     title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.registroMasivoPuestos']}"
+                                     immediate="true"
+                                     id="btnErroresCargaMasiva"
+                                     oncomplete="dlgCargaArchivoMasivoErrores.show()"/>
+                    <p:commandButton value="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.etiqueta.eliminarTodosPuestos']}"
+                                     onclick="confirmation.show()"     
+                                     disabled="#{tramiteBean.tramiteHelper.listaMovimientos.size()==0}"
+                                     rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                     title="#{msg['ec.gob.mrl.smp.pantalla1.nuevotramite.tooltip.eliminarTodosPuestos']}"/>                    
+                </p:panel>
+                <p:confirmDialog id="confirmDialog" message="Desea eliminar los movimientos del tramite?" 
+                                 header="Eliminación de movimientos"
+                                 severity="alert"
+                                 widgetVar="confirmation"> 
+                    <div style="text-align: center;margin-left: 7%;">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"                                         
+                                         update="fmrTramite"
+                                         oncomplete="confirmation.hide()"                                         
+                                         actionListener="#{tramiteBean.eliminarMovimientos}" /> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmation.hide()"                                         
+                                         type="button" />  
+                    </div>
+                </p:confirmDialog> 
+                <p:dataTable id="busquedaPuestoHelper_listaPuestos"
+                             rendered="#{tramiteBean.tramiteHelper.listaMovimientos.size()>0}"
+                             value="#{tramiteBean.tramiteHelper.listaMovimientos}"
+                             var="movimiento"
+                             rows="10" filterEvent="enter"
+                             paginator="#{true}"
+                             scrollable="true" 
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="Opciones" width="160" style="text-align: center">
+                        <p:commandButton id="botonVerDetalleSolicitud" icon="ui-icon-comment"                                           
+                                         ajax="#{true}"
+                                         rendered="#{movimiento.tramite.conSolicitud and !tramiteHelper.esAprobar}"
+                                         oncomplete="detalleSolicitud.show();"
+                                         update=":frmDetalleSolicitud"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.verDetalleSolicitud']}">
+                        </p:commandButton>
+                        <p:spacer width="1"/>
+
+                        <p:commandButton id="botonVerificarRequisitos" icon="ui-icon-clipboard"
+                                         ajax="#{false}"
+                                         action="#{verificarRequisitoBean.iniciarValidacionRequisitos}"                                             
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.validarRequisitos']}">
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{verificarRequisitoBean.verificarRequisitoHelper.movimiento}"/>
+                        </p:commandButton>
+                        <p:spacer width="1"/>
+                        <p:commandButton id="botonAgregarServidor"
+                                         icon="ui-icon-pencil"
+                                         partialSubmit="#{true}"
+                                         ajax="#{false}"
+                                         process="@this"
+                                         action="#{tramiteBean.iniciarAgregacion()}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.verFormulario']}">
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                        </p:commandButton>
+                        <p:spacer width="1"/>
+                        <p:commandButton id="btnEdicionHorario" 
+                                         rendered="#{movimiento.tramite.tipoMovimiento.horario=='S' and tramiteBean.tramiteHelper.controlNavegacion=='edt'}"
+                                         action="#{licenciaHorarioBean.controlHorarioTramite}"
+                                         process="@this"                                             
+                                         partialSubmit="true"
+                                         title="Horarios"
+                                         update=":frmHorario"
+                                         icon="ui-icon-calendar">
+                            <f:setPropertyActionListener value="TR" 
+                                                         target="#{licenciaHorarioHelper.tipoPantalla}"/>
+                            <f:setPropertyActionListener value="#{movimiento.tramite.tipoMovimiento}" 
+                                                         target="#{licenciaHorarioHelper.tipoMovimiento}"/>
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{licenciaHorarioBean.licenciaHorarioHelper.movimiento}"/>
+                        </p:commandButton>
+                        <p:spacer width="1"/> 
+                        <p:commandButton id="botonAccionPersonal" icon="ui-icon-print"
+                                         ajax="#{true}"
+                                         action="#{tramiteBean.generarReporte()}"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.verDocumentoHabilitante']}"> 
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                        </p:commandButton>
+                        <p:spacer width="1"/>
+                        <p:commandButton id="botonDetalleHorarios"
+                                         ajax="#{true}"
+                                         action="#{tramiteBean.generarReporteDetalleHorarios()}"                                             
+                                         rendered="#{movimiento.tramite.tipoMovimiento.horario=='S' and tramiteBean.tramiteHelper.controlNavegacion!='edt'}"                                                                                        
+                                         icon="ui-icon-calendar"
+                                         title="Detalle de Horarios"> 
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                        </p:commandButton>
+                        <p:spacer width="1"/>
+                        <p:commandButton id="botonEliminarMovimiento" 
+                                         icon="ui-icon-trash"           
+                                         process="@this"
+                                         oncomplete="confElimMov.show()"                                            
+                                         update=":frmEliminacionMovimiento"
+                                         title="#{msg['ec.gob.mrl.smp.pantalla2.busqedaPuesto.tooltip.eliminarPuestoTramite']}">    
+                            <f:setPropertyActionListener value="#{movimiento}"
+                                                         target="#{tramiteBean.tramiteHelper.movimiento}"/>
+                            <f:setPropertyActionListener value="#{null}" 
+                                                         target="#{tramiteBean.tramiteHelper.movimiento.justificacion}"/>
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" width="20">
+                        <h:outputText value="#{rowIndex+1}" style="text-center: left;font-size: 10px"/>
+                    </p:column>   
+                    <p:column headerText="Tipo"  width="20" 
+                              >
+                        <h:outputText value="#{movimiento.tipoIdentificacion}" style="text-align: center;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Identificación" width="70"
+                              filterStyle="width: 90%" filterBy="#{movimiento.numeroIdentificacion}">
+                        <h:outputText value="#{movimiento.numeroIdentificacion}" style="text-align: center;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Apellidos y Nombres" width="200"
+                              filterStyle="width: 90%" filterBy="#{movimiento.apellidosNombres}">
+                        <h:outputText value="#{movimiento.apellidosNombres}" style="text-align: left;font-size: 10px"/>                       
+                    </p:column>               
+                    <p:column headerText="Modalidad"  width="200">
+                        <h:outputText value="#{movimiento.distributivoDetalle.distributivo.modalidadLaboral.nombre}" style="text-align: left;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Unidad Organizacional"  width="400">
+                        <h:outputText value="#{movimiento.distributivoDetalle.distributivo.unidadOrganizacional.unidadOrganizacional.nombre} / #{movimiento.distributivoDetalle.distributivo.unidadOrganizacional.nombre}" style="text-align: left;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Denominación Puesto"  width="400">
+                        <h:outputText value="#{movimiento.distributivoDetalle.escalaOcupacional.nivelOcupacional.regimenLaboral.nombre} / #{movimiento.distributivoDetalle.escalaOcupacional.nivelOcupacional.nombre} / #{movimiento.distributivoDetalle.escalaOcupacional.nombre}" style="text-align: left;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Partida Individual" width="120"
+                              filterStyle="width: 90%" filterBy="#{movimiento.distributivoDetalle.partidaIndividual}"
+                              >
+                        <h:outputText value="#{movimiento.distributivoDetalle.partidaIndividual}" style="font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Código Puesto" width="120">
+                        <h:outputText value="#{movimiento.distributivoDetalle.codigoPuesto}" style="font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Sueldo" width="50"> 
+                        <h:outputText value="#{movimiento.rmu}" style="text-align: right;font-size: 10px"/>
+                    </p:column>
+                    <p:column headerText="Rige a Partir De" width="100">
+                        <h:outputText value="#{movimiento.rigeApartirDe}"  style="font-size: 10px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"/>
+                        </h:outputText>
+                    </p:column>                   
+                </p:dataTable>
+
+                <!-- Sustento legal. -->
+                <p:dialog header="Sustento Legal"
+                          widgetVar="sustentoLegalCompleto"
+                          >
+                    <p:panel id="pnlSustentoLegalCompleto" >
+                        <p:inputTextarea style="width: 500px;height: 250px;overflow: auto;"
+                                         disabled="#{true}"                                        
+                                         value="#{tramiteBean.tramiteHelper.tramite.tipoMovimiento.sustentoLegal}"/>
+                        <br/>
+
+                    </p:panel> 
+                    <br/>
+                    <p:commandButton value="Cerrar"
+                                     type="button"
+                                     onclick="sustentoLegalCompleto.hide()"
+                                     style="margin: auto"/>
+                </p:dialog>
+
+                <!-- PopUp de Historial del tramite -->
+                <p:dialog widgetVar="popUpHistoricoTramite"
+                          modal="true"
+                          resizable="false" 
+                          header="Histórico del Tramite">
+                    <p:panel id="contenidoPopUpHistoricoTramite">
+                        <p:dataTable value="#{tramiteBean.tramiteHelper.listaDetalles}"
+                                     var="detalle"
+                                     style="width: 800px;"
+                                     paginator="#{true}"
+                                     rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>
+                            <p:column headerText="Fecha" >
+                                <h:outputText value="#{detalle.fechaCreacion}">
+                                    <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Identificación" >
+                                <h:outputText value="#{detalle.usuario}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" >
+                                <h:outputText value="#{detalle.nombreUsuario}"/>
+                            </p:column>
+                            <p:column headerText="Comentario" >
+                                <h:outputText value="#{detalle.comentario}"/>
+                            </p:column>
+                            <p:column headerText="Estado" >
+                                <h:outputText value="#{detalle.estado.nombre}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                </p:dialog>
+                <!-- PopUp de Bitacora del tramite -->
+                <p:dialog widgetVar="popUpBitacoraTramite"
+                          modal="true"
+                          resizable="false" 
+                          header="Bitácora del Trámite">
+                    <p:panel id="contenidoPopUpBitacoraTramite" style="margin: none; border: none;height: 300px">
+                        <h:panelGrid style="overflow: auto;">
+                            <p:fieldset legend="Elaboración">                    
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaElaboracion}"/>
+
+                                    <h:outputLabel value="Nombre: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 style="width: 300px"
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreElaboracion}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoElaboracion}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaElaboracion}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Revisión" rendered="false">
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaRevision}"/>
+                                    <h:outputLabel value="Nombre: "/>
+
+                                    <p:inputText disabled="#{true}" 
+                                                 style="width: 300px"
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreRevision}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoRevision}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaRevision}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Validación" rendered="false">
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaValidacion}"/>
+                                    <h:outputLabel value="Nombre: "/>
+
+                                    <p:inputText disabled="#{true}"
+                                                 style="width: 300px" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreValidacion}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoValidacion}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaValidacion}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Aprobación">
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaAprobacion}"/>
+                                    <h:outputLabel value="Nombre: "/>
+
+                                    <p:inputText disabled="#{true}" 
+                                                 style="width: 300px"
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreAprobacion}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoAprobacion}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaAprobacion}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Legalización">
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaLegalizacion}"/>
+                                    <h:outputLabel value="Nombre: "/>
+
+                                    <p:inputText disabled="#{true}"
+                                                 style="width: 300px" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreLegalizacion}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoLegalizacion}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaLegalizacion}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Eliminación">
+                                <h:panelGrid columns="4" cellspacing="5" cellpadding="0">
+                                    <h:outputLabel value="Cédula: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.cedulaEliminacion}"/>
+                                    <h:outputLabel value="Nombre: "/>
+
+                                    <p:inputText disabled="#{true}" 
+                                                 style="width: 300px"
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.nombreEliminacion}"/>
+
+                                    <h:outputLabel value="Cargo: "/>
+                                    <p:inputTextarea disabled="#{true}" 
+                                                     style="width: 300px"
+                                                     value="#{tramiteBean.tramiteHelper.tramiteBitacora.cargoEliminacion}"/>
+
+                                    <h:outputLabel value="Fecha: "/>
+                                    <p:inputText disabled="#{true}" 
+                                                 value="#{tramiteBean.tramiteHelper.tramiteBitacora.fechaEliminacion}">
+                                        <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+            <p:confirmDialog id="confirmElimMov" message="Desea eliminar el movimiento?" 
+                             header="Eliminación de movimiento"
+                             severity="alert"
+                             widgetVar="confElimMov">   
+                <h:form id="frmEliminacionMovimiento">
+                    <h:panelGrid columns="3" style="text-align: center" 
+                                 rendered="#{tramiteBean.tramiteHelper.controlNavegacion=='vr' or tramiteBean.tramiteHelper.controlNavegacion=='vre'}">
+                        <h:outputLabel value="* Justificación:"/>
+                        <p:inputTextarea id="justificacionEliminacion"   
+                                         style="width: 400px"
+                                         autoResize="false"
+                                         value="#{tramiteBean.tramiteHelper.movimiento.justificacion}"
+                                         required="#{tramiteBean.tramiteHelper.controlNavegacion=='vr' or tramiteBean.tramiteHelper.controlNavegacion=='vre'}"
+                                         maxlength="1000"/>
+                        <p:message id="mensjejustificacionEliminacion" for="justificacionEliminacion" display="icon"/>
+                    </h:panelGrid>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update="mensjejustificacionEliminacion, :fmrTramite"                                      
+                                         action="#{tramiteBean.eliminarMovimiento()}" /> 
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confElimMov.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:confirmDialog>
+            <!-- Configuracion documento habilitante -->
+            <p:dialog widgetVar="panelFirmas"
+                      modal="true"
+                      header="Configuración Firmas"
+                      resizable="false"
+                      width="670"
+                      draggable="true">
+                <h:form id="frmPanelFirmas" >
+                    <p:focus for="botonCancelar"/>
+
+                    <h:panelGrid style="width: 100%">
+                        <!-- Representante RRHH -->
+                        <h:panelGrid columns="4" columnClasses="grid6lb_rep,,grid6lb_rep," style="width: 100%">  
+                            <p:outputLabel id="apRepresentanteRRHH_lbl" 
+                                           value="* Representante RRHH: "
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:selectOneMenu id="apRepresentanteRRHH" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{tramiteBean.tramiteHelper.tramite.catalogoRepresentanteRRHH.id}"
+                                             style="width: 200px;" required="true"
+                                             requiredMessage="El representan de rrhh es un campo requerido."
+                                             rendered="#{tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaRepresentanteRRHH}"/>
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel id="apNombreRepresentanteRRHH_lbl" 
+                                           value="* Nombre Representante RRHH: "
+                                           rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:inputText id="apNombreRepresentanteRRHH" 
+                                         value="#{tramiteBean.tramiteHelper.tramite.nombreRepresentanteRRHH}"
+                                         style="width: 200px;" required="true"
+                                         requiredMessage="El nombre del representan de rrhh es un campo requerido."
+                                         rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                        </h:panelGrid>
+                        <!-- Fin Representante RRHH -->                        
+                        <!-- Autoridad Nominadorea -->
+                        <h:panelGrid columns="4" columnClasses="grid6lb_rep,,grid6lb_rep," style="width: 100%"> 
+                            <p:outputLabel id="apAutoridadNominadora_lbl" 
+                                           value="* Autoridad Nominadora: "
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:selectOneMenu id="apAutoridadNominadora" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{tramiteBean.tramiteHelper.tramite.catalogoAutoridadNominadora.id}"
+                                             style="width: 200px;" required="true"
+                                             requiredMessage="La autoridad nominadora es un campo requerido."
+                                             rendered="#{tramiteBean.tramiteHelper.esAccionPersonal or tramiteBean.tramiteHelper.esContrato}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaAutoridadNominadora}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel id="apNombreAutoridadNominadora_lbl" 
+                                           value="* Nombre Autoridad Nominadora: "
+                                           rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:inputText id="apNombreAutoridadNominadora" 
+                                         value="#{tramiteBean.tramiteHelper.tramite.nombreAutoridadNominadora}"
+                                         style="width: 200px;" 
+                                         required="true"
+                                         requiredMessage="El nombre de la autoridad nominadora es un campo requerido."
+                                         rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                        </h:panelGrid>
+                        <!-- Fin Autoridad Nominadorea -->
+                    </h:panelGrid>
+                    <p:separator/>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update="frmPanelFirmas"                                      
+                                         actionListener="#{tramiteBean.guardarDatosFirmasMasivo()}" /> 
+                        <p:commandButton id="botonCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="panelFirmas.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+            <!-- Configuracion de documento habilitante-->
+            <!-- Configuracion documento habilitante -->
+            <p:dialog widgetVar="panelDocumentoHabilitante"
+                      modal="true"
+                      header="Configuración Documento Habilitante"
+                      resizable="false"
+                      width="670"
+                      draggable="true">
+                <h:form id="frmPanelDocumentoHabilitante" >
+                    <p:focus for="botonCancelar"/>
+
+                    <h:panelGrid style="width: 100%">
+                        <!-- Fechas -->
+                        <h:panelGrid columns="6" columnClasses="grid6lb,grid6val,grid6lb,grid6val,grid6lb,grid6val">
+                            <p:outputLabel id="tipo_periodo_lbl" value="* Rige a Partir De: "/>                                               
+                            <p:selectOneMenu id="tipo_periodo"
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             requiredMessage="El campo Rige a Partir De es requerido." required="true"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.tipoPeriodo}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaTipoPeriodos}"/>
+                                <p:ajax update="@form" immediate="true"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel id="fechaRigeAPartirDe_lbl" 
+                                           rendered="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.tipoPeriodo=='F'}"
+                                           value="Fecha Rige a Partir: "/>                                               
+                            <p:calendar id="fechaRigeAPartirDe"
+                                        value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.rigeApartirDe}"
+                                        rendered="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.tipoPeriodo=='F'}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        showOn="button"   
+                                        requiredMessage="La fecha rige a partir de es un campo requerido. "
+                                        navigator="true"/>
+                            <p:outputLabel id="fechaHasta_lbl" value="Fecha Hasta: "/>
+                            <p:calendar id="fechaHasta" 
+                                        value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.fechaHasta}"
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        showOn="button"                                        
+                                        navigator="true"  
+                                        requiredMessage="La fecha hasta es un campo requerido."/>                       
+                        </h:panelGrid>
+                        <!-- Fin Fechas -->
+                        <!-- Explicacion -->
+                        <h:panelGrid columns="2" columnClasses="grid2lb_area,grid2val_area" style="width: 100%">
+                            <p:outputLabel id="apExplicacion_lbl" value="Explicación: " style="width: 100%"
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                            <p:inputTextarea id="apExplicacion" 
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.explicacion}"
+                                             autoResize="false"
+                                             requiredMessage="La explicación es un campo requerido."
+                                             style="height: 70px"
+                                             maxlength="1000"
+                                             rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                        </h:panelGrid>
+                        <!-- Fin Explicacion -->
+                        <!-- Documento Previo -->
+                        <h:panelGrid columns="6" columnClasses="grid6lb,grid6val,grid6lb,grid6val,grid6lb,grid6val" style="width: 100%">   
+                            <p:outputLabel id="apDocumentoPrevio_lbl" value="Documento Previo: "
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                            <p:selectOneMenu id="apDocumentoPrevio" 
+                                             filter="true" 
+                                             filterMatchMode="contains"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.documentoPrevio}"
+                                             requiredMessage="El documento previo es un campo requerido."
+                                             rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}">
+                                <f:selectItems value="#{tramiteBean.tramiteHelper.listaDocumentoPrevio}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel id="apNumeroDocumento_lbl" value="Numero Documento: "
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                            <p:inputText id="apNumeroDocumento" 
+                                         styleClass="textoNemonico"
+                                         value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.numeroDocumentoAccion}"
+                                         requiredMessage="El número documento es un campo requerido."
+                                         rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                            <p:outputLabel id="apFechaDocumento_lbl" value="Fecha Documento: "
+                                           rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                            <p:calendar id="apFechaDocumento" 
+                                        value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.fechaDocumentoAccion}"
+                                        showOn="button"                                        
+                                        navigator="true"  
+                                        requiredMessage="La fecha documento es un campo requerido."
+                                        pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCorta']}"
+                                        rendered="#{tramiteBean.tramiteHelper.esAccionPersonal}"/>
+                        </h:panelGrid>
+                        <!-- Fin Documento Previo -->
+                        <!-- Antecedentes -->
+                        <h:panelGrid columns="2" columnClasses="grid2lb_area,grid2val_area" style="width: 100%">
+                            <p:outputLabel id="antecedentesContrato_lbl" value="Antecedentes: " 
+                                           rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:inputTextarea id="antecedentesContrato" 
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.antecedentesContrato}"
+                                             autoResize="false" maxlength="1000"                                          
+                                             requiredMessage="Los antecedentes es un campo requerido."
+                                             style="height: 70px"
+                                             rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                        </h:panelGrid>
+                        <!-- Fin Antecedentes -->
+                        <!-- Actividades -->
+                        <h:panelGrid columns="2" columnClasses="grid2lb_area,grid2val_area" style="width: 100%">
+                            <p:outputLabel id="actividadesContrato_lbl" value="Actividades: "
+                                           rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                            <p:inputTextarea id="actividadesContrato" 
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.actividadesContrato}"
+                                             autoResize="false" maxlength="1000"
+                                             requiredMessage="Las actividades es un campo requerido."
+                                             style="height: 70px"
+                                             rendered="#{tramiteBean.tramiteHelper.esContrato}"/>
+                        </h:panelGrid>
+                        <!-- Fin Actividades -->
+                        <!-- Asunto -->
+                        <h:panelGrid columns="2">
+                            <p:outputLabel id="asuntoMemorando_lbl" value="Asunto: "
+                                           rendered="#{tramiteBean.tramiteHelper.esMemorando}"/>                        
+                            <p:inputTextarea id="asuntoMemorando" 
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.asuntoMeno}"
+                                             requiredMessage="El asunto es un campo requerido."
+                                             autoResize="false" maxlength="255"
+                                             style="width: 300px;height: 100px"
+                                             rendered="#{tramiteBean.tramiteHelper.esMemorando}"/>
+                        </h:panelGrid>
+                        <!-- Fin Asunto -->
+                        <!-- Memorando -->
+                        <h:panelGrid columns="2">
+                            <p:outputLabel id="contenidoMemorando_lbl" 
+                                           value="Contenido: "
+                                           rendered="#{tramiteBean.tramiteHelper.esMemorando}"/>
+                            <p:inputTextarea id="contenidoMemorando"
+                                             value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.contenidoMemo}"
+                                             requiredMessage="El contenido es un campo requerido."
+                                             autoResize="false" maxlength="1000"
+                                             style="width: 300px;height: 100px"
+                                             rendered="#{tramiteBean.tramiteHelper.esMemorando}"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <div style="text-align: center;margin-left: 7%;">                                                
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         update="frmPanelDocumentoHabilitante"                                      
+                                         actionListener="#{tramiteBean.guardarDatosDocumentoHabilitanteMasivo}" /> 
+                        <p:commandButton id="botonCancelar" 
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="panelDocumentoHabilitante.hide()"
+                                         type="button" />  
+                    </div>
+                </h:form>
+            </p:dialog>
+
+            <!-- Detalle de solicitud. -->
+            <p:dialog header="Detalle de la Solicitud"
+                      id="dlgDetalleSolicitud"
+                      widgetVar="detalleSolicitud">
+                <h:form id="frmDetalleSolicitud">
+                    <p:panel id="pnlDetalleSolicitud" >
+
+                        <p:inputTextarea style="width: 500px;height: 250px;overflow: auto;"
+                                         disabled="#{true}"                                        
+                                         value="#{tramiteBean.tramiteHelper.tramite.tramiteAuxiliar.detalleSolicitud}"/>
+                        <br/>
+
+                    </p:panel> 
+                    <br/>
+                    <p:commandButton value="Cerrar"
+                                     type="button"
+                                     onclick="detalleSolicitud.hide()"
+                                     style="margin: auto"/>
+                </h:form>
+            </p:dialog>
+
+            <!-- subir archivo masivo -->
+            <p:dialog header="CARGAR ARCHIVO PARA REGISTRO MASIVO DE PUESTO "
+                      modal="true"
+                      resizable="false"
+                      draggable="false"
+                      widgetVar="dlgCargaArchivoMasivo" >
+
+                <h:form enctype="multipart/form-data">  
+                    <p:panel id="panelDlgCargaDocHab" style="border: none;">          
+                        <p:fileUpload value="#{tramiteBean.tramiteHelper.archivo}" 
+                                      mode="simple"/>  
+                        <p:spacer/>
+                        <p:commandLink id="downloadLink" 
+                                       value="Descargar Formato del Archivo" 
+                                       title="Descargar formato del archivo de movimiento de personal."                                           
+                                       ajax="false"        
+                                       style="color: blue"
+                                       onclick="PrimeFaces.monitorDownload(start, stop)">                                        
+                            <p:fileDownload value="#{tramiteBean.formatoMovimientoPersonal }" />
+                        </p:commandLink>
+
+                        <p:separator />
+                        <div style="text-align: center">
+                            <p:commandButton value="Subir Archivo" 
+                                             ajax="false"  
+                                             partialSubmit="true"
+                                             update=":fmrTramite:busquedaPuestoHelper_listaPuestos,:fmrTramite:btnErroresCargaMasiva"
+                                             actionListener="#{tramiteBean.subirArchivo}"/>  
+
+
+                        </div>
+                    </p:panel>              
+                </h:form>  
+
+            </p:dialog>
+
+            <!-- problemas al subir archivo masivo -->
+            <p:dialog header="ERRORES AL CARGAR ARCHIVO PARA REGISTRO MASIVO DE PUESTO "
+                      modal="true"
+                      resizable="false"
+                      draggable="false"
+                      widgetVar="dlgCargaArchivoMasivoErrores" >
+
+                <h:form id="frmErrres">  
+                    <p:panel id="panelErrores" rendered="#{tramiteBean.tramiteHelper.erroresCargaMasiva.size()>0}">
+                        <p:dataTable id="tramiteHelper_errores" 
+                                     value="#{tramiteBean.tramiteHelper.erroresCargaMasiva}"
+                                     var="error"
+                                     rows="10"
+                                     paginator="#{true}"
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="No" >
+                                <h:outputText value="#{rowIndex+1}"/>
+                            </p:column>   
+                            <p:column headerText="Error" style="text-align: left">
+                                <h:outputText value="#{error}" style="font-size: 10px;"/>
+                            </p:column>
+                        </p:dataTable>
+                        <center>
+                            <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.generico.boton.cerrar']}"
+                                             onclick="dlgCargaArchivoMasivoErrores.hide()"
+                                             style="margin: auto" >
+                            </p:commandButton>
+                        </center>
+                    </p:panel>
+                </h:form>  
+
+            </p:dialog>
+            <!-- Panel de horario -->
+            <ui:include src="../horario.xhtml" id=""/>
+
+            <script type="text/javascript">
+                function start() {
+                    statusDialog.show();
+                }
+
+                function stop() {
+                    statusDialog.hide();
+                }
+            </script> 
+
+        </ui:define>
+    </ui:composition>
+</html>

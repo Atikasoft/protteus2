@@ -1,0 +1,123 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+            <h:form id="frmListaDesconcentrados">        
+                <p:panel header="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.titulo']}" 
+                         id="panelOpcionesLista">
+                    <h:panelGrid columns="2" 
+                                 id="panelOptDesigPie">
+                        <p:commandButton id="panelOptBtnNuevo" 
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.nuevo']}"
+                                         action="#{desconcentradoBean.iniciarNuevo}"
+                                         update=":frmDesconcentrado"/>
+
+                        <p:commandButton id="panelOptBtnSalir" 
+                                         ajax="#{false}"
+                                         value="#{msg['ec.gob.mrl.smp.generico.boton.salir']}"
+                                         action="#{desconcentradoBean.salirPantallaPrincipal()}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}">
+                    <p:dataTable id="tblDesconcentrados"
+                                 value="#{desconcentradoBean.desconcentradoHelper.listaDesconcentrados}"
+                                 var="desconcentrado"
+                                 paginator="#{true}"
+                                 rows="#{msg['ec.gob.mrl.smp.genericos.tabla.numeroRegistros']}"
+                                 rowIndexVar="rowIndex"
+                                 emptyMessage="#{msg['ec.gob.mrl.smp.genericos.datatable.vacia']}"
+                                 sortBy="#{desconcentrado.nombre}"  
+                                 sortOrder="ascending"
+                                 style="overflow: auto">   
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.opciones']}" 
+                                  style="text-align: center; width:50px">
+
+                            <p:commandButton id="btnEditar" 
+                                             icon="ui-icon-pencil"
+                                             title="#{msg['message.btn.editar']}"
+                                             immediate="true"
+                                             action="#{desconcentradoBean.iniciarEdicion}"
+                                             update=":frmDesconcentrado">
+                                <f:setPropertyActionListener value="#{desconcentrado}" 
+                                                             target="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado}"/>
+                            </p:commandButton>
+
+                            <p:commandButton id="btnFunUniOrg" 
+                                             icon="ui-icon-bookmark"
+                                             title="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.config.uo']}"
+                                             immediate="true" 
+                                             ajax="#{false}"
+                                             onclick="start();"
+                                             action="#{desconcentradoBean.irAConfigurarFuncionesPorUnidadesOrganizacionales()}">
+                                <f:setPropertyActionListener value="#{desconcentrado}" 
+                                                             target="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado}"/>
+                            </p:commandButton>
+
+                            <p:commandButton id="btnEliminar" 
+                                             icon="ui-icon-trash"
+                                             title="#{msg['message.btn.eliminar']}"
+                                             onclick="confirmEliminacion.show();"
+                                             immediate="true" >
+                                <f:setPropertyActionListener value="#{desconcentrado}" 
+                                                             target="#{desconcentradoBean.desconcentradoHelper.desconcentradoVO.desconcentrado}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.genericos.etiquetas.numero']}" 
+                                  style="text-align: center; width: 20px">
+                            <h:outputText value="#{rowIndex+1}"/>                                
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.nombre']}" 
+                                  style="width: 300px"
+                                  sortBy="#{desconcentrado.nombre}"
+                                  filterBy="#{desconcentrado.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{desconcentrado.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.desconcentrado.responsable']}" 
+                                  style="width: 200px"
+                                  sortBy="#{desconcentrado.servidorResponsable.apellidosNombres}"
+                                  filterBy="#{desconcentrado.servidorResponsable.apellidosNombres}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{desconcentrado.servidorResponsable.apellidosNombres}"/>                      
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:panel>
+
+                <p:confirmDialog id="popOp" 
+                                 message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                                 header="Confirmación de Eliminación" 
+                                 severity="alert" 
+                                 widgetVar="confirmEliminacion">  
+                    <div style="text-align: center">
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}" 
+                                         style="margin-right: 5px;"
+                                         update="tblDesconcentrados"
+                                         action="#{desconcentradoBean.borrar()}" 
+                                         oncomplete="confirmEliminacion.hide()">
+                            <f:setPropertyActionListener target="#{desconcentradoBean.desconcentradoHelper.guardarSoloDatosGeneralesYApoyos}"
+                                                 value="#{null}"/>
+                        </p:commandButton>  
+
+                        <p:commandButton value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/>   
+                    </div>
+                </p:confirmDialog> 
+            </h:form>
+            <ui:include src="dlgDesconcentrado.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>

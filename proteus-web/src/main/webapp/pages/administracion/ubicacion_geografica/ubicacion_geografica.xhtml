@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:smp="http://java.sun.com/jsf/composite/smp">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+
+            <h:form id="frmPrincipal">               
+                <p:panel id="panelubg">
+                    <p:fieldset legend="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.titulo']}">
+                        <p:contextMenu for="tablaUbicacion" id="menu">  
+                            <p:menuitem value="Nuevo" update=":frmUbicacion:panelfrm" 
+                                        icon="ui-icon-document" 
+                                        actionListener="#{ubicacionGeograficaBean.iniciarNuevo()}" />                              
+                            <p:menuitem value="Editar" actionListener="#{ubicacionGeograficaBean.iniciarEdicion()}" 
+                                        update="tablaUbicacion,:frmUbicacion:panelfrm" icon="ui-icon-pencil"/>  
+                            <p:menuitem value="Eliminar"  onclick="confirmEliminacion.show()"
+                                        update=":formEliminarRegimenLaboral" icon="ui-icon-trash"/> 
+                        </p:contextMenu>  
+                        <p:treeTable id="tablaUbicacion"
+                                     value="#{ubicacionGeograficaBean.ubicacionGeograficaHelper.root}"
+                                     var="ubicacion"
+                                     style="overflow: auto"                                                                      
+                                     selection="#{ubicacionGeograficaBean.ubicacionGeograficaHelper.selectedNode}" 
+                                     selectionMode="single">                            
+                            <p:column headerText="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.titulo']}"
+                                      style="width: 400px; font-size: 8pt"
+                                      sortBy="#{ubicacion.nombre}"
+                                      filterBy="#{ubicacion.nombre}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ubicacion.nombre}" 
+                                              title="ECUADOR"  />
+                            </p:column>
+                        </p:treeTable>
+                    </p:fieldset>
+                </p:panel>
+            </h:form>
+            <p:confirmDialog id="popOp" message="#{msg['ec.gob.mrl.smp.genericos.etiquetas.eliminacion.registro']}"
+                             header="Eliminación"
+                             severity="alert"
+                             widgetVar="confirmEliminacion">  
+                <h:form id="formEliminarRegimenLaboral">
+                    <div style="text-align: center">
+                        <p:commandButton id="acpe" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         style="margin: auto"
+                                         update=":frmPrincipal:tablaUbicacion"
+                                         actionListener="#{ubicacionGeograficaBean.borrar()}"
+                                         oncomplete="confirmEliminacion.hide()"  />  
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="confirmEliminacion.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+            <p:confirmDialog id="popOpMSG" message="Opción no disponible para este nivel jerárquico."
+                             header="OPCIÓN NO DISPONIBLE" 
+                             severity="alert" 
+                             widgetVar="msgDialog">  
+                <h:form id="formMsg">
+                    <div style="text-align: center">
+                        <p:commandButton id="elim" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"
+                                         onclick="msgDialog.hide()" 
+                                         type="button" 
+                                         style="margin: auto"/> 
+                    </div>
+                </h:form>
+            </p:confirmDialog> 
+
+
+            <p:dialog modal="true"
+                      resizable="false"
+                      draggable="false"
+                      header="Información."
+                      widgetVar="dlgUbicacionGeografica"
+                      closable="false">
+                <h:form id="frmUbicacion">
+                    <p:panelGrid id="panelfrm" columns="2">
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.tipo']}:"/>
+                        <p:inputText value="#{ubicacionGeograficaBean.obtenerDescripcionUbicacionGeografica(ubicacionGeograficaBean.ubicacionGeograficaHelper.ubicacionGeografica.tipo)}" 
+                                     disabled="true"
+                                     required="true"
+                                     styleClass="textoNombre" />                        
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.nombre']}:"/>
+                        <p:inputText value="#{ubicacionGeograficaBean.ubicacionGeograficaHelper.ubicacionGeografica.nombre}" 
+                                     required="true"
+                                     requiredMessage="El nombre es un campo requerido"
+                                     styleClass="textoNombre" />
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.administracion.unicacionGeografica.nemonico']}:"/>
+                        <p:inputText value="#{ubicacionGeograficaBean.ubicacionGeograficaHelper.ubicacionGeografica.codigo}" 
+                                     required="true"
+                                     disabled="#{!(ubicacionGeograficaBean.ubicacionGeograficaHelper.esNuevo)}"
+                                     requiredMessage="El código es un campo requerido"
+                                     styleClass="textoNombre" />
+                    </p:panelGrid>
+                    <center>
+                        <p:commandButton id="btnAceptar"
+                                         value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.aceptar']}"                                         
+                                         action="#{ubicacionGeograficaBean.guardar()}"
+                                         onclick="dlgUbicacionGeografica.hide()"
+                                         update=":frmPrincipal:panelubg, :frmPrincipal:tablaUbicacion"
+                                         />
+                        <p:commandButton id="btnCancelar" value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.cancelar']}"
+                                         onclick="dlgUbicacionGeografica.hide()"
+                                         type="button"
+                                         style="margin: auto"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

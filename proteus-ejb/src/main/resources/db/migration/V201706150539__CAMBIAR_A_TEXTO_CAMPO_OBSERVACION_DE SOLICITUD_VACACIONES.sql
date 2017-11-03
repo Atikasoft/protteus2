@@ -1,0 +1,1 @@
+ALTER TABLE sch_proteus.vacaciones_solicitudes ALTER COLUMN observacion text COLLATE Modern_Spanish_CI_AS NULL

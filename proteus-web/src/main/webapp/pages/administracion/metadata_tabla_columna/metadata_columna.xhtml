@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/page-template.xhtml">
+        <ui:define name="page-content">
+             <h:form>     
+             <div style="text-align: left">
+                    <p:commandButton id="acpe" value="#{msg['message.btn.regresar']}" ajax="false" 
+                                     action="#{metadataColumnaBean.irLista}" process="@this"/> 
+                </div>
+            <p:panel id="#{msg['ec.gob.mrl.smp.genericos.catalogo.tabla.catalogo']}" 
+                     header="#{msg['ec.gob.mrl.smp.administracion.metadataColumna.titulo']}">
+                    <h:panelGrid columns="2" id="tablaformulario">
+                        
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataTabla.tabla']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="metadataColumna_tabla"
+                                     styleClass="textoNemonico"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.metadataTabla.tabla}"
+                                     disabled="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"
+                                     required="true" style="width: 400px"/>
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataColumna.columna']}:"
+                                       styleClass="labelFormulario"/>
+                        <p:inputText id="metadataColumna_columna"
+                                     styleClass="textoNemonico"
+                                     maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.codigo.max']}"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.columna}"
+                                     disabled="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"
+                                     required="true" style="width: 400px"/>
+
+
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataColumna.nombre']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputTextarea id="metadataColumna_nombre"
+                                         styleClass="textoNombre"
+                                         style="width: 200px"
+                                         maxlength="100"
+                                         value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.nombre}"
+                                         required="true" disabled="true"
+                                         requiredMessage="El campo nombre es requerido"/>    
+                         <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataColumna.descripcion']}:"
+                                       styleClass="labelFormulario" style="width: 100px; text-align: right"/>
+                        <p:inputTextarea id="metadataColumna_descripcion"
+                                         styleClass="textoDescripcion"
+                                         style="width: 200px"
+                                         maxlength="#{msg['ec.gob.mrl.smp.genericos.logitud.descripcion.max']}"
+                                         value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.descripcion}"
+                                         required="true" disabled="true"
+                                         requiredMessage="El campo descripción es requerido"/>    
+                        <h:outputLabel value="* #{msg['ec.gob.mrl.smp.administracion.metadataColumna.tipoDato']}:"
+                                       styleClass="labelFormulario" style="text-align: right"/>
+                        <p:inputText id="metadataColumna_tipo"
+                                         styleClass="textoNemonico"
+                                         style="width: 200px"
+                                         value="#{metadataColumnaBean.obtenerDescripcionTipoDato(metadataColumnaBean.metadataColumnaHelper.metadataColumna.tipo)}"
+                                         required="true" disabled="true"
+                                         requiredMessage="El campo tipo de dato es requerido"/>  
+                     
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.vigente']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"/>
+                        <p:selectBooleanCheckbox value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.vigente}" 
+                                                 rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}" disabled="true"/>
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioCreacio']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataColumna_usuario_creo"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.usuarioCreacion}"
+                                     disabled="true" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}" style="width: 250px"/>
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaCreacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataColumna_fecha_creo"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.fechaCreacion}"
+                                     rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>                        
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.usuarioActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataColumna_usuario_actual"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.usuarioActualizacion}"
+                                     rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"
+                                     disabled="true" style="width: 250px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+
+
+                        <h:outputLabel value="#{msg['ec.gob.mrl.smp.genericos.etiquetas.fechaActualizacion']}:"
+                                       styleClass="labelFormulario" rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"/>
+                        <p:inputText id="metadataColumna_fecha_actual"
+                                     value="#{metadataColumnaBean.metadataColumnaHelper.metadataColumna.fechaActualizacion}"
+                                     rendered="#{!(metadataColumnaBean.metadataColumnaHelper.esNuevo)}"
+                                     disabled="true" style="width: 150px">
+                            <f:convertDateTime pattern="#{msg['ec.gob.mrl.smp.genericos.formato.fechaCompleta']}"/>
+                        </p:inputText>
+
+                    </h:panelGrid>                    
+           
+            </p:panel>
+             </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
